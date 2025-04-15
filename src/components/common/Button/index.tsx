@@ -1,10 +1,10 @@
-import React from 'react';
-import { LoadingOutlined } from '@ant-design/icons';
+import React from "react";
+import { LoadingOutlined } from "@ant-design/icons";
 
-import * as S from './button.styles';
+import * as S from "./button.styles";
 
 interface ButtonProps {
-  type?: 'default' | 'primary';
+  type?: "default" | "primary";
   backgroundColor?: string;
   children: React.ReactNode;
   disabled?: boolean;
@@ -12,23 +12,23 @@ interface ButtonProps {
   isLoading?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   width?: string;
-  htmlType?: 'button' | 'submit' | 'reset';
+  htmlType?: "button" | "submit" | "reset";
 }
 
 export default function Button({
-  type = 'default',
+  type = "default",
   backgroundColor,
   children,
   disabled = false,
   isCancel = false,
   isLoading = false,
   onClick = () => {},
-  width = '100%',
-  htmlType = 'button',
+  width = "100%",
+  htmlType = "button",
   ...rest
 }: ButtonProps) {
   switch (type) {
-    case 'primary':
+    case "primary":
       return (
         <S.PrimaryButton
           onClick={onClick}

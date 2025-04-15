@@ -1,7 +1,7 @@
 import validate from "../validate/en.json";
 import messages from "../messages/en.json";
 
-import auth from "@/containers/auth/Locales/en.json";
+import auth from "@/containers/auth/Locale/en.json";
 
 interface LanguageObject {
   [key: string]: object;

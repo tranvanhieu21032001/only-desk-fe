@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "styled-components";
@@ -11,15 +11,25 @@ import GlobalStyle from "./styles/global/index.ts";
 
 import App from "./App.tsx";
 
-createRoot(document.getElementById("root")!).render(
-  <Provider store={store}>
-    <ThemeProvider theme={themes.default}>
-      <GlobalStyle />
-      <StrictMode>
-        <I18nextProvider i18n={i18n}>
-          <App />
-        </I18nextProvider>
-      </StrictMode>
-    </ThemeProvider>
-  </Provider>
-);
+function Index() {
+  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsDarkTheme(false);
+  }, []);
+
+  return (
+    <Provider store={store}>
+      <ThemeProvider theme={isDarkTheme ? themes?.darkTheme : themes.default}>
+        <GlobalStyle />
+        <StrictMode>
+          <I18nextProvider i18n={i18n}>
+            <App />
+          </I18nextProvider>
+        </StrictMode>
+      </ThemeProvider>
+    </Provider>
+  );
+}
+
+createRoot(document.getElementById("root")!).render(<Index />);

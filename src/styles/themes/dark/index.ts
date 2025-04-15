@@ -1,13 +1,13 @@
 import "styled-components";
 
-import colors from "./colors";
-import fontSize from "./fontSize";
-import fontWeight from "./fontWeight";
-import breakpoints from "./breakpoints";
-import radius from "./radius";
-import shadow from "./shadow";
+import colors from "./colorsDark";
+import fontSize from "../default/fontSize";
+import fontWeight from "../default/fontWeight";
+import breakpoints from "../default/breakpoints";
+import radius from "../default/radius";
+import shadow from "../default/shadow";
 
-export const defaultTheme = {
+export const darkTheme = {
   colors,
   fontSize,
   fontWeight,
@@ -18,7 +18,7 @@ export const defaultTheme = {
 
 declare module "styled-components" {
   export interface DefaultTheme {
-    colors: typeof colors;
+    colorsDark: typeof colors;
     fontSize: typeof fontSize;
     fontWeight: typeof fontWeight;
     breakpoints: typeof breakpoints;

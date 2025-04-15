@@ -17,7 +17,7 @@ const themeColors = {
    * this color comes next to the primary color .
    */
   secondary: "#186ADE",
-  secondaryDark: "#1F0B47",
+  secondaryDark: "#3750B2",
   secondaryDarker: "#231441",
   secondaryLight: "#BCAED7",
   secondaryLighter: "#F0E8FF",
@@ -65,6 +65,10 @@ const themeColors = {
   warningDarkest: "#f9f5e2",
 
   borderDisabled: "#d9d9d9",
+
+  dark: {
+    secondary: "#000",
+  },
 };
 
 export default themeColors;

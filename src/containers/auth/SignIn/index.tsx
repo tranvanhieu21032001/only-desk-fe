@@ -1,6 +1,8 @@
 import { Image } from "antd";
 import { useTranslation } from "react-i18next";
 
+import themeColors from "@/styles/themes/default/colors";
+
 import { OptionsInterface } from "@/model/common";
 import { langOptions } from "@/helpers/data/signIn";
 import Typography from "@/components/common/Typography";
@@ -9,7 +11,6 @@ import fontWeight from "@/styles/themes/default/fontWeight";
 import * as S from "./sign-in.styles";
 
 import logo from "@/assets/icons/common/ic-logo.svg";
-import themeColors from "@/styles/themes/default/colors";
 
 function SignIn() {
   const { t } = useTranslation("auth");
