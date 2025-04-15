@@ -2,7 +2,6 @@ import React, { useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAppSelector } from "@/hooks";
-import { ADMIN_ROUTES } from "@/routes/constants";
 
 export default function useWithoutAuth<
   P extends React.HTMLAttributes<HTMLElement>
