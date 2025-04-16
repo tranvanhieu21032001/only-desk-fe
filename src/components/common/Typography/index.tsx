@@ -20,6 +20,7 @@ interface TypographyProps {
   margin?: string;
   padding?: string;
   fontWeight?: string;
+  textAlign?: string;
 }
 
 export default function Typography({
@@ -29,6 +30,7 @@ export default function Typography({
   padding,
   margin,
   fontWeight,
+  textAlign,
 }: TypographyProps) {
   switch (variant) {
     case "h1":
@@ -38,6 +40,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.H1>
@@ -49,6 +52,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.H2>
@@ -60,6 +64,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.H3>
@@ -71,6 +76,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.H4>
@@ -82,6 +88,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.H5>
@@ -94,6 +101,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.P>
@@ -106,6 +114,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.P>
@@ -118,6 +127,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.P>
@@ -130,6 +140,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.P>
@@ -142,6 +153,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.P>
@@ -154,6 +166,7 @@ export default function Typography({
           $margin={margin}
           $padding={padding}
           $fontWeight={fontWeight}
+          $textAlign={textAlign}
         >
           {children}
         </S.P>

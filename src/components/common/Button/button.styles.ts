@@ -1,4 +1,4 @@
-import { styled, css } from 'styled-components';
+import { styled, css } from "styled-components";
 
 export const ButtonCommon = styled.button`
   cursor: pointer;
@@ -18,10 +18,12 @@ export const PrimaryButton = styled(ButtonCommon)<{
   $isCancel?: boolean;
   $width?: string;
 }>`
-  background-color: ${(props) => props.$bg || props.theme.colors.primary};
+  background-color: ${(props) => props.$bg || props.theme.colors.secondaryDark};
   color: ${(props) => props.theme.colors.newtralLightest};
   transition: all 0.5s;
-  width: ${(props) => props?.$width || '100%'};
+  width: ${(props) => props?.$width || "100%"};
+  font-size: ${(props) => props.theme.fontSize.base};
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
 
   ${({ $isCancel }) =>
     $isCancel &&
@@ -50,10 +52,12 @@ export const DefaultButton = styled(ButtonCommon)<{
   $isCancel?: boolean;
   $width?: string;
 }>`
-  border: 1px solid ${(props) => props.theme.colors.primary};
+  border: 1px solid ${(props) => props.theme.colors.secondaryDark};
   background-color: ${(props) => props.theme.colors.newtralLightest};
-  color: ${(props) => props.theme.colors.primary};
-  width: ${(props) => props?.$width || '100%'};
+  color: ${(props) => props.theme.colors.secondaryDark};
+  width: ${(props) => props?.$width || "100%"};
+  font-size: ${(props) => props.theme.fontSize.base};
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
 
   ${({ $isCancel }) =>
     $isCancel &&

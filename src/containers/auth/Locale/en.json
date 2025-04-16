@@ -1,5 +1,19 @@
 {
   "need-help": "Need help?",
+  "login ": "Login",
+  "dont-have": "Don't have account yet?",
+  "sign-in": "Sign in",
+  "email": "Email",
+  "enter-your-email": "Enter your email",
+  "password": "Password",
+  "enter-your-password": "Enter your password",
+  "forgot-password": "Forgot password?",
+  "please-enter-email": "Please enter your email",
+  "please-enter-password": "Please enter your password",
+  "email-invalid": "Email is invalid",
+  "remember-me": "Remember me",
+  "sign-in-with-google": "Sign in with Google",
+  "sign-in-with-facebook": "Sign in with Facebook",
 
   "language": {
     "english": "English"
