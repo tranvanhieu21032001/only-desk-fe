@@ -1,9 +1,11 @@
 import React from "react";
 
-import { AUTH_ROUTES } from "./constants";
+import { AUTH_ROUTES, MAIN_ROUTES } from "./constants";
 import { RouterElementInterface } from "./model";
 
 const SignIn = React.lazy(() => import("@/containers/auth/SignIn"));
+
+const Main = React.lazy(() => import("@/containers/main/MainInbox"));
 
 const routes_admin: RouterElementInterface[] = [];
 
@@ -16,4 +18,13 @@ const routes_auth: RouterElementInterface[] = [
   },
 ];
 
-export { routes_auth, routes_admin };
+const routes_main: RouterElementInterface[] = [
+  {
+    key: "main-inbox",
+    path: MAIN_ROUTES.INBOX,
+    component: Main,
+    name: "main-inbox",
+  },
+];
+
+export { routes_auth, routes_admin, routes_main };

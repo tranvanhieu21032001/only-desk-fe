@@ -2,6 +2,7 @@ import validate from "../validate/en.json";
 import messages from "../messages/en.json";
 
 import auth from "@/containers/auth/Locale/en.json";
+import main from "@/containers/main/Locale/en.json";
 
 interface LanguageObject {
   [key: string]: object;
@@ -24,6 +25,7 @@ const mergeWithValidateExceptMessages = (
 
 const translationEN = mergeWithValidateExceptMessages(validate, {
   auth,
+  main,
 });
 
 export default translationEN;

@@ -1,0 +1,10 @@
+{
+  "main": "MAIN",
+  "other": "OTHER",
+
+  "header": {
+    "title": "Main Inbox",
+    "description": "Insert page description here.",
+    "addNew": "Add New"
+  }
+}

@@ -1,5 +1,6 @@
 const preRouterAdmin = "";
 const preRouterAuth = "/auth";
+const preRouterMain = "";
 
 const ADMIN_ROUTES = {
   DASHBOARD: preRouterAdmin,
@@ -13,4 +14,8 @@ const AUTH_ROUTES = {
   DESIGN_SYSTEM: `${preRouterAuth}/design-system`,
 };
 
-export { ADMIN_ROUTES, AUTH_ROUTES };
+const MAIN_ROUTES = {
+  INBOX: `${preRouterMain}/inbox`,
+};
+
+export { ADMIN_ROUTES, AUTH_ROUTES, MAIN_ROUTES };
