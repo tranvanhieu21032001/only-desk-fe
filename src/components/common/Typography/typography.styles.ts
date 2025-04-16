@@ -5,8 +5,10 @@ export const H1 = styled.h1<{
   $padding?: string;
   $margin?: string;
   $fontWeight?: string;
+  $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
+  text-align: ${(props) => props.$textAlign || "left"};
   font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
 
   ${(props) =>
@@ -27,9 +29,11 @@ export const H2 = styled.h2<{
   $padding?: string;
   $margin?: string;
   $fontWeight?: string;
+  $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
   font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
+  text-align: ${(props) => props.$textAlign || "left"};
 
   ${(props) =>
     props.$padding &&
@@ -49,9 +53,11 @@ export const H3 = styled.h3<{
   $padding?: string;
   $margin?: string;
   $fontWeight?: string;
+  $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
   font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
+  text-align: ${(props) => props.$textAlign || "left"};
 
   ${(props) =>
     props.$padding &&
@@ -71,9 +77,11 @@ export const H4 = styled.h4<{
   $padding?: string;
   $margin?: string;
   $fontWeight?: string;
+  $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
   font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
+  text-align: ${(props) => props.$textAlign || "left"};
 
   ${(props) =>
     props.$padding &&
@@ -93,9 +101,11 @@ export const H5 = styled.h5<{
   $padding?: string;
   $margin?: string;
   $fontWeight?: string;
+  $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
   font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
+  text-align: ${(props) => props.$textAlign || "left"};
 
   ${(props) =>
     props.$padding &&
@@ -115,10 +125,12 @@ export const P = styled.p<{
   $padding?: string;
   $margin?: string;
   $fontWeight?: string;
+  $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
   font-weight: ${(props) =>
     props.$fontWeight || props.theme.fontWeight.regular};
+  text-align: ${(props) => props.$textAlign || "left"};
 
   ${(props) =>
     props.$padding &&

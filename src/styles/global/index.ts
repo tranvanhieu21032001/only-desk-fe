@@ -153,6 +153,22 @@ const reset = css`
     opacity: 1;
   }
 
+  .container {
+    max-width: 1440px;
+  }
+
+  .box-container {
+    padding: 36px;
+
+    @media ${(props) => props?.theme?.breakpoints?.xlMax} {
+      padding: 24px;
+    }
+
+    @media ${(props) => props?.theme?.breakpoints?.lgMax} {
+      padding: 16px;
+    }
+  }
+
   .modal-preview-image {
     .ant-modal-header {
       text-align: center;

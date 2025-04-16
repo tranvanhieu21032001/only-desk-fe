@@ -37,8 +37,8 @@ const themeColors = {
   /**
    * Neutral colors palette used for body, texts, boxes, etc.
    */
-  newtral: "#3D5368",
-  newtralDark: "#394D60",
+  newtral: "#E8E8E8",
+  newtralDark: "",
   newtralDarker: "#B9B9B9",
   newtralLight: "#BFCCD9",
   newtralLighter: "#EFF2F6",

@@ -7,5 +7,9 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <S.WrapAuthLayout>{children}</S.WrapAuthLayout>;
+  return (
+    <S.WrapAuthLayout className="container">
+      <div className="box-container">{children}</div>
+    </S.WrapAuthLayout>
+  );
 }
