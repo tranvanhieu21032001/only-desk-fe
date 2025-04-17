@@ -36,6 +36,44 @@ export const RightSection = styled.div`
   gap: 1rem;
 `;
 
+export const DropdownMenu = styled.div`
+  position: absolute;
+  top: 76px;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  min-width: 200px;
+  overflow: hidden;
+  padding: 0.5rem 12px;
+`;
+
+export const DropdownItem = styled.div`
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  background-color: transparent;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background-color: #edf1f8;
+    color: #162755;
+    border-radius: 8px;
+  }
+`;
+
 export const IconButton = styled.button`
   background: none;
   border: none;

@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const SidebarContainer = styled.div`
   width: 94px;
   height: 100vh;
-  background-color: #fff;
+  background-color: #333333;
   padding: 1rem 0;
   display: flex;
   flex-direction: column;
@@ -16,6 +16,7 @@ export const SidebarContainer = styled.div`
 export const TopContainer = styled.div`
   margin-top: 10px;
   display: flex;
+  width: 100%;
   gap: 10px;
   flex-direction: column;
   align-items: center;
@@ -25,18 +26,20 @@ export const BottomContainer = styled.div`
   margin-top: 20px;
   display: flex;
   gap: 10px;
+  width: 100%;
   flex-direction: column;
   align-items: center;
 `;
 
 export const TopSection = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
 export const Underline = styled.div`
-  width: 60%;
+  width: 40%;
   height: 1px;
   background-color: #ccc;
   margin: 10px 0;
@@ -53,32 +56,28 @@ export const BottomAvatar = styled(Avatar)`
   margin: 1rem 0 0;
 `;
 
-export const SectionLabel = styled.div`
-  font-size: 12px;
-  color: #8a8a8a;
-  margin: 1rem 0 0.5rem;
-`;
-
 export const IconWrapper = styled.div<{ active?: boolean }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  margin: 6px 0;
+  position: relative;
+  width: 100%;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => (props.active ? "#e7edff" : "transparent")};
+  background-color: ${(props) => (props.active ? "#5e5e5e" : "transparent")};
   cursor: pointer;
-  position: relative;
-
-  svg,
-  img {
-    width: 20px;
-    height: 20px;
-    fill: ${(props) => (props.active ? "#2C4ECF" : "#555")};
-  }
+  border-left: ${(props) =>
+    props.active ? "4px solid red" : "4px solid transparent"};
+  transition: all 0.2s ease;
 
   &:hover {
-    background-color: #f3f3f3;
+    background-color: #5e5e5e;
+    border-left: 4px solid red;
+  }
+
+  img,
+  svg {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
   }
 `;
