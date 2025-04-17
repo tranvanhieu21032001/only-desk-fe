@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image } from 'antd';
-import { useTranslation } from "react-i18next";
+
+import MenuSidebar from '../Menu';
 
 import * as S from "./side-bar.styles";
 
@@ -13,11 +14,10 @@ import chart from "@/assets/icons/common/ic-chart.svg";
 import tags from "@/assets/icons/common/ic-tags.svg";
 import app from "@/assets/icons/common/ic-app.svg";
 import setting from "@/assets/icons/common/ic-setting.svg";
-import headphone from "@/assets/icons/common/ic-headphone.svg";
 import avatarDefault from "@/assets/images/avatar-default.png";
 
 const Sidebar: React.FC = () => {
-    const { t } = useTranslation("main");
+    const [isHovered, setIsHovered] = useState(false);
 
     return (
         <S.SidebarContainer>
@@ -25,25 +25,31 @@ const Sidebar: React.FC = () => {
                 <S.Avatar src={avatarDefault} />
                 <S.Underline />
                 <S.TopContainer>
-                    <S.SectionLabel>{t("main")}</S.SectionLabel>
-                    <Image src={main} preview={false} />
-                    <Image src={global} preview={false} />
-                    <Image src={contact} preview={false} />
-                    <Image src={processor} preview={false} />
-                    <Image src={megaPhone} preview={false} />
-                    <Image src={tags} preview={false} />
-                    <Image src={chart} preview={false} />
-                    <Image src={app} preview={false} />
+                    <S.IconWrapper
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                        active={isHovered}
+                    >
+                        <Image src={main} preview={false} />
+                        {isHovered && <MenuSidebar />}
+                    </S.IconWrapper>
+                    <S.IconWrapper><Image src={global} preview={false} /></S.IconWrapper>
+                    <S.IconWrapper><Image src={contact} preview={false} /></S.IconWrapper>
+                    <S.IconWrapper><Image src={processor} preview={false} /></S.IconWrapper>
+                    <S.IconWrapper><Image src={megaPhone} preview={false} /></S.IconWrapper>
+                    <S.IconWrapper><Image src={tags} preview={false} /></S.IconWrapper>
+                    <S.IconWrapper><Image src={chart} preview={false} /></S.IconWrapper>
+                    <S.IconWrapper><Image src={app} preview={false} /></S.IconWrapper>
                 </S.TopContainer>
-                <S.BottomContainer>
-                    <S.SectionLabel>{t("other")}</S.SectionLabel>
-                    <Image src={setting} preview={false} />
-                    <Image src={headphone} preview={false} />
-                </S.BottomContainer>
             </S.TopSection>
 
-            <S.BottomAvatar src={avatarDefault} />
-        </S.SidebarContainer >
+            <S.BottomContainer>
+                <S.IconWrapper>
+                    <Image src={setting} preview={false} />
+                </S.IconWrapper>
+                <S.BottomAvatar src={avatarDefault} />
+            </S.BottomContainer>
+        </S.SidebarContainer>
     );
 };
 

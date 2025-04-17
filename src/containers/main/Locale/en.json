@@ -1,10 +1,18 @@
 {
-  "main": "MAIN",
-  "other": "OTHER",
+  "side-bar": {
+    "title": "Chats",
+    "allChats": "All Chats",
+    "assignedToMe": "Assigned To Me",
+    "newSubInbox": "New Sub-inbox",
+    "spamChats": "Spam Chats"
+  },
 
   "header": {
     "title": "Main Inbox",
     "description": "Insert page description here.",
-    "addNew": "Add New"
+    "addNew": "Add New",
+    "createConversation": "Create Conversation",
+    "addNewContact": "Add New Contact",
+    "inviteTeamMembers": "Invite Team Members"
   }
 }
