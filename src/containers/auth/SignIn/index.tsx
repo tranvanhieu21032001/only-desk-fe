@@ -1,23 +1,21 @@
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
-import { OptionsInterface } from "@/model/common";
-import { langOptions } from "@/helpers/data/signIn";
-import Typography from "@/components/common/Typography";
-import themeColors from "@/styles/themes/default/colors";
-import fontWeight from "@/styles/themes/default/fontWeight";
+import { AUTH_ROUTES } from "@/routes/constants";
 
 import Input from "@/components/common/Input";
 import Checkbox from "@/components/common/Checkbox";
+import Typography from "@/components/common/Typography";
 
-import * as S from "./sign-in.styles";
-
-import logo from "@/assets/icons/common/ic-logo.svg";
 import icApple from "@/assets/icons/common/ic-apple.svg";
 import icGoogle from "@/assets/icons/common/ic-google.svg";
 
+import * as S from "./sign-in.styles";
+
 function SignIn() {
   const { t } = useTranslation("auth");
+  const navigate = useNavigate();
 
   const [form] = Form.useForm();
 
@@ -33,32 +31,12 @@ function SignIn() {
     //Handle later
   }
 
+  function handleSignUp() {
+    navigate(AUTH_ROUTES?.SIGN_UP);
+  }
+
   return (
     <S.SignInWrap>
-      <S.HeaderWrap>
-        <S.Logo src={logo} />
-        <S.MultipleLangWrap>
-          <S.NeedHelp
-            fontWeight={`${fontWeight?.semiBold}`}
-            color={`${themeColors?.secondary}`}
-          >
-            {t("need-help")}
-          </S.NeedHelp>
-          <S.Divider />
-          <S.ChangeLang
-            defaultValue={langOptions?.[0]?.value}
-            popupClassName="auth-lang"
-          >
-            {langOptions?.map((lang: OptionsInterface) => (
-              <S.LangOption key={lang?.key}>
-                <Image src={lang?.flag as string} preview={false} />
-                <Typography>{t(`language.${lang?.label}`)}</Typography>
-              </S.LangOption>
-            ))}
-          </S.ChangeLang>
-        </S.MultipleLangWrap>
-      </S.HeaderWrap>
-
       <S.SignInForm>
         <S.FormWrap form={form} onFinish={handleLogic}>
           <S.LoginLabelWrap>
@@ -66,7 +44,10 @@ function SignIn() {
               {t("login")}
             </S.Title>
             <S.Subtitle textAlign="center">
-              {t("dont-have")} <S.SignInAction>{t("sign-in")}</S.SignInAction>
+              {t("dont-have")}{" "}
+              <S.SignInAction onClick={handleSignUp}>
+                {t("sign-up")}
+              </S.SignInAction>
             </S.Subtitle>
           </S.LoginLabelWrap>
 
@@ -113,7 +94,7 @@ function SignIn() {
             <S.SignInAction>{t("forgot-password")}</S.SignInAction>
           </S.ForgotPassword>
 
-          <S.FormItem name="rememberMe" $isRememberMe={true}>
+          <S.FormItem name="remember" $isRememberMe={true}>
             <Checkbox />
             <Typography>{t("remember-me")}</Typography>
           </S.FormItem>
@@ -125,12 +106,12 @@ function SignIn() {
           <S.DriversLicenseWrap />
 
           <S.LoginButton onClick={handleLoginWithGoogle}>
-            <Image src={icGoogle} />
+            <Image src={icGoogle} preview={false} />
             {t("sign-in-with-google")}
           </S.LoginButton>
 
           <S.LoginButton onClick={handleLoginWithFacebook}>
-            <Image src={icApple} />
+            <Image src={icApple} preview={false} />
             {t("sign-in-with-facebook")}
           </S.LoginButton>
         </S.FormWrap>

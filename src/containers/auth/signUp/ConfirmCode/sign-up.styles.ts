@@ -5,39 +5,95 @@ import Typography from "@/components/common/Typography";
 
 import { css, styled } from "styled-components";
 
-export const SignInWrap = styled.section``;
+export const SignInWrap = styled.section`
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export const SignInForm = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 136px 0;
-
-  @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-    padding: 100px 0;
-  }
+  padding: 50px 0;
 
   @media ${(props) => props?.theme?.breakpoints?.xlMax} {
-    padding: 80px 0;
+    padding: 40px 0;
   }
 
   @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    padding: 50px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     padding: 30px 0;
   }
 
-  @media ${(props) => props?.theme?.breakpoints?.smMax} {
+  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     padding: 20px 0;
+  }
+`;
+
+export const Gmail = styled.div`
+  display: flex;
+  margin-top: 36px !important;
+  align-items: center;
+  justify-content: center;
+
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    color: ${(props) => props?.theme?.colors?.newtralDark};
+    border-color: ${(props) => props?.theme?.colors?.newtral};
   }
 `;
 
 export const FormWrap = styled(Form)`
   width: 100%;
-  max-width: 400px;
+  max-width: 780px;
+
+  .otp-form-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .otp-input-wrapper {
+      gap: 12px;
+
+      @media ${(props) => props?.theme?.breakpoints?.mdMax} {
+        gap: 5px;
+      }
+
+      input {
+        line-height: 29px;
+        font-size: ${(props) => props?.theme?.fontSize?.lg};
+        font-weight: ${(props) => props?.theme?.fontWeight?.semiBold};
+        color: ${(props) => props?.theme?.colors?.primary};
+        border-radius: 8px;
+        border: 1px solid ${(props) => props?.theme?.colors?.newtral};
+
+        width: 70px !important;
+        height: 77px;
+
+        @media ${(props) => props?.theme?.breakpoints?.mdMax} {
+          width: 40px !important;
+          height: 47px;
+        }
+      }
+    }
+  }
+`;
+
+export const Continue = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  button {
+    max-width: 400px;
+  }
 `;
 
 export const Title = styled(Typography)`
@@ -56,8 +112,13 @@ export const LoginLabelWrap = styled.div`
   }
 `;
 
+export const Email = styled.span`
+  color: ${(props) => props?.theme?.colors?.primary};
+  font-size: ${(props) => props?.theme?.fontSize?.base};
+  font-weight: ${(props) => props?.theme?.fontWeight?.bold};
+`;
+
 export const SignInAction = styled.span`
-  text-transform: capitalize;
   color: ${(props) => props?.theme?.colors?.secondary};
   font-size: ${(props) => props?.theme?.fontSize?.base};
   cursor: pointer;
@@ -92,15 +153,8 @@ export const FormItem = styled(Form.Item)<{
     `}
 `;
 
-export const ForgotPassword = styled.div`
-  display: flex;
-  justify-content: flex-end;
-
-  margin-bottom: 30px;
-`;
-
 export const LoginButton = styled(Button)`
-  margin-top: 12px;
+  margin-top: 36px;
 
   display: flex;
   gap: 8px;

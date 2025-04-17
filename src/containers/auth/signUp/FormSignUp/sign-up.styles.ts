@@ -12,25 +12,17 @@ export const SignInForm = styled.div`
   align-items: center;
   justify-content: center;
 
-  padding: 136px 0;
-
-  @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-    padding: 100px 0;
-  }
+  padding: 50px 0;
 
   @media ${(props) => props?.theme?.breakpoints?.xlMax} {
-    padding: 80px 0;
+    padding: 40px 0;
   }
 
   @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    padding: 50px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     padding: 30px 0;
   }
 
-  @media ${(props) => props?.theme?.breakpoints?.smMax} {
+  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     padding: 20px 0;
   }
 `;
@@ -67,6 +59,14 @@ export const SignInAction = styled.span`
   }
 `;
 
+export const YouAgree = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 24px;
+`;
+
 export const FormItem = styled(Form.Item)<{
   $margin?: string;
   $isRememberMe?: boolean;
@@ -80,6 +80,8 @@ export const FormItem = styled(Form.Item)<{
   ${({ $isRememberMe }) =>
     $isRememberMe &&
     css`
+      margin: 0 !important;
+
       .ant-form-item-control-input-content {
         display: flex;
         align-items: center;
@@ -90,13 +92,6 @@ export const FormItem = styled(Form.Item)<{
         }
       }
     `}
-`;
-
-export const ForgotPassword = styled.div`
-  display: flex;
-  justify-content: flex-end;
-
-  margin-bottom: 30px;
 `;
 
 export const LoginButton = styled(Button)`

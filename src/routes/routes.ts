@@ -4,6 +4,7 @@ import { AUTH_ROUTES, MAIN_ROUTES } from "./constants";
 import { RouterElementInterface } from "./model";
 
 const SignIn = React.lazy(() => import("@/containers/auth/SignIn"));
+const SignUp = React.lazy(() => import("@/containers/auth/signUp/Main"));
 
 const Main = React.lazy(() => import("@/containers/main/MainInbox"));
 
@@ -11,10 +12,16 @@ const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
   {
-    key: "auth-1",
+    key: "sign-in",
     path: AUTH_ROUTES?.SIGN_IN,
     component: SignIn,
     name: "auth-sign-in",
+  },
+  {
+    key: "sign-up-1",
+    path: AUTH_ROUTES?.SIGN_UP,
+    component: SignUp,
+    name: "auth-sign-up",
   },
 ];
 

@@ -6,3 +6,8 @@ export interface OptionsInterface {
   label: string;
   flag?: ReactNode;
 }
+
+export interface objectHistoryInterface {
+  key: string;
+  value: string;
+}

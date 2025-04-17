@@ -5,39 +5,41 @@ import Typography from "@/components/common/Typography";
 
 import { css, styled } from "styled-components";
 
-export const SignInWrap = styled.section``;
+export const SignInWrap = styled.section`
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export const SignInForm = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  max-width: 450px;
 
-  padding: 136px 0;
-
-  @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-    padding: 100px 0;
-  }
+  padding: 50px 0;
 
   @media ${(props) => props?.theme?.breakpoints?.xlMax} {
-    padding: 80px 0;
+    padding: 40px 0;
   }
 
   @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    padding: 50px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     padding: 30px 0;
   }
 
-  @media ${(props) => props?.theme?.breakpoints?.smMax} {
+  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     padding: 20px 0;
   }
 `;
 
 export const FormWrap = styled(Form)`
   width: 100%;
-  max-width: 400px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const Title = styled(Typography)`
@@ -67,10 +69,21 @@ export const SignInAction = styled.span`
   }
 `;
 
+export const YouAgree = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 24px;
+`;
+
 export const FormItem = styled(Form.Item)<{
   $margin?: string;
   $isRememberMe?: boolean;
 }>`
+  max-width: 400px;
+  width: 100%;
+
   ${({ $margin }) =>
     $margin &&
     css`
@@ -80,6 +93,8 @@ export const FormItem = styled(Form.Item)<{
   ${({ $isRememberMe }) =>
     $isRememberMe &&
     css`
+      margin: 0 !important;
+
       .ant-form-item-control-input-content {
         display: flex;
         align-items: center;
@@ -92,15 +107,9 @@ export const FormItem = styled(Form.Item)<{
     `}
 `;
 
-export const ForgotPassword = styled.div`
-  display: flex;
-  justify-content: flex-end;
-
-  margin-bottom: 30px;
-`;
-
 export const LoginButton = styled(Button)`
-  margin-top: 12px;
+  margin-top: 36px;
+  max-width: 400px;
 
   display: flex;
   gap: 8px;
@@ -122,4 +131,42 @@ export const DriversLicenseWrap = styled.div`
   @media ${(props) => props?.theme?.breakpoints?.smMax} {
     margin-bottom: 24px;
   }
+`;
+
+export const SizeWrap = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+export const ButtonSize = styled(Button)<{ $isActive?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 47px;
+  color: ${(props) => props?.theme?.colors?.newtralLight} !important;
+
+  .ant-image {
+    height: 20px;
+    width: 20px;
+
+    .ant-image-img {
+      vertical-align: top;
+    }
+  }
+
+  max-width: 140px;
+  padding: 13px 20px;
+  font-weight: ${(props) => props?.theme?.fontWeight?.regular};
+  border-color: ${(props) => props?.theme?.colors?.newtral};
+
+  ${({ $isActive }) =>
+    $isActive &&
+    css`
+      color: ${(props) => props?.theme?.colors?.secondaryDark} !important;
+      border-color: ${(props) =>
+        props?.theme?.colors?.secondaryDark} !important;
+      background: #edf1f8;
+    `}
 `;
