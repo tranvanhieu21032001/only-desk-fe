@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Checkbox as CheckboxAntd, CheckboxProps } from 'antd';
+import styled from "styled-components";
+import { Checkbox as CheckboxAntd, CheckboxProps } from "antd";
 
 export const Checkbox = styled(CheckboxAntd)``;
 

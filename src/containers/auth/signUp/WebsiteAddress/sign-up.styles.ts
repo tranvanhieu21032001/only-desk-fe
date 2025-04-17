@@ -5,39 +5,41 @@ import Typography from "@/components/common/Typography";
 
 import { css, styled } from "styled-components";
 
-export const SignInWrap = styled.section``;
+export const SignInWrap = styled.section`
+  min-height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export const SignInForm = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 136px 0;
-
-  @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-    padding: 100px 0;
-  }
+  padding: 50px 0;
 
   @media ${(props) => props?.theme?.breakpoints?.xlMax} {
-    padding: 80px 0;
+    padding: 40px 0;
   }
 
   @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    padding: 50px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     padding: 30px 0;
   }
 
-  @media ${(props) => props?.theme?.breakpoints?.smMax} {
+  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     padding: 20px 0;
   }
 `;
 
 export const FormWrap = styled(Form)`
   width: 100%;
-  max-width: 400px;
+  max-width: 1000px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const Title = styled(Typography)`
@@ -67,10 +69,21 @@ export const SignInAction = styled.span`
   }
 `;
 
+export const YouAgree = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 24px;
+`;
+
 export const FormItem = styled(Form.Item)<{
   $margin?: string;
   $isRememberMe?: boolean;
 }>`
+  max-width: 400px;
+  width: 100%;
+
   ${({ $margin }) =>
     $margin &&
     css`
@@ -80,6 +93,8 @@ export const FormItem = styled(Form.Item)<{
   ${({ $isRememberMe }) =>
     $isRememberMe &&
     css`
+      margin: 0 !important;
+
       .ant-form-item-control-input-content {
         display: flex;
         align-items: center;
@@ -92,15 +107,9 @@ export const FormItem = styled(Form.Item)<{
     `}
 `;
 
-export const ForgotPassword = styled.div`
-  display: flex;
-  justify-content: flex-end;
-
-  margin-bottom: 30px;
-`;
-
 export const LoginButton = styled(Button)`
   margin-top: 12px;
+  max-width: 400px;
 
   display: flex;
   gap: 8px;

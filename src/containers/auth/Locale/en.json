@@ -14,8 +14,60 @@
   "remember-me": "Remember me",
   "sign-in-with-google": "Sign in with Google",
   "sign-in-with-facebook": "Sign in with Facebook",
+  "sign-up": "Sign up",
 
   "language": {
     "english": "English"
+  },
+
+  "sign-up-form": {
+    "start-for-free": "Start for free",
+    "already-have-an-account": "Already have an account?",
+    "login": "Login",
+    "business-email": "Business email",
+    "enter-your-business-email": "Enter your business email",
+    "please-enter-business-email": "Please enter your business email",
+    "please-enter-password": "Please enter your password",
+    "confirm-password": "Confirm password",
+    "enter-your-password": "Enter your password",
+    "enter-your-confirm-password": "Enter your confirm password",
+    "please-enter-confirm-password": "Please enter your confirm password",
+    "mobile-phone-number": "Mobile phone number",
+    "enter-your-mobile-phone-number": "Enter your mobile phone number",
+    "please-enter-mobile-phone-number": "Please enter your mobile phone number",
+    "you-agree": "You agree to our",
+    "term-of-use": "Terms of Use",
+    "and": "and",
+    "privacy-policy": "Privacy Policy",
+    "sign-up": "Sign up"
+  },
+
+  "confirm-code": {
+    "enter-confirmation-code": "Enter confirmation code",
+    "we-sent": "We sent the code to <email>{{email}}</email> Go to your inbox, copy the code and paste it below to confirm your email",
+    "open-gmail": "Open Gmail",
+    "continue": "Continue",
+    "didnt-get": "Didn't get an email?",
+    "get-a-new": "Get a new information"
+  },
+
+  "your-name": {
+    "whats-your-name": "Hi, What's your name?",
+    "enter-your-name": "Enter your name",
+    "please-enter-your-name": "Please enter your name",
+    "your-name": "Your name",
+    "continue": "Continue"
+  },
+
+  "website": {
+    "whats-the-website": "What's the website address where you plan to use OnlyChat?",
+    "enter-your-website": "Enter your website address",
+    "please-enter-website-address": "Please enter your website address",
+    "website": "Website",
+    "continue": "Continue"
+  },
+
+  "company-size": {
+    "company-size": "What's your company size?"
   }
 }

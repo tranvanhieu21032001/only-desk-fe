@@ -24,13 +24,13 @@ export const PrimaryButton = styled(ButtonCommon)<{
   width: ${(props) => props?.$width || "100%"};
   font-size: ${(props) => props.theme.fontSize.base};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
+  box-shadow: var(--sds-size-depth-0) 2px 3px var(--sds-size-depth-0) #0a0d140d;
 
   ${({ $isCancel }) =>
     $isCancel &&
     css`
       background-color: ${(props) => props.theme.colors.newtralLight};
     `}
-
   &:not(:disabled):hover {
     background-color: ${(props) => props.$bg || props.theme.colors.primaryDark};
     box-shadow: 0px 11px 27px 0px #00000040;
@@ -58,6 +58,7 @@ export const DefaultButton = styled(ButtonCommon)<{
   width: ${(props) => props?.$width || "100%"};
   font-size: ${(props) => props.theme.fontSize.base};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
+  box-shadow: var(--sds-size-depth-0) 2px 3px var(--sds-size-depth-0) #0a0d140d;
 
   ${({ $isCancel }) =>
     $isCancel &&

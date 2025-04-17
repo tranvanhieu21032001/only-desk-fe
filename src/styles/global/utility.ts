@@ -31,8 +31,12 @@ const checkbox = css`
   .ant-checkbox-wrapper:hover
     .ant-checkbox.ant-checkbox-checked:not(.ant-checkbox-disabled)
     .ant-checkbox-inner {
-    background-color: ${({ theme }) => theme?.colors?.primary};
-    border-color: ${({ theme }) => theme?.colors?.primary};
+    border-color: linear-gradient(0deg, #3750b2, #3750b2),
+      linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    background: linear-gradient(0deg, #3750b2, #3750b2),
+      linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
 
     &:hover {
       border: 1px solid red;
