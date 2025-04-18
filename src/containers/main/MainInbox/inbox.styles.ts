@@ -25,3 +25,26 @@ export const InboxProfile = styled.div`
   padding: 1rem;
   overflow-y: auto;
 `;
+
+export const DetailAndSidebarWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+`;
+
+export const Sidebar = styled.div`
+  width: 320px;
+  background: white;
+  border-left: 1px solid #eee;
+  padding: 16px;
+  overflow-y: auto;
+  transition: all 0.3s;
+`;
+
+export const InboxDetailWrapper = styled.div<{ isSidebarOpen: boolean }>`
+  flex: ${({ isSidebarOpen }) => (isSidebarOpen ? 2 : 1)};
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;

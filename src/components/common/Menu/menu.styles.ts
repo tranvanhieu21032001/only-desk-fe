@@ -13,6 +13,7 @@ export const MenuContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
+  z-index: 100;
 `;
 
 export const MenuTitle = styled.p`

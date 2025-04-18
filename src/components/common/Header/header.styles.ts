@@ -57,7 +57,6 @@ export const DropdownItem = styled.div`
   font-size: 14px;
   color: #333;
   background-color: transparent;
-
   display: flex;
   align-items: center;
   gap: 8px;
@@ -97,20 +96,13 @@ export const AddNewButton = styled.button`
   border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-
   font-size: 14px;
-
-  &:hover {
-    background-color: #162755;
-  }
 
   .plus {
     font-size: 18px;
-    font-weight: bold;
   }
 `;
