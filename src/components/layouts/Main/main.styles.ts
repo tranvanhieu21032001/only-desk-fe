@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const LayoutWrapper = styled.div`
   display: flex;
   height: 100vh;
-  background-color: #e4edf5;
+  background-color: rgb(235, 241, 246);
 `;
 
 export const Sidebar = styled.div`
@@ -20,6 +20,8 @@ export const MainContent = styled.div`
 
 export const Body = styled.div`
   flex: 1;
+  padding: 4px;
+  background-color: #ffffff;
   display: flex;
   overflow: hidden;
 `;
