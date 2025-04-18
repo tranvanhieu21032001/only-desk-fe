@@ -21,7 +21,12 @@ function InviteYourTeam() {
 
   const companySize =
     (isArray(currentObjHistory)
-      ? (currentObjHistory as objectHistoryInterface[])
+      ? isArray(currentObjHistory) &&
+        currentObjHistory.every(
+          (item) => typeof item === "object" && "key" in item && "value" in item
+        )
+        ? (currentObjHistory as objectHistoryInterface[])
+        : []
       : []
     )?.find((item: objectHistoryInterface) => item?.key === "size")?.value ||
     search.get("size");

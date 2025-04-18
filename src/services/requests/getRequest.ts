@@ -1,9 +1,9 @@
-import { message } from 'antd';
+import { message } from "antd";
 
-import axiosInstance from '../base/axiosInstance';
-import i18n from '@/services/i18n';
-import { RequestOptionsInterface } from '@/model/requestOptions';
-import webStorageClient from '@/utils/webStorageClient';
+import axiosInstance from "../base/axiosInstance";
+import i18n from "@/services/i18n";
+import { RequestOptionsInterface } from "@/model/requestOptions";
+import webStorageClient from "@/utils/webStorageClient";
 
 /**
  * Makes a GET request with optional authentication and message handling
@@ -11,7 +11,7 @@ import webStorageClient from '@/utils/webStorageClient';
  */
 const getRequest = <T = any>(
   url: string,
-  options?: RequestOptionsInterface,
+  options?: RequestOptionsInterface
 ): Promise<T> => {
   const {
     params,
@@ -26,25 +26,25 @@ const getRequest = <T = any>(
     headers: tokenClient ? { Authorization: `Bearer ${tokenClient}` } : {},
   };
 
-  return axiosInstance
+  return (axiosInstance as any)
     .get(url, config)
     .then((res: any) => {
       if (enableFlashMessageSuccess && res.data?.message) {
         message.success(
           i18n.t(`messages:messages.${res.data?.message}`, {
-            defaultValue: res.data?.message || '',
-          }),
+            defaultValue: res.data?.message || "",
+          })
         );
       }
       return res;
     })
-    .catch((err) => {
+    .catch((err: any) => {
       if (enableFlashMessageError && err?.response?.data?.errors?.length > 0) {
         err.response.data.errors.forEach((item: any) => {
           message.error(
             i18n.t(`messages:messages.${item.detail}`, {
-              defaultValue: item.detail || '',
-            }),
+              defaultValue: item.detail || "",
+            })
           );
         });
       }

@@ -1,15 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
-export interface HistoryRouteInterface {
-  [key: string]: string | number | boolean[];
-}
-
-const initialState: HistoryRouteInterface = {
+const initialState: any = {
   currentObjHistory: [],
 };
 
 const slice = createSlice({
-  name: 'historyRoute',
+  name: "historyRoute",
   initialState,
   reducers: {
     actionUpdateObjHistory(state, action) {

@@ -24,7 +24,7 @@ const deleteRequest = <T = any>(
     },
   };
 
-  return axiosInstance
+  return (axiosInstance as any)
     .delete(url, config)
     .then((res: any) => {
       if (enableFlashMessageSuccess && res.data?.message) {
@@ -36,7 +36,7 @@ const deleteRequest = <T = any>(
       }
       return res;
     })
-    .catch((err) => {
+    .catch((err: any) => {
       if (enableFlashMessageError && err?.response?.data?.errors?.length > 0) {
         err.response.data.errors.forEach((item: any) => {
           message.error(
