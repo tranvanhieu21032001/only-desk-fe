@@ -24,7 +24,7 @@ export const PrimaryButton = styled(ButtonCommon)<{
   width: ${(props) => props?.$width || "100%"};
   font-size: ${(props) => props.theme.fontSize.base};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
-  box-shadow: var(--sds-size-depth-0) 2px 3px var(--sds-size-depth-0) #0a0d140d;
+  box-shadow: 0px 2px 3px rgba(10, 13, 20, 0.05);
 
   ${({ $isCancel }) =>
     $isCancel &&
@@ -52,13 +52,13 @@ export const DefaultButton = styled(ButtonCommon)<{
   $isCancel?: boolean;
   $width?: string;
 }>`
-  border: 1px solid ${(props) => props.theme.colors.secondaryDark};
+  border: 1px solid ${(props) => props.theme.colors.newtral};
   background-color: ${(props) => props.theme.colors.newtralLightest};
   color: ${(props) => props.theme.colors.secondaryDark};
   width: ${(props) => props?.$width || "100%"};
   font-size: ${(props) => props.theme.fontSize.base};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
-  box-shadow: var(--sds-size-depth-0) 2px 3px var(--sds-size-depth-0) #0a0d140d;
+  box-shadow: 0px 2px 3px rgba(10, 13, 20, 0.05);
 
   ${({ $isCancel }) =>
     $isCancel &&

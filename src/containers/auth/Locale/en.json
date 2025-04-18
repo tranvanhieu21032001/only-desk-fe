@@ -69,5 +69,22 @@
 
   "company-size": {
     "company-size": "What's your company size?"
+  },
+
+  "invite-your-team": {
+    "invite-your-team": "Invite your team",
+    "email-address": "Email address",
+    "enter-your-business-email": "Enter your business email",
+    "please-enter-business-email": "Please enter your business email",
+    "add-more-email": "Add more email"
+  },
+
+  "chat-with-customer": {
+    "where-do-you-chat-with-customer": "Where do you chat with customer?",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
+    "messenger": "Messenger",
+    "sms": "SMS",
+    "submit": "Submit"
   }
 }

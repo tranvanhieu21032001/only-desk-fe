@@ -30,19 +30,20 @@ export default function PhoneNumberByCountry({
   colorLabel?: string;
   isParsePhoneNumber?: boolean;
 }) {
-  const renderValue = () => {
-    if (index !== undefined) {
-      return (
-        currentInstanceForm?.getFieldValue(nameFormList)?.[index]?.[
-          nameField || ""
-        ] || ""
-      );
-    } else if (isParsePhoneNumber) {
-      return currentInstanceForm?.getFieldValue(nameField)?.number || "";
-    } else {
-      return currentInstanceForm?.getFieldValue(nameField) || "";
-    }
-  };
+  //TODO
+  // const renderValue = () => {
+  //   if (index !== undefined) {
+  //     return (
+  //       currentInstanceForm?.getFieldValue(nameFormList)?.[index]?.[
+  //         nameField || ""
+  //       ] || ""
+  //     );
+  //   } else if (isParsePhoneNumber) {
+  //     return currentInstanceForm?.getFieldValue(nameField)?.number || "";
+  //   } else {
+  //     return currentInstanceForm?.getFieldValue(nameField) || "";
+  //   }
+  // };
 
   const handleOnchange = (value: string) => {
     const getValuePhoneNumber = parsePhoneNumber(value || "");
@@ -90,7 +91,7 @@ export default function PhoneNumberByCountry({
         limitMaxLength={true}
         defaultCountry="US"
         disabled={disabled}
-        value={renderValue()}
+        // value={renderValue()}
         onChange={handleOnchange}
         placeholder={placeholder}
       />

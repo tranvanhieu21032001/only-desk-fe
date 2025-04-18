@@ -7,6 +7,7 @@ import { SignUpStepEnums } from "@/helpers/enums/auth";
 import { objectHistoryInterface } from "@/model/common";
 
 import YourName from "../YourName";
+import Customer from "../Customer";
 import StartForFree from "../FormSignUp";
 import ConfirmCode from "../ConfirmCode";
 import CompanySize from "../CompanySize";
@@ -40,6 +41,8 @@ function SignUp() {
         return <CompanySize />;
       case SignUpStepEnums?.INVITE_YOUR_TEAM:
         return <InviteYourTeam />;
+      case SignUpStepEnums?.CUSTOMER:
+        return <Customer />;
       default:
         return <StartForFree />;
     }

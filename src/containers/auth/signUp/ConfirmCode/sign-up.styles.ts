@@ -5,12 +5,7 @@ import Typography from "@/components/common/Typography";
 
 import { css, styled } from "styled-components";
 
-export const SignInWrap = styled.section`
-  min-height: 90vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+export const SignInWrap = styled.section``;
 
 export const SignInForm = styled.div`
   display: flex;

@@ -1,3 +1,10 @@
+import { chatWithCustomersInterface } from "@/model/auth";
+
+import icTelegram from "@/assets/icons/common/ic-telegram.svg";
+import icWhatsapp from "@/assets/icons/common/ic-whats-app.svg";
+import icMessenger from "@/assets/icons/common/ic-message.svg";
+import icSms from "@/assets/icons/common/ic-sms.svg";
+
 const companySizes = [
   {
     key: "2",
@@ -36,4 +43,21 @@ const companySizes = [
   },
 ];
 
-export { companySizes };
+const chatWithCustomers: chatWithCustomersInterface[] = [
+  { key: "telegram", value: "telegram", label: "telegram", icon: icTelegram },
+  { key: "whatsapp", value: "whatsapp", label: "whatsapp", icon: icWhatsapp },
+  {
+    key: "messenger",
+    value: "messenger",
+    label: "messenger",
+    icon: icMessenger,
+  },
+  {
+    key: "sms",
+    value: "sms",
+    label: "sms",
+    icon: icSms,
+  },
+];
+
+export { companySizes, chatWithCustomers };

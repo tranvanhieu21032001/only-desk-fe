@@ -22,6 +22,8 @@ export const AuthLayout = styled.section`
 `;
 
 export const HeaderWrap = styled.div`
+  height: 36px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,6 +32,7 @@ export const HeaderWrap = styled.div`
 export const Logo = styled.img``;
 
 export const MultipleLangWrap = styled.div`
+  height: 100%;
   display: flex;
   align-items: center;
 
@@ -54,6 +57,7 @@ export const ChangeLang = styled(Select)`
   .ant-select-selector {
     border: none !important;
     padding: 0px !important;
+    min-height: 36px;
 
     .ant-select-selection-search-input {
     }

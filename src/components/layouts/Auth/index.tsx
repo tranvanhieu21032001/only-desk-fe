@@ -22,7 +22,7 @@ export default function AuthLayout({
 
   return (
     <S.WrapAuthLayout>
-      <S.AuthLayout className="container box-container">
+      <S.AuthLayout className="box-container">
         <S.HeaderWrap>
           <S.Logo src={logo} />
           <S.MultipleLangWrap>

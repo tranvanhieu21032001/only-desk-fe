@@ -41,7 +41,7 @@ const themeColors = {
   newtralDark: "#5B5B5B",
   newtralDarker: "#B9B9B9",
   newtralLight: "#8A8A8A",
-  newtralLighter: "#EFF2F6",
+  newtralLighter: "#FAFAFA",
   newtralLightest: "#FFFFFF",
 
   /**

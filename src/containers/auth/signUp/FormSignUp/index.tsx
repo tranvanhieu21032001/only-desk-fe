@@ -38,7 +38,7 @@ function StartForFree() {
 
   return (
     <S.SignInWrap>
-      <S.SignInForm>
+      <S.SignInForm className="center-column-auth">
         <S.FormWrap form={form}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center" margin="0 0 4px 0">
