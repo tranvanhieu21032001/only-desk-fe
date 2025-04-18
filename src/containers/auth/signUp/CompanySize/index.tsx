@@ -7,7 +7,6 @@ import { useAppSelector } from "@/hooks";
 import { useRouter } from "@/hooks/useRouter";
 import { companySizes } from "@/helpers/data/signUp";
 import { SignUpStepEnums } from "@/helpers/enums/auth";
-import { objectHistoryInterface } from "@/model/common";
 
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
 import icTickCircle from "@/assets/icons/common/ic-tick-circle.svg";
@@ -20,11 +19,9 @@ function CompanySize() {
   const { currentObjHistory } = useAppSelector((state) => state?.historyRoute);
 
   const companySize =
-    (isArray(currentObjHistory)
-      ? (currentObjHistory as objectHistoryInterface[])
-      : []
-    )?.find((item: objectHistoryInterface) => item?.key === "size")?.value ||
-    search.get("size");
+    (isArray(currentObjHistory) ? currentObjHistory : [])?.find(
+      (item) => item?.key === "size"
+    )?.value || search.get("size");
 
   const [form] = Form.useForm();
 

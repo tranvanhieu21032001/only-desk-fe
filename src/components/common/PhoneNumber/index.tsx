@@ -90,7 +90,7 @@ export default function PhoneNumberByCountry({
         limitMaxLength={true}
         defaultCountry="US"
         disabled={disabled}
-        // value={renderValue()}
+        value={renderValue()}
         onChange={handleOnchange}
         placeholder={placeholder}
       />
