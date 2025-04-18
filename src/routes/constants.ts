@@ -16,6 +16,7 @@ const AUTH_ROUTES = {
 
 const MAIN_ROUTES = {
   INBOX: `${preRouterMain}/inbox`,
+  HOME: "/",
 };
 
 export { ADMIN_ROUTES, AUTH_ROUTES, MAIN_ROUTES };

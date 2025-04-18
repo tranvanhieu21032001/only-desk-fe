@@ -7,6 +7,7 @@ const SignIn = React.lazy(() => import("@/containers/auth/SignIn"));
 const SignUp = React.lazy(() => import("@/containers/auth/signUp/Main"));
 
 const Main = React.lazy(() => import("@/containers/main/MainInbox"));
+const LandingPage = React.lazy(() => import("@/containers/landing"));
 
 const routes_admin: RouterElementInterface[] = [];
 
@@ -31,6 +32,12 @@ const routes_main: RouterElementInterface[] = [
     path: MAIN_ROUTES.INBOX,
     component: Main,
     name: "main-inbox",
+  },
+  {
+    key: "home",
+    path: MAIN_ROUTES.HOME,
+    component: LandingPage,
+    name: "landing-page",
   },
 ];
 
