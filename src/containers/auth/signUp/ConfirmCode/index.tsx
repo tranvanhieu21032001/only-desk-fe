@@ -34,7 +34,7 @@ function ConfirmCode() {
 
   return (
     <S.SignInWrap>
-      <S.SignInForm>
+      <S.SignInForm className="center-column-auth">
         <S.FormWrap form={form} onFinish={handleContinue}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center" margin="0 0 4px 0">

@@ -10,6 +10,7 @@ import Typography from "@/components/common/Typography";
 
 import icApple from "@/assets/icons/common/ic-apple.svg";
 import icGoogle from "@/assets/icons/common/ic-google.svg";
+import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
 
 import * as S from "./sign-in.styles";
 
@@ -37,7 +38,7 @@ function SignIn() {
 
   return (
     <S.SignInWrap>
-      <S.SignInForm>
+      <S.SignInForm className="center-column-auth">
         <S.FormWrap form={form} onFinish={handleLogic}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center" margin="0 0 4px 0">
@@ -86,7 +87,6 @@ function SignIn() {
               label={t("password")}
               isRequired
               placeholder={t("enter-your-password")}
-              isPassword
             />
           </S.FormItem>
 
@@ -94,13 +94,17 @@ function SignIn() {
             <S.SignInAction>{t("forgot-password")}</S.SignInAction>
           </S.ForgotPassword>
 
-          <S.FormItem name="remember" $isRememberMe={true}>
-            <Checkbox />
+          <S.RememberMe>
             <Typography>{t("remember-me")}</Typography>
-          </S.FormItem>
+
+            <S.FormItem name="remember" $isRememberMe={true}>
+              <Checkbox />
+            </S.FormItem>
+          </S.RememberMe>
 
           <S.LoginButton type="primary" onClick={form.submit}>
             {t("login")}
+            <Image src={icArrowRight} preview={false} />
           </S.LoginButton>
 
           <S.DriversLicenseWrap />

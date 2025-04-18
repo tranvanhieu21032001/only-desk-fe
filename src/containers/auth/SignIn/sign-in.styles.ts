@@ -7,33 +7,7 @@ import { css, styled } from "styled-components";
 
 export const SignInWrap = styled.section``;
 
-export const SignInForm = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 136px 0;
-
-  @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-    padding: 100px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.xlMax} {
-    padding: 80px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    padding: 50px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
-    padding: 30px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.smMax} {
-    padding: 20px 0;
-  }
-`;
+export const SignInForm = styled.div``;
 
 export const FormWrap = styled(Form)`
   width: 100%;
@@ -121,5 +95,25 @@ export const DriversLicenseWrap = styled.div`
 
   @media ${(props) => props?.theme?.breakpoints?.smMax} {
     margin-bottom: 24px;
+  }
+`;
+
+export const RememberMe = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 47px;
+  padding: 12px;
+  margin-bottom: 36px;
+
+  background-color: ${(props) => props?.theme?.colors?.newtralLighter};
+
+  border: 1px solid ${(props) => props?.theme?.colors?.newtral};
+  border-radius: ${(props) => props?.theme?.radius?.normalRadius};
+  box-shadow: 0px 2px 3px rgba(10, 13, 20, 0.05);
+
+  .ant-form-item {
+    margin-bottom: 0px;
   }
 `;

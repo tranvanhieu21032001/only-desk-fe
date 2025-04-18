@@ -69,7 +69,11 @@ const radioButton = css`
   }
 `;
 
-const switchToggle = css``;
+const switchToggle = css`
+  .ant-switch-checked {
+    background-color: ${({ theme }) => theme?.colors?.secondaryDark} !important;
+  }
+`;
 
 const select = css`
   .auth-lang {

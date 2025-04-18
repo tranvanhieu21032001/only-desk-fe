@@ -6,31 +6,13 @@ import Typography from "@/components/common/Typography";
 import { css, styled } from "styled-components";
 
 export const SignInWrap = styled.section`
-  min-height: 90vh;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
 export const SignInForm = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   max-width: 450px;
-
-  padding: 50px 0;
-
-  @media ${(props) => props?.theme?.breakpoints?.xlMax} {
-    padding: 40px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    padding: 30px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
-    padding: 20px 0;
-  }
 `;
 
 export const FormWrap = styled(Form)`

@@ -1,87 +1,111 @@
+import { useEffect } from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { isArray } from "lodash";
 
-import { useAppSelector } from "@/hooks";
 import { useRouter } from "@/hooks/useRouter";
-import { companySizes } from "@/helpers/data/signUp";
 import { SignUpStepEnums } from "@/helpers/enums/auth";
-import { objectHistoryInterface } from "@/model/common";
+import themeColors from "@/styles/themes/default/colors";
+import fontWeight from "@/styles/themes/default/fontWeight";
 
+import Input from "@/components/common/Input";
+import Typography from "@/components/common/Typography";
+
+import icTrash from "@/assets/icons/common/ic-trash.svg";
+import icAddCircle from "@/assets/icons/common/ic-add-circle.svg";
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
-import icTickCircle from "@/assets/icons/common/ic-tick-circle.svg";
 
 import * as S from "./sign-up.styles";
 
 function InviteYourTeam() {
   const { t } = useTranslation("auth");
-  const [search] = useSearchParams();
-  const { currentObjHistory } = useAppSelector((state) => state?.historyRoute);
-
-  const companySize =
-    (isArray(currentObjHistory)
-      ? isArray(currentObjHistory) &&
-        currentObjHistory.every(
-          (item) => typeof item === "object" && "key" in item && "value" in item
-        )
-        ? (currentObjHistory as objectHistoryInterface[])
-        : []
-      : []
-    )?.find((item: objectHistoryInterface) => item?.key === "size")?.value ||
-    search.get("size");
 
   const [form] = Form.useForm();
-
   const { replaceState } = useRouter();
 
-  function handleSignUp() {
+  useEffect(() => {
+    form.setFieldValue("businessEmails", [{ businessEmail: "" }]);
+  }, [form]);
+
+  function handleInviteYourTeam() {
     replaceState({
-      type: SignUpStepEnums?.CONFIRM_CODE,
+      type: SignUpStepEnums?.CUSTOMER,
     });
   }
 
-  function handleSelectSize(size: string) {
-    replaceState({
-      size: size,
-    });
+  function handleAddMoreEmail() {
+    const getEmails = form.getFieldValue("businessEmails");
+    form.setFieldValue("businessEmails", [...getEmails, { businessEmail: "" }]);
   }
 
   return (
     <S.SignInWrap>
-      <S.SignInForm>
-        <S.FormWrap form={form}>
+      <S.SignInForm className="center-column-auth">
+        <S.FormWrap form={form} onFinish={handleInviteYourTeam}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center">
-              {t("company-size.company-size")}
+              {t("invite-your-team.invite-your-team")}
             </S.Title>
           </S.LoginLabelWrap>
 
-          <S.SizeWrap>
-            {companySizes?.map((size) => (
-              <S.ButtonSize
-                key={size?.key}
-                onClick={() => handleSelectSize(size?.value)}
-                $isActive={
-                  size?.value === companySize ||
-                  companySizes?.[0]?.value === size?.value
-                }
+          <Typography margin="0 0 8px 0">
+            {t("invite-your-team.email-address")}
+          </Typography>
+          <Form.List name="businessEmails">
+            {(fields, { remove }) => (
+              <>
+                {fields.map(({ key, name, ...restField }) => (
+                  <S.EmailWrap
+                    key={key}
+                    style={{ display: "flex", marginBottom: 8 }}
+                    align="baseline"
+                  >
+                    <Form.Item
+                      {...restField}
+                      name={[name, "businessEmail"]}
+                      rules={[
+                        {
+                          required: true,
+                          message: t(
+                            "invite-your-team.please-enter-business-email"
+                          ),
+                        },
+                      ]}
+                    >
+                      <Input
+                        placeholder={t(
+                          "invite-your-team.enter-your-business-email"
+                        )}
+                      />
+                    </Form.Item>
+
+                    {form.getFieldValue("businessEmails").length > 1 && (
+                      <Image
+                        src={icTrash}
+                        onClick={() => remove(name)}
+                        width={16}
+                        height={18}
+                        preview={false}
+                      />
+                    )}
+                  </S.EmailWrap>
+                ))}
+              </>
+            )}
+          </Form.List>
+
+          <S.AddMoreEmailWrap>
+            <S.AddMoreEmail onClick={handleAddMoreEmail}>
+              <Image src={icAddCircle} preview={false} />
+              <Typography
+                color={themeColors?.secondaryDark}
+                fontWeight={fontWeight?.semiBold}
               >
-                {size?.value === companySize && (
-                  <Image
-                    src={icTickCircle}
-                    preview={false}
-                    width={20}
-                    height={20}
-                  />
-                )}
+                {t("invite-your-team.add-more-email")}
+              </Typography>
+            </S.AddMoreEmail>
+          </S.AddMoreEmailWrap>
 
-                {size?.label}
-              </S.ButtonSize>
-            ))}
-          </S.SizeWrap>
-
-          <S.LoginButton type="primary" onClick={handleSignUp}>
+          <S.LoginButton type="primary" onClick={() => form.submit()}>
             {t("website.continue")}
             <Image src={icArrowRight} preview={false} />
           </S.LoginButton>
