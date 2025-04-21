@@ -1,3 +1,4 @@
+import React from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -46,6 +47,7 @@ function YourName() {
               isRequired
               placeholder={t("your-name.enter-your-name")}
               type="email"
+              allowClear
             />
           </S.FormItem>
 

@@ -15,20 +15,6 @@ export const SignInForm = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 50px 0;
-
-  @media ${(props) => props?.theme?.breakpoints?.xlMax} {
-    padding: 40px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    padding: 30px 0;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
-    padding: 20px 0;
-  }
 `;
 
 export const FormWrap = styled(Form)`

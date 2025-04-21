@@ -15,6 +15,7 @@
   "sign-in-with-google": "Sign in with Google",
   "sign-in-with-facebook": "Sign in with Facebook",
   "sign-up": "Sign up",
+  "back": "Back",
 
   "language": {
     "english": "English"
@@ -76,7 +77,8 @@
     "email-address": "Email address",
     "enter-your-business-email": "Enter your business email",
     "please-enter-business-email": "Please enter your business email",
-    "add-more-email": "Add more email"
+    "add-more-email": "Add more email",
+    "copy-invite-link": "Copy invite link"
   },
 
   "chat-with-customer": {
@@ -86,5 +88,30 @@
     "messenger": "Messenger",
     "sms": "SMS",
     "submit": "Submit"
+  },
+
+  "connect-onlychat": {
+    "connect-onlychat-to-your-website": "Connect OnlyChat to your website",
+    "connect-onlychat-manually": "Connect OnlyChat manually",
+    "paste-the-code": "Paste the code before the </body> tag on every page.",
+    "copy-code": "Copy code",
+    "not-installed": "Not installed",
+    "check-again": "Check again",
+    "invite-your-developer": "Invite your developer",
+    "check-install-guide": "Check install guide",
+    "connect": "Connect"
+  },
+
+  "activation": {
+    "activation-product": "Activation product",
+    "we-are-about": "We are about to activate OnlyChat for your organization"
+  },
+
+  "invite-modal": {
+    "invite-your-developer": "Invite your developer",
+    "invite-developer": "Invite Developer To Connect OnlyChat For You",
+    "copy-invite-link": "Copy invite link",
+    "cancel": "Cancel",
+    "send-invite-and-continue": "Send invite and continue"
   }
 }

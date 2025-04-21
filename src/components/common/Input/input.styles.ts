@@ -48,7 +48,7 @@ export const Input = styled(InputAntd)`
   }
 
   &:not(:disabled):hover {
-    border: 1px solid ${(props) => props.theme.colors.primary};
+    border: 1px solid ${(props) => props.theme.colors.primary} !important;
   }
 
   &:focus {

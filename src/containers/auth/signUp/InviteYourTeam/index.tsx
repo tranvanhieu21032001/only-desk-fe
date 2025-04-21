@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -10,6 +10,7 @@ import fontWeight from "@/styles/themes/default/fontWeight";
 import Input from "@/components/common/Input";
 import Typography from "@/components/common/Typography";
 
+import icLink from "@/assets/icons/auth/ic-link.svg";
 import icTrash from "@/assets/icons/common/ic-trash.svg";
 import icAddCircle from "@/assets/icons/common/ic-add-circle.svg";
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
@@ -35,6 +36,10 @@ function InviteYourTeam() {
   function handleAddMoreEmail() {
     const getEmails = form.getFieldValue("businessEmails");
     form.setFieldValue("businessEmails", [...getEmails, { businessEmail: "" }]);
+  }
+
+  function handleCopyInviteLink() {
+    //TODO handle later
   }
 
   return (
@@ -109,6 +114,18 @@ function InviteYourTeam() {
             {t("website.continue")}
             <Image src={icArrowRight} preview={false} />
           </S.LoginButton>
+
+          <S.CopyInviteLinkWrap>
+            <Image src={icLink} preview={false} />
+
+            <Typography
+              color={themeColors?.secondaryDark}
+              fontWeight={fontWeight?.semiBold}
+              onclick={handleCopyInviteLink}
+            >
+              {t("invite-your-team.copy-invite-link")}
+            </Typography>
+          </S.CopyInviteLinkWrap>
         </S.FormWrap>
       </S.SignInForm>
     </S.SignInWrap>

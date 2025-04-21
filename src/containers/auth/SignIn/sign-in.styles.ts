@@ -64,6 +64,10 @@ export const FormItem = styled(Form.Item)<{
         }
       }
     `}
+
+    .ant-checkbox-inner {
+    box-shadow: 0px 2px 2px 0px #1b1c1d1f;
+  }
 `;
 
 export const ForgotPassword = styled.div`
@@ -83,6 +87,10 @@ export const LoginButton = styled(Button)`
 
   .ant-image-mask-info {
     height: 20px;
+  }
+
+  .ant-image-img {
+    margin-top: -3px;
   }
 `;
 

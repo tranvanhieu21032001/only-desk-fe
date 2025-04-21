@@ -1,3 +1,4 @@
+import React from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 
