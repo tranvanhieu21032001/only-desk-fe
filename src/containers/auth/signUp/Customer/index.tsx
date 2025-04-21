@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Form, Image, Switch } from "antd";
 import { useTranslation } from "react-i18next";
 

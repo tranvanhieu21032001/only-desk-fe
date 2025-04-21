@@ -51,7 +51,7 @@ export default function AuthLayout({
           <S.Logo src={logo} />
           <S.MultipleLangWrap>
             <S.NeedHelp
-              fontWeight={`${fontWeight?.semiBold}`}
+              fontWeight={fontWeight?.semiBold}
               color={`${themeColors?.secondary}`}
             >
               {t("need-help")}

@@ -19,7 +19,7 @@ interface TypographyProps {
   children: React.ReactNode;
   margin?: string;
   padding?: string;
-  fontWeight?: string;
+  fontWeight?: number;
   textAlign?: string;
 }
 
