@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -85,7 +85,6 @@ function ModalInvite({
                       <S.EmailWrap
                         key={key}
                         style={{ display: "flex", marginBottom: 8 }}
-                        align="baseline"
                         $isFirst={index === 0}
                       >
                         <Form.Item
@@ -138,13 +137,12 @@ function ModalInvite({
         </S.ModalContent>
 
         <S.ModalBottom>
-          <S.CopyInviteLinkWrap>
+          <S.CopyInviteLinkWrap onclick={onCopyInviteLink}>
             <Image src={icLink} preview={false} />
 
             <Typography
               color={themeColors?.secondaryDark}
               fontWeight={fontWeight?.semiBold}
-              onclick={onCopyInviteLink}
             >
               {t("invite-modal.copy-invite-link")}
             </Typography>

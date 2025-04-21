@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -62,7 +62,6 @@ function InviteYourTeam() {
                   <S.EmailWrap
                     key={key}
                     style={{ display: "flex", marginBottom: 8 }}
-                    align="baseline"
                   >
                     <Form.Item
                       {...restField}
@@ -115,13 +114,12 @@ function InviteYourTeam() {
             <Image src={icArrowRight} preview={false} />
           </S.LoginButton>
 
-          <S.CopyInviteLinkWrap>
+          <S.CopyInviteLinkWrap onclick={handleCopyInviteLink}>
             <Image src={icLink} preview={false} />
 
             <Typography
               color={themeColors?.secondaryDark}
               fontWeight={fontWeight?.semiBold}
-              onclick={handleCopyInviteLink}
             >
               {t("invite-your-team.copy-invite-link")}
             </Typography>
