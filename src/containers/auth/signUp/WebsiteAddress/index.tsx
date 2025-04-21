@@ -1,3 +1,4 @@
+import React from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -46,6 +47,7 @@ function WebsiteAddress() {
               isRequired
               placeholder={t("website.enter-your-website")}
               type="email"
+              allowClear
             />
           </S.FormItem>
 

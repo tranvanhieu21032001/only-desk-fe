@@ -5,9 +5,7 @@ import Typography from "@/components/common/Typography";
 
 import { styled } from "styled-components";
 
-export const SignInWrap = styled.section`
-  padding-top: 20px;
-`;
+export const SignInWrap = styled.section``;
 
 export const SignInForm = styled.div``;
 
@@ -84,5 +82,19 @@ export const AddMoreEmail = styled.div`
   .ant-image-mask {
     width: 16px;
     height: 16px;
+  }
+`;
+
+export const CopyInviteLinkWrap = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+
+  p {
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
   }
 `;

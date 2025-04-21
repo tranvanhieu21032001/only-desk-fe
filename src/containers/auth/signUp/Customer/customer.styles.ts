@@ -5,9 +5,7 @@ import Typography from "@/components/common/Typography";
 
 import { styled } from "styled-components";
 
-export const SignInWrap = styled.section`
-  padding-top: 20px;
-`;
+export const SignInWrap = styled.section``;
 
 export const SignInForm = styled.div``;
 

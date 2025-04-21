@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { isArray } from "lodash";
 
@@ -13,6 +13,7 @@ import ConfirmCode from "../ConfirmCode";
 import CompanySize from "../CompanySize";
 import WebsiteAddress from "../WebsiteAddress";
 import InviteYourTeam from "../InviteYourTeam";
+import ConnectOnlyChat from "../connectOnlyChat";
 
 import * as S from "./sign-up.styles";
 
@@ -43,6 +44,8 @@ function SignUp() {
         return <InviteYourTeam />;
       case SignUpStepEnums?.CUSTOMER:
         return <Customer />;
+      case SignUpStepEnums?.CONNECT_ONLY_CHAT:
+        return <ConnectOnlyChat />;
       default:
         return <StartForFree />;
     }

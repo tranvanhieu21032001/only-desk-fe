@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\"",
+    "lint": "eslint \"src/**/*.+(ts|js|tsx)\" --ignore-pattern .gitignore",
     "preview": "vite preview",
     "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write"
   },
@@ -35,7 +35,7 @@
     "styled-components": "^6.1.17"
   },
   "devDependencies": {
-    "@eslint/js": "^9.21.0",
+    "@eslint/js": "^9.25.0",
     "@types/axios": "^0.9.36",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.16",
@@ -46,13 +46,13 @@
     "@typescript-eslint/eslint-plugin": "^8.30.1",
     "@typescript-eslint/parser": "^8.30.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^9.24.0",
+    "eslint": "^9.25.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
-    "globals": "^15.15.0",
+    "globals": "^16.0.0",
     "typescript": "~5.7.2",
-    "typescript-eslint": "^8.24.1",
+    "typescript-eslint": "^8.30.1",
     "vite": "^6.2.0",
     "vite-tsconfig-paths": "^5.1.4"
   }

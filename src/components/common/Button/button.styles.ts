@@ -2,7 +2,7 @@ import { styled, css } from "styled-components";
 
 export const ButtonCommon = styled.button`
   cursor: pointer;
-  padding: 12px 32px;
+  padding: 12px 16px;
   border: none;
   border-radius: 8px;
   width: 100%;
@@ -54,7 +54,7 @@ export const DefaultButton = styled(ButtonCommon)<{
 }>`
   border: 1px solid ${(props) => props.theme.colors.newtral};
   background-color: ${(props) => props.theme.colors.newtralLightest};
-  color: ${(props) => props.theme.colors.secondaryDark};
+  color: ${(props) => props.theme.colors.newtralDark};
   width: ${(props) => props?.$width || "100%"};
   font-size: ${(props) => props.theme.fontSize.base};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};

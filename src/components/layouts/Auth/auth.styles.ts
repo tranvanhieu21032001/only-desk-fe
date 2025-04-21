@@ -1,5 +1,5 @@
 import { Option } from "antd/es/mentions";
-import { styled } from "styled-components";
+import { css, styled } from "styled-components";
 
 import Select from "@/components/common/Select";
 import Typography from "@/components/common/Typography";
@@ -15,7 +15,64 @@ export const WrapAuthLayout = styled.section`
   align-items: center;
 `;
 
-export const AuthLayout = styled.section`
+export const Inprogress = styled.div`
+  margin: 48px 0;
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+
+  @media ${(props) => props?.theme?.breakpoints?.lgMax} {
+    margin: 24px 0;
+  }
+
+  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
+    margin: 16px 0;
+  }
+`;
+
+export const Back = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+`;
+
+export const LineProgressWrap = styled.div`
+  gap: 4px;
+  display: flex;
+  align-items: center;
+`;
+
+export const Line = styled.div<{ $color?: string }>`
+  width: 16px;
+  border: 2px solid ${(props) => props?.theme?.colors?.newtralLight};
+  opacity: 0.5;
+  border-radius: 4px;
+
+  ${({ $color }) => {
+    switch ($color) {
+      case "old":
+        return css`
+          border-color: #687cca;
+          opacity: 1;
+        `;
+      case "current":
+        return css`
+          border-color: #3750b2;
+          opacity: 1;
+          width: 24px;
+        `;
+
+      default:
+        break;
+    }
+  }}
+`;
+
+export const AuthLayout = styled.div`
   height: fit-content;
   min-height: 100vh;
   width: 100%;
@@ -27,6 +84,10 @@ export const HeaderWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media ${(props) => props?.theme?.breakpoints?.lgMax} {
+    top: 24px;
+  }
 `;
 
 export const Logo = styled.img``;

@@ -1,22 +1,30 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-export const Section = styled.div`
+export const Section = styled.div<{ $isOpen: boolean }>`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 24px;
+  border: 1px solid ${({ theme }) => theme.colors.newtral};
+  border-radius: ${({ theme }) => theme.radius.normalRadius};
+  padding: 9px 24px;
+  box-shadow: 0px 0px 3px 0px #0000001a;
+
+  ${({ $isOpen }) =>
+    $isOpen &&
+    css`
+      border-color: #253a8e !important;
+    `}
 `;
 
 export const SectionHeader = styled.div`
   font-weight: 600;
   height: 36px;
   font-size: 14px;
-  background: #f5f5f5;
-  padding: 8px;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  cursor: pointer;
 `;
 
 export const CollapseIcon = styled.span<{ isOpen: boolean }>`

@@ -19,7 +19,7 @@ const themeColors = {
   secondary: "#186ADE",
   secondaryDark: "#3750B2",
   secondaryDarker: "#231441",
-  secondaryLight: "#BCAED7",
+  secondaryLight: "#EDF1F8",
   secondaryLighter: "#F0E8FF",
 
   /**
@@ -48,7 +48,7 @@ const themeColors = {
    * Is asssociated with but not limited to danger conditions
    */
   errorDarker: "#990F0F",
-  errorDark: "#DF1010",
+  errorDark: "#D91F11",
   errorLiger: "#ffa39e",
 
   /**

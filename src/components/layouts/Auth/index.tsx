@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Image } from "antd";
+import { isArray } from "lodash";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
-import { OptionsInterface } from "@/model/common";
+import { useAppSelector } from "@/hooks";
 import { langOptions } from "@/helpers/data/signIn";
+import { SignUpStepEnums } from "@/helpers/enums/auth";
 import themeColors from "@/styles/themes/default/colors";
 import fontWeight from "@/styles/themes/default/fontWeight";
+import { objectHistoryInterface, OptionsInterface } from "@/model/common";
 
 import Typography from "@/components/common/Typography";
 
 import logo from "@/assets/icons/common/ic-logo.svg";
+import back from "@/assets/icons/auth/ic-arrow-left.svg";
 
 import * as S from "./auth.styles";
 
@@ -19,6 +24,25 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const { t } = useTranslation("auth");
+  const [search] = useSearchParams();
+  const { currentObjHistory } = useAppSelector((state) => state?.historyRoute);
+
+  const signUpType =
+    (isArray(currentObjHistory)
+      ? (currentObjHistory as objectHistoryInterface[]) || []
+      : []
+    )?.find((item: objectHistoryInterface) => item?.key === "type")?.value ||
+    search.get("type") ||
+    SignUpStepEnums?.SIGN_UP;
+
+  const showInprogress = useMemo(() => {
+    const currentPath = window.location.pathname;
+    return currentPath.includes(SignUpStepEnums?.SIGN_UP);
+  }, [window.location.pathname]);
+
+  function handleBack() {
+    window.history.back();
+  }
 
   return (
     <S.WrapAuthLayout>
@@ -46,6 +70,37 @@ export default function AuthLayout({
             </S.ChangeLang>
           </S.MultipleLangWrap>
         </S.HeaderWrap>
+
+        {showInprogress && (
+          <S.Inprogress>
+            <S.Back onClick={handleBack}>
+              <Image src={back} preview={false} />
+              <Typography
+                color={themeColors?.secondary}
+                fontWeight={fontWeight?.semiBold}
+              >
+                {t("back")}
+              </Typography>
+            </S.Back>
+
+            <S.LineProgressWrap>
+              {Object.values(SignUpStepEnums)?.map(
+                (key: string, index: number) => {
+                  const currentIndex =
+                    Object.values(SignUpStepEnums).indexOf(signUpType);
+                  let lineColor = "";
+
+                  if (index < currentIndex) {
+                    lineColor = "old";
+                  } else if (index === currentIndex) {
+                    lineColor = "current";
+                  }
+                  return <S.Line key={key} $color={lineColor} />;
+                }
+              )}
+            </S.LineProgressWrap>
+          </S.Inprogress>
+        )}
         <S.ChildrenWrap>{children}</S.ChildrenWrap>
       </S.AuthLayout>
     </S.WrapAuthLayout>

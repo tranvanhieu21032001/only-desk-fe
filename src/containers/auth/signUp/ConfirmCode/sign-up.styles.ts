@@ -12,8 +12,6 @@ export const SignInForm = styled.div`
   align-items: center;
   justify-content: center;
 
-  padding: 50px 0;
-
   @media ${(props) => props?.theme?.breakpoints?.xlMax} {
     padding: 40px 0;
   }
@@ -67,6 +65,7 @@ export const FormWrap = styled(Form)`
         color: ${(props) => props?.theme?.colors?.primary};
         border-radius: 8px;
         border: 1px solid ${(props) => props?.theme?.colors?.newtral};
+        box-shadow: 0px 2px 3px 0px #0a0d140d !important;
 
         width: 70px !important;
         height: 77px;

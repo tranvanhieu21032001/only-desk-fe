@@ -1,3 +1,4 @@
+import React from "react";
 import { Form, Image } from "antd";
 import OTPInput from "react-otp-input";
 import { Trans, useTranslation } from "react-i18next";
