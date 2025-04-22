@@ -4,10 +4,10 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "styled-components";
 import { I18nextProvider } from "react-i18next";
 
-import { store } from "./store";
-import { themes } from "./styles/themes";
-import i18n from "./services/i18n/index.ts";
-import GlobalStyle from "./styles/global/index.ts";
+import { store } from "./core/store/index.tsx";
+import { themes } from "./shared/styles/themes/index.ts";
+import i18n from "./core/services/i18n/index.ts";
+import GlobalStyle from "./shared/styles/global/index.ts";
 
 import App from "./App.tsx";
 
