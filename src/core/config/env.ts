@@ -6,25 +6,25 @@
  */
 
 // Define types for import.meta.env
-interface ImportMetaEnv {
-  NODE_ENV: string;
-  VITE_API_URL: string;
-  VITE_API_TIMEOUT: string;
-  VITE_ENABLE_ANALYTICS: string;
-  VITE_ENABLE_NOTIFICATIONS: string;
-  VITE_AUTH_ENABLED: string;
-  VITE_AUTH_PERSIST: string;
-  VITE_PLUGINS_ENABLED: string;
-  VITE_ALLOW_THIRD_PARTY_PLUGINS: string;
-  VITE_DEFAULT_THEME: string;
-  VITE_DEFAULT_LANGUAGE: string;
-  [key: string]: string | undefined;
-}
+// interface ImportMetaEnv {
+//   NODE_ENV: string;
+//   VITE_API_URL: string;
+//   VITE_API_TIMEOUT: string;
+//   VITE_ENABLE_ANALYTICS: string;
+//   VITE_ENABLE_NOTIFICATIONS: string;
+//   VITE_AUTH_ENABLED: string;
+//   VITE_AUTH_PERSIST: string;
+//   VITE_PLUGINS_ENABLED: string;
+//   VITE_ALLOW_THIRD_PARTY_PLUGINS: string;
+//   VITE_DEFAULT_THEME: string;
+//   VITE_DEFAULT_LANGUAGE: string;
+//   [key: string]: string | undefined;
+// }
 
 // Extend ImportMeta interface
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
+// interface ImportMeta {
+//   readonly env: ImportMetaEnv;
+// }
 
 /**
  * Environment variable configuration interface

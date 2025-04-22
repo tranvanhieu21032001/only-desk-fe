@@ -89,8 +89,9 @@ export default function AuthLayout({
             <S.LineProgressWrap>
               {Object.values(SignUpStepEnums)?.map(
                 (key: string, index: number) => {
-                  const currentIndex =
-                    Object.values(SignUpStepEnums).indexOf(signUpType);
+                  const currentIndex = Object.values(SignUpStepEnums).indexOf(
+                    signUpType as SignUpStepEnums
+                  );
                   let lineColor = "";
 
                   if (index < currentIndex) {

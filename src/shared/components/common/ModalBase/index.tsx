@@ -82,7 +82,7 @@ export default function ModalCommon({
           {textBtnCancel && (
             <Button
               type="primary"
-              $width="100px"
+              width="100px"
               onClick={onCancel}
               isCancel
               disabled={isDisabledCancel}
@@ -93,7 +93,7 @@ export default function ModalCommon({
           {textBtnSubmit && (
             <Button
               type="primary"
-              $width="100px"
+              width="100px"
               onClick={onSubmit}
               isLoading={isLoading}
               disabled={isDisabledSubmit}

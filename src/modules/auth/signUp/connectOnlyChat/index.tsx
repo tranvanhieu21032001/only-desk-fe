@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { useModal } from "@/shared/hooks";
 import { useRouter } from "@/shared/hooks/useRouter";
+import { SignUpStepEnums } from "../../helpers/enums/auth";
 import { connectPlugins } from "../../helpers/data/signUp";
 import themeColors from "@/shared/styles/themes/default/colors";
 import { renderStatusInstalled } from "../../helpers/auth.logic";
@@ -18,7 +19,6 @@ import icInfo from "@/assets/icons/auth/ic-info-circle.svg";
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
 
 import * as S from "./connect-chat.styles";
-import { SignUpStepEnums } from "../../helpers/enums/auth";
 
 function ConnectOnlyChat() {
   const { t } = useTranslation("auth");
@@ -129,17 +129,16 @@ function ConnectOnlyChat() {
           </S.ConnectOnlyChatCodeInvite>
 
           <S.ConnectPluginWrap gutter={[8, 24]}>
-            {connectPlugins?.map((plugin) => (
-              <S.ConnectPlugin key={plugin?.key} xs={24} sm={12} md={8}>
+            {connectPlugins?.map((item) => (
+              <S.ConnectPlugin key={item?.key} xs={24} sm={12} md={8}>
                 <S.ConnectPluginCollapse
                   title={
                     <S.ConnectPluginTitle>
-                      <Image src={plugin?.icon} preview={false} />
-                      <Typography>{plugin?.label}</Typography>
+                      <Image src={item?.icon} preview={false} />
+                      <Typography>{item?.label}</Typography>
                     </S.ConnectPluginTitle>
                   }
                   defaultOpen={false}
-                  items={plugin}
                 >
                   <S.ConnectPluginAction>
                     <S.BtnConnect>
