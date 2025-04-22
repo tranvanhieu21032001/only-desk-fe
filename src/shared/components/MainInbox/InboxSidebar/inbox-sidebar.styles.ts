@@ -72,8 +72,14 @@ export const AddLink = styled.span`
   cursor: pointer;
 `;
 
+export const DataWidth = styled.div`
+  width: 100px;
+`;
+
 export const DataRow = styled.div`
   display: flex;
+  justify-content: center;
+  cursor: pointer;
   align-items: center;
   gap: 8px;
 `;
@@ -84,6 +90,33 @@ export const DataLabel = styled.div`
   width: 60px;
 `;
 
+export const DataLinkWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+export const LinkText = styled.div`
+  color: #3750b2;
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
+export const LinkActionIcons = styled.div`
+  position: absolute;
+  right: 8px;
+  display: none;
+  gap: 4px;
+  align-items: center;
+
+  img {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+`;
+
 export const DataValue = styled.div`
   font-size: 12px;
   padding: 8px;
@@ -91,6 +124,11 @@ export const DataValue = styled.div`
   color: #333;
   flex: 1;
   border: 1px solid #e8e8e8;
+  position: relative;
+
+  &:hover ${LinkActionIcons} {
+    display: flex;
+  }
 `;
 
 export const AddButton = styled.div`
@@ -109,6 +147,35 @@ export const ProfileSection = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  position: relative;
+`;
+
+export const ActionIcons = styled.div`
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+  gap: 8px;
+
+  img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+`;
+
+export const HoverArea = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100px;
+  cursor: pointer;
+
+  &:hover ${ActionIcons} {
+    display: flex;
+  }
 `;
 
 export const EmailRow = styled.div`
@@ -119,13 +186,12 @@ export const EmailRow = styled.div`
 
 export const AvatarWrapper = styled.div`
   position: relative;
-  width: 64px;
-  height: 64px;
+  cursor: pointer;
 `;
 
 export const Avatar = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
 `;
@@ -143,8 +209,8 @@ export const FlagIcon = styled.img`
 
 export const Status = styled.div<{ online?: boolean }>`
   position: absolute;
-  bottom: -2px;
   right: -2px;
+  top: 26px;
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -309,4 +375,56 @@ export const ClearAllButton = styled.button`
   cursor: pointer;
   font-size: 16px;
   margin-left: auto;
+`;
+
+export const TooltipContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+export const CustomTooltip = styled.div`
+  position: absolute;
+  bottom: -66px;
+  left: 200%;
+  transform: translateX(-50%);
+  background: #333333;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: none;
+  z-index: 1000;
+  min-width: 180px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #333333;
+  }
+
+  ${AvatarWrapper}:hover & {
+    display: block;
+  }
+`;
+
+export const TooltipStatus = styled.div`
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 20px;
+  line-height: 1.4;
+  font-weight: 500;
+`;
+
+export const TooltipLastActive = styled.div`
+  color: #ffffff;
+  line-height: 20px;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.4;
+  opacity: 0.9;
 `;

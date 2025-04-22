@@ -3,8 +3,9 @@ import styled from "styled-components";
 export const Container = styled.div`
   padding: 12px;
   background-color: #fff;
-  border-right: 1px solid #ddd;
   overflow-y: auto;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 `;
 
 export const SearchFilterWrapper = styled.div`
@@ -101,6 +102,9 @@ export const Subtitle = styled.div`
 export const RightSection = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+  position: relative;
+  min-width: 50px;
 `;
 
 export const Time = styled.div`
@@ -108,6 +112,28 @@ export const Time = styled.div`
   font-weight: 400;
   line-height: 20px;
   font-size: 12px;
+
+  ${NotificationItem}:hover & {
+    visibility: hidden;
+  }
+`;
+
+export const BarIcon = styled.div`
+  display: none;
+  cursor: pointer;
+  padding: 4px;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+
+  ${NotificationItem}:hover & {
+    display: block;
+  }
 `;
 
 export const Badge = styled.div`
@@ -120,5 +146,42 @@ export const Badge = styled.div`
   color: #fff;
   font-size: 12px;
   border-radius: 50%;
-  margin-top: 4px;
+  margin-top: 15px;
+  margin-right: 2px;
+
+  ${NotificationItem}:hover & {
+    margin-top: 15px;
+  }
+`;
+
+export const MenuDropdown = styled.div<{ isOpen: boolean }>`
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #fafafa;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  z-index: 1000;
+  min-width: 200px;
+  padding: 8px 0;
+`;
+
+export const MenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  gap: 8px;
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+
+  &.delete {
+    color: #ff4d4f;
+  }
 `;

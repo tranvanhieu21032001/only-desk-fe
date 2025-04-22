@@ -81,11 +81,17 @@ export const MessageAvatar = styled.img`
   border-radius: 50%;
 `;
 
+export const MessageColumnView = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
 export const MessageBubbleLeft = styled.div`
   background: white;
   padding: 8px 12px;
   border-radius: 12px;
-  margin: 0 8px;
+  margin: 0 8px 0 0;
   max-width: 300px;
 `;
 
@@ -95,6 +101,7 @@ export const MessageBubbleRight = styled(MessageBubbleLeft)`
 
 export const MessageTime = styled.div`
   font-size: 10px;
+  margin-right: 8px;
   color: #aaa;
 `;
 
@@ -201,4 +208,15 @@ export const Sidebar = styled.div`
   padding: 16px;
   overflow-y: auto;
   transition: all 0.3s;
+`;
+
+export const MessageAvatarWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+export const MessageSenderName = styled.div`
+  font-size: 12px;
+  color: #333333;
+  font-weight: 600;
 `;

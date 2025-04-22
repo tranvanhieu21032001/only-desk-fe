@@ -46,8 +46,13 @@ const InboxDetail: React.FC<InboxDetailProps> = ({ isSidebarOpen, toggleSidebar 
                     <S.DateDivider>08/04/2022 11:06</S.DateDivider>
 
                     <S.MessageRow>
-                        <S.MessageAvatar src={avatarAdmin} alt="Admin" />
-                        <S.MessageBubbleLeft>Hello</S.MessageBubbleLeft>
+                        <S.MessageAvatarWrapper>
+                            <S.MessageAvatar src={avatarAdmin} alt="Admin" />
+                            <S.MessageColumnView>
+                                <S.MessageSenderName>Admin 3</S.MessageSenderName>
+                                <S.MessageBubbleLeft>Hello</S.MessageBubbleLeft>
+                            </S.MessageColumnView>
+                        </S.MessageAvatarWrapper>
                         <S.MessageTime>11:06</S.MessageTime>
                     </S.MessageRow>
 
