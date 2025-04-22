@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const InboxWrapper = styled.div`
   flex: 1;
   display: flex;
+  gap: 3px;
 `;
 
 export const InboxList = styled.div`
@@ -29,6 +30,7 @@ export const InboxProfile = styled.div`
 export const DetailAndSidebarWrapper = styled.div`
   display: flex;
   flex: 1;
+  gap: 3px;
   overflow: hidden;
 `;
 

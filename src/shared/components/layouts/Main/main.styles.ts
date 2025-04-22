@@ -21,7 +21,7 @@ export const MainContent = styled.div`
 export const Body = styled.div`
   flex: 1;
   padding: 4px;
-  background-color: #ffffff;
+  background-color: #edf1f8;
   display: flex;
   overflow: hidden;
 `;
