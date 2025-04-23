@@ -2,6 +2,7 @@ import { Image } from "antd";
 import { useState } from "react";
 
 import Collapse from "../../common/Collapse";
+import AvatarWithStatus from "../../common/Avatar";
 
 import { initialTags, options } from "@/core/settings/options";
 
@@ -48,19 +49,13 @@ const InboxSidebar = () => {
   return (
     <S.Container>
       <S.ProfileSection>
-        <S.AvatarWrapper>
-          <S.Avatar src={defaultAvatar} alt="Avatar" />
-          <S.FlagIcon src={flag} />
-          <S.Status online={true} />
-          <S.CustomTooltip>
-            <S.TooltipStatus>
-              Sophia Williams is away
-            </S.TooltipStatus>
-            <S.TooltipLastActive>
-              Last active: Sep 2025
-            </S.TooltipLastActive>
-          </S.CustomTooltip>
-        </S.AvatarWrapper>
+        <AvatarWithStatus
+          avatarSrc={defaultAvatar}
+          flagSrc={flag}
+          isOnline={true}
+          tooltipStatus="Sophia Williams is away"
+          tooltipLastActive="Last active: Sep 2025"
+        />
         <S.ProfileInfo>
           <S.NameRow>
             <S.Name>Sophia Williams</S.Name>

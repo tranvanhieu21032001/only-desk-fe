@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Image } from 'antd';
 
 import MenuSidebar from '../Menu';
+import AvatarWithStatus from '../Avatar';
 
 import * as S from "./side-bar.styles";
 
@@ -15,6 +16,8 @@ import tags from "@/assets/icons/common/ic-tags.svg";
 import app from "@/assets/icons/common/ic-app.svg";
 import setting from "@/assets/icons/common/ic-setting.svg";
 import avatarDefault from "@/assets/images/avatar-default.png";
+import flag from '@/assets/icons/common/ic-flag.svg'
+import defaultAvatar from '@/assets/images/avatar-default.png'
 
 const Sidebar: React.FC = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -47,7 +50,11 @@ const Sidebar: React.FC = () => {
                 <S.IconWrapper>
                     <Image src={setting} preview={false} />
                 </S.IconWrapper>
-                <S.BottomAvatar src={avatarDefault} />
+                <AvatarWithStatus
+                    avatarSrc={defaultAvatar}
+                    flagSrc={flag}
+                    isOnline={true}
+                />
             </S.BottomContainer>
         </S.SidebarContainer>
     );

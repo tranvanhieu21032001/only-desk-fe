@@ -1,11 +1,17 @@
 import React from 'react';
 import { Image } from 'antd';
 
+import AvatarWithStatus from '../../common/Avatar';
+
+import * as S from './inbox-detail.styles';
+
 import avatarAdmin from '@/assets/images/avatar-default.png';
 import avatarUser from '@/assets/images/avatar-default.png';
 import check from '@/assets/icons/common/ic-check.svg'
 import barOpen from '@/assets/icons/common/ic-bar-open.svg'
 import barClose from '@/assets/icons/common/ic-bar.svg'
+import flag from '@/assets/icons/common/ic-flag.svg'
+import defaultAvatar from '@/assets/images/avatar-default.png'
 import undo from '@/assets/icons/common/ic-undo.svg'
 import edit from '@/assets/icons/common/ic-edit.svg'
 import note from '@/assets/icons/common/ic-note.svg'
@@ -15,8 +21,6 @@ import tag from '@/assets/icons/common/ic-tag.svg'
 import file from '@/assets/icons/common/ic-file.svg'
 import smile from '@/assets/icons/common/ic-smile.svg'
 import send from '@/assets/icons/common/ic-send.svg'
-
-import * as S from './inbox-detail.styles';
 
 interface InboxDetailProps {
     isSidebarOpen: boolean;
@@ -28,7 +32,11 @@ const InboxDetail: React.FC<InboxDetailProps> = ({ isSidebarOpen, toggleSidebar 
         <S.Container>
             <S.Header>
                 <S.HeaderLeft>
-                    <S.Avatar src={avatarAdmin} alt="Admin" />
+                    <AvatarWithStatus
+                        avatarSrc={defaultAvatar}
+                        flagSrc={flag}
+                        isOnline={true}
+                    />
                     <S.Info>
                         <S.Name>Admin 3</S.Name>
                     </S.Info>
