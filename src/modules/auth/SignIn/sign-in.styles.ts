@@ -7,7 +7,9 @@ import { css, styled } from "styled-components";
 
 export const SignInWrap = styled.section``;
 
-export const SignInForm = styled.div``;
+export const SignInForm = styled.div`
+  padding-top: 20px;
+`;
 
 export const FormWrap = styled(Form)`
   width: 100%;
@@ -19,7 +21,6 @@ export const Title = styled(Typography)`
 `;
 
 export const Subtitle = styled(Typography)`
-  text-align: center;
 `;
 
 export const LoginLabelWrap = styled.div`
@@ -72,13 +73,13 @@ export const FormItem = styled(Form.Item)<{
 
 export const ForgotPassword = styled.div`
   display: flex;
-  justify-content: flex-end;
-
-  margin-bottom: 30px;
+  justify-content: space-between;
+  margin-bottom: 8px;
 `;
 
 export const LoginButton = styled(Button)`
   margin-top: 12px;
+  text-transform: capitalize;
 
   display: flex;
   gap: 8px;

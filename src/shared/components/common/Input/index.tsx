@@ -23,7 +23,7 @@ export default function Input({
   isPassword = false,
   ...rest
 }: InputProps) {
-  const [isShowPassWord, setIsShowPassWord] = useState<boolean>(false);
+  const [isShowPassWord, setIsShowPassWord] = useState<boolean>(true);
 
   function handleShowPassWord() {
     setIsShowPassWord((prev) => !prev);
@@ -43,9 +43,9 @@ export default function Input({
           type={isShowPassWord ? "password" : "text"}
           suffix={
             isShowPassWord ? (
-              <EyeOutlined onClick={handleShowPassWord} />
-            ) : (
               <EyeInvisibleOutlined onClick={handleShowPassWord} />
+            ) : (
+              <EyeOutlined onClick={handleShowPassWord} />
             )
           }
         />

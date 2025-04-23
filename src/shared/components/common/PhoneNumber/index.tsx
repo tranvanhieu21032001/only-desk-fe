@@ -30,23 +30,23 @@ export default function PhoneNumberByCountry({
   colorLabel?: string;
   isParsePhoneNumber?: boolean;
 }) {
-  //TODO
-  // const renderValue = () => {
-  //   if (index !== undefined) {
-  //     return (
-  //       currentInstanceForm?.getFieldValue(nameFormList)?.[index]?.[
-  //         nameField || ""
-  //       ] || ""
-  //     );
-  //   } else if (isParsePhoneNumber) {
-  //     return currentInstanceForm?.getFieldValue(nameField)?.number || "";
-  //   } else {
-  //     return currentInstanceForm?.getFieldValue(nameField) || "";
-  //   }
-  // };
+  const renderValue = () => {
+    if (index !== undefined) {
+      return (
+        currentInstanceForm?.getFieldValue(nameFormList)?.[index]?.[
+          nameField || ""
+        ] || ""
+      );
+    } else if (isParsePhoneNumber) {
+      return currentInstanceForm?.getFieldValue(nameField)?.number || "";
+    } else {
+      return currentInstanceForm?.getFieldValue(nameField) || "";
+    }
+  };
 
   const handleOnchange = (value: string) => {
-    const getValuePhoneNumber = parsePhoneNumber(value || "");
+    const getValuePhoneNumber = parsePhoneNumber(value || "");    
+    
     if (index !== undefined) {
       const phoneNumbers = currentInstanceForm
         ?.getFieldValue(nameFormList)
@@ -88,10 +88,11 @@ export default function PhoneNumberByCountry({
         </Typography>
       )}
       <S.PhoneNumberWrapper
+        international={true}
         limitMaxLength={true}
         defaultCountry="US"
         disabled={disabled}
-        // value={renderValue()}
+        value={renderValue()}
         onChange={handleOnchange}
         placeholder={placeholder}
       />

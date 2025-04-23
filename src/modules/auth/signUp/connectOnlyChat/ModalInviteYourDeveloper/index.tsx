@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
+import { isEmpty } from "lodash";
 
 import themeColors from "@/shared/styles/themes/default/colors";
 import fontWeight from "@/shared/styles/themes/default/fontWeight";
@@ -17,37 +18,46 @@ import icSetting from "@/assets/icons/auth/ic-setting.svg";
 import icAddCircle from "@/assets/icons/common/ic-add-circle.svg";
 
 import * as S from "./invite.styles";
+import webLocalStorage from "@/shared/utils/webLocalStorage";
+import { constants } from "@/core/settings";
 
 interface ModalConfirmDeleteProps {
   title?: string;
   subTitle?: string;
   open: boolean;
   onCancel: () => void;
-  onOk: () => void;
   isLoading?: boolean;
   onCopyInviteLink?: () => void;
-  onSendInvite?: () => void;
 }
 
 function ModalInvite({
   title,
   open,
   onCancel,
-  onOk,
   isLoading,
   onCopyInviteLink,
-  onSendInvite,
 }: ModalConfirmDeleteProps) {
   const { t } = useTranslation("auth");
   const [form] = Form.useForm();
+  const dataFromLocal =  webLocalStorage.get(constants?.SIGN_UP_INFO)
 
   useEffect(() => {
-    form.setFieldValue("businessEmails", [{ businessEmail: "" }]);
+    form.setFieldValue("invitedDevelopers", !isEmpty(dataFromLocal?.invitedDevelopers) ? (dataFromLocal?.invitedDevelopers || [])?.map((item:string) => ({email:item})) :[{ email: "" }]);
   }, [form]);
 
   function handleAddMoreEmail() {
-    const getEmails = form.getFieldValue("businessEmails");
-    form.setFieldValue("businessEmails", [...getEmails, { businessEmail: "" }]);
+    const getEmails = form.getFieldValue("invitedDevelopers");
+    form.setFieldValue("invitedDevelopers", [...getEmails, { email: "" }]);
+  }
+
+  function handleSendInvite(values:any) {
+    const convertInvited = values?.invitedDevelopers?.map((item:any) => item?.email);
+    
+      webLocalStorage.set(constants?.SIGN_UP_INFO, {
+      ...dataFromLocal,
+      invitedDevelopers: convertInvited || [],
+    });
+    onCancel()
   }
 
   return (
@@ -56,7 +66,6 @@ function ModalInvite({
         title={title}
         open={open}
         onCancel={onCancel}
-        onSubmit={onOk}
         showFooter={false}
         isLoading={isLoading}
         width={700}
@@ -72,13 +81,13 @@ function ModalInvite({
         </S.ModalHeader>
 
         <S.ModalContent>
-          <S.FormWrap form={form} onFinish={onSendInvite}>
+          <S.FormWrap form={form} onFinish={handleSendInvite}>
             <Typography margin="0 0 8px 0">
               {t("invite-your-team.email-address")}
               <span style={{ color: "red" }}> *</span>
             </Typography>
             <S.EmailsWrap>
-              <Form.List name="businessEmails">
+              <Form.List name="invitedDevelopers">
                 {(fields, { remove }) => (
                   <>
                     {fields.map(({ key, name, ...restField }, index) => (
@@ -89,7 +98,7 @@ function ModalInvite({
                       >
                         <Form.Item
                           {...restField}
-                          name={[name, "businessEmail"]}
+                          name={[name, "email"]}
                           rules={[
                             {
                               required: true,
@@ -97,12 +106,17 @@ function ModalInvite({
                                 "invite-your-team.please-enter-business-email"
                               ),
                             },
+                            {
+                              type: "email",
+                              message: t("email-invalid"),
+                        },
                           ]}
                         >
                           <Input
                             placeholder={t(
                               "invite-your-team.enter-your-business-email"
                             )}
+                            type="email"
                           />
                         </Form.Item>
 
@@ -152,7 +166,7 @@ function ModalInvite({
             <S.BtnCancel>
               <Button>{t("invite-modal.cancel")}</Button>
             </S.BtnCancel>
-            <Button type="primary" onClick={() => form.submit()}>
+            <Button type="primary" onClick={form.submit}>
               {t("invite-modal.send-invite-and-continue")}
             </Button>
           </S.ActionWrap>

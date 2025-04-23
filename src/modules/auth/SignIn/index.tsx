@@ -2,7 +2,9 @@ import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+import { handleSignInApi } from "../api/auth";
 import { AUTH_ROUTES } from "@/core/routes/constants";
+import { useAppDispatch, useAppSelector } from "@/shared/hooks";
 
 import Input from "@/shared/components/common/Input";
 import Checkbox from "@/shared/components/common/Checkbox";
@@ -17,11 +19,13 @@ import * as S from "./sign-in.styles";
 function SignIn() {
   const { t } = useTranslation("auth");
   const navigate = useNavigate();
+  const dispatch = useAppDispatch()
 
   const [form] = Form.useForm();
+  const {isLoading} = useAppSelector((state) => state?.auth);
 
-  function handleLogic() {
-    //Handle later
+  function handleSignIn(values: any) {
+    handleSignInApi(values, dispatch, navigate , t);
   }
 
   function handleLoginWithGoogle() {
@@ -39,7 +43,7 @@ function SignIn() {
   return (
     <S.SignInWrap>
       <S.SignInForm className="center-column-auth">
-        <S.FormWrap form={form} onFinish={handleLogic}>
+        <S.FormWrap form={form} onFinish={handleSignIn}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center" margin="0 0 4px 0">
               {t("login")}
@@ -73,9 +77,16 @@ function SignIn() {
             />
           </S.FormItem>
 
+          <S.ForgotPassword>
+            <Typography>{t('password')}
+              <span style={{ color: "red" }}> *</span>
+            </Typography>
+            <S.SignInAction>{t("forgot-password")}</S.SignInAction>
+          </S.ForgotPassword>
+
           <S.FormItem
             name="password"
-            $margin="0 0 8px 0"
+            $margin="0 0 36px 0"
             rules={[
               {
                 required: true,
@@ -84,25 +95,20 @@ function SignIn() {
             ]}
           >
             <Input
-              label={t("password")}
               isRequired
               placeholder={t("enter-your-password")}
             />
           </S.FormItem>
 
-          <S.ForgotPassword>
-            <S.SignInAction>{t("forgot-password")}</S.SignInAction>
-          </S.ForgotPassword>
-
           <S.RememberMe>
             <Typography>{t("remember-me")}</Typography>
 
-            <S.FormItem name="remember" $isRememberMe={true}>
+            <S.FormItem name="remember" $isRememberMe={true} valuePropName="checked">
               <Checkbox />
             </S.FormItem>
           </S.RememberMe>
 
-          <S.LoginButton type="primary" onClick={form.submit}>
+          <S.LoginButton type="primary" onClick={form.submit} isLoading={isLoading} disabled={isLoading}>
             {t("login")}
             <Image src={icArrowRight} preview={false} />
           </S.LoginButton>

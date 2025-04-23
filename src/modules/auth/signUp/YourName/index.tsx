@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 
+import { constants } from "@/core/settings";
 import { useRouter } from "@/shared/hooks/useRouter";
 import { SignUpStepEnums } from "../../helpers/enums/auth";
+import webLocalStorage from "@/shared/utils/webLocalStorage";
 
 import Input from "@/shared/components/common/Input";
 
@@ -14,10 +17,18 @@ function YourName() {
   const { t } = useTranslation("auth");
 
   const [form] = Form.useForm();
+  const signUpFromLocal = webLocalStorage.get(constants?.SIGN_UP_INFO)
 
   const { replaceState } = useRouter();
 
-  function handleSignUp() {
+  useEffect(() =>{
+    if(signUpFromLocal?.name){
+      form.setFieldValue('name', signUpFromLocal?.name)
+    }
+  },[signUpFromLocal?.name])
+
+  function handleSignUp({name}:any) {
+   webLocalStorage.set(constants?.SIGN_UP_INFO,{...signUpFromLocal, name:name} )
     replaceState({
       type: SignUpStepEnums?.WEBSITE_ADDRESS,
     });
@@ -26,7 +37,7 @@ function YourName() {
   return (
     <S.SignInWrap>
       <S.SignInForm className="center-column-auth">
-        <S.FormWrap form={form}>
+        <S.FormWrap form={form} onFinish={handleSignUp}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center" margin="0 0 4px 0">
               {t("your-name.whats-your-name")}
@@ -34,7 +45,7 @@ function YourName() {
           </S.LoginLabelWrap>
 
           <S.FormItem
-            name="yourName"
+            name="name"
             rules={[
               {
                 required: true,
@@ -50,7 +61,7 @@ function YourName() {
             />
           </S.FormItem>
 
-          <S.LoginButton type="primary" onClick={handleSignUp}>
+          <S.LoginButton type="primary" onClick={form.submit}>
             {t("your-name.continue")}
             <Image src={icArrowRight} preview={false} />
           </S.LoginButton>

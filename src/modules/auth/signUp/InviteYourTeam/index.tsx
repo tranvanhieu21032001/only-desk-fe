@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 
+import { constants } from "@/core/settings";
 import { useRouter } from "@/shared/hooks/useRouter";
 import { SignUpStepEnums } from "../../helpers/enums/auth";
+import webLocalStorage from "@/shared/utils/webLocalStorage";
 import themeColors from "@/shared/styles/themes/default/colors";
 import fontWeight from "@/shared/styles/themes/default/fontWeight";
 
@@ -16,18 +18,30 @@ import icAddCircle from "@/assets/icons/common/ic-add-circle.svg";
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
 
 import * as S from "./sign-up.styles";
+import { isEmpty } from "lodash";
+
 
 function InviteYourTeam() {
   const { t } = useTranslation("auth");
 
   const [form] = Form.useForm();
   const { replaceState } = useRouter();
+  const signUpFromLocal = webLocalStorage?.get(constants?.SIGN_UP_INFO)
 
   useEffect(() => {
+    if(!isEmpty(signUpFromLocal?.businessEmails)){
+    return form.setFieldsValue({
+        businessEmails: signUpFromLocal?.businessEmails || [{ businessEmail: "" }]
+      })
+    }
+
     form.setFieldValue("businessEmails", [{ businessEmail: "" }]);
   }, [form]);
 
-  function handleInviteYourTeam() {
+  function handleInviteYourTeam({businessEmails}:any) {
+    webLocalStorage.set(
+      constants?.SIGN_UP_INFO,{...signUpFromLocal,businessEmails})
+      
     replaceState({
       type: SignUpStepEnums?.CUSTOMER,
     });
@@ -53,7 +67,7 @@ function InviteYourTeam() {
           </S.LoginLabelWrap>
 
           <Typography margin="0 0 8px 0">
-            {t("invite-your-team.email-address")}
+            {t("invite-your-team.email-address")}<span style={{ color: "red" }}> *</span>
           </Typography>
           <Form.List name="businessEmails">
             {(fields, { remove }) => (

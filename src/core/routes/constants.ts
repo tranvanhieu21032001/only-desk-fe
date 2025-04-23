@@ -1,4 +1,4 @@
-const preRouterAdmin = "";
+const preRouterAdmin = "/";
 const preRouterAuth = "/auth";
 const preRouterMain = "";
 

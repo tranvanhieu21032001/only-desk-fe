@@ -4,6 +4,7 @@ const REFRESH_TOKEN = "_refresh_token";
 const USER_INFO = "_user_info";
 const IS_AUTH = "_is_auth";
 const ACCESS_TOKEN = "_access_token";
+const SIGN_UP_INFO = "_sign_up_info";
 
 const constants = {
   API_SERVER,
@@ -11,6 +12,7 @@ const constants = {
   USER_INFO,
   IS_AUTH,
   ACCESS_TOKEN,
+  SIGN_UP_INFO 
 };
 
 export default constants;

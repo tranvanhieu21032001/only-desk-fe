@@ -11,4 +11,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: [],
   },
+  server: {
+    port: 3000,
+  },
 });

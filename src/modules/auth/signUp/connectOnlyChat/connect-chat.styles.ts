@@ -1,7 +1,7 @@
 import { Col, Form, Row } from "antd";
 
 import Button from "@/shared/components/common/Button";
-import Collapse from "@/shared/components/common/Collapse";
+import CollapseCustom from "@/shared/components/common/CollapseCustom";
 import Typography from "@/shared/components/common/Typography";
 
 import { styled } from "styled-components";
@@ -189,7 +189,7 @@ export const ConnectPluginTitle = styled.div`
   gap: 12px;
 `;
 
-export const ConnectPluginCollapse = styled(Collapse)``;
+export const ConnectPluginCollapse = styled(CollapseCustom)``;
 
 export const BtnConnect = styled.div`
   button {

@@ -6,7 +6,7 @@ export const PhoneNumberWrapper = styled(PhoneInputWithCountrySelect)`
   width: 100%;
   height: 48px;
   border-radius: 8px;
-  border: 1px solid ${(props) => props.theme.colors.primary};
+  border: 1px solid ${(props) => props.theme.colors.newtral};
 
   font-weight: ${({ theme }) => theme.fontWeight.regular};
   font-size: ${({ theme }) => theme.fontSize.base};
@@ -26,8 +26,12 @@ export const PhoneNumberWrapper = styled(PhoneInputWithCountrySelect)`
     }
   }
 
+  &.PhoneInput--focus{
+    border-color: ${(props) => props.theme.colors.secondaryDark} !important;
+  }
+
   &:hover {
-    border: 1px solid ${(props) => props.theme.colors.primary} !important;
+    border: 1px solid ${(props) => props.theme.colors.secondaryDark} !important;
   }
 
   .PhoneInputCountry {

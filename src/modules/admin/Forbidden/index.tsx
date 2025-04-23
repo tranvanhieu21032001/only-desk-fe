@@ -2,8 +2,8 @@ import { useAppDispatch } from "@/shared/hooks";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import { actionLogout } from "@/core/store/features/auth";
 import { AUTH_ROUTES } from "@/core/routes/constants";
+import { actionLogout } from "@/modules/auth/store/features/auth";
 
 import Button from "@/shared/components/common/Button";
 import Typography from "@/shared/components/common/Typography";

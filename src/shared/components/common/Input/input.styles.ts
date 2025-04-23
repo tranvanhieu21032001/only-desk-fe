@@ -19,7 +19,7 @@ export const Input = styled(InputAntd)`
   color: ${(props) => props.theme.colors.primary};
 
   &.ant-input-affix-wrapper-focused {
-    border: 1px solid ${(props) => props.theme.colors.primary} !important;
+    border: 1px solid ${(props) => props.theme.colors.secondaryDark} !important;
   }
 
   &.ant-input-affix-wrapper {
@@ -48,11 +48,11 @@ export const Input = styled(InputAntd)`
   }
 
   &:not(:disabled):hover {
-    border: 1px solid ${(props) => props.theme.colors.primary} !important;
+    border: 1px solid ${(props) => props.theme.colors.secondaryDark} !important;
   }
 
   &:focus {
-    border: 1px solid ${(props) => props.theme.colors.primary} !important;
+    border: 1px solid ${(props) => props.theme.colors.secondaryDark} !important;
   }
 
   &:disabled {
