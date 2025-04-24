@@ -6,3 +6,10 @@ export interface chatWithCustomersInterface {
   label: string;
   icon: ReactNode;
 }
+
+export interface SignUpParamsInterface {
+  email: string;
+  password: string;
+  phoneNumber: string;
+  confirmPassword:string;
+}

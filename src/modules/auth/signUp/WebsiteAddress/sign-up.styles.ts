@@ -6,7 +6,6 @@ import Typography from "@/shared/components/common/Typography";
 import { css, styled } from "styled-components";
 
 export const SignInWrap = styled.section`
-  min-height: 90vh;
   display: flex;
   justify-content: center;
   align-items: center;

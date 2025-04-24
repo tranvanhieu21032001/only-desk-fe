@@ -7,4 +7,5 @@ export interface UserInforInterface {
     _id: string;
     name: string;
   };
+  userId?: string;
 }

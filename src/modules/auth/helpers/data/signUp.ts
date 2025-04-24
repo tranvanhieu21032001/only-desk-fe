@@ -126,4 +126,6 @@ const connectPlugins = [
   },
 ];
 
-export { companySizes, chatWithCustomers, connectPlugins };
+const omitSubmitSignUp:string[] = ['email','confirmPassword','policy','password','phoneNumber','businessEmails']
+
+export { companySizes, chatWithCustomers, connectPlugins, omitSubmitSignUp };

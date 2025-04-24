@@ -1,11 +1,11 @@
-import { useEffect } from "react";
 import { Form, Image, Switch } from "antd";
 import { useTranslation } from "react-i18next";
 
+import { handleFinishSignUp } from "../../api/auth";
 import { useRouter } from "@/shared/hooks/useRouter";
-import { SignUpStepEnums } from "../../helpers/enums/auth";
 import { chatWithCustomersInterface } from "../../model/auth";
 import { chatWithCustomers } from "../../helpers/data/signUp";
+import { useAppDispatch, useAppSelector } from "@/shared/hooks";
 import fontWeight from "@/shared/styles/themes/default/fontWeight";
 
 import Typography from "@/shared/components/common/Typography";
@@ -16,16 +16,13 @@ function Customer() {
   const { t } = useTranslation("auth");
 
   const [form] = Form.useForm();
-  const { replaceState } = useRouter();
+  const dispatch = useAppDispatch()
+  const { navigate } = useRouter();
 
-  useEffect(() => {
-    form.setFieldValue("businessEmails", [{ businessEmail: "" }]);
-  }, [form]);
+  const {isLoading} = useAppSelector((state) => state?.auth);
 
-  function handleInviteYourTeam() {
-    replaceState({
-      type: SignUpStepEnums?.CUSTOMER,
-    });
+  function handleInviteYourTeam(values:any) {
+    handleFinishSignUp(values, dispatch, navigate, t);
   }
 
   return (
@@ -55,7 +52,7 @@ function Customer() {
             ))}
           </S.SocialChatWrap>
 
-          <S.LoginButton type="primary" onClick={() => form.submit()}>
+          <S.LoginButton type="primary" onClick={form.submit} isLoading={isLoading} disabled={isLoading}>
             {t("chat-with-customer.submit")}
           </S.LoginButton>
         </S.FormWrap>

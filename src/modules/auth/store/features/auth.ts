@@ -14,18 +14,23 @@ export interface AuthInterface {
   isAuth: boolean;
   userInfo: UserInforInterface | null;
   permissionList: Record<string, boolean>;
+  isLoading?:boolean
 }
 
 const initialState: AuthInterface = {
   isAuth: isAuthFromStorage || false,
   userInfo: userInfoFromStorage,
   permissionList: {},
+  isLoading: false,
 };
 
 const slice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    actionSignUp: (state, action) => {
+      state.isLoading = action.payload;
+    },
     actionLogin: (state, action) => {
       const { isAuth, rememberMe, userInfo, accessToken, refreshToken } =
         action.payload;
@@ -69,6 +74,6 @@ const slice = createSlice({
   extraReducers: () => {},
 });
 
-export const { actionLogin, actionLogout, actionUpdateAvatar } = slice.actions;
+export const { actionLogin, actionLogout, actionUpdateAvatar,actionSignUp } = slice.actions;
 
 export default slice.reducer;

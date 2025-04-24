@@ -1,6 +1,6 @@
 {
   "need-help": "Need help?",
-  "login ": "Login",
+  "login": "Login",
   "dont-have": "Don't have account yet?",
   "sign-in": "Sign in",
   "email": "Email",
@@ -16,6 +16,7 @@
   "sign-in-with-facebook": "Sign in with Facebook",
   "sign-up": "Sign up",
   "back": "Back",
+  "sign-in-success": "Sign in successfully",
 
   "language": {
     "english": "English"
@@ -40,7 +41,11 @@
     "term-of-use": "Terms of Use",
     "and": "and",
     "privacy-policy": "Privacy Policy",
-    "sign-up": "Sign up"
+    "sign-up": "Sign up",
+    "password-invalid": "Password must be at least 8 characters long and contain at least one letter and one number",
+    "phone-invalid": "Phone number is invalid",
+    "password-not-match": "Password and confirm password do not match",
+    "sign-up-success": "Sign up successfully"
   },
 
   "confirm-code": {
@@ -49,7 +54,9 @@
     "open-gmail": "Open Gmail",
     "continue": "Continue",
     "didnt-get": "Didn't get an email?",
-    "get-a-new": "Get a new information"
+    "get-a-new": "Get a new information",
+    "confirmation-code": "Confirmation code successfully",
+    "resend-confirmation-code": "Resend confirmation code successfully"
   },
 
   "your-name": {
@@ -65,7 +72,8 @@
     "enter-your-website": "Enter your website address",
     "please-enter-website-address": "Please enter your website address",
     "website": "Website",
-    "continue": "Continue"
+    "continue": "Continue",
+    "website-address-not-valid": "Website address is not valid"
   },
 
   "company-size": {

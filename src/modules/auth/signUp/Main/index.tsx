@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { isArray } from "lodash";
 
 import { useAppSelector } from "@/shared/hooks";
 import { SignUpStepEnums } from "../../helpers/enums/auth";
-import { objectHistoryInterface } from "../../model/common";
 
 import YourName from "../YourName";
 import Customer from "../Customer";
@@ -19,13 +17,9 @@ import * as S from "./sign-up.styles";
 
 function SignUp() {
   const [search] = useSearchParams();
-  const { currentObjHistory } = useAppSelector((state) => state?.historyRoute);
+  const { currentObjHistory }:any = useAppSelector((state) => state?.historyRoute);
 
-  const signUpType =
-    (isArray(currentObjHistory)
-      ? (currentObjHistory as objectHistoryInterface[])
-      : []
-    )?.find((item: objectHistoryInterface) => item?.key === "type")?.value ||
+  const signUpType = (currentObjHistory || [])?.find((item:any) => item?.key === "type")?.value ||
     search.get("type");
 
   const renderContentSignUp = useMemo(() => {
@@ -38,14 +32,14 @@ function SignUp() {
         return <YourName />;
       case SignUpStepEnums?.WEBSITE_ADDRESS:
         return <WebsiteAddress />;
+      case SignUpStepEnums?.CONNECT_ONLY_CHAT:
+        return <ConnectOnlyChat />;
       case SignUpStepEnums?.COMPANY_SIZE:
         return <CompanySize />;
       case SignUpStepEnums?.INVITE_YOUR_TEAM:
         return <InviteYourTeam />;
       case SignUpStepEnums?.CUSTOMER:
         return <Customer />;
-      case SignUpStepEnums?.CONNECT_ONLY_CHAT:
-        return <ConnectOnlyChat />;
       default:
         return <StartForFree />;
     }

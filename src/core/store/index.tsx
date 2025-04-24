@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import auth from "./features/auth";
+import auth from "@/modules/auth/store/features/auth";
 import historyRoute from "./features/historyRoute";
 
 export const store = configureStore({

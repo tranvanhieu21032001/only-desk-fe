@@ -236,7 +236,7 @@ const reset = css`
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 120px);
+    min-height: calc(100vh - 300px);
 
     @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
       padding: 100px 0 !important;

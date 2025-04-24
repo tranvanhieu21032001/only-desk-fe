@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "styled-components";
 import { I18nextProvider } from "react-i18next";
+import { ToastContainer } from "react-toastify";
 
 import { store } from "./core/store/index.tsx";
 import { themes } from "./shared/styles/themes/index.ts";
@@ -25,6 +26,7 @@ function Index() {
         <StrictMode>
           <I18nextProvider i18n={i18n}>
             <App />
+            <ToastContainer />
           </I18nextProvider>
         </StrictMode>
       </ThemeProvider>

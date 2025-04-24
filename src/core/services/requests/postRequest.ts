@@ -1,8 +1,10 @@
-import { message } from "antd";
+import { isArray } from "lodash";
+import { toast } from "react-toastify";
 
-import axiosInstance from "../base/axiosInstance";
 import i18n from "@/core/services/i18n";
-import webStorageClient from "@/shared/utils/webStorageClient";
+import { constants } from "@/core/settings";
+import axiosInstance from "../base/axiosInstance";
+import webLocalStorage from "@/shared/utils/webLocalStorage";
 import { RequestOptionsInterface } from "@/modules/auth/model/requestOptions";
 
 const postRequest = <T = any>(
@@ -11,17 +13,18 @@ const postRequest = <T = any>(
 ): Promise<T> => {
   const {
     data,
-    isFormData,
+    isFormData=false,
     enableFlashMessageSuccess = false,
     enableFlashMessageError = true,
   } = options || {};
-  const tokenClient = webStorageClient.getToken();
+  const tokenClient = webLocalStorage.get(constants?.ACCESS_TOKEN);
 
   // Common request configuration
   const config = {
     headers: {
       ...(tokenClient && { Authorization: `Bearer ${tokenClient}` }),
       "Content-Type": isFormData ? "multipart/form-data" : "application/json",
+      "lang": i18n.language,
     },
   };
 
@@ -29,7 +32,7 @@ const postRequest = <T = any>(
     .post(url, data, config)
     .then((res: any) => {
       if (enableFlashMessageSuccess && res.data?.message) {
-        message.success(
+        toast.success(
           i18n.t(`messages:messages.${res.data?.message}`, {
             defaultValue: res.data?.message || "",
           })
@@ -38,15 +41,14 @@ const postRequest = <T = any>(
       return res;
     })
     .catch((err: any) => {
-      if (enableFlashMessageError && err?.response?.data?.errors?.length > 0) {
-        err.response.data.errors.forEach((item: any) => {
-          message.error(
-            i18n.t(`messages:messages.${item.detail}`, {
-              defaultValue: item.detail || "",
-            })
-          );
+      if (enableFlashMessageError && isArray(err?.response?.data?.message)) {
+        err.response.data.message.forEach((item: any) => {
+          toast.error(item);
         });
+      }else if(enableFlashMessageError && err?.response?.data?.message){
+          toast.error(err?.response?.data?.message);
       }
+
       return Promise.reject(err);
     });
 };

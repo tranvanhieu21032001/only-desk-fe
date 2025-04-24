@@ -1,6 +1,5 @@
-import React, { useMemo } from "react";
 import { Image } from "antd";
-import { isArray } from "lodash";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
@@ -9,6 +8,7 @@ import {
   OptionsInterface,
 } from "@/modules/auth/model/common";
 import { useAppSelector } from "@/shared/hooks";
+import { useRouter } from "@/shared/hooks/useRouter";
 import themeColors from "@/shared/styles/themes/default/colors";
 import { langOptions } from "@/modules/auth/helpers/data/signIn";
 import fontWeight from "@/shared/styles/themes/default/fontWeight";
@@ -28,13 +28,11 @@ export default function AuthLayout({
 }) {
   const { t } = useTranslation("auth");
   const [search] = useSearchParams();
+  const { replaceState } = useRouter();
   const { currentObjHistory } = useAppSelector((state) => state?.historyRoute);
 
   const signUpType =
-    (isArray(currentObjHistory)
-      ? (currentObjHistory as objectHistoryInterface[]) || []
-      : []
-    )?.find((item: objectHistoryInterface) => item?.key === "type")?.value ||
+    (currentObjHistory || [])?.find((item: objectHistoryInterface) => item?.key === "type")?.value ||
     search.get("type") ||
     SignUpStepEnums?.SIGN_UP;
 
@@ -44,7 +42,26 @@ export default function AuthLayout({
   }, [window.location.pathname]);
 
   function handleBack() {
-    window.history.back();
+    switch (signUpType) {
+      case SignUpStepEnums?.SIGN_UP:
+        return window.history.back();
+      case SignUpStepEnums?.CONFIRM_CODE:
+        return replaceState({type: SignUpStepEnums?.SIGN_UP});  
+      case SignUpStepEnums?.YOUR_NAME:
+        return replaceState({type: SignUpStepEnums?.CONFIRM_CODE});   
+      case SignUpStepEnums?.WEBSITE_ADDRESS:
+        return replaceState({type: SignUpStepEnums?.YOUR_NAME});    
+      case SignUpStepEnums?.CONNECT_ONLY_CHAT:
+        return replaceState({type: SignUpStepEnums?.WEBSITE_ADDRESS});
+      case SignUpStepEnums?.COMPANY_SIZE:
+        return replaceState({type: SignUpStepEnums?.CONNECT_ONLY_CHAT});    
+      case SignUpStepEnums?.INVITE_YOUR_TEAM:
+        return replaceState({type: SignUpStepEnums?.COMPANY_SIZE});   
+      case SignUpStepEnums?.CUSTOMER:
+        return replaceState({type: SignUpStepEnums?.INVITE_YOUR_TEAM});        
+      default:
+        return window.history.back();
+    }
   }
 
   return (

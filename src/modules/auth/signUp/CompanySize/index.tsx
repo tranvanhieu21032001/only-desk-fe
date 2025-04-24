@@ -3,10 +3,12 @@ import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { isArray } from "lodash";
 
+import { constants } from "@/core/settings";
 import { useAppSelector } from "@/shared/hooks";
 import { useRouter } from "@/shared/hooks/useRouter";
 import { companySizes } from "../../helpers/data/signUp";
 import { SignUpStepEnums } from "../../helpers/enums/auth";
+import webLocalStorage from "@/shared/utils/webLocalStorage";
 
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
 import icTickCircle from "@/assets/icons/common/ic-tick-circle.svg";
@@ -16,18 +18,22 @@ import * as S from "./sign-up.styles";
 function CompanySize() {
   const { t } = useTranslation("auth");
   const [search] = useSearchParams();
-  const { currentObjHistory } = useAppSelector((state) => state?.historyRoute);
+  const { replaceState } = useRouter();
+  const signUpFromLocal =  webLocalStorage.get(constants?.SIGN_UP_INFO)
+  const { currentObjHistory }:any = useAppSelector((state) => state?.historyRoute);
 
   const companySize =
     (isArray(currentObjHistory) ? currentObjHistory : [])?.find(
       (item) => item?.key === "size"
-    )?.value || search.get("size");
+    )?.value || search.get("size") || signUpFromLocal?.companySize;
 
   const [form] = Form.useForm();
 
-  const { replaceState } = useRouter();
-
   function handleSignUp() {
+      webLocalStorage.set(constants?.SIGN_UP_INFO, {
+      ...signUpFromLocal,
+      companySize: companySize || ''})
+
     replaceState({
       type: SignUpStepEnums?.INVITE_YOUR_TEAM,
       size: "",
@@ -43,7 +49,7 @@ function CompanySize() {
   return (
     <S.SignInWrap>
       <S.SignInForm className="center-column-auth">
-        <S.FormWrap form={form}>
+        <S.FormWrap form={form} onFinish={handleSignUp}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center">
               {t("company-size.company-size")}
@@ -73,7 +79,7 @@ function CompanySize() {
 
           <S.LoginButton
             type="primary"
-            onClick={handleSignUp}
+            onClick={form.submit}
             disabled={!companySize}
           >
             {t("website.continue")}
