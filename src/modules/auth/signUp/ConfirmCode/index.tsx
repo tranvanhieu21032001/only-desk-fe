@@ -12,6 +12,8 @@ import Button from "@/shared/components/common/Button";
 import Typography from "@/shared/components/common/Typography";
 
 import icGoogle from "@/assets/icons/auth/ic-email.svg";
+import icEmail from "@/assets/icons/auth/ic-email.svg";
+import icGmail from "@/assets/icons/common/ic-google.svg";
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
 
 import * as S from "./sign-up.styles";
@@ -70,6 +72,11 @@ function ConfirmCode() {
     alert('Unsupported email provider');
   }
 }
+
+function isGmail() {
+  const domain = signUpFromLocal?.email.split('@')[1]?.toLowerCase();
+  return domain === 'gmail.com';
+}
   
   return (
     <S.SignInWrap>
@@ -105,6 +112,8 @@ function ConfirmCode() {
             <Button width="fit-content" onClick={handleOpenGmail}>
               <Image src={icGoogle} preview={false} width={24} height={28} />
               {t("confirm-code.open-email")}
+              <Image src={isGmail() ? icGmail : icEmail} preview={false} width={24} height={28} />
+              {t(`confirm-code.${isGmail() ? 'open-gmail' :'open-email'}`)}
             </Button>
           </S.Gmail>
 

@@ -107,6 +107,7 @@ function SignIn() {
               isRequired
               placeholder={t("enter-your-password")}
               type="password"
+              isPassword
             />
           </S.FormItem>
 
