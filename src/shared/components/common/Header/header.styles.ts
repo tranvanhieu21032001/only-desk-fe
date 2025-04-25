@@ -73,6 +73,19 @@ export const DropdownItem = styled.div`
   }
 `;
 
+export const CreateButton = styled.button`
+  background-color: #1E266D,
+  color: #fff,
+  border: none,
+  padding: 12px 20px,
+  border-radius: 8px,
+  font-size: 14px,
+  display: flex,
+  align-items: center,
+  gap: 6px,
+  cursor: pointer,
+`;
+
 export const IconButton = styled.button`
   background: none;
   border: none;
@@ -106,3 +119,153 @@ export const AddNewButton = styled.button`
     font-size: 18px;
   }
 `;
+
+export const FormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
+
+export const FormGap = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const Label = styled.label`
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 400;
+
+  span {
+    color: red;
+  }
+`;
+
+export const Input = styled.input`
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 14px;
+`;
+
+export const Select = styled.select`
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 14px;
+`;
+
+export const ParticipantsBox = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+`;
+
+export const ParticipantTag = styled.span`
+  background-color: #f2f2f2;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+`;
+
+export const DropdownRow = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 5px;
+`;
+
+export const DropdownHeader = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+
+  span {
+   color: #757575;
+   font-size: 14px;
+  }
+`;
+
+export const ArrowIcon = styled.span<{ isOpen: boolean }>`
+  margin-left: auto;
+  font-size: 12px;
+  transform: rotate(${({ isOpen }) => (isOpen ? "180deg" : "0deg")});
+  transition: transform 0.2s ease;
+`;
+
+export const DropdownList = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 4px;
+  overflow: hidden;
+  z-index: 10;
+`;
+
+export const TagsWrapper = styled.div`
+  display: flex;
+  padding: 8px;
+  border-radius: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  position: relative;
+  border: 1px solid #e8e8e8;
+`;
+
+export const Tag = styled.div`
+  display: flex;
+  align-items: center;
+  background: #FAFAFA;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #000;
+`;
+
+export const RemoveTagButton = styled.div`
+  background: none;
+  border: none;
+  color: #666;
+  margin-left: 4px;
+  cursor: pointer;
+  font-size: 12px;
+
+  img, 
+  svg {
+   width: 10px;
+   height: 10px;
+  }
+`;
+
+export const RemoveImage = styled.div`
+   width: 14px;
+   height: 10px;
+   display: flex;
+   justify-content: center;
+   align-items: center; 
+`;
+
+export const ClearAllButton = styled.button`
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: auto;
+`;
+

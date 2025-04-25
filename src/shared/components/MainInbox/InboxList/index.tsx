@@ -1,6 +1,10 @@
 import { Image } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 
+import AvatarWithStatus from '../../common/Avatar';
+
+import { notifications } from '@/core/settings/options';
+
 import * as S from './inbox-list.styles'
 
 import search from "@/assets/icons/common/ic-search.svg";
@@ -12,7 +16,7 @@ import unreadIcon from '@/assets/icons/common/ic-unread.svg';
 import copyIcon from '@/assets/icons/common/ic-copy-link.svg';
 import blockIcon from '@/assets/icons/common/ic-user-block.svg';
 import deleteIcon from '@/assets/icons/common/ic-delete-red.svg';
-import { notifications } from '@/core/settings/options';
+import flag from '@/assets/icons/common/ic-flag.svg'
 
 const NotificationList = () => {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
@@ -54,7 +58,13 @@ const NotificationList = () => {
 
       {notifications.map((n, index) => (
         <S.NotificationItem key={n.id}>
-          <S.Avatar src={n.avatar} alt={n.title} />
+          <S.Avatar>
+            <AvatarWithStatus
+              avatarSrc={n.avatar}
+              flagSrc={flag}
+              isOnline={true}
+            />
+          </S.Avatar>
           <S.Content>
             <S.Title>{n.title}</S.Title>
             <S.Subtitle>{n.subtitle}</S.Subtitle>
