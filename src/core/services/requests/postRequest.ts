@@ -24,7 +24,7 @@ const postRequest = <T = any>(
     headers: {
       ...(tokenClient && { Authorization: `Bearer ${tokenClient}` }),
       "Content-Type": isFormData ? "multipart/form-data" : "application/json",
-      "lang": i18n.language,
+      "Accept-Language": i18n.language,
     },
   };
 

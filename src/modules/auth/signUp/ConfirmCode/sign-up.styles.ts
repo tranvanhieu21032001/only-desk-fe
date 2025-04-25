@@ -98,6 +98,12 @@ export const Subtitle = styled(Typography)`
   text-align: center;
 `;
 
+export const Sub = styled(Typography)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const LoginLabelWrap = styled.div`
   margin-bottom: 36px;
 
@@ -105,6 +111,18 @@ export const LoginLabelWrap = styled.div`
     margin-bottom: 24px;
   }
 `;
+
+export const InputNumber= styled.input`
+ &[type='number']::-webkit-inner-spin-button,
+  &[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+`
 
 export const Email = styled.span`
   color: ${(props) => props?.theme?.colors?.primary};
@@ -171,3 +189,4 @@ export const DriversLicenseWrap = styled.div`
     margin-bottom: 24px;
   }
 `;
+

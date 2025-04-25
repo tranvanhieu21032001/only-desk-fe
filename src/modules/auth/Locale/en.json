@@ -50,13 +50,14 @@
 
   "confirm-code": {
     "enter-confirmation-code": "Enter confirmation code",
-    "we-sent": "We sent the code to <email>{{email}}</email> Go to your inbox, copy the code and paste it below to confirm your email",
+    "we-sent": "We sent the code to",
     "open-gmail": "Open Gmail",
     "continue": "Continue",
     "didnt-get": "Didn't get an email?",
     "get-a-new": "Get a new information",
     "confirmation-code": "Confirmation code successfully",
-    "resend-confirmation-code": "Resend confirmation code successfully"
+    "resend-confirmation-code": "Resend confirmation code successfully",
+    "go-to":"Go to your inbox, copy the code and paste it below to confirm your email"
   },
 
   "your-name": {
