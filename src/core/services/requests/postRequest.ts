@@ -5,7 +5,7 @@ import i18n from "@/core/services/i18n";
 import { constants } from "@/core/settings";
 import axiosInstance from "../base/axiosInstance";
 import webLocalStorage from "@/shared/utils/webLocalStorage";
-import { RequestOptionsInterface } from "@/modules/auth/model/requestOptions";
+import { RequestOptionsInterface } from "@/core/model/requestOptions";
 
 const postRequest = <T = any>(
   url: string,

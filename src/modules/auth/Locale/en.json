@@ -121,5 +121,17 @@
     "copy-invite-link": "Copy invite link",
     "cancel": "Cancel",
     "send-invite-and-continue": "Send invite and continue"
+  },
+
+  "forgot":{
+    "we-will":"We will send a recovery link to your inbox so that you can reset your password and access your account",
+    "recover-your-password":"Recover your password",
+    "please-enter-email":"Please enter your email",
+    "email":"Email",
+    "enter-your-email":"Enter your email",
+    "recovery-password":"Recovery password",
+    "return-to-sign-in":"Return to Sign In",
+    "create-new-password":"Create new password",
+    "save":"Save"
   }
 }

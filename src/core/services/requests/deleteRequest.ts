@@ -3,7 +3,7 @@ import { message } from "antd";
 import axiosInstance from "../base/axiosInstance";
 import i18n from "@/core/services/i18n";
 import webStorageClient from "@/shared/utils/webStorageClient";
-import { RequestOptionsInterface } from "@/modules/auth/model/requestOptions";
+import { RequestOptionsInterface } from "@/core/model/requestOptions";
 
 const deleteRequest = <T = any>(
   url: string,

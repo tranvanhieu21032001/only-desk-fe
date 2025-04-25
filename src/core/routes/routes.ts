@@ -5,6 +5,7 @@ import { RouterElementInterface } from "./model";
 
 const SignIn = React.lazy(() => import("@/modules/auth/SignIn"));
 const SignUp = React.lazy(() => import("@/modules/auth/signUp/Main"));
+const ForgotPassword = React.lazy(() => import("@/modules/auth/forgotPassword/Main"));
 
 const Main = React.lazy(() => import("@/modules/main/MainInbox"));
 const LandingPage = React.lazy(() => import("@/modules/landing"));
@@ -23,6 +24,12 @@ const routes_auth: RouterElementInterface[] = [
     path: AUTH_ROUTES?.SIGN_UP,
     component: SignUp,
     name: "auth-sign-up",
+  },
+  {
+    key: "forgot-password",
+    path: AUTH_ROUTES?.FORGOT_PASSWORD,
+    component: ForgotPassword,
+    name: "auth-forgot-password",
   },
 ];
 

@@ -158,7 +158,7 @@ const reset = css`
   }
 
   .box-container {
-    padding: 36px;
+    padding: 0 36px 36px;
 
     @media ${(props) => props?.theme?.breakpoints?.xlMax} {
       padding: 24px;
@@ -236,15 +236,14 @@ const reset = css`
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 300px);
+    min-height: calc(100vh - 250px);
 
     @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-      padding: 100px 0 !important;
+      padding: 70px 0 !important;
       min-height: calc(100vh - 80px);
     }
 
     @media ${(props) => props?.theme?.breakpoints?.xlMax} {
-      padding: 80px 0 !important;
       min-height: calc(100vh - 70px);
     }
 
@@ -262,7 +261,13 @@ const reset = css`
       min-height: calc(100vh -30px);
     }
   }
+
+  .center-column-forgot{
+    min-height: calc(100vh - 120px);
+  }
 `;
+  
+
 
 const typography = css`
   h1 {
