@@ -237,9 +237,9 @@ const reset = css`
     align-items: center;
     justify-content: center;
     min-height: calc(100vh - 250px);
+    padding: 70px 0 !important;
 
     @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-      padding: 70px 0 !important;
       min-height: calc(100vh - 80px);
     }
 

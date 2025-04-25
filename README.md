@@ -1,54 +1,90 @@
-# React + TypeScript + Vite
+A reusable, customizable chatbot widget built with React, TypeScript, and styled-components. Easily embeddable into any website to enhance user support and engagement.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🚀 Tech Stack
 
-Currently, two official plugins are available:
+- ⚛️ React 18 + Vite
+- 🟦 TypeScript
+- 💅 styled-components
+- 📦 pnpm (preferred package manager)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📸 Preview
 
-## Expanding the ESLint configuration
+![ChatWidget Preview](./public/preview.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+> The widget pops up as a floating button and expands into a modal when clicked.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🌱 Getting Started
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/your-username/chat-widget.git
+cd chat-widget
+
+# 2. Install dependencies
+pnpm install
+
+# 3. Start development server
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔐 Environment Variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create a `.env` file in the root folder:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```env
+VITE_API_URL=https://your-api.com
+VITE_OPENAI_KEY=your-openai-key
 ```
+
+You can duplicate `.env.example` if available.
+
+## 🔁 Git Workflow
+
+We use a lightweight Git flow:
+
+```text
+main        → production-ready code
+dev         → staging branch
+feature/*   → individual features
+fix/*       → bug fixes
+```
+
+### 👨‍💻 How to Contribute
+
+```bash
+# create a feature branch
+git checkout -b feature/your-feature-name
+
+# after changes
+git add .
+git commit -m "feat: add feature X"
+
+# push and create a PR
+git push origin feature/your-feature-name
+```
+
+## 📝 Commit Convention (Conventional Commits)
+
+- `feat`: A new feature
+- `fix`: A bug fix
+- `chore`: Maintenance
+- `refactor`: Code change that neither fixes a bug nor adds a feature
+- `docs`: Documentation only changes
+- `test`: Adding or updating tests
+
+```bash
+# example
+git commit -m "fix: prevent modal from closing on backdrop click"
+```
+
+## 📦 Build
+
+```bash
+pnpm build
+```
+
+The built widget can be embedded via `<script>` on any website (details in `/embed/README.md`).
+
+## 📄 License
+
+MIT © [Your Name or Org]
