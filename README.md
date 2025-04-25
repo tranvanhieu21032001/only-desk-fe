@@ -1,3 +1,5 @@
+# Only Chat Widget
+
 A reusable, customizable chatbot widget built with React, TypeScript, and styled-components. Easily embeddable into any website to enhance user support and engagement.
 
 ## 🚀 Tech Stack
@@ -5,7 +7,7 @@ A reusable, customizable chatbot widget built with React, TypeScript, and styled
 - ⚛️ React 18 + Vite
 - 🟦 TypeScript
 - 💅 styled-components
-- 📦 pnpm (preferred package manager)
+- 📦 pnpm or yarn (preferred package manager)
 
 ## 📸 Preview
 
@@ -17,8 +19,8 @@ A reusable, customizable chatbot widget built with React, TypeScript, and styled
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-username/chat-widget.git
-cd chat-widget
+git clone https://gitlab.com/minhtruong315/only-chat-fe
+cd only-chat
 
 # 2. Install dependencies
 pnpm install
@@ -29,11 +31,9 @@ pnpm dev
 
 ## 🔐 Environment Variables
 
-Create a `.env` file in the root folder:
-
+Create a `.env` for run local:
 ```env
 VITE_API_URL=https://your-api.com
-VITE_OPENAI_KEY=your-openai-key
 ```
 
 You can duplicate `.env.example` if available.
@@ -83,8 +83,27 @@ git commit -m "fix: prevent modal from closing on backdrop click"
 pnpm build
 ```
 
-The built widget can be embedded via `<script>` on any website (details in `/embed/README.md`).
+### ⚠️ Notes Before Pushing a PR
 
-## 📄 License
+- Ensure all errors and warnings are fixed:
+    - Run `pnpm lint` to check for linting issues.
+    - Run `pnpm test` to ensure all tests pass.
+- Verify the build:
+    - Run `pnpm build` to confirm the project builds without errors.
+- Double-check your changes:
+    - Ensure your code follows the project's coding standards.
+    - Update or add relevant documentation if necessary.
+- Rebase your branch with the latest `dev` branch:
+    ```bash
+    git checkout dev
+    git pull origin dev
+    git checkout feature/your-feature-name
+    git rebase dev
+    ```
+- Test your feature thoroughly in a local environment.
+- Add meaningful commit messages following the [Commit Convention](#-commit-convention-conventional-commits).
+- Review your code before creating the pull request.
+- Tag relevant reviewers when submitting the PR.
+- Include a clear description of the changes in the PR.
 
-MIT © [Your Name or Org]
+
