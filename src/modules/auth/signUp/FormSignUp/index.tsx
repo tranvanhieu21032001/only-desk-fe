@@ -1,5 +1,6 @@
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
+import { isEmpty } from "lodash";
 
 import { useEffect } from "react";
 import { constants } from "@/core/settings";
@@ -9,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useRouter } from "@/shared/hooks/useRouter";
 import { AUTH_ROUTES } from "@/core/routes/constants";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks";
+import webLocalStorage from "@/shared/utils/webLocalStorage";
 
 import Input from "@/shared/components/common/Input";
 import Checkbox from "@/shared/components/common/Checkbox";
@@ -19,9 +21,6 @@ import icApple from "@/assets/icons/common/ic-apple.svg";
 import icGoogle from "@/assets/icons/common/ic-google.svg";
 
 import * as S from "./sign-up.styles";
-import webLocalStorage from "@/shared/utils/webLocalStorage";
-import { isEmpty } from "lodash";
-
 
 function StartForFree() {
   const { t } = useTranslation("auth");

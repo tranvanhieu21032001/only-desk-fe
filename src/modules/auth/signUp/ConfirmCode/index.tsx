@@ -2,7 +2,9 @@ import { Form, Image } from "antd";
 import OTPInput from "react-otp-input";
 import { Trans, useTranslation } from "react-i18next";
 
+import { constants } from "@/core/settings";
 import { useRouter } from "@/shared/hooks/useRouter";
+import webLocalStorage from "@/shared/utils/webLocalStorage";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks";
 import { handleResendOtp, handleVerifyOtp } from "../../api/auth";
 
@@ -22,6 +24,8 @@ function ConfirmCode() {
 
   const {isLoading} = useAppSelector((state) => state?.auth);
     
+  const signUpFromLocal = webLocalStorage?.get(constants?.SIGN_UP_INFO)
+  
   function handleContinue(values:any) {
    const payloads ={
       code: values?.code,
@@ -48,7 +52,7 @@ function ConfirmCode() {
             <Trans
               textAlign="center"
               i18nKey={t("confirm-code.we-sent")}
-              values={{ email: "abc@gmail.com" }}
+              values={{ email: signUpFromLocal?.email || '--/--' }} 
               components={{ email: <S.Email /> }}
             />
           </S.LoginLabelWrap>

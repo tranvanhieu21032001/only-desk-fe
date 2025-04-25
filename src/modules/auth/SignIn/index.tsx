@@ -40,6 +40,10 @@ function SignIn() {
     navigate(AUTH_ROUTES?.SIGN_UP);
   }
 
+  function handleForgotPassWord() {
+    navigate(AUTH_ROUTES?.FORGOT_PASSWORD);
+  }
+
   return (
     <S.SignInWrap>
       <S.SignInForm className="center-column-auth">
@@ -81,7 +85,7 @@ function SignIn() {
             <Typography>{t('password')}
               <span style={{ color: "red" }}> *</span>
             </Typography>
-            <S.SignInAction>{t("forgot-password")}</S.SignInAction>
+            <S.SignInAction onClick={handleForgotPassWord}>{t("forgot-password")}</S.SignInAction>
           </S.ForgotPassword>
 
           <S.FormItem

@@ -3,7 +3,7 @@ import { message } from "antd";
 import i18n from "@/core/services/i18n";
 import axiosInstance from "../base/axiosInstance";
 import webStorageClient from "@/shared/utils/webStorageClient";
-import { RequestOptionsInterface } from "@/modules/auth/model/requestOptions";
+import { RequestOptionsInterface } from "@/core/model/requestOptions";
 
 const updateRequest = <T = any>(
   url: string,

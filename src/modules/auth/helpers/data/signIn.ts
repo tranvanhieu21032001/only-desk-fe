@@ -1,4 +1,4 @@
-import { OptionsInterface } from "../../model/common";
+import { OptionsInterface } from "@/core/model/common";
 
 import IconFlagAmerica from "@/assets/icons/common/ic-flag-america.svg";
 

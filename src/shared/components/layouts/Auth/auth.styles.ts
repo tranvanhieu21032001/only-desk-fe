@@ -13,6 +13,8 @@ export const WrapAuthLayout = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  position: relative;
 `;
 
 export const Inprogress = styled.div`
@@ -23,7 +25,7 @@ export const Inprogress = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  @media ${(props) => props?.theme?.breakpoints?.lgMax} {
+  @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
     margin: 24px 0;
   }
 
@@ -90,6 +92,21 @@ export const HeaderWrap = styled.div`
   }
 `;
 
+export const Header = styled.div`
+position: sticky;
+padding-top: 36px;
+top: 0;
+z-index: 2;
+background-color: ${(props) => props?.theme?.colors?.newtralLightest};
+
+  @media ${(props) => props?.theme?.breakpoints?.xlMax} {
+      padding-top: 24px;
+    }
+
+  @media ${(props) => props?.theme?.breakpoints?.lgMax} {
+      padding-top: 16px;
+    }
+`
 export const Logo = styled.img``;
 
 export const MultipleLangWrap = styled.div`

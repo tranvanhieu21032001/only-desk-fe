@@ -32,7 +32,7 @@ const handleSignUp = async (values: any,dispatch:any,replaceState:any, t:TFuncti
     replaceState({
       type: SignUpStepEnums?.CONFIRM_CODE,
     })
-    webLocalStorage.set(constants.SIGN_UP_INFO,values)
+    webLocalStorage.set(constants.SIGN_UP_INFO,{email:values?.email},)
     toast.success(t('sign-up-form.sign-up-success'))
     }).catch((err) =>err)
     .finally(() => dispatch(actionSignUp(false)));

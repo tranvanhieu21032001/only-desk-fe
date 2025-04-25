@@ -3,16 +3,14 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
-import {
-  objectHistoryInterface,
-  OptionsInterface,
-} from "@/modules/auth/model/common";
+
 import { useAppSelector } from "@/shared/hooks";
 import { useRouter } from "@/shared/hooks/useRouter";
 import themeColors from "@/shared/styles/themes/default/colors";
 import { langOptions } from "@/modules/auth/helpers/data/signIn";
 import fontWeight from "@/shared/styles/themes/default/fontWeight";
 import { SignUpStepEnums } from "@/modules/auth/helpers/enums/auth";
+import { objectHistoryInterface, OptionsInterface } from "@/core/model/common";
 
 import Typography from "@/shared/components/common/Typography";
 
@@ -67,6 +65,7 @@ export default function AuthLayout({
   return (
     <S.WrapAuthLayout>
       <S.AuthLayout className="box-container">
+        <S.Header>
         <S.HeaderWrap>
           <S.Logo src={logo} />
           <S.MultipleLangWrap>
@@ -122,6 +121,7 @@ export default function AuthLayout({
             </S.LineProgressWrap>
           </S.Inprogress>
         )}
+        </S.Header>
         <S.ChildrenWrap>{children}</S.ChildrenWrap>
       </S.AuthLayout>
     </S.WrapAuthLayout>

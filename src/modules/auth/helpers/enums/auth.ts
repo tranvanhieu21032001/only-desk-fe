@@ -9,4 +9,9 @@ enum SignUpStepEnums {
   CUSTOMER = "customer",
 }
 
-export { SignUpStepEnums };
+enum RecoverPassStepEnums {
+  RECOVER_PASS = "recover-pass",
+  CREATE_NEW_PASS = "create-new-pass",
+}
+
+export { SignUpStepEnums,RecoverPassStepEnums };
