@@ -1,5 +1,9 @@
 import { Image } from "antd";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+
+import { useRouter } from "@/shared/hooks/useRouter";
+import { SignUpStepEnums } from "../../helpers/enums/auth";
 
 import Typography from "@/shared/components/common/Typography";
 
@@ -9,6 +13,15 @@ import * as S from "./activation-product";
 
 function ActivationProduct() {
   const { t } = useTranslation("auth");
+  const { replaceState } = useRouter();
+
+  useEffect(() =>{
+    setTimeout(() => {
+       replaceState({
+      type: SignUpStepEnums?.YOUR_NAME,
+    })
+    }, 2000);
+  },[])
 
   return (
     <S.SignInWrap>

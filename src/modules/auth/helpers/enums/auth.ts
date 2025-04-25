@@ -7,6 +7,7 @@ enum SignUpStepEnums {
   COMPANY_SIZE = "company-size",
   INVITE_YOUR_TEAM = "invite-your-team",
   CUSTOMER = "customer",
+  ACTIVATING_PRODUCT = "activating-product",
 }
 
 enum RecoverPassStepEnums {
