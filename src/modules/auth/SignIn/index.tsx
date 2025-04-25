@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { handleSignInApi } from "../api/auth";
+import { passwordRegex } from "@/shared/regex";
 import { AUTH_ROUTES } from "@/core/routes/constants";
 import { useAppDispatch, useAppSelector } from "@/shared/hooks";
 
@@ -96,11 +97,16 @@ function SignIn() {
                 required: true,
                 message: t("please-enter-password"),
               },
+              {
+                pattern: passwordRegex,
+               message: t("sign-up-form.password-invalid"),
+              },
             ]}
           >
             <Input
               isRequired
               placeholder={t("enter-your-password")}
+              type="password"
             />
           </S.FormItem>
 

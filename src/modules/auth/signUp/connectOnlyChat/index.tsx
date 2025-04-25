@@ -1,13 +1,10 @@
-import { isEmpty } from "lodash";
 import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { useModal } from "@/shared/hooks";
-import { constants } from "@/core/settings";
 import { useRouter } from "@/shared/hooks/useRouter";
 import { SignUpStepEnums } from "../../helpers/enums/auth";
 import { connectPlugins } from "../../helpers/data/signUp";
-import webLocalStorage from "@/shared/utils/webLocalStorage";
 import themeColors from "@/shared/styles/themes/default/colors";
 import { renderStatusInstalled } from "../../helpers/auth.logic";
 import { AuthStatusInstalledCodeEnums } from "../../helpers/auth.enums";
@@ -29,8 +26,6 @@ function ConnectOnlyChat() {
   const [form] = Form.useForm();
   const { replaceState } = useRouter();
   const { visible: inviteModal, toggle: handleOpenModalInvite } = useModal();
-
-  const signUpFromLocal =  webLocalStorage.get(constants?.SIGN_UP_INFO)
 
   function handleInviteYourTeam() {
     replaceState({
@@ -158,7 +153,7 @@ function ConnectOnlyChat() {
             ))}
           </S.ConnectPluginWrap>
 
-          <S.LoginButton type="primary" onClick={() => form.submit()} disabled={isEmpty(signUpFromLocal?.invitedDevelopers || [])}>
+          <S.LoginButton type="primary" onClick={() => form.submit()} >
             {t("website.continue")}
             <Image src={icArrowRight} preview={false} />
           </S.LoginButton>

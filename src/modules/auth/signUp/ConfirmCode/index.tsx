@@ -1,6 +1,6 @@
 import { Form, Image } from "antd";
 import OTPInput from "react-otp-input";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import { constants } from "@/core/settings";
 import { useRouter } from "@/shared/hooks/useRouter";
@@ -14,6 +14,7 @@ import icGoogle from "@/assets/icons/common/ic-google.svg";
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
 
 import * as S from "./sign-up.styles";
+import Typography from "@/shared/components/common/Typography";
 
 function ConfirmCode() {
   const { t } = useTranslation("auth");
@@ -21,6 +22,7 @@ function ConfirmCode() {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch()
   const { replaceState } = useRouter();
+  const codeWatch = Form.useWatch("code",form);
 
   const {isLoading} = useAppSelector((state) => state?.auth);
     
@@ -41,6 +43,8 @@ function ConfirmCode() {
     //Handle later
   }
 
+  console.log(codeWatch);
+  
   return (
     <S.SignInWrap>
       <S.SignInForm className="center-column-auth">
@@ -49,38 +53,27 @@ function ConfirmCode() {
             <S.Title variant="h2" textAlign="center" margin="0 0 4px 0">
               {t("confirm-code.enter-confirmation-code")}
             </S.Title>
-            <Trans
-              textAlign="center"
-              i18nKey={t("confirm-code.we-sent")}
-              values={{ email: signUpFromLocal?.email || '--/--' }} 
-              components={{ email: <S.Email /> }}
-            />
+            <Typography textAlign="center">{t('confirm-code.we-sent')} <S.Email>{signUpFromLocal?.email || ' --/-- ' }</S.Email> {t('confirm-code.go-to')}</Typography>
           </S.LoginLabelWrap>
 
-          <Form.Item name="code" className="otp-form-item">
+            <Form.Item name="code" className="otp-form-item">
             <OTPInput
               onChange={(value) => {
-                if (value?.length === 6) {
-                  form.submit();
-                }
+              if (value?.length === 6) {
+              form.submit();
+              }
               }}
               containerStyle="otp-input-wrapper"
-              inputStyle="otp-input"
               shouldAutoFocus={true}
               numInputs={6}
               renderInput={(props) => (
-                <input
-                  {...props}
-                  onKeyDown={(event) => {
-                    const re = /^[0-9\b]+$/;
-                    if (!re.test(event?.key) && event?.key !== "Backspace") {
-                      event?.preventDefault();
-                    }
-                  }}
-                />
+              <S.InputNumber
+              {...props}
+              type="number"
+              />
               )}
             />
-          </Form.Item>
+            </Form.Item>
 
           <S.Gmail>
             <Button width="fit-content" onClick={handleOpenGmail}>
@@ -90,7 +83,7 @@ function ConfirmCode() {
           </S.Gmail>
 
           <S.Continue>
-            <S.LoginButton type="primary" onClick={form.submit} isLoading={isLoading} disabled={isLoading}>
+            <S.LoginButton type="primary" onClick={form.submit} isLoading={isLoading} disabled={isLoading || codeWatch?.length < 6 || !codeWatch}>
               {t("confirm-code.continue")}
               <Image src={icArrowRight} preview={false} />
             </S.LoginButton>

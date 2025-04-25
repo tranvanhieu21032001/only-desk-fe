@@ -18,11 +18,12 @@ function Customer() {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch()
   const { navigate } = useRouter();
+  const { replaceState } = useRouter();
 
   const {isLoading} = useAppSelector((state) => state?.auth);
 
   function handleInviteYourTeam(values:any) {
-    handleFinishSignUp(values, dispatch, navigate, t);
+    handleFinishSignUp(values, dispatch, navigate, t, replaceState);
   }
 
   return (

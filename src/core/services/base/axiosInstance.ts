@@ -81,7 +81,7 @@ axiosInstance.interceptors.response.use(
       //     });
       // }
 
-      return
+      return Promise.reject(error);
     }
     return Promise.reject(error);
   }
