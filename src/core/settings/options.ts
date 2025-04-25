@@ -42,3 +42,5 @@ export const notifications = [
 export const options = ["None assigned", "User 1", "User 2", "User 3"];
 
 export const initialTags = ["Tag", "Tag", "Tag"];
+
+export const participant = ["participant 1", "participant 2", "participant 3"];

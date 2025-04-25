@@ -72,12 +72,8 @@ export const NotificationItem = styled.div`
   }
 `;
 
-export const Avatar = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+export const Avatar = styled.div`
   margin-right: 12px;
-  object-fit: cover;
 `;
 
 export const Content = styled.div`
