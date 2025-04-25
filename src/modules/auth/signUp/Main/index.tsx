@@ -12,6 +12,7 @@ import CompanySize from "../CompanySize";
 import WebsiteAddress from "../WebsiteAddress";
 import InviteYourTeam from "../InviteYourTeam";
 import ConnectOnlyChat from "../connectOnlyChat";
+import ActivationProduct from "../ActivationProduct";
 
 import * as S from "./sign-up.styles";
 
@@ -28,6 +29,8 @@ function SignUp() {
         return <StartForFree />;
       case SignUpStepEnums?.CONFIRM_CODE:
         return <ConfirmCode />;
+      case SignUpStepEnums?.ACTIVATING_PRODUCT:
+        return <ActivationProduct />;  
       case SignUpStepEnums?.YOUR_NAME:
         return <YourName />;
       case SignUpStepEnums?.WEBSITE_ADDRESS:

@@ -37,7 +37,7 @@ function YourName() {
   return (
     <S.SignInWrap>
       <S.SignInForm className="center-column-auth">
-        <S.FormWrap form={form} onFinish={handleSignUp}>
+        <S.FormWrap form={form} onFinish={handleSignUp} validateTrigger="onSubmit">
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center" margin="0 0 4px 0">
               {t("your-name.whats-your-name")}

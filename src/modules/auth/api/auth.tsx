@@ -48,7 +48,7 @@ const handleVerifyOtp = async(payloads:{
     data: {...payloads, email:email},
     }).then((res) =>{
     replaceState({
-      type: SignUpStepEnums?.YOUR_NAME,
+      type: SignUpStepEnums?.ACTIVATING_PRODUCT,
     })
     webLocalStorage.set(constants.ACCESS_TOKEN,res?.token)
     toast.success(t('confirm-code.confirmation-code'))
@@ -56,15 +56,13 @@ const handleVerifyOtp = async(payloads:{
     .finally(() => dispatch(actionSignUp(false)));
 }
 
-const handleResendOtp = async(dispatch:any, t:TFunction) =>{
-    dispatch(actionSignUp(true))
+const handleResendOtp = async(t:TFunction) =>{
     const payloads =webLocalStorage.get(constants.SIGN_UP_INFO)?.email
    await postRequest(endpointAuth?.RESEND_OTP, {
     data: {email:payloads},
     }).then(() =>{
     toast.success(t('confirm-code.resend-confirmation-code'))
     }).catch((err) =>err)
-    .finally(() => dispatch(actionSignUp(false)));
 }
 
 const handleFinishSignUp = async (values: any, dispatch:any, navigate:any, t:TFunction, replaceState:any) => {

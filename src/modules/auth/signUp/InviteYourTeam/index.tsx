@@ -80,14 +80,15 @@ function InviteYourTeam() {
                     <Form.Item
                       {...restField}
                       name={[name, "businessEmail"]}
-                      rules={[
-                        {
-                          required: true,
-                          message: t(
-                            "invite-your-team.please-enter-business-email"
-                          ),
-                        },
-                      ]}
+                      //TODO
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: t(
+                      //       "invite-your-team.please-enter-business-email"
+                      //     ),
+                      //   },
+                      // ]}
                     >
                       <Input
                         placeholder={t(

@@ -10,7 +10,7 @@ import { handleResendOtp, handleVerifyOtp } from "../../api/auth";
 
 import Button from "@/shared/components/common/Button";
 
-import icGoogle from "@/assets/icons/common/ic-google.svg";
+import icGoogle from "@/assets/icons/auth/ic-email.svg";
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
 
 import * as S from "./sign-up.styles";
@@ -36,7 +36,7 @@ function ConfirmCode() {
   }
 
   function handleGetANewOtp() {
-   handleResendOtp(dispatch, t);
+   handleResendOtp(t);
   }
 
   function handleOpenGmail() {
@@ -77,8 +77,8 @@ function ConfirmCode() {
 
           <S.Gmail>
             <Button width="fit-content" onClick={handleOpenGmail}>
-              <Image src={icGoogle} preview={false} />
-              {t("confirm-code.open-gmail")}
+              <Image src={icGoogle} preview={false} width={24} height={28} />
+              {t("confirm-code.open-email")}
             </Button>
           </S.Gmail>
 
