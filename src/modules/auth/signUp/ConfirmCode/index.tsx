@@ -9,12 +9,12 @@ import { useAppDispatch, useAppSelector } from "@/shared/hooks";
 import { handleResendOtp, handleVerifyOtp } from "../../api/auth";
 
 import Button from "@/shared/components/common/Button";
+import Typography from "@/shared/components/common/Typography";
 
-import icGoogle from "@/assets/icons/common/ic-google.svg";
+import icGoogle from "@/assets/icons/auth/ic-email.svg";
 import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
 
 import * as S from "./sign-up.styles";
-import Typography from "@/shared/components/common/Typography";
 
 function ConfirmCode() {
   const { t } = useTranslation("auth");
@@ -36,14 +36,40 @@ function ConfirmCode() {
   }
 
   function handleGetANewOtp() {
-   handleResendOtp(dispatch, t);
+   handleResendOtp(t);
   }
 
   function handleOpenGmail() {
-    //Handle later
-  }
+  const domain: string = signUpFromLocal?.email.split('@')[1]?.toLowerCase() || '';
+  const providers = {
+    'gmail.com': 'https://mail.google.com',
+    'outlook.com': 'https://outlook.live.com',
+    'hotmail.com': 'https://outlook.live.com',
+    'yahoo.com': 'https://mail.yahoo.com',
+    'icloud.com': 'https://www.icloud.com/mail',
+    'aol.com': 'https://mail.aol.com',
+    'gmx.com': 'https://mail.gmx.com',
+    'mail.com': 'https://www.mail.com',
+    'proton.me': 'https://proton.me/mail',
+    'zoho.com': 'https://mail.zoho.com',
+    'yandex.com': 'https://mail.yandex.com',
+    'mail.ru': 'https://mail.ru',
+    '163.com': 'https://mail.163.com',
+    '126.com': 'https://mail.126.com',
+    'qq.com': 'https://mail.qq.com',
+    'fastmail.com': 'https://fastmail.com',
+    'tutanota.com': 'https://mail.tutanota.com',
+    'posteo.de': 'https://posteo.de',
+    'hushmail.com': 'https://www.hushmail.com'
+  };
 
-  console.log(codeWatch);
+  const url = providers?.[domain as keyof typeof providers];
+  if (url) {
+    window.open(url, '_blank');
+  } else {
+    alert('Unsupported email provider');
+  }
+}
   
   return (
     <S.SignInWrap>
@@ -77,8 +103,8 @@ function ConfirmCode() {
 
           <S.Gmail>
             <Button width="fit-content" onClick={handleOpenGmail}>
-              <Image src={icGoogle} preview={false} />
-              {t("confirm-code.open-gmail")}
+              <Image src={icGoogle} preview={false} width={24} height={28} />
+              {t("confirm-code.open-email")}
             </Button>
           </S.Gmail>
 
