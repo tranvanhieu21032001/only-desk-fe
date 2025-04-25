@@ -40,7 +40,7 @@ const NotificationList = () => {
     setActiveMenu(activeMenu === index ? null : index);
   };
 
-  const handleMenuItemClick = (action: string, e: React.MouseEvent) => {
+  const handleMenuItemClick = (_action: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveMenu(null);
   };

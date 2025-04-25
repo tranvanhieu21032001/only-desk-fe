@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import CreateConversationModal from '../Modal';
 
-import { participant } from '@/core/settings/options';
+import { conversationOptions, participant } from '@/core/settings/options';
 
 import * as S from './header.styles';
 
@@ -22,8 +22,8 @@ const Header: React.FC = () => {
     const { t } = useTranslation("main");
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selected] = useState("Choose type of conversation");
-    const [openDropdown, setOpenDropdown] = useState(false);
+    const [selected, setSelected] = useState("");
+    const [selectDropdownOpen, setSelectDropdownOpen] = useState(false);
     const [tags, setTags] = useState(participant);
 
     const removeTag = (index: number) => {
@@ -121,11 +121,30 @@ const Header: React.FC = () => {
                             <S.Label>
                                 Type of conversation <span>*</span>
                             </S.Label>
+
                             <S.DropdownRow>
-                                <S.DropdownHeader onClick={() => setOpenDropdown(!openDropdown)}>
-                                    <span>{selected}</span>
-                                    <S.ArrowIcon isOpen={openDropdown}><Image src={arrDown} preview={false} /></S.ArrowIcon>
+                                <S.DropdownHeader onClick={() => setSelectDropdownOpen(!selectDropdownOpen)}>
+                                    <span>
+                                        {selected || "Choose type of conversation"}
+                                    </span>
+
+                                    <S.ArrowIcon isOpen={selectDropdownOpen}>
+                                        <Image src={arrDown} preview={false} />
+                                    </S.ArrowIcon>
                                 </S.DropdownHeader>
+
+                                {selectDropdownOpen && (
+                                    <S.DropdownList>
+                                        {conversationOptions.map((option, idx) => (
+                                            <S.DropdownItem key={idx} onClick={() => {
+                                                setSelected(option);
+                                                setSelectDropdownOpen(false);
+                                            }}>
+                                                {option}
+                                            </S.DropdownItem>
+                                        ))}
+                                    </S.DropdownList>
+                                )}
                             </S.DropdownRow>
                         </S.FormGap>
 
