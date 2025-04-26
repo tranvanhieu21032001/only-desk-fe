@@ -1,5 +1,6 @@
-import styled, { css } from "styled-components";
 import { Modal } from "antd";
+
+import styled, { css } from "styled-components";
 
 export const ModalCustom = styled(Modal)<{ $isFullScreen: boolean }>`
   ${({ $isFullScreen }) =>

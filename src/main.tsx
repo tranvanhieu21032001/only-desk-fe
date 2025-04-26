@@ -26,7 +26,7 @@ function Index() {
         <StrictMode>
           <I18nextProvider i18n={i18n}>
             <App />
-            <ToastContainer />
+            <ToastContainer position="bottom-right" hideProgressBar={true} />
           </I18nextProvider>
         </StrictMode>
       </ThemeProvider>
