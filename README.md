@@ -33,10 +33,10 @@ pnpm dev
 
 Create a `.env` for run local:
 ```env
-VITE_API_URL=https://api.sombes.com/api
+VITE_API_SERVER=https://api.sombes.com/api
 ```
 
-You can duplicate `.env.example` if available.
+You can duplicate `.env.dev` if available.
 
 ## 🔁 Git Workflow
 
