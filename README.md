@@ -33,7 +33,7 @@ pnpm dev
 
 Create a `.env` for run local:
 ```env
-VITE_API_URL=https://your-api.com
+VITE_API_URL=https://api.sombes.com/api
 ```
 
 You can duplicate `.env.example` if available.
