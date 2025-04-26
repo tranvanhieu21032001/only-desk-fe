@@ -1,7 +1,5 @@
 import { omit } from "lodash";
 import { TFunction } from "i18next";
-import { toast } from "react-toastify";
-
 
 import { constants } from "@/core/settings";
 
@@ -28,12 +26,12 @@ const handleSignUp = async (values: any,dispatch:any,replaceState:any, t:TFuncti
     //TODO
    await postRequest(endpointAuth?.SIGN_UP, {
     data: {...updateData,phoneNumber: '0982123456'},
+    messageSuccess:t('sign-up-form.sign-up-success'),
     }).then(() =>{
     replaceState({
       type: SignUpStepEnums?.CONFIRM_CODE,
     })
     webLocalStorage.set(constants.SIGN_UP_INFO,{email:values?.email},)
-    toast.success(t('sign-up-form.sign-up-success'))
     }).catch((err) =>err)
     .finally(() => dispatch(actionSignUp(false)));
 }
@@ -46,12 +44,12 @@ const handleVerifyOtp = async(payloads:{
     
    await postRequest(endpointAuth?.VERIFY_OTP, {
     data: {...payloads, email:email},
+    messageSuccess:t('confirm-code.confirmation-code'),
     }).then((res) =>{
     replaceState({
       type: SignUpStepEnums?.ACTIVATING_PRODUCT,
     })
     webLocalStorage.set(constants.ACCESS_TOKEN,res?.token)
-    toast.success(t('confirm-code.confirmation-code'))
     }).catch((err) =>err)
     .finally(() => dispatch(actionSignUp(false)));
 }
@@ -60,8 +58,8 @@ const handleResendOtp = async(t:TFunction) =>{
     const payloads =webLocalStorage.get(constants.SIGN_UP_INFO)?.email
    await postRequest(endpointAuth?.RESEND_OTP, {
     data: {email:payloads},
+    messageSuccess:t('confirm-code.resend-confirmation-code'),
     }).then(() =>{
-    toast.success(t('confirm-code.resend-confirmation-code'))
     }).catch((err) =>err)
 }
 
@@ -73,6 +71,7 @@ const handleFinishSignUp = async (values: any, dispatch:any, navigate:any, t:TFu
 
   await postRequest(endpointAuth?.COMPLETE_SIGN_UP, {
     data: updatePayloads,
+    messageSuccess:t('sign-up-form.sign-up-success'),
   }).then(() => {
     replaceState({
       type:'',
@@ -80,7 +79,6 @@ const handleFinishSignUp = async (values: any, dispatch:any, navigate:any, t:TFu
     localStorage.removeItem(constants?.SIGN_UP_INFO)
 
     navigate(AUTH_ROUTES?.SIGN_IN)
-    toast.success(t('sign-up-form.sign-up-success'))
   }).catch((err) => err)
   .finally(() => dispatch(actionSignUp(false)));
 }
@@ -91,6 +89,7 @@ const handleSignInApi = async (values: any, dispatch:any,navigate:any, t:TFuncti
 
     await postRequest(endpointAuth?.SIGN_IN, {
     data: updatePayloads,
+    messageSuccess:t('sign-in-success'),
   }).then((res) => {
     dispatch(actionLogin({
       isAuth: true,
@@ -103,7 +102,6 @@ const handleSignInApi = async (values: any, dispatch:any,navigate:any, t:TFuncti
     }))
 
     navigate(ADMIN_ROUTES?.DASHBOARD)
-    toast.success(t('sign-in-success'))
   }).catch((err) => err)
   .finally(() => dispatch(actionSignUp(false)));
 }  

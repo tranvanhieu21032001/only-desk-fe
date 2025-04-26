@@ -4,6 +4,8 @@ export interface RequestOptionsInterface {
   isFormData?: boolean;
   enableFlashMessageSuccess?: boolean;
   enableFlashMessageError?: boolean;
+  messageSuccess?: string;
+  messageError?: string;
 }
 
 export interface ParamsInterface {

@@ -1,3 +1,4 @@
+import React from "react";
 import { isArray } from "lodash";
 import { toast } from "react-toastify";
 
@@ -5,7 +6,10 @@ import i18n from "@/core/services/i18n";
 import { constants } from "@/core/settings";
 import axiosInstance from "../base/axiosInstance";
 import webLocalStorage from "@/shared/utils/webLocalStorage";
+import { ToastMessageType } from "@/shared/helper/enums/common";
 import { RequestOptionsInterface } from "@/core/model/requestOptions";
+
+import ToastMessage from "@/shared/components/common/ToastMessage";
 
 const postRequest = <T = any>(
   url: string,
@@ -14,8 +18,8 @@ const postRequest = <T = any>(
   const {
     data,
     isFormData=false,
-    enableFlashMessageSuccess = false,
-    enableFlashMessageError = true,
+    messageSuccess = "",
+    messageError = "",
   } = options || {};
   const tokenClient = webLocalStorage.get(constants?.ACCESS_TOKEN);
 
@@ -31,22 +35,30 @@ const postRequest = <T = any>(
   return (axiosInstance as any)
     .post(url, data, config)
     .then((res: any) => {
-      if (enableFlashMessageSuccess && res.data?.message) {
-        toast.success(
-          i18n.t(`messages:messages.${res.data?.message}`, {
-            defaultValue: res.data?.message || "",
-          })
-        );
-      }
+          toast(React.createElement(ToastMessage, {
+            typeToast: ToastMessageType?.SUCCESS,
+            message: messageSuccess ? messageSuccess: res.data?.message
+        }));
       return res;
     })
     .catch((err: any) => {
-      if (enableFlashMessageError && isArray(err?.response?.data?.message)) {
+      if(messageError){
+        toast(React.createElement(ToastMessage, {
+            typeToast: ToastMessageType?.ERROR,
+            message:messageError
+        }));
+      }else if (isArray(err?.response?.data?.message)) {
         err.response.data.message.forEach((item: any) => {
-          toast.error(item);
+           toast(React.createElement(ToastMessage, {
+            typeToast: ToastMessageType?.ERROR,
+            message:item
+        }));
         });
-      }else if(enableFlashMessageError && err?.response?.data?.message){
-          toast.error(err?.response?.data?.message);
+      }else if(err?.response?.data?.message){
+           toast(React.createElement(ToastMessage, {
+            typeToast: ToastMessageType?.ERROR,
+            message:err?.response?.data?.message
+        }));
       }
 
       return Promise.reject(err);
