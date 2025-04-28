@@ -3,8 +3,9 @@ import { useState } from "react";
 
 import Collapse from "../../common/Collapse";
 import AvatarWithStatus from "../../common/Avatar";
+import ProfilePreviewModal from "../ProfilePreviewModal";
 
-import { initialTags, options } from "@/core/settings/options";
+import { initialTags } from "@/core/settings/options";
 
 import * as S from "./inbox-sidebar.styles";
 
@@ -25,11 +26,23 @@ import message from '@/assets/icons/common/ic-message-info.svg'
 import copy from '@/assets/icons/common/ic-copy.svg'
 import edit from '@/assets/icons/common/ic-edit.svg'
 import close from '@/assets/icons/common/ic-close-circle.svg'
+import chatBlue from '@/assets/icons/common/ic-chat-blue.svg'
+import badge from '@/assets/icons/common/ic-badge.svg'
+import addBlue from '@/assets/icons/common/ic-add-blue.svg'
+import earthBlue from '@/assets/icons/common/ic-earth-blue.svg'
+import locationBlue from '@/assets/icons/common/ic-locaion-blue.svg'
+import cloudBlue from '@/assets/icons/common/ic-cloud-blue.svg'
+import screen from '@/assets/icons/common/ic-screen.svg'
+import flagAmerica from '@/assets/icons/common/ic-flag-america.svg'
+import company from '@/assets/icons/common/ic-company.svg'
+import noteBlue from '@/assets/icons/common/ic-note-blue.svg'
+import tagsBlue from '@/assets/icons/common/ic-tags-blue.svg'
 
 const InboxSidebar = () => {
   const [openCollapse] = useState(true);
   const [selected, setSelected] = useState("None assigned");
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [tags, setTags] = useState(initialTags);
 
   const handleSelect = (option: string) => {
@@ -45,6 +58,8 @@ const InboxSidebar = () => {
   const clearAll = () => {
     setTags([]);
   };
+
+  const options = ["None assigned", "User 1", "User 2", "User 3"];
 
   return (
     <S.Container>
@@ -71,7 +86,239 @@ const InboxSidebar = () => {
         </S.HoverArea>
       </S.ProfileSection>
 
-      <S.countryCenter>View profile</S.countryCenter>
+      <S.countryCenter onClick={() => setShowModal(true)}>View profile</S.countryCenter>
+
+      {showModal && (
+        <ProfilePreviewModal isOpen={true} onClose={() => setShowModal(false)}>
+          <S.PanelWrapper>
+            {/* Header */}
+            <S.PanelHeader>
+              <S.PanelColumn>
+                <S.ProfileSection>
+                  <AvatarWithStatus
+                    avatarSrc={defaultAvatar}
+                    flagSrc={flag}
+                    isOnline={true}
+                  />
+                  <S.ProfileInfo>
+                    <S.NameRow>
+                      <S.Name>Sophia Williams</S.Name>
+                    </S.NameRow>
+                    <S.Email>sophia@alignui.com</S.Email>
+                  </S.ProfileInfo>
+                </S.ProfileSection>
+
+                <S.PanelItem>
+                  <S.PanelP>Created Date: 19/04/2024</S.PanelP>
+                  <S.PanelP>Last active: 5 hour ago</S.PanelP>
+                </S.PanelItem>
+              </S.PanelColumn>
+            </S.PanelHeader>
+
+            {/* Conversation */}
+            <S.PanelSection>
+              <S.SectionHeading>
+                <S.SectionWidth>
+                  <Image src={chatBlue} preview={false} />
+                  Conversation
+                  <Image src={badge} preview={false} />
+                </S.SectionWidth>
+
+                <S.SectionButton>
+                  <Image src={addBlue} preview={false} />
+                  New Conversation
+                </S.SectionButton>
+              </S.SectionHeading>
+
+              <S.SectionCompan>
+                <AvatarWithStatus
+                  avatarSrc={defaultAvatar}
+                  flagSrc={flag}
+                  isOnline={true}
+                />
+
+                <S.SectionW>
+                  <S.DetailRow>
+                    <S.DetailValue>Admin 3</S.DetailValue>
+                    <S.UserMeta>10m</S.UserMeta>
+                  </S.DetailRow>
+                  <S.UserMeta>John Smith submitted web form</S.UserMeta>
+                </S.SectionW>
+              </S.SectionCompan>
+            </S.PanelSection>
+
+            {/* Page */}
+            <S.PanelSection>
+              <S.SectionHeading>
+                <S.SectionWidth>
+                  <Image src={earthBlue} preview={false} />
+                  Page Visited Recently
+                </S.SectionWidth>
+              </S.SectionHeading>
+
+              <div className="">
+                <S.SectionCompan>
+                  <S.SectionCompoint>
+                    <S.SectionCompanTitle>
+                      Time on website
+                    </S.SectionCompanTitle>
+                    <S.SectionCompanTime>
+                      3s
+                    </S.SectionCompanTime>
+                  </S.SectionCompoint>
+
+                  <S.SectionCompointRight>
+                    <S.SectionCompanTitle>
+                      Device information
+                    </S.SectionCompanTitle>
+                    <S.SectionRowInfor>
+                      <S.SectionChormeChild>
+                        <Image src={chorme} preview={false} />
+                        Chrome on Win10
+                      </S.SectionChormeChild>
+                      <S.SectionIPp>2001:ee0:4b49:2e80::</S.SectionIPp>
+                    </S.SectionRowInfor>
+                  </S.SectionCompointRight>
+                </S.SectionCompan>
+
+                <S.SectionCloudRow>
+                  <S.SectionCloudOne>
+                    <Image src={cloudBlue} preview={false} />
+                    MyBlog - Just another WordPress site
+                  </S.SectionCloudOne>
+
+                  <S.SectionCloudTwo>
+                    6 hour ago
+                    <Image src={screen} preview={false} />
+                  </S.SectionCloudTwo>
+                </S.SectionCloudRow>
+
+                <S.SectionCloudRow>
+                  <S.SectionCloudOne>
+                    <Image src={cloudBlue} preview={false} />
+                    MyBlog - Just another WordPress site
+                  </S.SectionCloudOne>
+
+                  <S.SectionCloudTwo>
+                    6 hour ago
+                    <Image src={screen} preview={false} />
+                  </S.SectionCloudTwo>
+                </S.SectionCloudRow>
+              </div>
+            </S.PanelSection>
+
+            {/* Last */}
+            <S.PanelSection>
+              <S.SectionHeading>
+                <S.SectionWidth>
+                  <Image src={locationBlue} preview={false} />
+                  Last Reported Location
+                </S.SectionWidth>
+              </S.SectionHeading>
+
+              <S.LastSection>
+                <S.LastSectionLeft>
+                  City, country
+                </S.LastSectionLeft>
+
+                <S.LastSectionp>
+                  Da Nang, Vietnam
+                </S.LastSectionp>
+              </S.LastSection>
+
+              <S.LastSection>
+                <S.LastSectionLeft>
+                  Local time
+                </S.LastSectionLeft>
+
+                <S.LastSectionp>
+                  2:34pm <span>(UTC +7)</span>
+                </S.LastSectionp>
+              </S.LastSection>
+
+              <S.LastSection>
+                <S.LastSectionLeft>
+                  Languages
+                </S.LastSectionLeft>
+
+                <S.LastSectionImage>
+                  <Image src={flagAmerica} preview={false} />
+                </S.LastSectionImage>
+              </S.LastSection>
+            </S.PanelSection>
+
+            {/* Company */}
+            <S.CompanyRow>
+              <S.PanelSectionEnd>
+                <S.SectionHeading>
+                  <S.SectionWidth>
+                    <Image src={company} preview={false} />
+                    Company
+                  </S.SectionWidth>
+                </S.SectionHeading>
+
+                <S.CompanyP>
+                  Company
+                </S.CompanyP>
+
+                <S.CompanyP>
+                  Company
+                </S.CompanyP>
+
+                <S.CompanyP>
+                  Company
+                </S.CompanyP>
+
+                <S.CompanyP>
+                  Company
+                </S.CompanyP>
+
+                <S.CompanyP>
+                  Company
+                </S.CompanyP>
+
+                <S.CompanyP>
+                  Company
+                </S.CompanyP>
+
+                <S.CompanyP>
+                  Company
+                </S.CompanyP>
+              </S.PanelSectionEnd>
+
+              <S.PanelSectionNotepad>
+                <S.PanelSectionColumn>
+                  <S.SectionHeading>
+                    <S.SectionWidth>
+                      <Image src={noteBlue} preview={false} />
+                      Private Notepad
+                    </S.SectionWidth>
+                  </S.SectionHeading>
+
+                  <S.NoteBox>
+                    This is a note. This is a note. This is a note. This is a note.
+                  </S.NoteBox>
+                </S.PanelSectionColumn>
+
+                <S.PanelSection>
+                  <S.SectionHeading>
+                    <S.SectionWidth>
+                      <Image src={tagsBlue} preview={false} />
+                      Segments
+                    </S.SectionWidth>
+                  </S.SectionHeading>
+
+                  <S.TagsContainer>
+                    <S.TagItem>Tag</S.TagItem>
+                    <S.TagItem>Tag</S.TagItem>
+                    <S.TagItem>Tag</S.TagItem>
+                  </S.TagsContainer>
+                </S.PanelSection>
+              </S.PanelSectionNotepad>
+            </S.CompanyRow>
+          </S.PanelWrapper>
+        </ProfilePreviewModal>
+      )}
 
       <Collapse title="Main Information">
         <S.DropdownWrapper>

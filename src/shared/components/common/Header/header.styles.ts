@@ -177,6 +177,7 @@ export const DropdownRow = styled.div`
   align-items: center;
   justify-content: start;
   gap: 5px;
+  position: relative; 
 `;
 
 export const DropdownHeader = styled.div`
@@ -219,6 +220,7 @@ export const DropdownList = styled.div`
 export const TagsWrapper = styled.div`
   display: flex;
   padding: 8px;
+  height: 42px;
   border-radius: 8px;
   align-items: center;
   flex-wrap: wrap;
@@ -267,5 +269,35 @@ export const ClearAllButton = styled.button`
   cursor: pointer;
   font-size: 16px;
   margin-left: auto;
+`;
+
+export const TypeDropdownMenu = styled.div`
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+`;
+
+export const TypeDropdownItem = styled.div`
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    
+    &:hover {
+        background-color: #f5f5f5;
+    }
+    
+    &:not(:last-child) {
+        border-bottom: 1px solid #f0f0f0;
+    }
 `;
 

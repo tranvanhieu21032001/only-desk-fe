@@ -224,6 +224,7 @@ export const CountryRow = styled.div`
 
 export const countryCenter = styled.div`
   display: flex;
+  cursor: pointer;
   align-items: center;
   justify-content: center;
   color: #3750b2;
@@ -342,3 +343,325 @@ export const ClearAllButton = styled.button`
   font-size: 16px;
   margin-left: auto;
 `;
+
+export const PanelWrapper = styled.div`
+  background: white;
+  border-radius: 10px;
+`;
+
+export const PanelHeader = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+`;
+
+export const UserAvatar = styled.img`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+`;
+
+export const UserDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+`;
+
+export const UserName = styled.h2`
+  margin: 0;
+  font-size: 18px;
+`;
+
+export const UserEmail = styled.span`
+  font-size: 14px;
+  color: #666;
+`;
+
+export const UserMeta = styled.div`
+  font-size: 14px;        
+  line-height: 23px;
+  font-weight: 400;
+  color: #8A8A8A;
+`;
+
+export const PanelSection = styled.div`
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+`;
+
+export const SectionHeading = styled.p`
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const SectionW = styled.div`
+  width: 100%;
+`;
+
+export const SectionCompan = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+`;
+
+export const SectionWidth = styled.div`
+  display: flex;
+  color: #3750b2;
+  align-items: center;
+  font-weight: 600;
+  gap: 5px;
+`;
+
+export const SectionButton = styled.div`
+  display: flex;
+  align-items: center;
+  color: #3750b2;
+  font-weight: 600;
+  cursor: pointer;
+  gap: 5px;
+`;
+
+export const DetailRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 6px;
+`;
+
+export const DetailLabel = styled.span`
+  color: #555;
+`;
+
+export const DetailValue = styled.span`
+  font-size: 14px;
+  color: #253A8E;
+  line-height: 23px;
+  font-weight: 400;
+`;
+
+export const BrowserDetails = styled.span`
+  margin-right: 4px;
+`;
+
+export const NoteBox = styled.div`
+  background-color: #fff5d1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+`;
+
+export const TagsContainer = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+export const PanelColumn = styled.div`
+  display: flex;
+  padding-left: 10px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const PanelItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+`;
+
+export const PanelP = styled.p`
+  font-size: 14px;
+  line-height: 23px;
+  color: #333333;
+  font-weight: 400;
+`;
+
+export const TagItem = styled.span`
+  background-color: #eef2f7;
+  color: #333;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+`;
+
+export const SectionCompoint = styled.div`
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+  width: 190px;
+`
+
+export const SectionCompanTitle = styled.div`
+  font-size: 14px;
+  padding-bottom: 5px;
+  line-height: 23px;
+  font-weight: 400;
+  border-bottom: 1px solid #eee;
+`
+
+export const SectionCompanTime = styled.div`
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 600;
+  display: flex;
+  justify-content: end;
+  color: #3750b2;
+`
+
+export const SectionRowInfor = styled.div`
+  display: flex;
+  padding-top: 9px;
+  justify-content: space-between;
+`
+
+export const SectionCompointRight = styled.div`
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`
+
+export const SectionChormeChild = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 400;
+`
+
+export const SectionIPp = styled.p`
+  font-size: 12px;
+  line-height: 23px;
+  font-weight: 400;
+`
+
+export const SectionDeColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+export const SectionCloudRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+export const SectionCloudOne = styled.div`
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 400;
+  margin-top: 5px;
+  color: #333333;
+`
+
+export const SectionCloudTwo = styled.div`
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 400;
+  margin-top: 5px;
+  color: #8A8A8A;
+`
+
+export const LastSection = styled.div`
+  display: flex;
+  gap: 25px;
+  align-items: center;
+`
+
+export const LastSectionp = styled.div`
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 400;
+  color: #333333;
+  width: 100%;
+
+  span {
+  color: #8A8A8A;
+  }
+`
+
+export const LastSectionLeft = styled.div`
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 400;
+  color: #333333;
+  width: 120px;
+`
+
+export const LastSectionImage = styled.div`
+  position: relative;
+  left: -24px;
+`
+
+export const CompanyRow = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+`
+
+export const CompanyP = styled.p`
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 400;
+  padding-top: 5px;
+`
+
+export const CompanyColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100% !important;
+`
+
+export const PanelSectionEnd = styled.div`
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  width: 300px;
+  height: 247px;
+`;
+
+export const PanelSectionColumn = styled.div`
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  background-color: #FEF1D7;
+  height: 149px;
+`;
+
+export const PanelSectionNotepad = styled.div`
+    margin-top: 20px;
+    height: 247px;
+`;
+
+
+
