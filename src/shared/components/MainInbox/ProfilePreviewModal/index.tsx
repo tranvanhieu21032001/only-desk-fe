@@ -35,7 +35,7 @@ const ProfilePreviewModal: React.FC<ProfilePreviewModalProps> = ({ isOpen, onClo
                 <S.Body>{children}</S.Body>
                 <S.Footer>
                     <Button onClick={onClose} width='100px'>Back</Button>
-                    <Button type='primary' width='190   px'>View Profile Detail</Button>
+                    <Button type='primary' width='190px'>View Profile Detail</Button>
                 </S.Footer>
             </S.Panel>
         </S.Overlay>
