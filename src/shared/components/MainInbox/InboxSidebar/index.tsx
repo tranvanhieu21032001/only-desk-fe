@@ -262,27 +262,27 @@ const InboxSidebar = () => {
                 </S.CompanyP>
 
                 <S.CompanyP>
-                  Company
+                  Job Title
                 </S.CompanyP>
 
                 <S.CompanyP>
-                  Company
+                  Job Role
                 </S.CompanyP>
 
                 <S.CompanyP>
-                  Company
+                  Website
                 </S.CompanyP>
 
                 <S.CompanyP>
-                  Company
+                  City
                 </S.CompanyP>
 
                 <S.CompanyP>
-                  Company
+                  Country
                 </S.CompanyP>
 
                 <S.CompanyP>
-                  Company
+                  Employees
                 </S.CompanyP>
               </S.PanelSectionEnd>
 
