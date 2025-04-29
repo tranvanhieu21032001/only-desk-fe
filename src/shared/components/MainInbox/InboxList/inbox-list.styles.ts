@@ -69,7 +69,7 @@ export const Button = styled.button`
 export const ButtonDropdown = styled.button`
   flex-shrink: 0;
   width: max-content;
-  padding: 8px 25px;
+  padding: 8px 16px;
   height: 39px;
   border-radius: 8px;
   font-size: 14px;
@@ -213,8 +213,8 @@ export const MenuItem = styled.div`
 export const AllDropdown = styled.div`
   position: absolute;
   top: 120%;
-  left: 0;
-  min-width: 100%;
+  right: 0;
+  width: 200px;
   background: white;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   border-radius: 8px;
