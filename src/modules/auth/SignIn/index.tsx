@@ -23,10 +23,10 @@ function SignIn() {
   const dispatch = useAppDispatch()
 
   const [form] = Form.useForm();
-  const {isLoading} = useAppSelector((state) => state?.auth);
+  const { isLoading } = useAppSelector((state) => state?.auth);
 
   function handleSignIn(values: any) {
-    handleSignInApi(values, dispatch, navigate , t);
+    handleSignInApi(values, dispatch, navigate, t);
   }
 
   function handleLoginWithGoogle() {
@@ -99,7 +99,7 @@ function SignIn() {
               },
               {
                 pattern: passwordRegex,
-               message: t("sign-up-form.password-invalid"),
+                message: t("sign-up-form.password-invalid"),
               },
             ]}
           >

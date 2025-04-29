@@ -6,7 +6,7 @@ export const WrapInput = styled.div``;
 
 export const Input = styled(InputAntd)`
   width: 100%;
-  height: 48px;
+  height: 39px;
   box-shadow: none !important;
   border-color: none !important;
 

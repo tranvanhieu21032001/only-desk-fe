@@ -30,7 +30,7 @@ function Recover() {
   }
 
   function handleReturnToSignIn() {
-       navigate(AUTH_ROUTES?.SIGN_IN);
+    navigate(AUTH_ROUTES?.SIGN_IN);
   }
 
   return (
@@ -41,18 +41,18 @@ function Recover() {
             <S.Title variant="h2" textAlign="center" margin="0 0 4px 0">
               {t("forgot.recover-your-password")}
             </S.Title>
-             <S.Subtitle dangerouslySetInnerHTML={{__html: t("forgot.we-will")}} />
+            <S.Subtitle dangerouslySetInnerHTML={{ __html: t("forgot.we-will") }} />
           </S.LoginLabelWrap>
 
           <S.FormItem
             name="email"
             rules={[
               {
-               required: true,
-               message: t("forgot.please-enter-email"),
+                required: true,
+                message: t("forgot.please-enter-email"),
               },
               {
-               type: "email",
+                type: "email",
                 message: t("email-invalid"),
               },]}
           >
@@ -70,8 +70,8 @@ function Recover() {
 
           <S.ReturnToSignIn>
             <S.ReturnWrap onClick={handleReturnToSignIn}>
-            <Image src={icArrowLeft} preview={false} />
-            <Typography color={themeColors?.secondaryDark} fontWeight={fontWeight?.semiBold}>{t('forgot.return-to-sign-in')}</Typography>
+              <Image src={icArrowLeft} preview={false} />
+              <Typography color={themeColors?.secondaryDark} fontWeight={fontWeight?.semiBold}>{t('forgot.return-to-sign-in')}</Typography>
             </S.ReturnWrap>
           </S.ReturnToSignIn>
         </S.FormWrap>

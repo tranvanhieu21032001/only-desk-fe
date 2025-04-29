@@ -1,0 +1,25 @@
+{
+ "all-plugins":{
+    "categories":"Categories",
+    "features":"Features",
+    "automation":"Automation",
+    "cms":"CMS",
+    "crm":"CRM",
+    "marketing":"Marketing",
+    "messaging":"Messaging",
+    "teamwork":"Teamwork",
+    "others":"Others"
+ },
+
+ "plugins":{
+    "search":"Search...",
+    "essentials":"Essentials",
+    "mini":"Mini",
+    "free":"Free",
+    "plus":"Plus",
+    "pricing":"Pricing",
+
+    "view-detail":"View Detail",
+    "configure":"Configure"
+ }
+}

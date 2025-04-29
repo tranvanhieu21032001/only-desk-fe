@@ -5,7 +5,7 @@ import { UserInforInterface } from "@/modules/auth/model/user";
 import { constants } from "@/core/settings";
 import webStorageClient from "@/shared/utils/webStorageClient";
 
-const isAuthFromStorage: boolean = webStorageClient.get(constants.IS_AUTH);
+const isAuthFromStorage: boolean = webStorageClient.get(constants.IS_AUTH) || false;
 const userInfoFromStorage: UserInforInterface = webStorageClient.get(
   constants.USER_INFO
 );
@@ -18,7 +18,7 @@ export interface AuthInterface {
 }
 
 const initialState: AuthInterface = {
-  isAuth: isAuthFromStorage || false,
+  isAuth: isAuthFromStorage,
   userInfo: userInfoFromStorage,
   permissionList: {},
   isLoading: false,
