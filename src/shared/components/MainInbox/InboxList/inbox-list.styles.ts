@@ -2,7 +2,8 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 12px;
-  width: 400px;
+  width: 100%;
+  height: 100%;
   background-color: #fff;
   overflow-y: auto;
   border-top-left-radius: 8px;
@@ -108,12 +109,16 @@ export const Content = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 `;
 
 export const Title = styled.div`
   font-size: 14px;
   line-height: 23px;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const Subtitle = styled.div`
@@ -121,6 +126,9 @@ export const Subtitle = styled.div`
   line-height: 23px;
   font-weight: 400;
   font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const RightSection = styled.div`

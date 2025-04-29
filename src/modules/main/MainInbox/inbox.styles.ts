@@ -1,16 +1,22 @@
 import styled from "styled-components";
 
+import { DEFAULT_RESIZER_CONFIG } from "@/core/settings/constants";
+
 export const InboxWrapper = styled.div`
   flex: 1;
   display: flex;
-  gap: 3px;
+  gap: 0;
+  position: relative;
 `;
 
-export const InboxList = styled.div`
-  width: 300px;
+export const InboxList = styled.div<{ width: number }>`
+  width: ${props => props.width}px;
+  min-width: ${DEFAULT_RESIZER_CONFIG.MIN_WIDTH}px;
+  max-width: ${DEFAULT_RESIZER_CONFIG.MAX_WIDTH}px;
   background-color: #f9f9f9;
   border-right: 1px solid #ddd;
   overflow-y: auto;
+  transition: width 0.1s ease;
 `;
 
 export const InboxDetail = styled.div`
