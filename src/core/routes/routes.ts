@@ -34,17 +34,17 @@ const routes_auth: RouterElementInterface[] = [
 ];
 
 const routes_main: RouterElementInterface[] = [
+    {
+    key: "home",
+    path: MAIN_ROUTES.HOME,
+    component: LandingPage,
+    name: "landing-page",
+  },
   {
     key: "main-inbox",
     path: MAIN_ROUTES.INBOX,
     component: Main,
     name: "main-inbox",
-  },
-  {
-    key: "home",
-    path: MAIN_ROUTES.HOME,
-    component: LandingPage,
-    name: "landing-page",
   },
 ];
 
