@@ -47,3 +47,13 @@ export const participant = ["participant 1", "participant 2", "participant 3"];
 
 export const conversationOptions = ["Support", "Sales", "Marketing", "Other"];
 
+export const filterOptions = [
+    'All',
+    'Unread',
+    'Unresolved',
+    'Resolved',
+    'Most recent',
+    'Longest waiting',
+    'Mentions',
+  ];
+

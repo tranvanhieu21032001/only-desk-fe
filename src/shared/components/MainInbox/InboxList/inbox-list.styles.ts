@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 12px;
+  width: 400px;
   background-color: #fff;
   overflow-y: auto;
   border-top-left-radius: 8px;
@@ -12,36 +13,63 @@ export const SearchFilterWrapper = styled.div`
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
-`;
-
-export const SearchInput = styled.input`
-  flex: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  outline: none;
+  align-items: center;
+  width: 100%;
 `;
 
 export const SearchInputWrapper = styled.div`
-  flex: 1;
+  flex-grow: 1;
+  min-width: 0;
   height: 39px;
-  width: 222px;
-  position: relative;
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 0 12px;
+  background-color: white;
+  gap: 8px;
+`;
+
+export const SearchInput = styled.input`
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  min-width: 0;
+`;
+
+export const SearchIcon = styled.div`
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+`;
+
+export const Button = styled.button`
+  flex-shrink: 0;
+  width: max-content;
+  padding: 8px 16px;
+  height: 39px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 23px;
+  color: #333;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
 
   img,
   svg {
     width: 20px;
     height: 20px;
+    padding-right: 5px;
   }
 `;
 
-export const Button = styled.button`
-  padding: 8px 16px;
+export const ButtonDropdown = styled.button`
+  flex-shrink: 0;
+  width: max-content;
+  padding: 8px 25px;
   height: 39px;
   border-radius: 8px;
   font-size: 14px;
@@ -181,3 +209,42 @@ export const MenuItem = styled.div`
     color: #ff4d4f;
   }
 `;
+
+export const AllDropdown = styled.div`
+  position: absolute;
+  top: 120%;
+  left: 0;
+  min-width: 100%;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 1000;
+
+  &.align-left {
+    left: auto;
+    right: 0;
+  }
+`;
+
+export const DropdownItem = styled.div`
+  padding: 12px;
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 400;
+  cursor: pointer;
+  white-space: normal; 
+  word-break: break-word;
+  overflow-wrap: break-word;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+
+export const FilterWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+  flex: 1;
+`;
+
