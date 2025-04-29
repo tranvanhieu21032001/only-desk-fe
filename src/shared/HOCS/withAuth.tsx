@@ -1,37 +1,27 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAppSelector } from "@/shared/hooks";
-import { AUTH_ROUTES } from "@/core/routes/constants";
+import { AUTH_ROUTES, MAIN_ROUTES } from "@/core/routes/constants";
 
 export default function useWithAuth<
-  P extends React.HTMLAttributes<HTMLElement>
+  P extends React.HTMLAttributes<HTMLElement>,
 >(Component: React.ComponentType<P>) {
   const navigate = useNavigate();
 
-  const isAuth = useAppSelector((state) => state.auth.isAuth) || false;
-
-  const handleAuthCheck = useCallback(() => {
-    if (!isAuth) {
-      navigate(AUTH_ROUTES.SIGN_IN, { replace: true });
-    }
-  }, [isAuth, navigate]);
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
+  const currentPath = new URL(window.location.href)?.pathname;
 
   useEffect(() => {
-    handleAuthCheck();
-  }, [handleAuthCheck]);
+    if (!isAuth) {
+      navigate(AUTH_ROUTES.SIGN_IN, { replace: true });
+    } else if (isAuth && Object.values(AUTH_ROUTES).includes(currentPath)) {
+      navigate(MAIN_ROUTES?.HOME, { replace: true });
+    }
+
+  }, [isAuth]);
 
   const WrapperComponent = (props: P) => {
-    // if (isCheckPermission) {
-    //   if (!permissionRbac) {
-    //     return <Loading />;
-    //   }
-
-    //   if (!permissionRbac?.allowRead) {
-    //     navigate(ADMIN_ROUTES.FORBIDDEN);
-    //   }
-    // }
-
     return <Component {...props} />;
   };
 

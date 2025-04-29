@@ -1,14 +1,13 @@
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { routes_admin, routes_auth, routes_main } from "./routes";
+import { routes_auth, routes_main } from "./routes";
 
-import { ADMIN_ROUTES, MAIN_ROUTES } from "./constants";
-import useWithoutAuth from "@/shared/HOCS/withoutAuth";
+import { ADMIN_ROUTES } from "./constants";
 
 import ErrorBoundary from "./ErrorBoundary";
 import Forbidden from "@/modules/admin/Forbidden/index";
-import MainLayout from "../../shared/components/layouts/Main";
 import AuthLayout from "../../shared/components/layouts/Auth";
+import useWithAuth from "@/shared/HOCS/withAuth";
 
 interface ComponentRouteProps {
   component: React.ComponentType;
@@ -16,47 +15,13 @@ interface ComponentRouteProps {
 
 // Wrapper component for public (authenticated) routes
 function PrivateRouteWrapper({ component: Component }: ComponentRouteProps) {
-  const WrappedComponent = useWithoutAuth(Component);
+  const WrappedComponent = useWithAuth(Component);
   return (
     <AuthLayout>
       <Suspense fallback={<></>}>
         <WrappedComponent />
       </Suspense>
     </AuthLayout>
-  );
-}
-
-// Wrapper component for public (unauthenticated) routes
-function PublicRouteWrapper({ component: Component }: ComponentRouteProps) {
-  const WrappedComponent = useWithoutAuth(Component);
-  return (
-    <AuthLayout>
-      <Suspense fallback={<></>}>
-        <WrappedComponent />
-      </Suspense>
-    </AuthLayout>
-  );
-}
-
-// Wrapper component for routes after login
-function MainRouteWrapper({ component: Component }: ComponentRouteProps) {
-  const WrappedComponent = useWithoutAuth(Component);
-  return (
-    <MainLayout>
-      <Suspense fallback={<></>}>
-        <WrappedComponent />
-      </Suspense>
-    </MainLayout>
-  );
-}
-
-// Direct component rendering without layout wrapper
-function NoLayoutWrapper({ component: Component }: ComponentRouteProps) {
-  const WrappedComponent = useWithoutAuth(Component);
-  return (
-    <Suspense fallback={<></>}>
-      <WrappedComponent />
-    </Suspense>
   );
 }
 
@@ -73,17 +38,7 @@ export default function RouterRoot() {
     <ErrorBoundary>
       <Router>
         <Routes>
-          {/* Landing page route */}
-          <Route
-            path={MAIN_ROUTES.HOME}
-            element={
-              <NoLayoutWrapper
-                component={React.lazy(() => import("@/modules/landing"))}
-              />
-            }
-          />
-
-          {routes_admin.map((route) => (
+          {routes_auth?.map((route) => (
             <Route
               key={route.key}
               path={route.path}
@@ -91,23 +46,13 @@ export default function RouterRoot() {
             />
           ))}
 
-          {routes_auth.map((route) => (
+          {routes_main?.map((route) => (
             <Route
               key={route.key}
               path={route.path}
-              element={<PublicRouteWrapper component={route.component} />}
+              element={<PrivateRouteWrapper component={route.component} />}
             />
           ))}
-
-          {routes_main
-            .filter((route) => route.path !== MAIN_ROUTES.HOME)
-            .map((route) => (
-              <Route
-                key={route.key}
-                path={route.path}
-                element={<MainRouteWrapper component={route.component} />}
-              />
-            ))}
 
           <Route path="*" element={<RedirectToLogin />} />
           <Route path={ADMIN_ROUTES.FORBIDDEN} element={<Forbidden />} />
