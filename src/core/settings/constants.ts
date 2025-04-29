@@ -15,4 +15,16 @@ const constants = {
   SIGN_UP_INFO 
 };
 
+export const DEFAULT_RESIZER_CONFIG = {
+  MIN_WIDTH: 376,
+  MAX_WIDTH: 515,
+  DEFAULT_WIDTH: 400,
+} as const;
+
+export type ResizerConfig = {
+  minWidth?: number;
+  maxWidth?: number;
+  defaultWidth?: number;
+}; 
+
 export default constants;
