@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 
 import AvatarWithStatus from '../../common/Avatar';
 
-import { notifications } from '@/core/settings/options';
+import { filterOptions, notifications } from '@/core/settings/options';
 
 import * as S from './inbox-list.styles'
 
@@ -20,12 +20,21 @@ import flag from '@/assets/icons/common/ic-flag.svg'
 
 const NotificationList = () => {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
+  const [isAllDropdownOpen, setIsAllDropdownOpen] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState('All');
   const menuRef = useRef<HTMLDivElement>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setActiveMenu(null);
+      }
+
+      if (filterRef.current && !filterRef.current.contains(target)) {
+        setIsAllDropdownOpen(false);
       }
     };
 
@@ -45,15 +54,40 @@ const NotificationList = () => {
     setActiveMenu(null);
   };
 
+  const handleSelectFilter = (filter: string) => {
+    setSelectedFilter(filter);
+    setIsAllDropdownOpen(false);
+  };
+
   return (
     <S.Container>
       <S.SearchFilterWrapper>
         <S.SearchInputWrapper>
-          <Image src={search} alt="Search icon" preview={false} />
+          <S.SearchIcon>
+            <Image src={search} alt="Search icon" preview={false} />
+          </S.SearchIcon>
           <S.SearchInput placeholder="Search..." />
         </S.SearchInputWrapper>
-        <S.Button><Image src={filter} alt="Filter icon" preview={false} /> Filter</S.Button>
-        <S.Button><Image src={arrowDown} alt="Arrow down icon" preview={false} /> All</S.Button>
+
+        <S.Button>
+          <Image src={filter} alt="Filter icon" preview={false} /> Filter
+        </S.Button>
+
+        <S.FilterWrapper ref={filterRef}>
+          <S.ButtonDropdown onClick={() => setIsAllDropdownOpen((prev) => !prev)}>
+            <Image src={arrowDown} alt="Arrow down icon" preview={false} /> {selectedFilter}
+          </S.ButtonDropdown>
+
+          {isAllDropdownOpen && (
+            <S.AllDropdown>
+              {filterOptions.map((option) => (
+                <S.DropdownItem key={option} onClick={() => handleSelectFilter(option)}>
+                  {option}
+                </S.DropdownItem>
+              ))}
+            </S.AllDropdown>
+          )}
+        </S.FilterWrapper>
       </S.SearchFilterWrapper>
 
       {notifications.map((n, index) => (
