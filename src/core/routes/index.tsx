@@ -8,6 +8,7 @@ import ErrorBoundary from "./ErrorBoundary";
 import Forbidden from "@/modules/admin/Forbidden/index";
 import AuthLayout from "../../shared/components/layouts/Auth";
 import useWithAuth from "@/shared/HOCS/withAuth";
+import MainLayout from "@/shared/components/layouts/Main";
 
 interface ComponentRouteProps {
   component: React.ComponentType;
@@ -24,6 +25,19 @@ function PrivateRouteWrapper({ component: Component }: ComponentRouteProps) {
     </AuthLayout>
   );
 }
+
+// Wrapper component for routes after login
+function MainRouteWrapper({ component: Component }: ComponentRouteProps) {
+  const WrappedComponent = useWithAuth(Component);
+  return (
+    <MainLayout>
+      <Suspense fallback={<></>}>
+        <WrappedComponent />
+      </Suspense>
+    </MainLayout>
+  );
+}
+
 
 function RedirectToLogin() {
   // const navigate = useNavigate();
@@ -50,7 +64,7 @@ export default function RouterRoot() {
             <Route
               key={route.key}
               path={route.path}
-              element={<PrivateRouteWrapper component={route.component} />}
+              element={<MainRouteWrapper component={route.component} />}
             />
           ))}
 
