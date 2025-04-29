@@ -9,6 +9,7 @@ const ForgotPassword = React.lazy(() => import("@/modules/auth/forgotPassword/Ma
 
 const Main = React.lazy(() => import("@/modules/main/MainInbox"));
 const LandingPage = React.lazy(() => import("@/modules/landing"));
+const AllPLugins = React.lazy(() => import("@/modules/plugins/allPlugins/Main"));
 
 const routes_admin: RouterElementInterface[] = [];
 
@@ -46,6 +47,12 @@ const routes_main: RouterElementInterface[] = [
     component: Main,
     name: "main-inbox",
   },
+  {
+    key: "all-plugins",
+    path: MAIN_ROUTES.ALL_PLUGINS,
+    component: AllPLugins,
+    name: "all-plugins",
+  }
 ];
 
 export { routes_auth, routes_admin, routes_main };

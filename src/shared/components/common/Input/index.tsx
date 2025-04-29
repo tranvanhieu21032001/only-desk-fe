@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { InputProps as InputPropsFromAntd } from "antd";
+import { Image, InputProps as InputPropsFromAntd } from "antd";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 
 import themeColors from "@/shared/styles/themes/default/colors";
@@ -8,12 +8,14 @@ import Typography from "../Typography";
 
 import * as S from "./input.styles";
 
+import icSearch from '@/assets/icons/common/ic-search.svg'
 interface InputProps extends InputPropsFromAntd {
   label?: string;
   isRequired?: boolean;
   colorLabel?: string;
   isFormatNumberCurrency?: boolean;
   isPassword?: boolean;
+  prefix?: boolean
 }
 
 export default function Input({
@@ -21,6 +23,7 @@ export default function Input({
   isRequired = false,
   colorLabel = themeColors.primary,
   isPassword = false,
+  prefix,
   ...rest
 }: InputProps) {
   const [isShowPassWord, setIsShowPassWord] = useState<boolean>(true);
@@ -40,6 +43,7 @@ export default function Input({
       {isPassword ? (
         <S.Input
           {...rest}
+          prefix={prefix && <Image preview={false} src={icSearch} />}
           type={isShowPassWord ? "password" : "text"}
           suffix={
             isShowPassWord ? (
@@ -50,7 +54,7 @@ export default function Input({
           }
         />
       ) : (
-        <S.Input {...rest} />
+        <S.Input {...rest} prefix={prefix && <Image preview={false} src={icSearch} />} />
       )}
     </S.WrapInput>
   );
