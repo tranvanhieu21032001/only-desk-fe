@@ -134,6 +134,8 @@
     "recovery-password":"Recovery password",
     "return-to-sign-in":"Return to Sign In",
     "create-new-password":"Create new password",
-    "save":"Save"
+    "save":"Save",
+    "a-password-reset":"A password reset link has been sent to your email address.",
+    "forgot.create-new-password-success":"Create new password successfully"
   }
 }

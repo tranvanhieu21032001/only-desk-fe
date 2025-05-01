@@ -2,9 +2,10 @@ import { Form, Image } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+import { useAppDispatch, useAppSelector } from "@/shared/hooks";
+import { handleRequestResetPassword } from "../../api/auth";
 import { useRouter } from "@/shared/hooks/useRouter";
 import { AUTH_ROUTES } from "@/core/routes/constants";
-import { RecoverPassStepEnums } from "../../helpers/enums/auth";
 import themeColors from "@/shared/styles/themes/default/colors";
 import fontWeight from "@/shared/styles/themes/default/fontWeight";
 
@@ -19,14 +20,14 @@ function Recover() {
   const { t } = useTranslation("auth");
 
   const [form] = Form.useForm();
+  const { isLoading } = useAppSelector((state) => state?.auth);
 
-  const { replaceState } = useRouter();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch()
+  const { replaceState } = useRouter();
 
-  function handleSignUp() {
-    replaceState({
-      type: RecoverPassStepEnums?.CREATE_NEW_PASS,
-    });
+  function handleSignUp(values: any) {
+    handleRequestResetPassword(values, dispatch, replaceState, t);
   }
 
   function handleReturnToSignIn() {
@@ -35,8 +36,8 @@ function Recover() {
 
   return (
     <S.SignInWrap>
-      <S.SignInForm className="center-column-auth center-column-forgot">
-        <S.FormWrap form={form} onFinish={handleSignUp}>
+      <S.SignInForm className="center-column-auth center-column-forgot" >
+        <S.FormWrap form={form} onFinish={handleSignUp} validateTrigger="onSubmit">
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center" margin="0 0 4px 0">
               {t("forgot.recover-your-password")}
@@ -64,7 +65,7 @@ function Recover() {
             />
           </S.FormItem>
 
-          <S.LoginButton type="primary" onClick={form.submit}>
+          <S.LoginButton type="primary" onClick={form.submit} disabled={isLoading} isLoading={isLoading}>
             {t("forgot.recovery-password")}
           </S.LoginButton>
 
