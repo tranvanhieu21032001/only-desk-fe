@@ -2,13 +2,14 @@ import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes_auth, routes_main } from "./routes";
 
-import { ADMIN_ROUTES } from "./constants";
+import { ADMIN_ROUTES, MAIN_ROUTES } from "./constants";
 
 import ErrorBoundary from "./ErrorBoundary";
 import Forbidden from "@/modules/admin/Forbidden/index";
 import AuthLayout from "../../shared/components/layouts/Auth";
 import useWithAuth from "@/shared/HOCS/withAuth";
 import MainLayout from "@/shared/components/layouts/Main";
+import useWithoutAuth from "@/shared/HOCS/withoutAuth";
 
 interface ComponentRouteProps {
   component: React.ComponentType;
@@ -38,6 +39,15 @@ function MainRouteWrapper({ component: Component }: ComponentRouteProps) {
   );
 }
 
+// Direct component rendering without layout wrapper
+function NoLayoutWrapper({ component: Component }: ComponentRouteProps) {
+  const WrappedComponent = useWithoutAuth(Component);
+  return (
+    <Suspense fallback={<></>}>
+      <WrappedComponent />
+    </Suspense>
+  );
+}
 
 function RedirectToLogin() {
   // const navigate = useNavigate();
@@ -52,6 +62,16 @@ export default function RouterRoot() {
     <ErrorBoundary>
       <Router>
         <Routes>
+          {/* Landing page route */}
+          <Route
+            path={MAIN_ROUTES.HOME}
+            element={
+              <NoLayoutWrapper
+                component={React.lazy(() => import("@/modules/landing"))}
+              />
+            }
+          />
+
           {routes_auth?.map((route) => (
             <Route
               key={route.key}

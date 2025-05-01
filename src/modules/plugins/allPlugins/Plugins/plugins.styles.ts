@@ -52,7 +52,6 @@ ${({ $type }) => {
                     color: ${(props) => props?.theme?.colors?.secondary};
                 }
                 `;
-                
     case PluginsTypeEnums?.MINI:
                         return css`
                 background-color:#E4F9D2;
