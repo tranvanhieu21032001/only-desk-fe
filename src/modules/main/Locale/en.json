@@ -10,7 +10,7 @@
   "header": {
     "title": "Main Inbox",
     "description": "Insert page description here.",
-    "addNew": "Add New",
+    "add-new": "Add New",
     "createConversation": "Create Conversation",
     "addNewContact": "Add New Contact",
     "inviteTeamMembers": "Invite Team Members"
@@ -25,6 +25,8 @@
   },
 
   "plugins": {
-    "title": "All Plugins"
+    "title": "All Plugins",
+    "inviteTeamMembers": "Invite Team Members",
+    "notifications": "Notifications"
   }
 }

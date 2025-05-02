@@ -1,0 +1,50 @@
+{
+  "work-spaces": "Workspaces",
+  "create-work-space": "Create Workspace",
+  "chats": "Chats",
+  "all-chats": "All Chats",
+  "assigned-to-me": "Assigned to Me",
+  "new-sub-inbox": "New Sub-inbox",
+  "spam-chats": "Spam Chats",
+
+  "ai-knowledge": {
+    "ai-automation": "AI Automation",
+    "ai-chatbot": "AI Chatbot",
+    "answer-snippets": "Answer Snippets",
+    "web-content": "Web Content",
+    "inbox-messages": "Inbox Messages",
+    "knowledge-base-articles": "Knowledge Base Articles",
+    "chatbox-triggers": "Chatbox Triggers"
+  },
+
+  "knowledge-base": {
+    "knowledge-base": "Knowledge Base",
+    "articles": "Articles",
+    "categories": "Categories"
+  },
+
+  "plugins": {
+    "plugins": "Plugins",
+    "all-plugins": "All Plugins",
+    "installed-plugins": "Installed Plugins"
+  },
+
+  "settings": {
+    "settings": "Settings",
+    "account": "Account",
+    "billing": "Billing",
+    "Workspace": "Workspace",
+    "chatbox": "Chatbox",
+    "email": "Email",
+    "knowledge-base": "Knowledge Base",
+    "status-page": "Status Page"
+  },
+
+  "profiles": {
+    "account-settings": "Account Settings",
+    "integrations": "Integrations",
+    "guide": "Guide",
+    "help-center": "Help Center",
+    "logout": "Logout"
+  }
+}

@@ -1,6 +1,6 @@
-import { createGlobalStyle, css } from "styled-components";
+import { createGlobalStyle, css } from 'styled-components';
 
-import { utility } from "./utility";
+import { utility } from './utility';
 
 const calculateLetterSpacing = (fontSize: string, percent: number = 0.02) => {
   const fontSizeNumber = parseFloat(fontSize);
@@ -12,7 +12,7 @@ const reset = css`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+    font-family: 'Poppins', sans-serif;
   }
 
   html,
@@ -125,7 +125,7 @@ const reset = css`
   blockquote:after,
   q:before,
   q:after {
-    content: "";
+    content: '';
     content: none;
   }
   a,
@@ -262,12 +262,10 @@ const reset = css`
     }
   }
 
-  .center-column-forgot{
+  .center-column-forgot {
     min-height: calc(100vh - 120px);
   }
 `;
-  
-
 
 const typography = css`
   h1 {
@@ -372,6 +370,86 @@ const scrollApp = css`
 const popOver = css`
   .ant-popover {
     width: 335px;
+  }
+
+  .workspaces-popover {
+    width: 270px;
+    inset: 17px 0px 0px 60px !important;
+
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-inner {
+      padding: 24px 12px;
+    }
+  }
+
+  .settings-popover {
+    width: 270px;
+    inset-inline-start: 60px !important;
+
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-inner {
+      padding: 24px 12px;
+    }
+  }
+
+  .profile-popover {
+    width: 270px;
+    inset-inline-start: 60px !important;
+
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-inner {
+      padding: 24px 12px;
+    }
+  }
+
+  .menu-popover {
+    max-width: 240px;
+    inset-inline-start: 60px !important;
+
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-inner {
+      padding: 24px 12px;
+    }
+  }
+
+  .notification-popover {
+    width: 100%;
+    max-width: 420px;
+    inset: 77px auto auto 505px !important;
+
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-inner {
+      border-radius: 0 0 8px 8px;
+      padding: 0px;
+    }
+  }
+
+  .menu-no-children-popover {
+    width: fit-content;
+    inset-inline-start: 60px !important;
+
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-inner {
+      padding: 12px;
+    }
   }
 `;
 

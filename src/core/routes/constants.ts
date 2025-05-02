@@ -1,10 +1,10 @@
-const preRouterAdmin = "/";
-const preRouterAuth = "/auth";
-const preRouterMain = "";
+const preRouterAdmin = '/';
+const preRouterAuth = '/auth';
+const preRouterMain = '';
 
 const ADMIN_ROUTES = {
   DASHBOARD: preRouterAdmin,
-  FORBIDDEN: "/403",
+  FORBIDDEN: '/403',
 };
 
 const AUTH_ROUTES = {
@@ -15,10 +15,44 @@ const AUTH_ROUTES = {
 };
 
 const MAIN_ROUTES = {
-  HOME: "/",
+  HOME: '/',
+  // Chats
   INBOX: `${preRouterMain}/inbox`,
-  ALL_PLUGINS: `${preRouterMain}/all-plugins`,
+  ASSIGNED_TO_ME: `${preRouterMain}/assigned-to-me`,
+  NEW_SUB_INBOX: `${preRouterMain}/new-sub-inbox`,
   SPAM_CHATS: `${preRouterMain}/spam-chats`,
+
+  //Ai Automation
+  AI_CHATBOT: `${preRouterMain}/ai-chatbot`,
+  CHATBOX_TRIGGER: `${preRouterMain}/chatbox-trigger`,
+  ANSWER_SNIPPETS: `${preRouterMain}/answer-snippets`,
+  WEB_CONTENT: `${preRouterMain}/web-content`,
+  INBOX_MESSAGES: `${preRouterMain}/inbox-messages`,
+  KNOWLEDGE_BASE_ARTICLE: `${preRouterMain}/knowledge-base-article`,
+
+  //Knowledge Base
+  ARTICLES: `${preRouterMain}/articles`,
+  CATEGORIES: `${preRouterMain}/categories`,
+
+  // Plugins
+  ALL_PLUGINS: `${preRouterMain}/all-plugins`,
+  INSTALLED_PLUGINS: `${preRouterMain}/installed-plugins`,
+
+  // Settings
+  ACCOUNT: `${preRouterMain}/account`,
+  BILLING: `${preRouterMain}/billing`,
+  WORKSPACE: `${preRouterMain}/workspace`,
+  CHATBOX: `${preRouterMain}/chatbox`,
+  EMAIL: `${preRouterMain}/email`,
+  KNOWLEDGE_BASE: `${preRouterMain}/knowledge-base`,
+  STATUS_PAGE: `${preRouterMain}/status-page`,
+
+  // Profiles
+  ACCOUNT_SETTINGS: `${preRouterMain}/account-settings`,
+  INTEGRATIONS: `${preRouterMain}/integrations`,
+  GUIDE: `${preRouterMain}/guide`,
+  HELP_CENTER: `${preRouterMain}/help-center`,
+  LOGOUT: `${preRouterMain}/logout`,
 };
 
 export { ADMIN_ROUTES, AUTH_ROUTES, MAIN_ROUTES };
