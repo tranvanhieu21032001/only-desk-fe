@@ -1,27 +1,27 @@
-import { Form, Image } from "antd";
-import { useTranslation } from "react-i18next";
+import { Form, Image } from 'antd';
+import { useTranslation } from 'react-i18next';
 
-import { useModal } from "@/shared/hooks";
-import { useRouter } from "@/shared/hooks/useRouter";
-import { SignUpStepEnums } from "../../helpers/enums/auth";
-import { connectPlugins } from "../../helpers/data/signUp";
-import themeColors from "@/shared/styles/themes/default/colors";
-import { renderStatusInstalled } from "../../helpers/auth.logic";
-import { AuthStatusInstalledCodeEnums } from "../../helpers/auth.enums";
+import { useModal } from '@/shared/hooks';
+import { useRouter } from '@/shared/hooks/useRouter';
+import { SignUpStepEnums } from '../../helpers/enums/auth';
+import { connectPlugins } from '../../helpers/data/signUp';
+import themeColors from '@/shared/styles/themes/default/colors';
+import { renderStatusInstalled } from '../../helpers/auth.logic';
+import { AuthStatusInstalledCodeEnums } from '../../helpers/auth.enums';
 
-import Button from "@/shared/components/common/Button";
-import ModalInvite from "./ModalInviteYourDeveloper";
-import Typography from "@/shared/components/common/Typography";
+import Button from '@/shared/components/common/Button';
+import ModalInvite from './ModalInviteYourDeveloper';
+import Typography from '@/shared/components/common/Typography';
 
-import icCopy from "@/assets/icons/auth/ic-copy.svg";
-import icReload from "@/assets/icons/auth/ic-reload.svg";
-import icInfo from "@/assets/icons/auth/ic-info-circle.svg";
-import icArrowRight from "@/assets/icons/common/ic-arrow-right.svg";
+import icCopy from '@/assets/icons/auth/ic-copy.svg';
+import icReload from '@/assets/icons/auth/ic-reload.svg';
+import icInfo from '@/assets/icons/auth/ic-info-circle.svg';
+import icArrowRight from '@/assets/icons/common/ic-arrow-right.svg';
 
-import * as S from "./connect-chat.styles";
+import * as S from './connect-chat.styles';
 
 function ConnectOnlyChat() {
-  const { t } = useTranslation("auth");
+  const { t } = useTranslation('auth');
 
   const [form] = Form.useForm();
   const { replaceState } = useRouter();
@@ -67,17 +67,17 @@ function ConnectOnlyChat() {
         <S.FormWrap form={form} onFinish={handleInviteYourTeam}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center">
-              {t("connect-onlychat.connect-onlychat-to-your-website")}
+              {t('connect-onlychat.connect-onlychat-to-your-website')}
             </S.Title>
           </S.LoginLabelWrap>
 
           <S.ConnectOnlyChatCode>
             <S.ConnectOnlyChatCodeHeader>
               <S.Title variant="h4">
-                {t("connect-onlychat.connect-onlychat-manually")}
+                {t('connect-onlychat.connect-onlychat-manually')}
               </S.Title>
               <Typography color={themeColors?.newtralLight} margin="4px 0 0 0">
-                {t("connect-onlychat.paste-the-code")}{" "}
+                {t('connect-onlychat.paste-the-code')}{' '}
                 <Image src={icInfo} preview={false} />
               </Typography>
             </S.ConnectOnlyChatCodeHeader>
@@ -98,16 +98,16 @@ function ConnectOnlyChat() {
             <S.ConnectOnlyChatCodeBottom>
               <Button type="primary" onClick={handleCopyCode}>
                 <Image src={icCopy} preview={false} />
-                {t("connect-onlychat.copy-code")}
+                {t('connect-onlychat.copy-code')}
               </Button>
               <S.StatusConnect>
                 {renderStatusInstalled(
                   AuthStatusInstalledCodeEnums.NOT_INSTALLED,
-                  t
+                  t,
                 )}
                 <Button disabled={true} onClick={handleCheckAgain}>
                   <Image src={icReload} preview={false} />
-                  {t("connect-onlychat.check-again")}
+                  {t('connect-onlychat.check-again')}
                 </Button>
               </S.StatusConnect>
             </S.ConnectOnlyChatCodeBottom>
@@ -115,11 +115,11 @@ function ConnectOnlyChat() {
 
           <S.ConnectOnlyChatCodeInvite>
             <Button type="primary" onClick={handleInviteYourDeveloper}>
-              {t("connect-onlychat.invite-your-developer")}
+              {t('connect-onlychat.invite-your-developer')}
             </Button>
             <S.ButtonInstallGuide>
               <Button onClick={handleCheckInstall}>
-                {t("connect-onlychat.check-install-guide")}
+                {t('connect-onlychat.check-install-guide')}
               </Button>
             </S.ButtonInstallGuide>
           </S.ConnectOnlyChatCodeInvite>
@@ -139,12 +139,12 @@ function ConnectOnlyChat() {
                   <S.ConnectPluginAction>
                     <S.BtnConnect>
                       <Button type="primary" onClick={handleConnectPlugin}>
-                        {t("connect-onlychat.connect")}
+                        {t('connect-onlychat.connect')}
                       </Button>
                     </S.BtnConnect>
                     <S.BtnCheck>
                       <Button onClick={handleCheckInstallPlugin}>
-                        {t("connect-onlychat.check-install-guide")}
+                        {t('connect-onlychat.check-install-guide')}
                       </Button>
                     </S.BtnCheck>
                   </S.ConnectPluginAction>
@@ -153,8 +153,8 @@ function ConnectOnlyChat() {
             ))}
           </S.ConnectPluginWrap>
 
-          <S.LoginButton type="primary" onClick={() => form.submit()} >
-            {t("website.continue")}
+          <S.LoginButton type="primary" onClick={() => form.submit()}>
+            {t('website.continue')}
             <Image src={icArrowRight} preview={false} />
           </S.LoginButton>
         </S.FormWrap>

@@ -1,25 +1,38 @@
 {
- "all-plugins":{
-    "categories":"Categories",
-    "features":"Features",
-    "automation":"Automation",
-    "cms":"CMS",
-    "crm":"CRM",
-    "marketing":"Marketing",
-    "messaging":"Messaging",
-    "teamwork":"Teamwork",
-    "others":"Others"
- },
+  "all-plugins": {
+    "categories": "Categories",
+    "features": "Features",
+    "automation": "Automation",
+    "cms": "CMS",
+    "crm": "CRM",
+    "marketing": "Marketing",
+    "messaging": "Messaging",
+    "teamwork": "Teamwork",
+    "others": "Others"
+  },
 
- "plugins":{
-    "search":"Search...",
-    "essentials":"Essentials",
-    "mini":"Mini",
-    "free":"Free",
-    "plus":"Plus",
-    "pricing":"Pricing",
+  "plugins": {
+    "search": "Search...",
+    "essentials": "Essentials",
+    "mini": "Mini",
+    "free": "Free",
+    "plus": "Plus",
+    "pricing": "Pricing",
 
-    "view-detail":"View Detail",
-    "configure":"Configure"
- }
+    "view-detail": "View Detail",
+    "configure": "Configure",
+    "installed": "Installed"
+  },
+
+  "modal-view-detail-plugin": {
+    "plugins": "Plugins",
+    "please-insert-modal-description": "Please insert modal description here.",
+    "install": "Install",
+    "messaging": "Messaging",
+    "website": "Website",
+    "permissions": "Permissions",
+    "what-are-permissions": "What are permissions?",
+    "designful": "Designful",
+    "configure": "Configure"
+  }
 }
