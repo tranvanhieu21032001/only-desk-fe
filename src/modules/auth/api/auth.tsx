@@ -148,7 +148,6 @@ const handleSignInApi = async (
 const handleRequestResetPassword = async (
   values: any,
   dispatch: any,
-  replaceState: any,
   t: TFunction,
 ) => {
   dispatch(actionSignUp(true));
@@ -157,11 +156,7 @@ const handleRequestResetPassword = async (
     data: values,
     messageSuccess: t('forgot.a-password-reset'),
   })
-    .then(() => {
-      replaceState({
-        type: RecoverPassStepEnums?.CREATE_NEW_PASS,
-      });
-    })
+    .then(() => {})
     .catch((err) => err)
     .finally(() => dispatch(actionSignUp(false)));
 };

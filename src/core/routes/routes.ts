@@ -1,58 +1,62 @@
-import React from "react";
+import React from 'react';
 
-import { AUTH_ROUTES, MAIN_ROUTES } from "./constants";
-import { RouterElementInterface } from "./model";
+import { AUTH_ROUTES, MAIN_ROUTES } from './constants';
+import { RouterElementInterface } from './model';
 
-const SignIn = React.lazy(() => import("@/modules/auth/SignIn"));
-const SignUp = React.lazy(() => import("@/modules/auth/signUp/Main"));
-const ForgotPassword = React.lazy(() => import("@/modules/auth/forgotPassword/Main"));
+const SignIn = React.lazy(() => import('@/modules/auth/SignIn'));
+const SignUp = React.lazy(() => import('@/modules/auth/signUp/Main'));
+const ForgotPassword = React.lazy(
+  () => import('@/modules/auth/forgotPassword/Main'),
+);
 
-const Main = React.lazy(() => import("@/modules/main/MainInbox"));
-const LandingPage = React.lazy(() => import("@/modules/landing"));
-const AllPLugins = React.lazy(() => import("@/modules/plugins/allPlugins/Main"));
+const Main = React.lazy(() => import('@/modules/main/MainInbox'));
+const LandingPage = React.lazy(() => import('@/modules/landing'));
+const AllPLugins = React.lazy(
+  () => import('@/modules/plugins/all-plugins/Main'),
+);
 
 const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
   {
-    key: "sign-in",
+    key: 'sign-in',
     path: AUTH_ROUTES?.SIGN_IN,
     component: SignIn,
-    name: "auth-sign-in",
+    name: 'auth-sign-in',
   },
   {
-    key: "sign-up-1",
+    key: 'sign-up-1',
     path: AUTH_ROUTES?.SIGN_UP,
     component: SignUp,
-    name: "auth-sign-up",
+    name: 'auth-sign-up',
   },
   {
-    key: "forgot-password",
+    key: 'forgot-password',
     path: AUTH_ROUTES?.FORGOT_PASSWORD,
     component: ForgotPassword,
-    name: "auth-forgot-password",
+    name: 'auth-forgot-password',
   },
 ];
 
 const routes_main: RouterElementInterface[] = [
-    {
-    key: "home",
+  {
+    key: 'home',
     path: MAIN_ROUTES.HOME,
     component: LandingPage,
-    name: "landing-page",
+    name: 'landing-page',
   },
   {
-    key: "main-inbox",
+    key: 'main-inbox',
     path: MAIN_ROUTES.INBOX,
     component: Main,
-    name: "main-inbox",
+    name: 'main-inbox',
   },
   {
-    key: "all-plugins",
+    key: 'all-plugins',
     path: MAIN_ROUTES.ALL_PLUGINS,
     component: AllPLugins,
-    name: "all-plugins",
-  }
+    name: 'all-plugins',
+  },
 ];
 
 export { routes_auth, routes_admin, routes_main };
