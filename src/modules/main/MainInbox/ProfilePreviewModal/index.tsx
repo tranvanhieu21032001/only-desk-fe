@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image } from "antd";
 
-import Button from '../../common/Button';
+import Button from '../../../../shared/components/common/Button';
 
 import * as S from './profile-preview-styles'
 
@@ -34,7 +34,9 @@ const ProfilePreviewModal: React.FC<ProfilePreviewModalProps> = ({ isOpen, onClo
                 </S.Header>
                 <S.Body>{children}</S.Body>
                 <S.Footer>
-                    <Button onClick={onClose} width='100px'>Back</Button>
+                    <Button onClick={onClose} width='100px'
+
+                    >Back</Button>
                     <Button type='primary' width='190px'>View Profile Detail</Button>
                 </S.Footer>
             </S.Panel>

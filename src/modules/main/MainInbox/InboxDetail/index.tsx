@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image } from 'antd';
 
-import AvatarWithStatus from '../../common/Avatar';
+import AvatarWithStatus from '../../../../shared/components/common/Avatar';
 
 import * as S from './inbox-detail.styles';
 

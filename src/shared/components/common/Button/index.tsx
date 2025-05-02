@@ -13,6 +13,8 @@ interface ButtonProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   width?: string;
   htmlType?: "button" | "submit" | "reset";
+  icon?: React.ReactNode;
+  iconPosition?: "left" | "right";
 }
 
 export default function Button({
@@ -22,11 +24,30 @@ export default function Button({
   disabled = false,
   isCancel = false,
   isLoading = false,
-  onClick = () => {},
+  onClick = () => { },
   width = "100%",
   htmlType = "button",
+  icon,
+  iconPosition = "left",
   ...rest
 }: ButtonProps) {
+  const renderContent = () => (
+    <S.ButtonContent>
+      {icon && iconPosition === "left" && !isLoading && (
+        <span style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
+          {icon}
+        </span>
+      )}
+      <span style={{ display: "flex", alignItems: "center" }}>{children}</span>
+      {icon && iconPosition === "right" && !isLoading && (
+        <span style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
+          {icon}
+        </span>
+      )}
+      {isLoading && <LoadingOutlined />}
+    </S.ButtonContent>
+  );
+
   switch (type) {
     case "primary":
       return (
@@ -39,7 +60,7 @@ export default function Button({
           type={htmlType}
           {...rest}
         >
-          {children} {isLoading && <LoadingOutlined />}
+          {renderContent()}
         </S.PrimaryButton>
       );
     default:
@@ -52,7 +73,7 @@ export default function Button({
           type={htmlType}
           {...rest}
         >
-          {children} {isLoading && <LoadingOutlined />}
+          {renderContent()}
         </S.DefaultButton>
       );
   }

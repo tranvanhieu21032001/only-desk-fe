@@ -1,8 +1,6 @@
 import { Image } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 
-import AvatarWithStatus from '../../common/Avatar';
-
 import { filterOptions, notifications } from '@/core/settings/options';
 
 import * as S from './inbox-list.styles'
@@ -17,6 +15,7 @@ import copyIcon from '@/assets/icons/common/ic-copy-link.svg';
 import blockIcon from '@/assets/icons/common/ic-user-block.svg';
 import deleteIcon from '@/assets/icons/common/ic-delete-red.svg';
 import flag from '@/assets/icons/common/ic-flag.svg'
+import AvatarWithStatus from '@/shared/components/common/Avatar';
 
 const NotificationList = () => {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
