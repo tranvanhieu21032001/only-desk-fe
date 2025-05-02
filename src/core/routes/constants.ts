@@ -18,6 +18,7 @@ const MAIN_ROUTES = {
   HOME: "/",
   INBOX: `${preRouterMain}/inbox`,
   ALL_PLUGINS: `${preRouterMain}/all-plugins`,
+  SPAM_CHATS: `${preRouterMain}/spam-chats`,
 };
 
 export { ADMIN_ROUTES, AUTH_ROUTES, MAIN_ROUTES };

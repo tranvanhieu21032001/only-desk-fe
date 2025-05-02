@@ -9,11 +9,13 @@ const ForgotPassword = React.lazy(
   () => import('@/modules/auth/forgotPassword/Main'),
 );
 
-const Main = React.lazy(() => import('@/modules/main/MainInbox'));
-const LandingPage = React.lazy(() => import('@/modules/landing'));
+
+const Main = React.lazy(() => import("@/modules/main/MainInbox/Main"));
+const LandingPage = React.lazy(() => import("@/modules/landing"));
 const AllPLugins = React.lazy(
   () => import('@/modules/plugins/all-plugins/Main'),
 );
+const SpamChats = React.lazy(() => import("@/modules/main/SpamChats/Main"));
 
 const routes_admin: RouterElementInterface[] = [];
 
@@ -57,6 +59,12 @@ const routes_main: RouterElementInterface[] = [
     component: AllPLugins,
     name: 'all-plugins',
   },
+  {
+    key: "spam-chats",
+    path: MAIN_ROUTES.SPAM_CHATS,
+    component: SpamChats,
+    name: "spam-chats",
+  }
 ];
 
 export { routes_auth, routes_admin, routes_main };

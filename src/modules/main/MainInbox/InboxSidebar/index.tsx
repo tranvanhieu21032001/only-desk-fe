@@ -1,8 +1,6 @@
 import { Image } from "antd";
 import { useState } from "react";
 
-import Collapse from "../../common/Collapse";
-import AvatarWithStatus from "../../common/Avatar";
 import ProfilePreviewModal from "../ProfilePreviewModal";
 
 import { initialTags } from "@/core/settings/options";
@@ -37,6 +35,8 @@ import flagAmerica from '@/assets/icons/common/ic-flag-america.svg'
 import company from '@/assets/icons/common/ic-company.svg'
 import noteBlue from '@/assets/icons/common/ic-note-blue.svg'
 import tagsBlue from '@/assets/icons/common/ic-tags-blue.svg'
+import AvatarWithStatus from "@/shared/components/common/Avatar";
+import Collapse from "@/shared/components/common/Collapse";
 
 const InboxSidebar = () => {
   const [openCollapse] = useState(true);

@@ -14,5 +14,17 @@
     "createConversation": "Create Conversation",
     "addNewContact": "Add New Contact",
     "inviteTeamMembers": "Invite Team Members"
+  },
+
+  "inbox": {
+    "title": "All Chats"
+  },
+
+  "spam": {
+    "title": "Spam Chats"
+  },
+
+  "plugins": {
+    "title": "All Plugins"
   }
 }

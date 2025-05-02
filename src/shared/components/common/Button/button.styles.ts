@@ -1,16 +1,42 @@
 import { styled, css } from 'styled-components';
 
 export const ButtonCommon = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
   cursor: pointer;
-  padding: 12px 16px;
+  padding: 12px 20px;        
   border: none;
   border-radius: 8px;
   width: 100%;
+  height: 45px;
 
   font-weight: ${({ theme }) => theme.fontWeight.semiBold};
   font-size: ${({ theme }) => theme.fontSize.md};
   line-height: 24px;
   text-align: center;
+  white-space: nowrap;             
+
+  svg, img {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: block;
+  }
+`;
+
+export const ButtonContent = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  span {
+    display: flex;
+    align-items: center;
+    line-height: 0;
+  }
 `;
 
 export const PrimaryButton = styled(ButtonCommon)<{
