@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import NotificationList from "../InboxList";
 import InboxSidebar from "../InboxSidebar";
-import InboxDetail from "@/modules/main/MainInbox/InboxDetail";
+import InboxDetail from "@/modules/main/main-inbox/InboxDetail";
 import Resizer from "@/shared/components/common/Resizer";
 
 import { DEFAULT_RESIZER_CONFIG } from "@/core/settings/constants";
