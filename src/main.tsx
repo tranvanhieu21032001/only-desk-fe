@@ -11,6 +11,7 @@ import i18n from "./core/services/i18n/index.ts";
 import GlobalStyle from "./shared/styles/global/index.ts";
 
 import App from "./App.tsx";
+import { TitleProvider } from "./core/context/TitleContext.tsx";
 
 function Index() {
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
@@ -25,7 +26,9 @@ function Index() {
         <GlobalStyle />
         <StrictMode>
           <I18nextProvider i18n={i18n}>
-            <App />
+            <TitleProvider>
+              <App />
+            </TitleProvider>
             <ToastContainer position="bottom-right" hideProgressBar={true} />
           </I18nextProvider>
         </StrictMode>
