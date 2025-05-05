@@ -39,6 +39,7 @@ export const CardHeader = styled.div`
 
 export const NamePlugin = styled.div`
   margin-top: 14px;
+  min-height: 34px;
 
   display: flex;
   gap: 8px;
@@ -140,26 +141,34 @@ export const ActionWrap = styled.div`
 `;
 
 export const ButtonViewDetail = styled(Button)`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
   padding: 12px;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
 `;
 
 export const ButtonConfigure = styled(Button)`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
+  span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
 `;
 
 export const ButtonView = styled(Button)`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
   padding: 12px 4px;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+  }
 `;
 
 export const ButtonDelete = styled(Button)`

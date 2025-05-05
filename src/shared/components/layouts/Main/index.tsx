@@ -654,7 +654,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     if (!isEmpty(children)) {
       return (
         <S.MenuPopover
-          placement="right"
+          placement="rightTop"
           content={children}
           rootClassName="menu-popover"
           $isActive={childrenPath?.includes(routePath)}

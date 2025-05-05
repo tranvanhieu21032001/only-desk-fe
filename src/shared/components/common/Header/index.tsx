@@ -14,7 +14,6 @@ import {
   notificationOptions,
   participant,
 } from '@/core/settings/options';
-import { useTitle } from '@/core/context/TitleContext';
 
 import * as S from './header.styles';
 

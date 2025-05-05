@@ -224,10 +224,12 @@ export const WorkSpacesLabel = styled.div`
 export const PopoverAction = styled(Button)`
   margin-top: 12px;
 
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
+  span {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 export const MenuWrapper = styled.div`
