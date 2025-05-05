@@ -20,7 +20,7 @@ export const TitleProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 export const useTitle = () => {
     const context = useContext(TitleContext);
     if (!context) {
-        throw new Error("");
+        throw new Error("useTitle must be used within a TitleProvider");
     }
     return context;
 }; 

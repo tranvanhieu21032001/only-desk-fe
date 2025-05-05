@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Header = styled.div`
   height: 76px;
@@ -74,16 +74,16 @@ export const DropdownItem = styled.div`
 `;
 
 export const CreateButton = styled.button`
-  background-color: #1e266d;
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
+  background-color: #1E266D,
+  color: #fff,
+  border: none,
+  padding: 12px 20px,
+  border-radius: 8px,
+  font-size: 14px,
+  display: flex,
+  align-items: center,
+  gap: 6px,
+  cursor: pointer,
 `;
 
 export const IconButton = styled.button`
@@ -177,7 +177,7 @@ export const DropdownRow = styled.div`
   align-items: center;
   justify-content: start;
   gap: 5px;
-  position: relative;
+  position: relative; 
 `;
 
 export const DropdownHeader = styled.div`
@@ -192,15 +192,15 @@ export const DropdownHeader = styled.div`
   cursor: pointer;
 
   span {
-    color: #757575;
-    font-size: 14px;
+   color: #757575;
+   font-size: 14px;
   }
 `;
 
 export const ArrowIcon = styled.span<{ isOpen: boolean }>`
   margin-left: auto;
   font-size: 12px;
-  transform: rotate(${({ isOpen }) => (isOpen ? '180deg' : '0deg')});
+  transform: rotate(${({ isOpen }) => (isOpen ? "180deg" : "0deg")});
   transition: transform 0.2s ease;
 `;
 
@@ -232,7 +232,7 @@ export const TagsWrapper = styled.div`
 export const Tag = styled.div`
   display: flex;
   align-items: center;
-  background: #fafafa;
+  background: #FAFAFA;
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 12px;
@@ -247,19 +247,19 @@ export const RemoveTagButton = styled.div`
   cursor: pointer;
   font-size: 12px;
 
-  img,
+  img, 
   svg {
-    width: 10px;
-    height: 10px;
+   width: 10px;
+   height: 10px;
   }
 `;
 
 export const RemoveImage = styled.div`
-  width: 14px;
-  height: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+   width: 14px;
+   height: 10px;
+   display: flex;
+   justify-content: center;
+   align-items: center; 
 `;
 
 export const ClearAllButton = styled.button`
@@ -272,31 +272,112 @@ export const ClearAllButton = styled.button`
 `;
 
 export const TypeDropdownMenu = styled.div`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  margin-top: 4px;
-  max-height: 200px;
-  overflow-y: auto;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
 `;
 
 export const TypeDropdownItem = styled.div`
-  padding: 10px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #333;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid #f0f0f0;
-  }
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    
+    &:hover {
+        background-color: #f5f5f5;
+    }
+    
+    &:not(:last-child) {
+        border-bottom: 1px solid #f0f0f0;
+    }
 `;
+
+export const NotificationDropdown = styled.div`
+  position: absolute;
+  padding: 16px 20px;
+  top: 49px;
+  right: -154px;
+  width: 370px;
+  background: #fff;
+  box-shadow: 0px 4px 24px 0px #1E266D14;
+  border: 1px solid #ddd;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  z-index: 100;
+`;
+
+export const NotificationTitle = styled.div`
+ font-size: 18px;
+ padding-bottom: 16px;
+ font-height: 29px;
+ border-bottom: 1px dashed #E8E8E8;
+ font-weight: 700;
+ color: #333333;
+ margin-bottom: 8px;
+`;
+
+export const NotificationList = styled.div`
+  max-height: 600px;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  overflow-y: auto;
+`;
+
+export const NotificationItem = styled.div<{ read: boolean }>`
+  display: flex;
+  padding: 16px;
+  gap: 12px;
+  align-items: flex-start;
+  background: ${({ read }) => (read ? '#fff' : '#EDF1F8')};
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: ${({ read }) => (read ? 'none' : '0px 2px 8px 0px #1E266D0A')};
+`;
+
+export const NotificationContent = styled.div`
+  flex: 1;
+`;
+
+export const NotificationTitleText = styled.div`
+  font-weight: 700;
+  font-size: 14px;
+`;
+
+export const NotificationMessage = styled.div`
+  font-size: 14px;
+  font-weight: 700;     
+  color: #6B6B6B;
+  margin: 2px 0 0 0;
+`;
+
+export const NotificationTime = styled.div`
+  font-size: 12px;
+  color: #A0A0A0;
+  font-weight: 700;
+  min-width: 80px;
+  text-align: right;
+`;
+
+export const NotificationInfoWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+`;
+
+export const NotificationMessageRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
