@@ -301,3 +301,83 @@ export const TypeDropdownItem = styled.div`
     }
 `;
 
+export const NotificationDropdown = styled.div`
+  position: absolute;
+  padding: 16px 20px;
+  top: 49px;
+  right: -154px;
+  width: 370px;
+  background: #fff;
+  box-shadow: 0px 4px 24px 0px #1E266D14;
+  border: 1px solid #ddd;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  z-index: 100;
+`;
+
+export const NotificationTitle = styled.div`
+ font-size: 18px;
+ padding-bottom: 16px;
+ font-height: 29px;
+ border-bottom: 1px dashed #E8E8E8;
+ font-weight: 700;
+ color: #333333;
+ margin-bottom: 8px;
+`;
+
+export const NotificationList = styled.div`
+  max-height: 600px;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  overflow-y: auto;
+`;
+
+export const NotificationItem = styled.div<{ read: boolean }>`
+  display: flex;
+  padding: 16px;
+  gap: 12px;
+  align-items: flex-start;
+  background: ${({ read }) => (read ? '#fff' : '#EDF1F8')};
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: ${({ read }) => (read ? 'none' : '0px 2px 8px 0px #1E266D0A')};
+`;
+
+export const NotificationContent = styled.div`
+  flex: 1;
+`;
+
+export const NotificationTitleText = styled.div`
+  font-weight: 700;
+  font-size: 14px;
+`;
+
+export const NotificationMessage = styled.div`
+  font-size: 14px;
+  font-weight: 700;     
+  color: #6B6B6B;
+  margin: 2px 0 0 0;
+`;
+
+export const NotificationTime = styled.div`
+  font-size: 12px;
+  color: #A0A0A0;
+  font-weight: 700;
+  min-width: 80px;
+  text-align: right;
+`;
+
+export const NotificationInfoWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+`;
+
+export const NotificationMessageRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+

@@ -47,6 +47,14 @@ export const participant = ["participant 1", "participant 2", "participant 3"];
 
 export const conversationOptions = ["Support", "Sales", "Marketing", "Other"];
 
+export const notificationOptions = [
+  { id: 1, title: "Admin 1 sent you a messages", content: "Hi", time: "10 minutes ago", read: false },
+  { id: 2, title: "Admin 1 sent you a messages", content: "Hi", time: "10 minutes ago", read: false },
+  { id: 3, title: "Admin 1 sent you a messages", content: "Hi", time: "10 minutes ago", read: false },
+  { id: 4, title: "Admin 1 sent you a messages", content: "Hi", time: "10 minutes ago", read: false },
+  { id: 5, title: "Admin 1 sent you a messages", content: "Hi", time: "10 minutes ago", read: false },
+];
+
 export const filterOptions = [
     'All',
     'Unread',
