@@ -4,18 +4,17 @@ import { AUTH_ROUTES, MAIN_ROUTES } from './constants';
 import { RouterElementInterface } from './model';
 
 const SignIn = React.lazy(() => import('@/modules/auth/SignIn'));
-const SignUp = React.lazy(() => import('@/modules/auth/signUp/Main'));
+const SignUp = React.lazy(() => import('@/modules/auth/sign-up/Main'));
 const ForgotPassword = React.lazy(
-  () => import('@/modules/auth/forgotPassword/Main'),
+  () => import('@/modules/auth/forgot-password/Main'),
 );
 
-
-const Main = React.lazy(() => import("@/modules/main/MainInbox/Main"));
-const LandingPage = React.lazy(() => import("@/modules/landing"));
+const Main = React.lazy(() => import('@/modules/main/MainInbox/Main'));
+const LandingPage = React.lazy(() => import('@/modules/landing'));
 const AllPLugins = React.lazy(
   () => import('@/modules/plugins/all-plugins/Main'),
 );
-const SpamChats = React.lazy(() => import("@/modules/main/SpamChats/Main"));
+const SpamChats = React.lazy(() => import('@/modules/main/SpamChats/Main'));
 
 const routes_admin: RouterElementInterface[] = [];
 
@@ -62,11 +61,11 @@ const routes_main: RouterElementInterface[] = [
     name: 'all-plugins',
   },
   {
-    key: "spam-chats",
+    key: 'spam-chats',
     path: MAIN_ROUTES.SPAM_CHATS,
     component: SpamChats,
-    name: "spam-chats",
-  }
+    name: 'spam-chats',
+  },
 ];
 
 export { routes_auth, routes_admin, routes_main };
