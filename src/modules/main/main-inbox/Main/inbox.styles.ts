@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-import { DEFAULT_RESIZER_CONFIG } from "@/core/settings/constants";
-
 export const InboxWrapper = styled.div`
   flex: 1;
   display: flex;
@@ -9,15 +7,27 @@ export const InboxWrapper = styled.div`
   position: relative;
 `;
 
-export const InboxList = styled.div<{ width: number }>`
-  width: ${props => props.width}px;
-  min-width: ${DEFAULT_RESIZER_CONFIG.MIN_WIDTH}px;
-  max-width: ${DEFAULT_RESIZER_CONFIG.MAX_WIDTH}px;
+export const CustomSplitter = styled.div`
+  height: 100%;
+  width: 100%;
+
+  .ant-splitter-horizontal
+    > .ant-splitter-bar
+    .ant-splitter-bar-dragger::after {
+    height: 0px;
+    width: 0px;
+    display: none !important;
+  }
+`;
+
+export const InboxList = styled.div`
+  height: 100%;
   background-color: #f9f9f9;
   border-right: 1px solid #ddd;
   overflow-y: auto;
   transition: width 0.1s ease;
 `;
+
 
 export const InboxDetail = styled.div`
   flex: 1;
@@ -51,6 +61,7 @@ export const Sidebar = styled.div`
 
 export const InboxDetailWrapper = styled.div<{ isSidebarOpen: boolean }>`
   flex: ${({ isSidebarOpen }) => (isSidebarOpen ? 2 : 1)};
+  height: 100%;
   transition: all 0.3s;
   display: flex;
   flex-direction: column;
