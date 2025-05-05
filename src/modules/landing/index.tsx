@@ -1,15 +1,16 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Button, Typography, Space, Row, Col, Card, Avatar, Rate } from "antd";
-import { PlayCircleOutlined } from "@ant-design/icons";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Typography, Space, Row, Col, Card, Avatar, Rate } from 'antd';
+import { PlayCircleOutlined } from '@ant-design/icons';
 
-import { AUTH_ROUTES } from "@/core/routes/constants";
-import styled from "styled-components";
+import { AUTH_ROUTES, MAIN_ROUTES } from '@/core/routes/constants';
+import styled from 'styled-components';
 
 // Import default avatar from assets
-import defaultAvatar from "@/assets/images/avatar-default.png";
+import defaultAvatar from '@/assets/images/avatar-default.png';
 // Import logo
-import reactLogo from "@/assets/react.svg";
+import reactLogo from '@/assets/react.svg';
+import { useAppSelector } from '@/shared/hooks';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -87,7 +88,7 @@ const VideoThumbnail = styled.div`
   margin-bottom: 20px;
 
   &:before {
-    content: "";
+    content: '';
     display: block;
     padding-top: 56.25%;
   }
@@ -213,19 +214,21 @@ const LOGO_IMAGE = svgToDataURL(mockLogo);
 const BADGE_IMAGE = svgToDataURL(mockBadge);
 
 const LandingPage: React.FC = () => {
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
+
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflow: 'hidden' }}>
       {/* Header */}
       <StyledHeader>
         <div
           className="container"
-          style={{ maxWidth: 1200, margin: "0 auto", padding: "0 20px" }}
+          style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}
         >
           <Row justify="space-between" align="middle">
             <Col>
               <Title
                 level={3}
-                style={{ margin: 0, display: "flex", alignItems: "center" }}
+                style={{ margin: 0, display: 'flex', alignItems: 'center' }}
               >
                 <img
                   src={reactLogo}
@@ -238,7 +241,7 @@ const LandingPage: React.FC = () => {
             <Col xs={0} md={16} lg={12}>
               <Space
                 size={30}
-                style={{ display: "flex", justifyContent: "flex-end" }}
+                style={{ display: 'flex', justifyContent: 'flex-end' }}
               >
                 <a href="#features">Features</a>
                 <a href="#use-cases">Use Cases</a>
@@ -247,14 +250,22 @@ const LandingPage: React.FC = () => {
               </Space>
             </Col>
             <Col>
-              <Space>
-                <Link to={AUTH_ROUTES.SIGN_IN}>Log In</Link>
-                <Link to={AUTH_ROUTES.SIGN_UP}>
+              {!isAuth ? (
+                <Space>
+                  <Link to={AUTH_ROUTES.SIGN_IN}>Log In</Link>
+                  <Link to={AUTH_ROUTES.SIGN_UP}>
+                    <Button type="primary" shape="round">
+                      Start Free Trial
+                    </Button>
+                  </Link>
+                </Space>
+              ) : (
+                <Link to={MAIN_ROUTES?.INBOX}>
                   <Button type="primary" shape="round">
-                    Start Free Trial
+                    Dashboard
                   </Button>
                 </Link>
-              </Space>
+              )}
             </Col>
           </Row>
         </div>
@@ -266,19 +277,19 @@ const LandingPage: React.FC = () => {
           className="container"
           style={{
             maxWidth: 1200,
-            margin: "0 auto",
-            padding: "0 20px",
-            textAlign: "center",
+            margin: '0 auto',
+            padding: '0 20px',
+            textAlign: 'center',
           }}
         >
-          <Title style={{ fontSize: "2.5rem", marginBottom: 24 }}>
+          <Title style={{ fontSize: '2.5rem', marginBottom: 24 }}>
             The future of customer support is here
           </Title>
           <Paragraph
             style={{
-              fontSize: "1.25rem",
+              fontSize: '1.25rem',
               maxWidth: 800,
-              margin: "0 auto 40px",
+              margin: '0 auto 40px',
             }}
           >
             The all-in-one AI-powered business messaging platform that gathers
@@ -289,12 +300,12 @@ const LandingPage: React.FC = () => {
               type="primary"
               shape="round"
               size="large"
-              style={{ height: 56, fontSize: 18, padding: "0 40px" }}
+              style={{ height: 56, fontSize: 18, padding: '0 40px' }}
             >
               Use Product for free
             </Button>
           </Link>
-          <Paragraph style={{ marginTop: 16, color: "#6b7280" }}>
+          <Paragraph style={{ marginTop: 16, color: '#6b7280' }}>
             14 days free trial — No commitment
           </Paragraph>
 
@@ -308,10 +319,10 @@ const LandingPage: React.FC = () => {
       <FeatureSection id="features">
         <div
           className="container"
-          style={{ maxWidth: 1200, margin: "0 auto", padding: "0 20px" }}
+          style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}
         >
           <Title
-            style={{ fontSize: "2rem", textAlign: "center", marginBottom: 80 }}
+            style={{ fontSize: '2rem', textAlign: 'center', marginBottom: 80 }}
           >
             Meet the workspace that delights your teams & customers
           </Title>
@@ -335,7 +346,7 @@ const LandingPage: React.FC = () => {
                 </Paragraph>
                 <a
                   href="#learn-more"
-                  style={{ color: "#2563eb", fontWeight: 500 }}
+                  style={{ color: '#2563eb', fontWeight: 500 }}
                 >
                   Learn more
                 </a>
@@ -345,9 +356,9 @@ const LandingPage: React.FC = () => {
                   src={FEATURE1_IMAGE}
                   alt="Inbox feature"
                   style={{
-                    width: "100%",
+                    width: '100%',
                     borderRadius: 8,
-                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
                   }}
                 />
               </Col>
@@ -362,9 +373,9 @@ const LandingPage: React.FC = () => {
                   src={FEATURE2_IMAGE}
                   alt="Automations feature"
                   style={{
-                    width: "100%",
+                    width: '100%',
                     borderRadius: 8,
-                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
                   }}
                 />
               </Col>
@@ -384,7 +395,7 @@ const LandingPage: React.FC = () => {
                 </Paragraph>
                 <a
                   href="#learn-more"
-                  style={{ color: "#2563eb", fontWeight: 500 }}
+                  style={{ color: '#2563eb', fontWeight: 500 }}
                 >
                   Learn more
                 </a>
@@ -411,7 +422,7 @@ const LandingPage: React.FC = () => {
                 </Paragraph>
                 <a
                   href="#learn-more"
-                  style={{ color: "#2563eb", fontWeight: 500 }}
+                  style={{ color: '#2563eb', fontWeight: 500 }}
                 >
                   Learn more
                 </a>
@@ -421,9 +432,9 @@ const LandingPage: React.FC = () => {
                   src={FEATURE3_IMAGE}
                   alt="CRM feature"
                   style={{
-                    width: "100%",
+                    width: '100%',
                     borderRadius: 8,
-                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
                   }}
                 />
               </Col>
@@ -436,17 +447,17 @@ const LandingPage: React.FC = () => {
       <UseCasesSection id="use-cases">
         <div
           className="container"
-          style={{ maxWidth: 1200, margin: "0 auto", padding: "0 20px" }}
+          style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}
         >
           <Title
-            style={{ fontSize: "2rem", textAlign: "center", marginBottom: 60 }}
+            style={{ fontSize: '2rem', textAlign: 'center', marginBottom: 60 }}
           >
             Built for customer support, marketing, and sales. All together.
           </Title>
 
           <Row gutter={[32, 32]}>
             <Col xs={24} sm={24} md={8}>
-              <Card style={{ height: "100%" }}>
+              <Card style={{ height: '100%' }}>
                 <div style={{ fontSize: 36, marginBottom: 16 }}>🎯</div>
                 <Title level={4}>Customer Support</Title>
                 <Paragraph>
@@ -456,7 +467,7 @@ const LandingPage: React.FC = () => {
               </Card>
             </Col>
             <Col xs={24} sm={24} md={8}>
-              <Card style={{ height: "100%" }}>
+              <Card style={{ height: '100%' }}>
                 <div style={{ fontSize: 36, marginBottom: 16 }}>💼</div>
                 <Title level={4}>Inbound Sales</Title>
                 <Paragraph>
@@ -465,7 +476,7 @@ const LandingPage: React.FC = () => {
               </Card>
             </Col>
             <Col xs={24} sm={24} md={8}>
-              <Card style={{ height: "100%" }}>
+              <Card style={{ height: '100%' }}>
                 <div style={{ fontSize: 36, marginBottom: 16 }}>📣</div>
                 <Title level={4}>Marketing</Title>
                 <Paragraph>
@@ -482,10 +493,10 @@ const LandingPage: React.FC = () => {
       <TestimonialsSection id="testimonials">
         <div
           className="container"
-          style={{ maxWidth: 1200, margin: "0 auto", padding: "0 20px" }}
+          style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}
         >
           <Title
-            style={{ fontSize: "2rem", textAlign: "center", marginBottom: 60 }}
+            style={{ fontSize: '2rem', textAlign: 'center', marginBottom: 60 }}
           >
             600,000 companies have already made the move
           </Title>
@@ -516,8 +527,8 @@ const LandingPage: React.FC = () => {
                 </Paragraph>
                 <div
                   style={{
-                    display: "flex",
-                    alignItems: "center",
+                    display: 'flex',
+                    alignItems: 'center',
                     marginTop: 16,
                   }}
                 >
@@ -556,8 +567,8 @@ const LandingPage: React.FC = () => {
                 </Paragraph>
                 <div
                   style={{
-                    display: "flex",
-                    alignItems: "center",
+                    display: 'flex',
+                    alignItems: 'center',
                     marginTop: 16,
                   }}
                 >
@@ -597,8 +608,8 @@ const LandingPage: React.FC = () => {
                 </Paragraph>
                 <div
                   style={{
-                    display: "flex",
-                    alignItems: "center",
+                    display: 'flex',
+                    alignItems: 'center',
                     marginTop: 16,
                   }}
                 >
@@ -620,10 +631,10 @@ const LandingPage: React.FC = () => {
           className="container"
           style={{
             maxWidth: 800,
-            margin: "0 auto",
-            padding: "0 20px",
-            textAlign: "center",
-            position: "relative",
+            margin: '0 auto',
+            padding: '0 20px',
+            textAlign: 'center',
+            position: 'relative',
             zIndex: 1,
           }}
         >
@@ -633,14 +644,14 @@ const LandingPage: React.FC = () => {
               <img src={BADGE_IMAGE} alt="Badge" style={{ height: 50 }} />
             </Space>
           </div>
-          <Title style={{ color: "white", marginBottom: 40, fontSize: "2rem" }}>
+          <Title style={{ color: 'white', marginBottom: 40, fontSize: '2rem' }}>
             Ready to improve your customer experience?
           </Title>
-          <Space size={16} wrap style={{ justifyContent: "center" }}>
+          <Space size={16} wrap style={{ justifyContent: 'center' }}>
             <Link to={AUTH_ROUTES.SIGN_UP}>
               <Button
                 size="large"
-                style={{ height: 50, padding: "0 30px", fontSize: 16 }}
+                style={{ height: 50, padding: '0 30px', fontSize: 16 }}
               >
                 Get started for free
               </Button>
@@ -648,7 +659,7 @@ const LandingPage: React.FC = () => {
             <Button
               ghost
               size="large"
-              style={{ height: 50, padding: "0 30px", fontSize: 16 }}
+              style={{ height: 50, padding: '0 30px', fontSize: 16 }}
             >
               Book a demo
             </Button>
@@ -660,17 +671,17 @@ const LandingPage: React.FC = () => {
       <Footer>
         <div
           className="container"
-          style={{ maxWidth: 1200, margin: "0 auto", padding: "0 20px" }}
+          style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}
         >
           <Row gutter={[60, 40]}>
             <Col xs={24} md={6}>
               <div style={{ marginBottom: 20 }}>
                 <select
                   style={{
-                    padding: "8px 12px",
-                    background: "#374151",
-                    color: "white",
-                    border: "none",
+                    padding: '8px 12px',
+                    background: '#374151',
+                    color: 'white',
+                    border: 'none',
                     borderRadius: 4,
                     width: 200,
                   }}
@@ -722,17 +733,17 @@ const LandingPage: React.FC = () => {
             style={{
               marginTop: 60,
               paddingTop: 20,
-              borderTop: "1px solid #374151",
+              borderTop: '1px solid #374151',
             }}
           >
             <Row justify="space-between" align="middle">
               <Col>
-                <Text style={{ color: "#9ca3af" }}>
+                <Text style={{ color: '#9ca3af' }}>
                   © 2023 Your Company Name
                 </Text>
               </Col>
               <Col>
-                <Text style={{ color: "#9ca3af" }}>
+                <Text style={{ color: '#9ca3af' }}>
                   Made with ❤️ in Your Location
                 </Text>
               </Col>
