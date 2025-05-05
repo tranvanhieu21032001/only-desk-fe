@@ -74,16 +74,16 @@ export const DropdownItem = styled.div`
 `;
 
 export const CreateButton = styled.button`
-  background-color: #1E266D,
-  color: #fff,
-  border: none,
-  padding: 12px 20px,
-  border-radius: 8px,
-  font-size: 14px,
-  display: flex,
-  align-items: center,
-  gap: 6px,
-  cursor: pointer,
+  background-color: #1e266d;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
 `;
 
 export const IconButton = styled.button`

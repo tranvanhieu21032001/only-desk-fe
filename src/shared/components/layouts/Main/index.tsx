@@ -738,9 +738,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         </S.SiderBottom>
       </S.SiderWrap>
       <Layout>
-        <S.HeaderWrap>
-          <Header />
-        </S.HeaderWrap>
+        <S.HeaderWrap>{/* <Header /> */}</S.HeaderWrap>
         <S.Body>{children}</S.Body>
       </Layout>
     </S.LayoutWrapper>
