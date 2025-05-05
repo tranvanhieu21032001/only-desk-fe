@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useAppSelector } from "@/shared/hooks";
-import { AUTH_ROUTES, MAIN_ROUTES } from "@/core/routes/constants";
+import { useAppSelector } from '@/shared/hooks';
+import { AUTH_ROUTES, MAIN_ROUTES } from '@/core/routes/constants';
 
 export default function useWithAuth<
   P extends React.HTMLAttributes<HTMLElement>,
@@ -18,7 +18,6 @@ export default function useWithAuth<
     } else if (isAuth && Object.values(AUTH_ROUTES).includes(currentPath)) {
       navigate(MAIN_ROUTES?.HOME, { replace: true });
     }
-
   }, [isAuth]);
 
   const WrapperComponent = (props: P) => {
