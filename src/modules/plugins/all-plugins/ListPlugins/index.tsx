@@ -3,11 +3,10 @@ import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { CheckCircleOutlined } from '@ant-design/icons';
 
-import Input from '@/shared/components/common/Input';
-
 import { mockupCardPlugins, pluginTypes } from '../../helper/data/allPlugins';
 
 import CardPlugin from '../CardPlugin';
+import Input from '@/shared/components/common/Input';
 import Typography from '@/shared/components/common/Typography';
 
 import * as S from './plugins.styles';

@@ -21,7 +21,10 @@
 
     "view-detail": "View Detail",
     "configure": "Configure",
-    "installed": "Installed"
+    "installed": "Installed",
+
+    "all-plugins": "All Plugins",
+    "insert-page": "Insert page description here."
   },
 
   "modal-view-detail-plugin": {
