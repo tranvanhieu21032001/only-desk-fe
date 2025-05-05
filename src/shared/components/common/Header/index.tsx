@@ -1,19 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import Button from '../Button';
-import Typography from '../Typography';
-import AvatarWithStatus from '../Avatar';
-import { useHeader } from '@/shared/hooks';
 import CreateConversationModal from '../Modal';
-import themeColors from '@/shared/styles/themes/default/colors';
 
-import {
-  conversationOptions,
-  notificationOptions,
-  participant,
-} from '@/core/settings/options';
+import { conversationOptions, participant } from '@/core/settings/options';
+import { useTitle } from '@/core/context/TitleContext';
 
 import * as S from './header.styles';
 
@@ -25,23 +18,17 @@ import team from '@/assets/icons/common/ic-team.svg';
 import arrDown from '@/assets/icons/common/ic-arrow-down.svg';
 import closeCircle from '@/assets/icons/common/ic-close-circle.svg';
 import closeModal from '@/assets/icons/common/ic-close-modal.svg';
-import addCircle from '@/assets/icons/common/ic-add-white.svg';
+import addCircle from '@/assets/icons/common/ic-add-plus.svg';
 import addHeader from '@/assets/icons/common/ic-add-header.svg';
-import bellBlue from '@/assets/icons/common/ic-notification-blue.svg';
-import flag from '@/assets/icons/common/ic-flag.svg';
-import defaultAvatar from '@/assets/images/avatar-default.png';
 
 const Header: React.FC = () => {
   const { t } = useTranslation('main');
+  const { title } = useTitle();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selected, setSelected] = useState('');
   const [selectDropdownOpen, setSelectDropdownOpen] = useState(false);
   const [tags, setTags] = useState(participant);
-  const [notificationOpen, setNotificationOpen] = useState(false);
-  const [notifications, setNotifications] = useState(notificationOptions);
-
-  const { label, description } = useHeader();
 
   const removeTag = (index: number) => {
     const newTags = tags.filter((_, i) => i !== index);
@@ -53,13 +40,12 @@ const Header: React.FC = () => {
   };
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const notificationRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
 
-  // Close dropdowns when clicking outside
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -67,12 +53,6 @@ const Header: React.FC = () => {
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setDropdownOpen(false);
-      }
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(event.target as Node)
-      ) {
-        setNotificationOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -84,75 +64,20 @@ const Header: React.FC = () => {
   return (
     <S.Header>
       <S.LeftSection>
-        {label && <Typography variant="h5">{label}</Typography>}
-        {description && (
-          <Typography color={themeColors?.newtralLight}>
-            {description}
-          </Typography>
-        )}
+        <S.Title>{title || t('header.title')}</S.Title>
+        <S.Description>{t('header.description')}</S.Description>
       </S.LeftSection>
 
       <S.RightSection ref={dropdownRef}>
         <Image src={search} preview={false} />
-        <div style={{ position: 'relative' }} ref={notificationRef}>
-          <Image
-            src={notificationOpen ? bellBlue : bell}
-            preview={false}
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              setNotificationOpen((prev) => !prev);
-              setDropdownOpen(false);
-            }}
-          />
-          {notificationOpen && (
-            <S.NotificationDropdown>
-              <S.NotificationTitle>Notifications</S.NotificationTitle>
-              <S.NotificationList>
-                {notifications.map((item) => (
-                  <S.NotificationItem
-                    key={item.id}
-                    read={item.read}
-                    onClick={() =>
-                      setNotifications((prev) =>
-                        prev.map((n) =>
-                          n.id === item.id ? { ...n, read: true } : n,
-                        ),
-                      )
-                    }
-                  >
-                    <AvatarWithStatus
-                      avatarSrc={defaultAvatar}
-                      flagSrc={flag}
-                      isOnline={true}
-                    />
-                    <S.NotificationInfoWrapper>
-                      <S.NotificationContent>
-                        <S.NotificationTitleText>
-                          {item.title}
-                        </S.NotificationTitleText>
-                      </S.NotificationContent>
-                      <S.NotificationMessageRow>
-                        <S.NotificationMessage>
-                          {item.content}
-                        </S.NotificationMessage>
-                        <S.NotificationTime>{item.time}</S.NotificationTime>
-                      </S.NotificationMessageRow>
-                    </S.NotificationInfoWrapper>
-                  </S.NotificationItem>
-                ))}
-              </S.NotificationList>
-            </S.NotificationDropdown>
-          )}
-        </div>
+        <Image src={bell} preview={false} />
+
         <Button
           type="primary"
           width="122px"
           icon={<Image src={addHeader} preview={false} />}
           iconPosition="left"
-          onClick={() => {
-            toggleDropdown();
-            setNotificationOpen(false);
-          }}
+          onClick={toggleDropdown}
         >
           Add new
         </Button>
@@ -185,14 +110,28 @@ const Header: React.FC = () => {
           description="Please insert modal description here."
           onClose={() => setIsModalOpen(false)}
           footer={
-            <Button
-              type="primary"
-              width="207px"
-              icon={<Image src={addCircle} preview={false} />}
-              iconPosition="left"
+            <button
+              style={{
+                backgroundColor: '#1E266D',
+                color: '#fff',
+                border: 'none',
+                padding: '12px 20px',
+                borderRadius: '8px',
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                cursor: 'pointer',
+              }}
             >
+              <Image
+                src={addCircle}
+                preview={false}
+                style={{ position: 'relative', top: '-2px' }}
+              />
               Create Conversation
-            </Button>
+            </button>
           }
         >
           <S.FormWrapper>
