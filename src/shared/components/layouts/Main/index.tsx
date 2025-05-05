@@ -5,12 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
 
-import { MAIN_ROUTES } from '@/core/routes/constants';
 import {
   chatsPaths,
   pluginsPaths,
   settingsPaths,
 } from '@/shared/helper/data/layout';
+import { useAppDispatch } from '@/shared/hooks';
+import { MAIN_ROUTES } from '@/core/routes/constants';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { MAX_COUNT } from '@/modules/plugins/helper/data/allPlugins';
@@ -65,6 +66,7 @@ import icVector from '@/assets/icons/layout/ic-vector.svg';
 import icUserEdit from '@/assets/icons/layout/ic-user-edit.svg';
 import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
+import { actionLogout } from '@/modules/auth/store/features/auth';
 
 // const { Header, Content } = Layout;
 
@@ -75,6 +77,7 @@ interface Props {
 const MainLayout: React.FC<Props> = ({ children }) => {
   const { t } = useTranslation('layout');
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const routePath = window?.location?.pathname;
 
@@ -437,8 +440,8 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     //TODO handle later
   }
 
-  function handleConfirmLogout() {
-    //TODO handle later
+  function handleLogout() {
+    dispatch(actionLogout());
   }
 
   const renderWorkSpaces = (
@@ -633,7 +636,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
 
       <S.LineDash />
 
-      <S.ChildrenMenuWrap onClick={handleConfirmLogout}>
+      <S.ChildrenMenuWrap onClick={handleLogout}>
         <S.ChildrenMenuLabel>
           <Image src={icLogout} preview={false} width={24} height={24} />
           <Typography color={themeColors?.errorDark}>

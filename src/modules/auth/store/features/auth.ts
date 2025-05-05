@@ -1,20 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-import { UserInforInterface } from "@/modules/auth/model/user";
+import { UserInforInterface } from '@/modules/auth/model/user';
 
-import { constants } from "@/core/settings";
-import webStorageClient from "@/shared/utils/webStorageClient";
+import { constants } from '@/core/settings';
+import webStorageClient from '@/shared/utils/webStorageClient';
 
-const isAuthFromStorage: boolean = webStorageClient.get(constants.IS_AUTH) || false;
+const isAuthFromStorage: boolean =
+  webStorageClient.get(constants.IS_AUTH) || false;
 const userInfoFromStorage: UserInforInterface = webStorageClient.get(
-  constants.USER_INFO
+  constants.USER_INFO,
 );
 
 export interface AuthInterface {
   isAuth: boolean;
   userInfo: UserInforInterface | null;
   permissionList: Record<string, boolean>;
-  isLoading?:boolean
+  isLoading?: boolean;
 }
 
 const initialState: AuthInterface = {
@@ -25,7 +26,7 @@ const initialState: AuthInterface = {
 };
 
 const slice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     actionSignUp: (state, action) => {
@@ -39,18 +40,18 @@ const slice = createSlice({
       webStorageClient.set(
         constants.IS_AUTH,
         isAuth,
-        rememberMe ? { expires: 30 } : {}
+        rememberMe ? { expires: 30 } : {},
       );
       webStorageClient.set(
         constants.USER_INFO,
         userInfo,
-        rememberMe ? { expires: 30 } : {}
+        rememberMe ? { expires: 30 } : {},
       );
       webStorageClient.setToken(accessToken, rememberMe ? { expires: 30 } : {});
       webStorageClient.set(
         constants.REFRESH_TOKEN,
         refreshToken,
-        rememberMe ? { expires: 30 } : {}
+        rememberMe ? { expires: 30 } : {},
       );
     },
     actionUpdateAvatar: (state, action) => {
@@ -74,6 +75,7 @@ const slice = createSlice({
   extraReducers: () => {},
 });
 
-export const { actionLogin, actionLogout, actionUpdateAvatar,actionSignUp } = slice.actions;
+export const { actionLogin, actionLogout, actionUpdateAvatar, actionSignUp } =
+  slice.actions;
 
 export default slice.reducer;
