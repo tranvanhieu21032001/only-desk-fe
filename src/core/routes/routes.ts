@@ -71,7 +71,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'spam-chats',
     path: MAIN_ROUTES.SPAM_CHATS,
-    component: PageNotFound,
+    component: SpamChats,
     name: 'spam-chats',
   },
 
