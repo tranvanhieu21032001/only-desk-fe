@@ -1,23 +1,23 @@
-import { TFunction } from "i18next";
+import { TFunction } from 'i18next';
 
-import { AuthStatusInstalledCodeEnums } from "./auth.enums";
+import { AuthStatusInstalledCodeEnums } from './auth.enums';
 
-import Typography from "@/shared/components/common/Typography";
+import Typography from '@/shared/components/common/Typography';
 
-import themeColors from "@/shared/styles/themes/default/colors";
+import themeColors from '@/shared/styles/themes/default/colors';
 
-import * as S from "@/modules/auth/signUp/connectOnlyChat/connect-chat.styles";
+import * as S from '@/modules/auth/sign-up/connect-only-chat/connect-chat.styles';
 
 const renderStatusInstalled = (
   status: AuthStatusInstalledCodeEnums,
-  t: TFunction
+  t: TFunction,
 ) => {
   switch (status) {
     case AuthStatusInstalledCodeEnums?.NOT_INSTALLED:
       return (
         <S.StatusWrap>
           <Typography color={themeColors?.errorDark}>
-            {t("connect-onlychat.not-installed")}
+            {t('connect-onlychat.not-installed')}
           </Typography>
         </S.StatusWrap>
       );
