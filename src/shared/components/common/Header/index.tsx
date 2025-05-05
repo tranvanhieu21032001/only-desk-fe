@@ -31,7 +31,7 @@ import defaultAvatar from '@/assets/images/avatar-default.png';
 
 const Header: React.FC = () => {
   const { t } = useTranslation('main');
-  // const { title } = useTitle();
+  const { title } = useTitle();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selected, setSelected] = useState('');
@@ -81,7 +81,7 @@ const Header: React.FC = () => {
   return (
     <S.Header>
       <S.LeftSection>
-        {/* <S.Title>{title || t('header.title')}</S.Title> */}
+        <S.Title>{title || t('header.title')}</S.Title>
         <S.Description>{t('header.description')}</S.Description>
       </S.LeftSection>
 
