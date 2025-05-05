@@ -1,8 +1,8 @@
-import { Option } from "antd/es/mentions";
-import { css, styled } from "styled-components";
+import { Option } from 'antd/es/mentions';
+import { css, styled } from 'styled-components';
 
-import Select from "@/shared/components/common/Select";
-import Typography from "@/shared/components/common/Typography";
+import Select from '@/shared/components/common/Select';
+import Typography from '@/shared/components/common/Typography';
 
 export const ChildrenWrap = styled.div``;
 
@@ -56,12 +56,12 @@ export const Line = styled.div<{ $color?: string }>`
 
   ${({ $color }) => {
     switch ($color) {
-      case "old":
+      case 'old':
         return css`
           border-color: #687cca;
           opacity: 1;
         `;
-      case "current":
+      case 'current':
         return css`
           border-color: #3750b2;
           opacity: 1;
@@ -93,21 +93,23 @@ export const HeaderWrap = styled.div`
 `;
 
 export const Header = styled.div`
-position: sticky;
-padding-top: 36px;
-top: 0;
-z-index: 2;
-background-color: ${(props) => props?.theme?.colors?.newtralLightest};
+  position: sticky;
+  padding-top: 36px;
+  top: 0;
+  z-index: 2;
+  background-color: ${(props) => props?.theme?.colors?.newtralLightest};
 
   @media ${(props) => props?.theme?.breakpoints?.xlMax} {
-      padding-top: 24px;
-    }
+    padding-top: 24px;
+  }
 
   @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-      padding-top: 16px;
-    }
-`
-export const Logo = styled.img``;
+    padding-top: 16px;
+  }
+`;
+export const Logo = styled.img`
+  cursor: pointer;
+`;
 
 export const MultipleLangWrap = styled.div`
   height: 100%;

@@ -167,10 +167,10 @@ const routes_main: RouterElementInterface[] = [
     name: 'all-plugins',
   },
   {
-    key: 'spam-chats',
-    path: MAIN_ROUTES.SPAM_CHATS,
-    component: SpamChats,
-    name: 'spam-chats',
+    key: 'installed-plugins',
+    path: MAIN_ROUTES.INSTALLED_PLUGINS,
+    component: PageNotFound,
+    name: 'installed-plugins',
   },
 
   //Settings
