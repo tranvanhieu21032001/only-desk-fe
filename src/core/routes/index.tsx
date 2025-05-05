@@ -1,15 +1,15 @@
-import React, { Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { routes_auth, routes_main } from "./routes";
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { routes_auth, routes_main } from './routes';
 
-import { ADMIN_ROUTES, MAIN_ROUTES } from "./constants";
+import { ADMIN_ROUTES, MAIN_ROUTES } from './constants';
 
-import ErrorBoundary from "./ErrorBoundary";
-import Forbidden from "@/modules/admin/Forbidden/index";
-import AuthLayout from "../../shared/components/layouts/Auth";
-import useWithAuth from "@/shared/HOCS/withAuth";
-import MainLayout from "@/shared/components/layouts/Main";
-import useWithoutAuth from "@/shared/HOCS/withoutAuth";
+import ErrorBoundary from './ErrorBoundary';
+import Forbidden from '@/modules/admin/Forbidden/index';
+import AuthLayout from '../../shared/components/layouts/Auth';
+import useWithAuth from '@/shared/HOCS/withAuth';
+import MainLayout from '@/shared/components/layouts/Main';
+import useWithoutAuth from '@/shared/HOCS/withoutAuth';
 
 interface ComponentRouteProps {
   component: React.ComponentType;
@@ -67,7 +67,7 @@ export default function RouterRoot() {
             path={MAIN_ROUTES.HOME}
             element={
               <NoLayoutWrapper
-                component={React.lazy(() => import("@/modules/landing"))}
+                component={React.lazy(() => import('@/modules/landing'))}
               />
             }
           />

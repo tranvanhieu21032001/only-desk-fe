@@ -186,10 +186,12 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     {
       key: 'global',
       icon: icGlobal,
+      redirect: `${MAIN_ROUTES?.GLOBAL}`,
     },
     {
       key: 'user',
       icon: icUser,
+      redirect: `${MAIN_ROUTES?.USER}`,
     },
     {
       key: 'ai-knowledge',
@@ -309,8 +311,9 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       ),
     },
     {
-      key: 'campaign',
+      key: 'campaigns',
       icon: icCampaign,
+      redirect: `${MAIN_ROUTES?.CAMPAIGNS}`,
     },
     {
       key: 'knowledge',
@@ -371,8 +374,9 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       ),
     },
     {
-      key: 'chart',
+      key: 'charts',
       icon: icPlugins,
+      redirect: `${MAIN_ROUTES?.CHARTS}`,
     },
     {
       key: 'plugins',
@@ -645,11 +649,13 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     icon,
     children,
     childrenPath,
+    redirect,
   }: {
     key: string;
     icon: string;
     children?: ReactNode;
     childrenPath: string[];
+    redirect?: string;
   }) => {
     if (!isEmpty(children)) {
       return (
@@ -673,7 +679,11 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         rootClassName="menu-no-children-popover"
         $isActive={childrenPath?.includes(routePath)}
       >
-        <S.MenuIcon>
+        <S.MenuIcon
+          onClick={() => {
+            redirect && handleClickChildrenMenu(redirect);
+          }}
+        >
           <Image src={icon} preview={false} width={24} height={24} />
         </S.MenuIcon>
       </S.MenuPopover>
@@ -706,6 +716,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
                   icon: menu.icon,
                   children: menu.children,
                   childrenPath: menu.childrenPath || [],
+                  redirect: menu?.redirect,
                 })}
               </S.MenuIconWrap>
             ))}
