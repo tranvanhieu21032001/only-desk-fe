@@ -4,7 +4,7 @@ import { TFunction } from 'i18next';
 import { constants } from '@/core/settings';
 
 import { postRequest } from '@/core/services/requests';
-import { RecoverPassStepEnums, SignUpStepEnums } from '../helpers/enums/auth';
+import { SignUpStepEnums } from '../helpers/enums/auth';
 import { omitSubmitSignUp } from '../helpers/data/signUp';
 import webLocalStorage from '@/shared/utils/webLocalStorage';
 import { AUTH_ROUTES, MAIN_ROUTES } from '@/core/routes/constants';

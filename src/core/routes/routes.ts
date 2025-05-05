@@ -47,12 +47,14 @@ const routes_main: RouterElementInterface[] = [
     component: LandingPage,
     name: 'landing-page',
   },
+  //Chats
   {
     key: 'main-inbox',
     path: MAIN_ROUTES.INBOX,
     component: Main,
     name: 'main-inbox',
   },
+  //Plugins
   {
     key: 'all-plugins',
     path: MAIN_ROUTES.ALL_PLUGINS,
