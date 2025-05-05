@@ -22,6 +22,18 @@ const MAIN_ROUTES = {
   NEW_SUB_INBOX: `${preRouterMain}/new-sub-inbox`,
   SPAM_CHATS: `${preRouterMain}/spam-chats`,
 
+  // Global
+  GLOBAL: `${preRouterMain}/global`,
+
+  //User
+  USER: `${preRouterMain}/user`,
+
+  //Campaigns
+  CAMPAIGNS: `${preRouterMain}/campaigns`,
+
+  //Charts
+  CHARTS: `${preRouterMain}/charts`,
+
   //Ai Automation
   AI_CHATBOT: `${preRouterMain}/ai-chatbot`,
   CHATBOX_TRIGGER: `${preRouterMain}/chatbox-trigger`,
