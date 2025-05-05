@@ -1,27 +1,18 @@
 import styled from 'styled-components';
-import Button from '../Button';
-import { Popover } from 'antd';
 
 export const Header = styled.div`
-  width: 100%;
-  height: 100%;
-
+  height: 76px;
   background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 1rem;
 `;
 
 export const LeftSection = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-
-  p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 `;
 
 export const Title = styled.p`
@@ -41,13 +32,8 @@ export const Description = styled.p`
 
 export const RightSection = styled.div`
   display: flex;
-  gap: 24px;
   align-items: center;
-  justify-content: space-between;
-
-  img {
-    cursor: pointer;
-  }
+  gap: 1rem;
 `;
 
 export const DropdownMenu = styled.div`
@@ -55,6 +41,7 @@ export const DropdownMenu = styled.div`
   top: 76px;
   right: 0;
   background: white;
+  border: 1px solid #ddd;
   border-bottom-right-radius: 8px;
   border-bottom-left-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -87,16 +74,16 @@ export const DropdownItem = styled.div`
 `;
 
 export const CreateButton = styled.button`
-  background-color: #1e266d;
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
+  background-color: #1E266D,
+  color: #fff,
+  border: none,
+  padding: 12px 20px,
+  border-radius: 8px,
+  font-size: 14px,
+  display: flex,
+  align-items: center,
+  gap: 6px,
+  cursor: pointer,
 `;
 
 export const IconButton = styled.button`
@@ -113,11 +100,24 @@ export const IconButton = styled.button`
   }
 `;
 
-export const AddNewButton = styled(Button)`
-  padding: 8px 16px;
+export const AddNewButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.secondaryDark};
+  color: white;
+  border: none;
+  width: 116px;
+  height: 39px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
   display: flex;
-  gap: 8px;
   align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+
+  .plus {
+    font-size: 18px;
+  }
 `;
 
 export const FormWrapper = styled.div`
@@ -144,12 +144,14 @@ export const Label = styled.label`
 export const Input = styled.input`
   padding: 12px;
   border-radius: 8px;
+  border: 1px solid #e0e0e0;
   font-size: 14px;
 `;
 
 export const Select = styled.select`
   padding: 12px;
   border-radius: 8px;
+  border: 1px solid #e0e0e0;
   font-size: 14px;
 `;
 
@@ -159,6 +161,7 @@ export const ParticipantsBox = styled.div`
   gap: 8px;
   padding: 10px;
   border-radius: 8px;
+  border: 1px solid #e0e0e0;
 `;
 
 export const ParticipantTag = styled.span`
@@ -183,6 +186,7 @@ export const DropdownHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
+  border: 1px solid #ddd;
   border-radius: 8px;
   background: #fff;
   cursor: pointer;
@@ -206,6 +210,7 @@ export const DropdownList = styled.div`
   left: 0;
   right: 0;
   background: #fff;
+  border: 1px solid #ddd;
   border-radius: 8px;
   margin-top: 4px;
   overflow: hidden;
@@ -221,6 +226,7 @@ export const TagsWrapper = styled.div`
   flex-wrap: wrap;
   gap: 6px;
   position: relative;
+  border: 1px solid #e8e8e8;
 `;
 
 export const Tag = styled.div`
@@ -271,6 +277,7 @@ export const TypeDropdownMenu = styled.div`
   left: 0;
   width: 100%;
   background: #fff;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 10;
@@ -293,100 +300,3 @@ export const TypeDropdownItem = styled.div`
     border-bottom: 1px solid #f0f0f0;
   }
 `;
-
-export const NotificationDropdown = styled.div`
-  position: absolute;
-  padding: 16px 20px;
-  top: 49px;
-  right: -154px;
-  width: 370px;
-  background: #fff;
-  box-shadow: 0px 4px 24px 0px #1e266d14;
-  border: 1px solid #ddd;
-  border-bottom-right-radius: 8px;
-  border-bottom-left-radius: 8px;
-  z-index: 100;
-`;
-
-export const NotificationTitle = styled.div`
-  font-size: 18px;
-  padding-bottom: 16px;
-  font-height: 29px;
-  border-bottom: 1px dashed #e8e8e8;
-  font-weight: 700;
-  color: #333333;
-  margin-bottom: 8px;
-`;
-
-export const NotificationList = styled.div`
-  max-height: 600px;
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-  overflow-y: auto;
-`;
-
-export const NotificationItem = styled.div<{ read: boolean }>`
-  display: flex;
-  padding: 16px;
-  gap: 12px;
-  align-items: flex-start;
-  background: ${({ read }) => (read ? '#fff' : '#EDF1F8')};
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: ${({ read }) => (read ? 'none' : '0px 2px 8px 0px #1E266D0A')};
-`;
-
-export const NotificationContent = styled.div`
-  flex: 1;
-`;
-
-export const NotificationTitleText = styled.div`
-  font-weight: 700;
-  font-size: 14px;
-`;
-
-export const NotificationMessage = styled.div`
-  font-size: 14px;
-  font-weight: 700;
-  color: #6b6b6b;
-  margin: 2px 0 0 0;
-`;
-
-export const NotificationTime = styled.div`
-  font-size: 12px;
-  color: #a0a0a0;
-  font-weight: 700;
-  min-width: 80px;
-  text-align: right;
-`;
-
-export const NotificationInfoWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-`;
-
-export const NotificationMessageRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-export const NotificationPopover = styled(Popover)``;
-
-export const NotificationWrap = styled.div``;
-
-export const NotificationHeader = styled.div`
-  padding: 16px 20px;
-`;
-
-export const LineDash = styled.div`
-  width: 100%;
-  padding: 0 20px;
-
-  border-bottom: 1px dashed ${(props) => props.theme.colors.newtral};
-`;
-
-export const CardNotification = styled.div``;
