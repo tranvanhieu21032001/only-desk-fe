@@ -105,8 +105,6 @@ export const Plugins = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   align-items: center;
-  max-height: 100%;
-  overflow-y: scroll;
 
   @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
     grid-template-columns: repeat(2, 1fr);

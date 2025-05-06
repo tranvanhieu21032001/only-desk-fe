@@ -1,0 +1,23 @@
+{
+  "header": {
+    "search": "Search (messages, contacts, knowledge base, plugins,...)",
+
+    "tabs": {
+      "all": "All",
+      "messages": "Messages",
+      "contacts": "Contacts",
+      "knowledge-base": "Knowledge Base",
+      "plugins": "Plugins",
+      "results": "Results"
+    },
+
+    "all-tab": {
+      "messages": "Messages",
+      "results": "Results",
+      "view-more": "View more results",
+      "contacts": "Contacts",
+      "knowledge-base": "Knowledge Base",
+      "plugins": "Plugins"
+    }
+  }
+}
