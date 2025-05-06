@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-import Button from '../Button';
-import AvatarWithStatus from '../Avatar';
-import CreateConversationModal from '../Modal';
+import Search from '../search/Main';
+import Button from '../../Button';
+import AvatarWithStatus from '../../Avatar';
+import CreateConversationModal from '../../Modal';
 
 import {
   conversationOptions,
@@ -86,7 +87,13 @@ const Header: React.FC = () => {
       </S.LeftSection>
 
       <S.RightSection ref={dropdownRef}>
-        <Image src={search} preview={false} />
+        <S.SearchPopover
+          trigger="click"
+          content={<Search />}
+          rootClassName="search-header"
+        >
+          <Image src={search} preview={false} />
+        </S.SearchPopover>
         <div style={{ position: 'relative' }} ref={notificationRef}>
           <Image
             src={notificationOpen ? bellBlue : bell}

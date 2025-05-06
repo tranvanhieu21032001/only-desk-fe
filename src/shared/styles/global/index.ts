@@ -368,10 +368,6 @@ const scrollApp = css`
 `;
 
 const popOver = css`
-  .ant-popover {
-    width: 335px;
-  }
-
   .workspaces-popover {
     width: 270px;
     inset: 17px 0px 0px 60px !important;
@@ -449,6 +445,37 @@ const popOver = css`
 
     .ant-popover-inner {
       padding: 12px;
+    }
+  }
+
+  .search-header {
+    width: 100% !important;
+    max-width: 70% !important;
+    top: 76px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-inner {
+      padding: 12px;
+
+      border-radius: 0px 0px ${(props) => props?.theme?.radius?.normalRadius}
+        ${(props) => props?.theme?.radius?.normalRadius};
+    }
+
+    @media ${(props) => props?.theme?.breakpoints?.xlMax} {
+      max-width: 80% !important;
+    }
+
+    @media ${(props) => props?.theme?.breakpoints?.lgMax} {
+      max-width: calc(100% - 140px) !important;
+    }
+
+    @media ${(props) => props?.theme?.breakpoints?.smMax} {
+      max-width: 100% !important;
     }
   }
 `;

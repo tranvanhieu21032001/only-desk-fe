@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom';
 import { Button, Typography, Space, Row, Col, Card, Avatar, Rate } from 'antd';
 import { PlayCircleOutlined } from '@ant-design/icons';
 
+import { useAppSelector } from '@/shared/hooks';
 import { AUTH_ROUTES, MAIN_ROUTES } from '@/core/routes/constants';
+
 import styled from 'styled-components';
 
 // Import default avatar from assets
 import defaultAvatar from '@/assets/images/avatar-default.png';
 // Import logo
 import reactLogo from '@/assets/react.svg';
-import { useAppSelector } from '@/shared/hooks';
 
 const { Title, Paragraph, Text } = Typography;
 

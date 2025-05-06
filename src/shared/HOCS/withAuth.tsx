@@ -13,7 +13,7 @@ export default function useWithAuth<
   const currentPath = new URL(window.location.href)?.pathname;
 
   useEffect(() => {
-    if (!isAuth) {
+    if (!isAuth && !Object.values(AUTH_ROUTES).includes(currentPath)) {
       navigate(AUTH_ROUTES.SIGN_IN, { replace: true });
     } else if (isAuth && Object.values(AUTH_ROUTES).includes(currentPath)) {
       navigate(MAIN_ROUTES?.HOME, { replace: true });

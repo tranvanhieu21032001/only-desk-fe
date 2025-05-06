@@ -16,7 +16,7 @@ import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { MAX_COUNT } from '@/modules/plugins/helper/data/allPlugins';
 
-import Header from '../../common/Header';
+import Header from '../../common/header/Main';
 import Typography from '../../common/Typography';
 
 import * as S from './main.styles';
