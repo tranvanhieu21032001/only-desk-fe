@@ -3,7 +3,7 @@ import { Image } from "antd";
 
 import Button from '../../../../shared/components/common/Button';
 
-import * as S from './profile-preview-styles'
+import * as S from './ProfilePreviewModal.styles'
 
 import closeModal from '@/assets/icons/common/ic-close-modal.svg'
 

@@ -1,11 +1,11 @@
 import { Image } from "antd";
 import { useState } from "react";
 
-import ProfilePreviewModal from "../ProfilePreviewModal";
+import ProfilePreviewModal from "../ProfilePreviewModal/ProfilePreviewModal";
 
 import { initialTags } from "@/core/settings/options";
 
-import * as S from "./inbox-sidebar.styles";
+import * as S from "./InboxSidebar.styles";
 
 import verify from '@/assets/icons/common/ic-verify.svg'
 import flag from '@/assets/icons/common/ic-flag.svg'

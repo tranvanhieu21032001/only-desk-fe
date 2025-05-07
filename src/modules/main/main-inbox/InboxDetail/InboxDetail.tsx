@@ -3,7 +3,7 @@ import { Image } from 'antd';
 
 import AvatarWithStatus from '../../../../shared/components/common/Avatar';
 
-import * as S from './inbox-detail.styles';
+import * as S from './InboxDetail.styles';
 
 import avatarAdmin from '@/assets/images/avatar-default.png';
 import avatarUser from '@/assets/images/avatar-default.png';

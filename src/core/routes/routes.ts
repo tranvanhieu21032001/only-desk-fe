@@ -9,12 +9,14 @@ const ForgotPassword = React.lazy(
   () => import('@/modules/auth/forgot-password/Main'),
 );
 
-const Main = React.lazy(() => import('@/modules/main/main-inbox/Main'));
+const Main = React.lazy(() => import('@/modules/main/main-inbox/Main/Main'));
 const LandingPage = React.lazy(() => import('@/modules/landing'));
 const AllPLugins = React.lazy(
   () => import('@/modules/plugins/all-plugins/Main'),
 );
-const SpamChats = React.lazy(() => import('@/modules/main/spam-chats/Main'));
+const SpamChats = React.lazy(
+  () => import('@/modules/main/spam-chats/Main/Main'),
+);
 const PageNotFound = React.lazy(
   () => import('@/shared/components/common/PageNotFound'),
 );

@@ -3,7 +3,7 @@ import { Image } from 'antd';
 
 import Button from '@/shared/components/common/Button';
 
-import * as S from './spam-chats.styles';
+import * as S from './Main.styles';
 
 import arrRight from '@/assets/icons/common/ic-arr-right.svg';
 
