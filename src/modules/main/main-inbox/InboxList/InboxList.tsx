@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 
 import { filterOptions, notifications } from '@/core/settings/options';
 
-import * as S from './inbox-list.styles'
+import * as S from './InboxList.styles'
 
 import search from "@/assets/icons/common/ic-search.svg";
 import filter from "@/assets/icons/common/ic-filter.svg";
