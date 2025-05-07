@@ -62,7 +62,7 @@ const themeColors = {
    */
   warningDarker: '#fd7e14',
   warningDark: '#FFC107',
-  warningDarkest: '#f9f5e2',
+  warningDarkest: '#FAAD14',
 
   borderDisabled: '#d9d9d9',
 

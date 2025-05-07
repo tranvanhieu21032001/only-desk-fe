@@ -1,0 +1,22 @@
+{
+  "filter": {
+    "search": "Search...",
+    "filter": "Filter",
+    "action": "Action",
+    "export": "Export contact profiles",
+    "import": "Import contact profiles",
+    "remove-selected-profiles": "Remove selected profiles"
+  },
+
+  "table": {
+    "fullName": "Full Name",
+    "email": "Email",
+    "location": "Location",
+    "company": "Company",
+    "segments": "Segments",
+    "lastActivity": "Last Activity",
+    "score": "Score",
+    "remove": "Remove",
+    "remove-profile": "Remove profile"
+  }
+}

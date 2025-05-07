@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import React, { ReactNode } from 'react';
-import { Image, Layout, Popover } from 'antd';
+import { Image, Popover } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
@@ -192,9 +192,9 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       redirect: `${MAIN_ROUTES?.GLOBAL}`,
     },
     {
-      key: 'user',
+      key: 'contacts',
       icon: icUser,
-      redirect: `${MAIN_ROUTES?.USER}`,
+      redirect: `${MAIN_ROUTES?.CONTACTS}`,
     },
     {
       key: 'ai-knowledge',
@@ -751,10 +751,10 @@ const MainLayout: React.FC<Props> = ({ children }) => {
           </Popover>
         </S.SiderBottom>
       </S.SiderWrap>
-      <Layout>
+      <S.LayoutWrap>
         <Header />
         <S.Body>{children}</S.Body>
-      </Layout>
+      </S.LayoutWrap>
     </S.LayoutWrapper>
   );
 };

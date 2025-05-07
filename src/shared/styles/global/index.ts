@@ -478,6 +478,17 @@ const popOver = css`
       max-width: 100% !important;
     }
   }
+
+  .popover-action {
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-inner {
+      padding: 12px;
+      border-radius: 0px;
+    }
+  }
 `;
 
 const GlobalStyle = createGlobalStyle`

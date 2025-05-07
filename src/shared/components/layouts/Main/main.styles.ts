@@ -1,4 +1,4 @@
-import { Image, Popover } from 'antd';
+import { Image, Popover, Layout } from 'antd';
 
 import Button from '../../common/Button';
 
@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 
 export const LayoutWrapper = styled.div`
   display: flex;
-  height: 100vh;
+  /* height: 100vh; */
   background-color: rgb(235, 241, 246);
 
   z-index: 2;
@@ -18,7 +18,7 @@ export const SiderWrap = styled.div`
   max-width: 60px !important;
   background-color: ${(props) => props?.theme?.colors?.primary};
 
-  height: 100%;
+  height: 100vh;
   overflow-y: scroll;
 
   display: flex;
@@ -150,6 +150,11 @@ export const Profiles = styled.div`
   button {
     border: none !important;
   }
+`;
+
+export const LayoutWrap = styled(Layout)`
+  height: 100vh;
+  width: calc(100% - 60px) !important;
 `;
 
 export const PopoverContent = styled.div``;

@@ -21,6 +21,9 @@ const PageNotFound = React.lazy(
   () => import('@/shared/components/common/PageNotFound'),
 );
 
+//Contacts
+const Contacts = React.lazy(() => import('@/modules/contacts/Main/Contacts'));
+
 const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
@@ -87,10 +90,10 @@ const routes_main: RouterElementInterface[] = [
 
   //User
   {
-    key: 'user',
-    path: MAIN_ROUTES.USER,
-    component: PageNotFound,
-    name: 'user',
+    key: 'contacts',
+    path: MAIN_ROUTES.CONTACTS,
+    component: Contacts,
+    name: 'contacts',
   },
 
   //Ai Automation

@@ -26,7 +26,7 @@ const MAIN_ROUTES = {
   GLOBAL: `${preRouterMain}/global`,
 
   //User
-  USER: `${preRouterMain}/user`,
+  CONTACTS: `${preRouterMain}/contacts`,
 
   //Campaigns
   CAMPAIGNS: `${preRouterMain}/campaigns`,
