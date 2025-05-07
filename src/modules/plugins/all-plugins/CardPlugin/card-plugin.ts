@@ -21,6 +21,10 @@ export const CardPluginsContainer = styled.section<{ $isInstalled: boolean }>`
     css`
       background-color: ${(props) => props?.theme?.colors?.secondaryLight};
     `}
+
+  @media ${(props) => props?.theme?.breakpoints?.xxxlMax} {
+    padding: 12px;
+  }
 `;
 
 export const CardPlugin = styled.div``;

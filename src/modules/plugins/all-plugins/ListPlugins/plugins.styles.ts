@@ -102,15 +102,27 @@ export const Plugins = styled.div`
   margin-top: 7px;
   padding-top: 6px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   align-items: center;
+
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 9px;
+  }
+
+  @media ${(props) => props?.theme?.breakpoints?.xxxlMax} {
+    grid-template-columns: repeat(3, 1fr);
+    /* height: 80vh; */
+  }
 
   @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media ${(props) => props?.theme?.breakpoints?.xsMax} {
+  @media ${(props) => props?.theme?.breakpoints?.smMax} {
     grid-template-columns: repeat(1, 1fr);
   }
 `;

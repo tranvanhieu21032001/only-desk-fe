@@ -143,17 +143,21 @@ export const ActionInstallPlugin = styled.div`
 `;
 
 export const InstallPlugin = styled(Button)`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
+  span {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 export const Configure = styled(Button)`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
+  span {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+  }
 
   border-color: #253a8e;
 
