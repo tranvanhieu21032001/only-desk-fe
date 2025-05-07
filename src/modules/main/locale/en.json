@@ -1,0 +1,32 @@
+{
+  "side-bar": {
+    "title": "Chats",
+    "allChats": "All Chats",
+    "assignedToMe": "Assigned To Me",
+    "newSubInbox": "New Sub-inbox",
+    "spamChats": "Spam Chats"
+  },
+
+  "header": {
+    "title": "Main Inbox",
+    "description": "Insert page description here.",
+    "add-new": "Add New",
+    "createConversation": "Create Conversation",
+    "addNewContact": "Add New Contact",
+    "inviteTeamMembers": "Invite Team Members"
+  },
+
+  "inbox": {
+    "title": "All Chats"
+  },
+
+  "spam": {
+    "title": "Spam Chats"
+  },
+
+  "plugins": {
+    "title": "All Plugins",
+    "inviteTeamMembers": "Invite Team Members",
+    "notifications": "Notifications"
+  }
+}
