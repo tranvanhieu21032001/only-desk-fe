@@ -9,13 +9,15 @@ const ForgotPassword = React.lazy(
   () => import('@/modules/auth/forgot-password/Main'),
 );
 
-const Main = React.lazy(() => import('@/modules/main/main-inbox/Main/Main'));
+const Inbox = React.lazy(
+  () => import('@/modules/inbox/page/inbox-page/InboxPage'),
+);
 const LandingPage = React.lazy(() => import('@/modules/landing'));
 const AllPLugins = React.lazy(
   () => import('@/modules/plugins/all-plugins/Main'),
 );
-const SpamChats = React.lazy(
-  () => import('@/modules/main/spam-chats/Main/Main'),
+const SpamChat = React.lazy(
+  () => import('@/modules/spam-chat/page/spam-chat-page/SpamChatpage'),
 );
 const PageNotFound = React.lazy(
   () => import('@/shared/components/common/PageNotFound'),
@@ -58,7 +60,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'inbox',
     path: MAIN_ROUTES.INBOX,
-    component: Main,
+    component: Inbox,
     name: 'main-inbox',
   },
   {
@@ -76,7 +78,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'spam-chats',
     path: MAIN_ROUTES.SPAM_CHATS,
-    component: SpamChats,
+    component: SpamChat,
     name: 'spam-chats',
   },
 

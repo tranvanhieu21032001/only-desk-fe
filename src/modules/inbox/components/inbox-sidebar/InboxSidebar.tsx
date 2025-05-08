@@ -1,7 +1,7 @@
 import { Image } from "antd";
 import { useState } from "react";
 
-import ProfilePreviewModal from "../ProfilePreviewModal/ProfilePreviewModal";
+import ProfilePreviewModal from "../profile-preview-modal/ProfilePreviewModal";
 
 import { initialTags } from "@/core/settings/options";
 
