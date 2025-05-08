@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Splitter } from "antd";
 
-import NotificationList from "../InboxList/InboxList";
-import InboxSidebar from "../InboxSidebar/InboxSidebar";
-import InboxDetail from "@/modules/main/main-inbox/InboxDetail/InboxDetail";
+import NotificationList from "../../components/inbox-list/InboxList";
+import InboxDetail from "../../components/inbox-detail/InboxDetail";
+import InboxSidebar from "../../components/inbox-sidebar/InboxSidebar";
 
 import { DEFAULT_RESIZER_CONFIG } from "@/core/settings/constants";
 
-import * as S from "./Main.styles";
+import * as S from "./InboxPage.styles";
 
 const MainInbox: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
