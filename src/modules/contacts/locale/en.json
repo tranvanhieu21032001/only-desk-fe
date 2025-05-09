@@ -38,5 +38,18 @@
     "please-enter-name-of-the-contact": "Please enter name of the contact",
     "please-enter-email-of-the-contact": "Please enter email of the contact",
     "email-invalid": "Email is invalid"
+  },
+
+  "add-filter": {
+    "advanced-filter": "Advanced filter",
+    "insert-page": "Insert page description here.",
+    "cancel": "Cancel",
+    "new-filter": "New filter",
+    "save": "Save"
+  },
+
+  "modal-confirm": {
+    "create-filter": "Create filter",
+    "this-filter-will": "This filter will be created for everyone in your team"
   }
 }

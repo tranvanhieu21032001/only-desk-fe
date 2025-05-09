@@ -1,9 +1,9 @@
 import { ActionFilterContactTypeEnums } from '../enums/contacts';
 import { ActionFilterOptionsInterface } from '@/shared/model/contacts';
 
-import icExport from '@/assets/icons/contacts/ic-export.svg';
-import icImport from '@/assets/icons/contacts/ic-import.svg';
-import icRemove from '@/assets/icons/contacts/ic-remove.svg';
+import icExport from '@/assets/icons/contact/ic-export.svg';
+import icImport from '@/assets/icons/contact/ic-import.svg';
+import icRemove from '@/assets/icons/contact/ic-remove.svg';
 import icAvatarMockup from '@/assets/icons/layout/ic-avatar-mock.svg';
 
 const contactsMockup = [

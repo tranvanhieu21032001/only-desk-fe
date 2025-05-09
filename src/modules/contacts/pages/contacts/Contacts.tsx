@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import { Image } from 'antd';
-import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { actionFilterOptions } from '@/shared/helper/data/contacts';
 import { ActionFilterOptionsInterface } from '@/shared/model/contacts';
@@ -12,24 +12,26 @@ import PopoverAction from '@/shared/components/common/Popover';
 import Typography from '@/shared/components/common/Typography';
 import ContactTable from '../../components/contact-table/ContactTable';
 import ContactEmpty from '../../components/contact-empty/ContactEmpty';
+import ContactAddFilter from '../../components/drawer-contact-add-filter/main/ContactAddFilter';
 
 import * as S from './contacts.styles';
 
-import icFilter from '@/assets/icons/contacts/ic-filter.svg';
-import icArrowDown from '@/assets/icons/contacts/ic-arrow-down.svg';
+import icFilter from '@/assets/icons/contact/ic-filter.svg';
+import icArrowDown from '@/assets/icons/contact/ic-arrow-down.svg';
 
 function Contacts() {
   const { t } = useTranslation('contacts');
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isOpenFilter, setIsOpenFilter] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setIsLoading((prev) => !prev);
-  //   }, 600);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading((prev) => !prev);
+    }, 600);
 
-  //   return () => clearTimeout(timer);
-  // }, []);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSearchContact = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,6 +80,10 @@ function Contacts() {
     );
   };
 
+  function handleFilter() {
+    setIsOpenFilter((prev) => !prev);
+  }
+
   return (
     <S.ContactsContainer>
       <S.FilterWrap>
@@ -91,7 +97,7 @@ function Contacts() {
         <S.FilterPopoverWrap>
           <S.ButtonFilter
             width="fit-content"
-            onClick={handleFilterContact}
+            onClick={handleFilter}
             iconPosition="left"
             icon={
               <Image src={icFilter} preview={false} width={15} height={18} />
@@ -123,6 +129,9 @@ function Contacts() {
         </S.FilterPopoverWrap>
       </S.FilterWrap>
       {isLoading ? <ContactEmpty /> : <ContactTable />}
+      {isOpenFilter && (
+        <ContactAddFilter open={isOpenFilter} onClose={handleFilter} />
+      )}
     </S.ContactsContainer>
   );
 }

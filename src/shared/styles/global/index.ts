@@ -489,6 +489,26 @@ const popOver = css`
       border-radius: 0px;
     }
   }
+
+  .drawer-contact-add-filter {
+    .ant-drawer-content-wrapper {
+      height: 95%;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      border-radius: ${(props) => props?.theme?.radius?.mediumRadius};
+      max-width: 400px;
+
+      .ant-drawer-content {
+        border-radius: ${(props) => props?.theme?.radius?.mediumRadius};
+      }
+
+      @media ${(props) => props?.theme?.breakpoints?.smMax} {
+        max-width: 296px !important;
+      }
+    }
+  }
 `;
 
 const GlobalStyle = createGlobalStyle`
