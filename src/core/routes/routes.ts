@@ -3,10 +3,10 @@ import React from 'react';
 import { AUTH_ROUTES, MAIN_ROUTES } from './constants';
 import { RouterElementInterface } from './model';
 
-const SignIn = React.lazy(() => import('@/modules/auth/SignIn'));
-const SignUp = React.lazy(() => import('@/modules/auth/sign-up/Main'));
+const SignIn = React.lazy(() => import('@/modules/auth/pages/sign-in/SignIn'));
+const SignUp = React.lazy(() => import('@/modules/auth/pages/sign-up/SignUp'));
 const ForgotPassword = React.lazy(
-  () => import('@/modules/auth/forgot-password/Main'),
+  () => import('@/modules/auth/pages/forgot-password/ForgotPassword'),
 );
 
 const Inbox = React.lazy(
@@ -14,7 +14,7 @@ const Inbox = React.lazy(
 );
 const LandingPage = React.lazy(() => import('@/modules/landing'));
 const AllPLugins = React.lazy(
-  () => import('@/modules/plugins/all-plugins/Main'),
+  () => import('@/modules/plugins/pages/plugins/Plugins'),
 );
 const SpamChat = React.lazy(
   () => import('@/modules/spam-chat/page/spam-chat-page/SpamChatpage'),
@@ -24,7 +24,9 @@ const PageNotFound = React.lazy(
 );
 
 //Contacts
-const Contacts = React.lazy(() => import('@/modules/contacts/Main/Contacts'));
+const Contacts = React.lazy(
+  () => import('@/modules/contacts/pages/contacts/Contacts'),
+);
 
 const routes_admin: RouterElementInterface[] = [];
 
