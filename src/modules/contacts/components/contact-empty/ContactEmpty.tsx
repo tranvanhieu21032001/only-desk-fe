@@ -1,9 +1,13 @@
 import { Image } from 'antd';
-import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import { ReactSVG } from 'react-svg';
+import { useTranslation } from 'react-i18next';
+
+import { useModal } from '@/shared/hooks';
 
 import Button from '@/shared/components/common/Button';
 import Typography from '@/shared/components/common/Typography';
+import ModalAddContact from '../modal-add-contact/ModalAddContact';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 
 import * as S from './ContactEmpty.styles';
@@ -14,12 +18,15 @@ import imgContactEmpty from '@/assets/images/contact/img-contact-empty.png';
 
 function ContactEmpty() {
   const { t } = useTranslation('contacts');
+  const [isLoading] = useState<boolean>(false);
 
-  function handleNewContact() {
+  const { visible: addContact, toggle: handleOpenModalAddContact } = useModal();
+
+  function handleImportContact() {
     //TODO handle later
   }
 
-  function handleImportContact() {
+  function handleAddContact() {
     //TODO handle later
   }
 
@@ -36,7 +43,7 @@ function ContactEmpty() {
       <S.ContactActions>
         <Button
           icon={<Image src={icPlus} preview={false} width={18} height={18} />}
-          onClick={handleNewContact}
+          onClick={handleOpenModalAddContact}
         >
           <Typography fontWeight={fontWeight?.semiBold}>
             {t('empty.new-contact')}
@@ -50,6 +57,14 @@ function ContactEmpty() {
           {t('empty.import-contact')}
         </Button>
       </S.ContactActions>
+      {addContact && (
+        <ModalAddContact
+          open={addContact}
+          onCancel={handleOpenModalAddContact}
+          onOk={handleAddContact}
+          isLoading={isLoading}
+        />
+      )}
     </S.ContactEmptyContainer>
   );
 }
