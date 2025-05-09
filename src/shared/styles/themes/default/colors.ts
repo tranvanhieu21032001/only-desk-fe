@@ -64,7 +64,11 @@ const themeColors = {
   warningDark: '#FFC107',
   warningDarkest: '#FAAD14',
 
+  /**
+   * Border colors
+   */
   borderDisabled: '#d9d9d9',
+  borderDark: '#2346a5',
 
   dark: {
     secondary: '#000',

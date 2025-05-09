@@ -1,28 +1,76 @@
 import { Image } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 
-import { filterOptions, notifications } from '@/core/settings/options';
+import AvatarWithStatus from '@/shared/components/common/Avatar';
+import Modal from '@/shared/components/common/Modal';
+import Button from '@/shared/components/common/Button';
 
-import * as S from './InboxList.styles'
+import {
+  filterOptions,
+  filtersDropdown,
+  notifications,
+} from '@/core/settings/options';
 
-import search from "@/assets/icons/common/ic-search.svg";
-import filter from "@/assets/icons/common/ic-filter.svg";
-import arrowDown from "@/assets/icons/common/ic-arrow-down.svg";
-import barColumn from "@/assets/icons/common/ic-bar-column.svg";
+import * as S from './InboxList.styles';
+
+import search from '@/assets/icons/common/ic-search.svg';
+import filter from '@/assets/icons/common/ic-filter.svg';
+import filterBlue from '@/assets/icons/inbox/ic-filter-blue.svg';
+import arrowDown from '@/assets/icons/common/ic-arrow-down.svg';
+import barColumn from '@/assets/icons/common/ic-bar-column.svg';
 import check from '@/assets/icons/common/ic-check-black.svg';
 import unreadIcon from '@/assets/icons/common/ic-unread.svg';
 import copyIcon from '@/assets/icons/common/ic-copy-link.svg';
 import blockIcon from '@/assets/icons/common/ic-user-block.svg';
 import deleteIcon from '@/assets/icons/common/ic-delete-red.svg';
-import flag from '@/assets/icons/common/ic-flag.svg'
-import AvatarWithStatus from '@/shared/components/common/Avatar';
+import flag from '@/assets/icons/common/ic-flag.svg';
+import addHeader from '@/assets/icons/common/ic-add-header.svg';
+import message from '@/assets/icons/inbox/ic-message.svg';
+import close from '@/assets/icons/inbox/ic-close-circle.svg';
+import add from '@/assets/icons/inbox/ic-add-circle.svg';
+import addPlus from '@/assets/icons/inbox/ic-add.svg';
+import closePlus from '@/assets/icons/inbox/ic-close.svg';
 
 const NotificationList = () => {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [isAllDropdownOpen, setIsAllDropdownOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('All');
+  const customFilterRef = useRef<HTMLDivElement>(null);
+  const [selectedModalFilter, setSelectedModalFilter] = useState<string | null>(
+    null,
+  );
   const menuRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalDropdownOpen, setIsModalDropdownOpen] = useState(false);
+  const [isCustomFilterModalOpen, setIsCustomFilterModalOpen] = useState(false);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const [filterSearchTerm, setFilterSearchTerm] = useState('');
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [isMainFilterDropdownOpen, setIsMainFilterDropdownOpen] =
+    useState(false);
+  const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState(false);
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(
+    null,
+  );
+  const [conditionSearchTerm, setConditionSearchTerm] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [selectedOption, setSelectedOption] = useState('Beauty');
+  const [conditionValues, setConditionValues] = useState<string[]>([]);
+  const [isCustomFilterDropdownOpen, setIsCustomFilterDropdownOpen] =
+    useState(false);
+
+  const resetFilterStates = () => {
+    setSelectedModalFilter(null);
+    setFilterSearchTerm('');
+    setSelectedFilters([]);
+    setIsMainFilterDropdownOpen(false);
+    setIsConditionDropdownOpen(false);
+    setSelectedCondition(null);
+    setInputValue('');
+    setConditionValues([]);
+    setIsFilterDropdownOpen(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -34,6 +82,13 @@ const NotificationList = () => {
 
       if (filterRef.current && !filterRef.current.contains(target)) {
         setIsAllDropdownOpen(false);
+      }
+
+      if (
+        customFilterRef.current &&
+        !customFilterRef.current.contains(target)
+      ) {
+        setIsCustomFilterDropdownOpen(false);
       }
     };
 
@@ -58,6 +113,10 @@ const NotificationList = () => {
     setIsAllDropdownOpen(false);
   };
 
+  const handleChange = (value: string) => {
+    setSelectedOption(value);
+  };
+
   return (
     <S.Container>
       <S.SearchFilterWrapper>
@@ -68,19 +127,97 @@ const NotificationList = () => {
           <S.SearchInput placeholder="Search..." />
         </S.SearchInputWrapper>
 
-        <S.Button>
-          <Image src={filter} alt="Filter icon" preview={false} /> Filter
-        </S.Button>
+        <S.FilterRef ref={customFilterRef}>
+          <S.Button
+            active={isCustomFilterDropdownOpen}
+            onClick={() => {
+              setIsCustomFilterDropdownOpen((prev) => !prev);
+              setIsAllDropdownOpen(false);
+            }}
+          >
+            <Image
+              src={isCustomFilterDropdownOpen ? filterBlue : filter}
+              alt="Filter icon"
+              preview={false}
+            />{' '}
+            Filter
+          </S.Button>
+
+          {isCustomFilterDropdownOpen && (
+            <S.FilterDropdownBox>
+              <S.FilterRadioLabel selected={selectedOption === 'Beauty'}>
+                <input
+                  type="radio"
+                  name="filter"
+                  checked={selectedOption === 'Beauty'}
+                  onChange={() => handleChange('Beauty')}
+                />
+                <span>Beauty</span>
+              </S.FilterRadioLabel>
+
+              <S.FilterRadioLabel selected={selectedOption === 'Milk'}>
+                <input
+                  type="radio"
+                  name="filter"
+                  checked={selectedOption === 'Milk'}
+                  onChange={() => handleChange('Milk')}
+                />
+                <span>Milk</span>
+              </S.FilterRadioLabel>
+              <S.NewLine />
+              <Button
+                iconPosition="left"
+                icon={
+                  <Image
+                    src={close}
+                    preview={false}
+                    style={{ width: 20, height: 20 }}
+                  />
+                }
+                onClick={() => setSelectedOption('')}
+              >
+                Cancel current filter
+              </Button>
+              <S.DistanceBox />
+              <Button
+                type="primary"
+                iconPosition="left"
+                icon={
+                  <Image
+                    src={addPlus}
+                    preview={false}
+                    style={{ width: 20, height: 20 }}
+                  />
+                }
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setIsCustomFilterDropdownOpen(false);
+                }}
+              >
+                New Custom Filter
+              </Button>
+            </S.FilterDropdownBox>
+          )}
+        </S.FilterRef>
 
         <S.FilterWrapper ref={filterRef}>
-          <S.ButtonDropdown onClick={() => setIsAllDropdownOpen((prev) => !prev)}>
-            <Image src={arrowDown} alt="Arrow down icon" preview={false} /> {selectedFilter}
+          <S.ButtonDropdown
+            onClick={() => {
+              setIsAllDropdownOpen((prev) => !prev);
+              setIsCustomFilterDropdownOpen(false);
+            }}
+          >
+            <Image src={arrowDown} alt="Arrow down icon" preview={false} />{' '}
+            {selectedFilter}
           </S.ButtonDropdown>
 
           {isAllDropdownOpen && (
             <S.AllDropdown>
               {filterOptions.map((option) => (
-                <S.DropdownItem key={option} onClick={() => handleSelectFilter(option)}>
+                <S.DropdownItem
+                  key={option}
+                  onClick={() => handleSelectFilter(option)}
+                >
                   {option}
                 </S.DropdownItem>
               ))}
@@ -138,6 +275,325 @@ const NotificationList = () => {
           </S.RightSection>
         </S.NotificationItem>
       ))}
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setIsModalDropdownOpen(false);
+          resetFilterStates();
+        }}
+        title="Advanced Filter"
+        description="Please insert modal description here."
+        footer={
+          <S.ModalFooter>
+            <Button
+              type="primary"
+              onClick={() => {
+                setIsModalOpen(false);
+                setIsCustomFilterModalOpen(true);
+                resetFilterStates();
+              }}
+            >
+              Save Custom Filter
+            </Button>
+          </S.ModalFooter>
+        }
+      >
+        <S.ModalContent>
+          <S.ModalLabel>
+            Label for the custom filter <span style={{ color: 'red' }}>*</span>
+          </S.ModalLabel>
+
+          <S.ModalFilterWrapper>
+            {/* dropdown 1 */}
+            <S.LabelDropdownWrapper>
+              <S.ButtonModalDropdown
+                onClick={() => setIsModalDropdownOpen((prev) => !prev)}
+              >
+                {selectedModalFilter || 'Enter a label for custom filter'}{' '}
+                <Image src={arrowDown} alt="Arrow down icon" preview={false} />
+              </S.ButtonModalDropdown>
+
+              {isModalDropdownOpen && (
+                <S.ModalDropdown>
+                  {filterOptions.map((option) => (
+                    <S.DropdownItem
+                      key={option}
+                      onClick={() => {
+                        setIsModalDropdownOpen(false);
+                        setSelectedModalFilter(option);
+                      }}
+                    >
+                      {option}
+                    </S.DropdownItem>
+                  ))}
+                </S.ModalDropdown>
+              )}
+            </S.LabelDropdownWrapper>
+          </S.ModalFilterWrapper>
+        </S.ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={isCustomFilterModalOpen}
+        onClose={() => {
+          setIsCustomFilterModalOpen(false);
+          resetFilterStates();
+        }}
+        title="Advanced Filter"
+        description="Please insert modal description here."
+        footer={
+          <S.ModalFooter>
+            <Button
+              type={selectedCondition ? 'primary' : undefined}
+              disabled={!selectedCondition}
+            >
+              Done
+            </Button>
+          </S.ModalFooter>
+        }
+      >
+        <S.ModalContentFilter>
+          <S.FilterBox isOpen={isFilterDropdownOpen}>
+            {!isFilterDropdownOpen && (
+              <Button
+                type="primary"
+                width="160px"
+                icon={<Image src={addHeader} preview={false} />}
+                iconPosition="left"
+                onClick={() => setIsFilterDropdownOpen((prev) => !prev)}
+              >
+                New Filter
+              </Button>
+            )}
+
+            {isFilterDropdownOpen && (
+              <S.FilterDropdown>
+                <S.ModalFilterWrapper>
+                  {/* Dropdown 2 */}
+                  {!selectedModalFilter && (
+                    <S.MainFilterDropdownWrapper>
+                      <S.ButtonModalDropdown
+                        onClick={() =>
+                          setIsMainFilterDropdownOpen((prev) => !prev)
+                        }
+                      >
+                        {selectedModalFilter ||
+                          'Enter a label for custom filter'}{' '}
+                        <Image
+                          src={arrowDown}
+                          alt="Arrow down icon"
+                          preview={false}
+                        />
+                      </S.ButtonModalDropdown>
+                      {isMainFilterDropdownOpen && (
+                        <S.ModalDropdownBorder>
+                          <S.SearchWrapper>
+                            <S.SearchIconDropdown>
+                              <Image
+                                src={search}
+                                alt="Arrow down icon"
+                                preview={false}
+                                style={{
+                                  width: '16px',
+                                  position: 'relative',
+                                  top: '-2px',
+                                }}
+                              />
+                            </S.SearchIconDropdown>
+                            <S.SearchInputDropdown
+                              placeholder="Filter choices"
+                              value={filterSearchTerm}
+                              onChange={(e) =>
+                                setFilterSearchTerm(e.target.value)
+                              }
+                            />
+                          </S.SearchWrapper>
+                          {filtersDropdown
+                            .filter((opt) =>
+                              opt
+                                .toLowerCase()
+                                .includes(filterSearchTerm.toLowerCase()),
+                            )
+                            .map((option) => (
+                              <S.DropdownBorder
+                                key={option}
+                                onClick={() => {
+                                  setIsMainFilterDropdownOpen(false);
+                                  setSelectedModalFilter(option);
+                                  setSelectedFilters((prev) => [
+                                    ...prev,
+                                    option,
+                                  ]);
+                                  setFilterSearchTerm('');
+                                }}
+                              >
+                                <Image src={message} preview={false} />
+                                {option}
+                              </S.DropdownBorder>
+                            ))}
+                        </S.ModalDropdownBorder>
+                      )}
+                    </S.MainFilterDropdownWrapper>
+                  )}
+
+                  {selectedFilters.map((filterLabel, index) => (
+                    <S.NestedFilterBox key={index}>
+                      <S.ModalWrapper>
+                        <span>
+                          <Image src={message} preview={false} />
+                          {filterLabel}
+                        </span>
+                        <S.FilterLabelClearWrapper
+                          onClick={() => {
+                            setSelectedModalFilter(null);
+                            setSelectedFilters([]);
+                            setSelectedCondition(null);
+                            setInputValue('');
+                            setConditionValues([]);
+                            setIsMainFilterDropdownOpen(true);
+                          }}
+                        >
+                          <Image
+                            src={closePlus}
+                            alt="Clear filter"
+                            preview={false}
+                            style={{ width: 16, height: 16 }}
+                          />
+                        </S.FilterLabelClearWrapper>
+                      </S.ModalWrapper>
+                      <S.ModalFilterWrapper>
+                        <S.ConditionDropdownWrapper>
+                          <S.ButtonModalDropdown
+                            onClick={() =>
+                              setIsConditionDropdownOpen((prev) => !prev)
+                            }
+                          >
+                            {selectedCondition || 'Select filter condition'}{' '}
+                            <Image
+                              src={arrowDown}
+                              alt="Arrow down icon"
+                              preview={false}
+                            />
+                          </S.ButtonModalDropdown>
+
+                          {isConditionDropdownOpen && (
+                            <S.ModalDropdownBox>
+                              <S.ConditionSearchBox>
+                                <S.ConditionSearchWrapper>
+                                  <S.ConditionSearchIcon>
+                                    <Image
+                                      src={search}
+                                      alt="Search icon"
+                                      preview={false}
+                                      style={{ width: '16px' }}
+                                    />
+                                  </S.ConditionSearchIcon>
+                                  <S.ConditionSearchInput
+                                    placeholder="Search..."
+                                    value={conditionSearchTerm}
+                                    onChange={(e) =>
+                                      setConditionSearchTerm(e.target.value)
+                                    }
+                                  />
+                                </S.ConditionSearchWrapper>
+                              </S.ConditionSearchBox>
+
+                              {['Equals to', 'Differs to']
+                                .filter((condition) =>
+                                  condition
+                                    .toLowerCase()
+                                    .includes(
+                                      conditionSearchTerm.toLowerCase(),
+                                    ),
+                                )
+                                .map((condition) => (
+                                  <S.DropdownItem
+                                    key={condition}
+                                    onClick={() => {
+                                      setSelectedCondition(condition);
+                                      setIsConditionDropdownOpen(false);
+                                      setConditionSearchTerm('');
+                                    }}
+                                  >
+                                    {condition}
+                                  </S.DropdownItem>
+                                ))}
+                            </S.ModalDropdownBox>
+                          )}
+                        </S.ConditionDropdownWrapper>
+
+                        <S.ModalFilterWrapper>
+                          {conditionValues.map((val, idx) => (
+                            <S.InputWrapperAdd key={idx}>
+                              <span>{val}</span>
+                              <S.CloseIconWrapper>
+                                <S.CloseIconImg
+                                  src={close}
+                                  alt="Clear value"
+                                  onClick={() => {
+                                    setConditionValues((prev) =>
+                                      prev.filter((_, index) => index !== idx),
+                                    );
+                                  }}
+                                />
+                              </S.CloseIconWrapper>
+                            </S.InputWrapperAdd>
+                          ))}
+                        </S.ModalFilterWrapper>
+
+                        {selectedCondition && (
+                          <S.InputWrapperAdd>
+                            <S.ModalInputCustom
+                              placeholder="Enter a value"
+                              value={inputValue}
+                              onChange={(e) => setInputValue(e.target.value)}
+                            />
+                            {inputValue && (
+                              <S.CloseIconWrapper
+                                onClick={() => setInputValue('')}
+                              >
+                                <S.CloseIconImg src={close} alt="Clear input" />
+                              </S.CloseIconWrapper>
+                            )}
+                          </S.InputWrapperAdd>
+                        )}
+                      </S.ModalFilterWrapper>
+                    </S.NestedFilterBox>
+                  ))}
+                </S.ModalFilterWrapper>
+
+                {selectedCondition && (
+                  <S.AddConditionWrapper>
+                    <Button
+                      icon={
+                        <Image
+                          src={add}
+                          preview={false}
+                          style={{ width: 20, height: 20 }}
+                        />
+                      }
+                      width="229px"
+                      onClick={() => {
+                        if (inputValue.trim()) {
+                          setConditionValues((prev) => [
+                            ...prev,
+                            inputValue.trim(),
+                          ]);
+                          setInputValue('');
+                        }
+                      }}
+                    >
+                      Add Another Conditions
+                    </Button>
+                  </S.AddConditionWrapper>
+                )}
+              </S.FilterDropdown>
+            )}
+          </S.FilterBox>
+        </S.ModalContentFilter>
+      </Modal>
     </S.Container>
   );
 };

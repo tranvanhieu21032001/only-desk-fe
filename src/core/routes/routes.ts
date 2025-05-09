@@ -10,14 +10,14 @@ const ForgotPassword = React.lazy(
 );
 
 const Inbox = React.lazy(
-  () => import('@/modules/inbox/page/inbox-page/InboxPage'),
+  () => import('@/modules/inbox/pages/inbox-page/InboxPage'),
 );
 const LandingPage = React.lazy(() => import('@/modules/landing'));
 const AllPLugins = React.lazy(
   () => import('@/modules/plugins/pages/plugins/Plugins'),
 );
 const SpamChat = React.lazy(
-  () => import('@/modules/spam-chat/page/spam-chat-page/SpamChatpage'),
+  () => import('@/modules/inbox/pages/spam-chat-page/SpamChatpage'),
 );
 const PageNotFound = React.lazy(
   () => import('@/shared/components/common/PageNotFound'),
