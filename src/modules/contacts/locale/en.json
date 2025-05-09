@@ -18,5 +18,12 @@
     "score": "Score",
     "remove": "Remove",
     "remove-profile": "Remove profile"
+  },
+
+  "empty": {
+    "you-have-no-contact": "You have no contact.",
+    "contacts-are-stored": "Contacts are stored from conversations, or can be created and even imported",
+    "new-contact": "New contact",
+    "import-contact": "Import contact profiles"
   }
 }
