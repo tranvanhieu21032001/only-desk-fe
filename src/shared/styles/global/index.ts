@@ -169,6 +169,12 @@ const reset = css`
     }
   }
 
+  .modal-confirm-export-database {
+    .ant-modal-close {
+      display: none;
+    }
+  }
+
   .modal-preview-image {
     .ant-modal-header {
       text-align: center;

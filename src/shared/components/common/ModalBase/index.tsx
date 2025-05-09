@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { ModalProps } from "antd";
+import { useState } from 'react';
+import { ModalProps } from 'antd';
 import {
   CloseOutlined,
   FullscreenOutlined,
   FullscreenExitOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 
-import themeColors from "@/shared/styles/themes/default/colors";
+import themeColors from '@/shared/styles/themes/default/colors';
 
-import Button from "../Button";
-import Typography from "../Typography";
+import Button from '../Button';
+import Typography from '../Typography';
 
-import * as S from "./modal.styles";
+import * as S from './modal.styles';
 
 export interface ModalInterface extends ModalProps {
   onSubmit?: () => void;
@@ -24,6 +24,7 @@ export interface ModalInterface extends ModalProps {
   isDisabledCancel?: boolean;
   onCancel?: (e?: any) => void;
   fullScreen?: boolean;
+  rootClassName?: string;
 }
 
 export default function ModalCommon({
@@ -41,10 +42,11 @@ export default function ModalCommon({
   isDisabledSubmit = false,
   isDisabledCancel = false,
   fullScreen = false,
+  rootClassName,
   ...rest
 }: ModalInterface) {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(
-    false || fullScreen
+    false || fullScreen,
   );
 
   return (
@@ -55,6 +57,7 @@ export default function ModalCommon({
       footer={null}
       centered={centered}
       $isFullScreen={isFullScreen}
+      rootClassName={rootClassName}
       {...rest}
     >
       {title && (
