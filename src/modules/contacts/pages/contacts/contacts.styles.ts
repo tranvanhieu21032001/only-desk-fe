@@ -14,6 +14,17 @@ export const FilterWrap = styled.div`
   gap: 4px;
   align-items: center;
   justify-content: space-between;
+
+  @media ${(props) => props?.theme?.breakpoints?.smMax} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+`;
+
+export const FilterPopoverWrap = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
 `;
 
 export const InputSearch = styled.div`

@@ -7,7 +7,7 @@ export const ButtonCommon = styled.button`
   gap: 8px;
 
   cursor: pointer;
-  padding: 12px 20px;        
+  padding: 12px 20px;
   border: none;
   border-radius: 8px;
   width: 100%;
@@ -17,9 +17,10 @@ export const ButtonCommon = styled.button`
   font-size: ${({ theme }) => theme.fontSize.md};
   line-height: 24px;
   text-align: center;
-  white-space: nowrap;             
+  white-space: nowrap;
 
-  svg, img {
+  svg,
+  img {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
@@ -44,14 +45,17 @@ export const PrimaryButton = styled(ButtonCommon)<{
   $isCancel?: boolean;
   $width?: string;
 }>`
-  background-color: ${(props) =>
-    props.$bg || props.theme.colors.secondaryDarker};
+  background:
+    linear-gradient(0deg, #3750b2, #3750b2),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+
   color: ${(props) => props.theme.colors.newtralLightest};
   transition: all 0.5s;
   width: ${(props) => props?.$width || '100%'};
   font-size: ${(props) => props.theme.fontSize.base};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
-  box-shadow: 0px 2px 3px rgba(10, 13, 20, 0.05);
+  box-shadow: 0px 4px 4px 0px #1b1c1d12;
 
   ${({ $isCancel }) =>
     $isCancel &&
