@@ -13,22 +13,23 @@ import Typography from '@/shared/components/common/Typography';
 import ContactTable from '../../components/contact-table/ContactTable';
 import ContactEmpty from '../../components/contact-empty/ContactEmpty';
 
-import * as S from './Contacts.styles';
+import * as S from './contacts.styles';
 
 import icFilter from '@/assets/icons/contacts/ic-filter.svg';
 import icArrowDown from '@/assets/icons/contacts/ic-arrow-down.svg';
 
 function Contacts() {
   const { t } = useTranslation('contacts');
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading((prev) => !prev);
-    }, 600);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setIsLoading((prev) => !prev);
+  //   }, 600);
 
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   const handleSearchContact = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {

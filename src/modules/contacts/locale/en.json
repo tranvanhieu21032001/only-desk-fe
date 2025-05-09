@@ -25,5 +25,18 @@
     "contacts-are-stored": "Contacts are stored from conversations, or can be created and even imported",
     "new-contact": "New contact",
     "import-contact": "Import contact profiles"
+  },
+
+  "modal-add-contact": {
+    "new-contact": "New contact",
+    "please-insert-modal-description-here": "Please insert modal description here.",
+    "name-of-the-contact": "Name of the contact",
+    "enter-name-of-the-contact": "Enter name of the contact",
+    "email-of-the-contact": "Email of the contact",
+    "enter-email-of-the-contact": "Enter email of the contact",
+    "add-contact": "Add contact",
+    "please-enter-name-of-the-contact": "Please enter name of the contact",
+    "please-enter-email-of-the-contact": "Please enter email of the contact",
+    "email-invalid": "Email is invalid"
   }
 }
