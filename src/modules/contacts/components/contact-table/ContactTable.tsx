@@ -11,8 +11,8 @@ import Typography from '@/shared/components/common/Typography';
 
 import * as S from './ContactTable.styles';
 
-import icRemove from '@/assets/icons/contacts/ic-remove.svg';
-import icActionRemove from '@/assets/icons/contacts/ic-action-remove.svg';
+import icRemove from '@/assets/icons/contact/ic-remove.svg';
+import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 
 function ContactTable() {
   const { t } = useTranslation('contacts');

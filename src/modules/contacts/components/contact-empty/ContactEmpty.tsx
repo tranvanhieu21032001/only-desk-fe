@@ -12,8 +12,8 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 
 import * as S from './ContactEmpty.styles';
 
-import icPlus from '@/assets/icons/contacts/ic-plus.svg';
-import icImport from '@/assets/icons/contacts/ic-import.svg';
+import icPlus from '@/assets/icons/contact/ic-plus.svg';
+import icImport from '@/assets/icons/contact/ic-import.svg';
 import imgContactEmpty from '@/assets/images/contact/img-contact-empty.png';
 
 function ContactEmpty() {
