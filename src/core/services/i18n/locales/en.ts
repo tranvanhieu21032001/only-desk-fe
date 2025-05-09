@@ -1,10 +1,10 @@
 import messages from '../message/common.json';
-import auth from '@/modules/auth/Locale/en.json';
+import auth from '@/modules/auth/locales/en.json';
 import main from '@/modules/inbox/locales/en.json';
-import plugins from '@/modules/plugins/Locale/en.json';
+import plugins from '@/modules/plugins/locales/en.json';
+import contacts from '@/modules/contacts/locale/en.json';
 import layout from '@/shared/components/layouts/locales/en.json';
 import header from '@/shared/components/common/header/locale/en.json';
-import contacts from '@/modules/contacts/locale/en.json';
 
 const translationEN = {
   messages,

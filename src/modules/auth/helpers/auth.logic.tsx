@@ -6,7 +6,7 @@ import Typography from '@/shared/components/common/Typography';
 
 import themeColors from '@/shared/styles/themes/default/colors';
 
-import * as S from '@/modules/auth/sign-up/connect-only-chat/connect-chat.styles';
+import * as S from '@/modules/auth/components/sign-up/connect-only-chat/ModalInviteYourDeveloper.styles';
 
 const renderStatusInstalled = (
   status: AuthStatusInstalledCodeEnums,
