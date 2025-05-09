@@ -51,5 +51,45 @@
   "modal-confirm": {
     "create-filter": "Create filter",
     "this-filter-will": "This filter will be created for everyone in your team"
+  },
+
+  "modal-confirm-export": {
+    "export-contact-database": "Export contact database",
+    "it-will-export": "It will take a few minutes. You will get an email when the export is over.",
+    "cancel": "Cancel"
+  },
+
+  "modal-import-contact": {
+    "import-contact-profile": "Import contact profile",
+    "please-insert-modal-description-here": "Please insert modal description here.",
+    "select-file": "Select file",
+    "configure": "Configure",
+    "proceed": "Proceed",
+    "upload-a-csv": "Upload a CSV file to import contact profiles",
+    "you-can-upload": "You can upload a standard CSV file containing the full name and email of your contacts, to add them to your contact database on OnlyChat.",
+    "continue": "Continue",
+    "download-this-sample": "Download this sample CSV file",
+    "completed": "Completed",
+
+    "configure-csv-import": "Configure CSV import",
+    "you-can-upload-a-standard": "You can upload a standard CSV file containing the full name and email of your contacts, to add them to your contact database on OnlyChat.",
+
+    "all": "All",
+    "mapped": "Mapped",
+    "skipped": "Skipped",
+    "column-separator": "Column separator",
+    "skip-header": "Skip header",
+
+    "table": {
+      "columns-in-csv": "Columns in CSV",
+      "fields-in-only-chat": "Fields in OnlyChat"
+    },
+
+    "import-is-being-executed": "Import is being executed",
+    "your-contact-profiles-are-being-processed": "Your contact profiles are being processed",
+    "done-importing": "Done importing contact profiles!",
+    "contacts-imported": "Contacts imported",
+    "remaining": "Remaining",
+    "close-import": "Close import"
   }
 }

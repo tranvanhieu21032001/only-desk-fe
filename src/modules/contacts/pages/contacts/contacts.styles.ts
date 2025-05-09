@@ -58,9 +58,21 @@ export const FilterAction = styled.div<{ $isRemove?: boolean }>`
       p {
         color: ${(props) => props?.theme?.colors?.errorDark};
       }
+
+      svg {
+        color: ${(props) => props?.theme?.colors?.errorDark} !important;
+      }
     `}
 
   &:hover {
     background-color: ${(props) => props?.theme?.colors?.secondaryLight};
+  }
+
+  div {
+    height: 24px;
+
+    svg {
+      color: ${(props) => props?.theme?.colors?.newtralLight};
+    }
   }
 `;

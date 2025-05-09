@@ -169,6 +169,12 @@ const reset = css`
     }
   }
 
+  .modal-confirm-export-database {
+    .ant-modal-close {
+      display: none;
+    }
+  }
+
   .modal-preview-image {
     .ant-modal-header {
       text-align: center;
@@ -340,7 +346,7 @@ const typography = css`
 
   .caption-small {
     font-weight: ${({ theme }) => theme.fontWeight.semiBold};
-    font-size: ${({ theme }) => theme.fontSize.base};
+    font-size: ${({ theme }) => theme.fontSize.sm};
     line-height: 20px;
     letter-spacing: ${({ theme }) =>
       calculateLetterSpacing(theme.fontSize.base, 0.02)};

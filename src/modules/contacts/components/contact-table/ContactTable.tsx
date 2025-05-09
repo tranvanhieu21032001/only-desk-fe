@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Image, Rate } from 'antd';
 import { useEffect, useState } from 'react';
+import { ReactSVG } from 'react-svg';
 
 import { contactsMockup } from '@/shared/helper/data/contacts';
 import themeColors from '@/shared/styles/themes/default/colors';
@@ -147,9 +148,11 @@ function ContactTable() {
           }
           content={
             <S.FilterActionWrap>
-              <S.FilterAction onClick={handleRemoveContact}>
-                <Image src={icRemove} preview={false} width={24} height={24} />
-                <Typography>{t('table.remove-profile')}</Typography>
+              <S.FilterAction onClick={handleRemoveContact} $isRemove={true}>
+                <ReactSVG src={icRemove} width={24} height={24} />
+                <Typography color={themeColors?.errorDark}>
+                  {t('table.remove-profile')}
+                </Typography>
               </S.FilterAction>
             </S.FilterActionWrap>
           }
