@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.div`
   width: 420px;
@@ -212,7 +212,7 @@ export const Email = styled.div`
 export const CollapseIcon = styled.span<{ isOpen: boolean }>`
   margin-left: auto;
   transition: transform 0.2s ease;
-  transform: rotate(${({ isOpen }) => (isOpen ? "0deg" : "180deg")});
+  transform: rotate(${({ isOpen }) => (isOpen ? '0deg' : '180deg')});
   font-size: 12px;
 `;
 
@@ -276,7 +276,7 @@ export const DropdownRow = styled.div`
 export const ArrowIcon = styled.span<{ isOpen: boolean }>`
   margin-left: auto;
   font-size: 12px;
-  transform: rotate(${({ isOpen }) => (isOpen ? "180deg" : "0deg")});
+  transform: rotate(${({ isOpen }) => (isOpen ? '180deg' : '0deg')});
   transition: transform 0.2s ease;
 `;
 
@@ -295,7 +295,7 @@ export const DropdownList = styled.div`
 
 export const DropdownItem = styled.div<{ selected?: boolean }>`
   padding: 8px 12px;
-  background: ${({ selected }) => (selected ? "#f0f0f0" : "#fff")};
+  background: ${({ selected }) => (selected ? '#f0f0f0' : '#fff')};
   cursor: pointer;
 
   &:hover {
@@ -303,11 +303,10 @@ export const DropdownItem = styled.div<{ selected?: boolean }>`
   }
 `;
 
-// tag
-
 export const TagsWrapper = styled.div`
   display: flex;
-  padding: 8px;
+  height: 32px;
+  padding: 0 8px;
   border-radius: 8px;
   align-items: center;
   flex-wrap: wrap;
@@ -378,10 +377,10 @@ export const UserEmail = styled.span`
 `;
 
 export const UserMeta = styled.div`
-  font-size: 14px;        
+  font-size: 14px;
   line-height: 23px;
   font-weight: 400;
-  color: #8A8A8A;
+  color: #8a8a8a;
 `;
 
 export const PanelSection = styled.div`
@@ -443,7 +442,7 @@ export const DetailLabel = styled.span`
 
 export const DetailValue = styled.span`
   font-size: 14px;
-  color: #253A8E;
+  color: #253a8e;
   line-height: 23px;
   font-weight: 400;
 `;
@@ -502,7 +501,7 @@ export const SectionCompoint = styled.div`
   display: flex;
   flex-direction: column;
   width: 190px;
-`
+`;
 
 export const SectionCompanTitle = styled.div`
   font-size: 14px;
@@ -510,7 +509,7 @@ export const SectionCompanTitle = styled.div`
   line-height: 23px;
   font-weight: 400;
   border-bottom: 1px solid #eee;
-`
+`;
 
 export const SectionCompanTime = styled.div`
   font-size: 20px;
@@ -519,13 +518,13 @@ export const SectionCompanTime = styled.div`
   display: flex;
   justify-content: end;
   color: #3750b2;
-`
+`;
 
 export const SectionRowInfor = styled.div`
   display: flex;
   padding-top: 9px;
   justify-content: space-between;
-`
+`;
 
 export const SectionCompointRight = styled.div`
   border: 1px solid #eee;
@@ -535,7 +534,7 @@ export const SectionCompointRight = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`
+`;
 
 export const SectionChormeChild = styled.div`
   display: flex;
@@ -545,24 +544,24 @@ export const SectionChormeChild = styled.div`
   font-size: 14px;
   line-height: 23px;
   font-weight: 400;
-`
+`;
 
 export const SectionIPp = styled.p`
   font-size: 12px;
   line-height: 23px;
   font-weight: 400;
-`
+`;
 
 export const SectionDeColumn = styled.div`
   display: flex;
   flex-direction: column;
-`
+`;
 
 export const SectionCloudRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 export const SectionCloudOne = styled.div`
   display: flex;
@@ -574,7 +573,7 @@ export const SectionCloudOne = styled.div`
   font-weight: 400;
   margin-top: 5px;
   color: #333333;
-`
+`;
 
 export const SectionCloudTwo = styled.div`
   display: flex;
@@ -585,14 +584,14 @@ export const SectionCloudTwo = styled.div`
   line-height: 23px;
   font-weight: 400;
   margin-top: 5px;
-  color: #8A8A8A;
-`
+  color: #8a8a8a;
+`;
 
 export const LastSection = styled.div`
   display: flex;
   gap: 25px;
   align-items: center;
-`
+`;
 
 export const LastSectionp = styled.div`
   font-size: 14px;
@@ -602,9 +601,9 @@ export const LastSectionp = styled.div`
   width: 100%;
 
   span {
-  color: #8A8A8A;
+    color: #8a8a8a;
   }
-`
+`;
 
 export const LastSectionLeft = styled.div`
   font-size: 14px;
@@ -612,26 +611,26 @@ export const LastSectionLeft = styled.div`
   font-weight: 400;
   color: #333333;
   width: 120px;
-`
+`;
 
 export const LastSectionImage = styled.div`
   position: relative;
   left: -24px;
-`
+`;
 
 export const CompanyRow = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
   width: 100%;
-`
+`;
 
 export const CompanyP = styled.p`
   font-size: 14px;
   line-height: 23px;
   font-weight: 400;
   padding-top: 5px;
-`
+`;
 
 export const CompanyColumn = styled.div`
   display: flex;
@@ -639,7 +638,7 @@ export const CompanyColumn = styled.div`
   gap: 10px;
   align-items: center;
   width: 100% !important;
-`
+`;
 
 export const PanelSectionEnd = styled.div`
   margin-top: 20px;
@@ -654,14 +653,39 @@ export const PanelSectionColumn = styled.div`
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #eee;
-  background-color: #FEF1D7;
+  background-color: #fef1d7;
   height: 149px;
 `;
 
 export const PanelSectionNotepad = styled.div`
-    margin-top: 20px;
-    height: 247px;
+  margin-top: 20px;
+  height: 247px;
 `;
 
+export const ParticipantP = styled.p`
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 400;
+  color: #333333;
 
+  span {
+    color: red;
+  }
+`;
 
+export const ParticipantInput = styled.input`
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+  margin-bottom: 32px;
+  font-size: 16px;
+`;
+
+export const QuickJumpDropdownText = styled.div`
+  font-size: 16px;
+  color: #b3b3b3;
+  font-style: italic;
+  margin-left: 32px;
+  margin-bottom: 8px;
+`;
