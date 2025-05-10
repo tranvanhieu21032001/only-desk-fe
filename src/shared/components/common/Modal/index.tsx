@@ -12,6 +12,7 @@ interface ModalProps {
     description?: string;
     children?: React.ReactNode;
     footer?: React.ReactNode;
+    width?: number;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -21,12 +22,13 @@ const Modal: React.FC<ModalProps> = ({
     description,
     children,
     footer,
+    width,
 }) => {
     if (!isOpen) return null;
 
     return (
         <S.Overlay onClick={onClose}>
-            <S.ModalContainer onClick={(e) => e.stopPropagation()}>
+            <S.ModalContainer onClick={(e) => e.stopPropagation()} $width={width}>
                 <S.ModalHeader>
                     <div className="" style={{ display: "flex", flexDirection: "column" }}>
                         {title && <S.ModalTitle>{title}</S.ModalTitle>}

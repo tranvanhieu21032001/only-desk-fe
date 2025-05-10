@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { Image, Popover } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ import { MAIN_ROUTES } from '@/core/routes/constants';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { MAX_COUNT } from '@/modules/plugins/helper/data/allPlugins';
+import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
 
 import Header from '../../common/header/Main';
 import Typography from '../../common/Typography';
@@ -78,6 +79,8 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const { t } = useTranslation('layout');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [isNewSubInboxModalOpen, setIsNewSubInboxModalOpen] = useState(false);
+  const [isChatsPopoverOpen, setIsChatsPopoverOpen] = useState(false);
 
   const routePath = window?.location?.pathname;
 
@@ -153,10 +156,11 @@ const MainLayout: React.FC<Props> = ({ children }) => {
 
           <S.PopoverLabelWrap>
             <S.ChildrenMenuWrap
-              onClick={() =>
-                handleClickChildrenMenu(MAIN_ROUTES?.NEW_SUB_INBOX)
-              }
-              $isActive={routePath === MAIN_ROUTES?.NEW_SUB_INBOX}
+              onClick={() => {
+                setIsNewSubInboxModalOpen(true);
+                setIsChatsPopoverOpen(false);
+              }}
+              $isActive={false}
             >
               <S.ChildrenMenuLabel>
                 <Image
@@ -667,6 +671,12 @@ const MainLayout: React.FC<Props> = ({ children }) => {
           content={children}
           rootClassName="menu-popover"
           $isActive={childrenPath?.includes(routePath)}
+          open={key === 'chats' ? isChatsPopoverOpen : undefined}
+          onOpenChange={(visible) => {
+            if (key === 'chats') {
+              setIsChatsPopoverOpen(visible);
+            }
+          }}
         >
           <S.MenuIcon>
             <Image src={icon} preview={false} width={24} height={24} />
@@ -755,6 +765,12 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         <Header />
         <S.Body>{children}</S.Body>
       </S.LayoutWrap>
+      {isNewSubInboxModalOpen && (
+        <NewSubInboxPage
+          isOpen={isNewSubInboxModalOpen}
+          onClose={() => setIsNewSubInboxModalOpen(false)}
+        />
+      )}
     </S.LayoutWrapper>
   );
 };
