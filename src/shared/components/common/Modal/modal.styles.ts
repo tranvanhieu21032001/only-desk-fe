@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Overlay = styled.div`
   position: fixed;
@@ -10,10 +10,10 @@ export const Overlay = styled.div`
   z-index: 1000;
 `;
 
-export const ModalContainer = styled.div`
+export const ModalContainer = styled.div<{ $width?: number }>`
   background: white;
   border-radius: 8px;
-  width: 500px;
+  width: ${({ $width }) => ($width ? `${$width}px` : '500px')};
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 `;
 
@@ -33,7 +33,7 @@ export const ModalDescription = styled.p`
 export const Footer = styled.div`
   display: flex;
   padding: 12px;
-  border-top: 1px solid #e0e0e0;     
+  border-top: 1px solid #e0e0e0;
   justify-content: flex-end;
 `;
 
@@ -51,7 +51,7 @@ export const Button = styled.button`
 `;
 
 export const ModalChildren = styled.div`
-  padding: 14px;    
+  padding: 14px;
 `;
 
 export const ModalHeader = styled.div`
@@ -59,7 +59,7 @@ export const ModalHeader = styled.div`
   padding: 12px;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e0e0e0;     
+  border-bottom: 1px solid #e0e0e0;
 `;
 
 export const CloseButton = styled.div`
@@ -85,4 +85,3 @@ export const OkButton = styled.button`
   font-size: 14px;
   cursor: pointer;
 `;
-

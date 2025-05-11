@@ -1,49 +1,59 @@
-import { Image } from "antd";
-import { useState } from "react";
+import { Image } from 'antd';
+import { useState } from 'react';
 
-import ProfilePreviewModal from "../profile-preview-modal/ProfilePreviewModal";
+import ProfilePreviewModal from '../profile-preview-modal/ProfilePreviewModal';
+import Modal from '@/shared/components/common/Modal';
+import Button from '@/shared/components/common/Button';
+import Collapse from '@/shared/components/common/Collapse';
+import AvatarWithStatus from '@/shared/components/common/Avatar';
 
-import { initialTags } from "@/core/settings/options";
+import { initialTags } from '@/core/settings/options';
 
-import * as S from "./InboxSidebar.styles";
+import * as S from './InboxSidebar.styles';
 
-import verify from '@/assets/icons/common/ic-verify.svg'
-import flag from '@/assets/icons/common/ic-flag.svg'
-import defaultAvatar from '@/assets/images/avatar-default.png'
-import flagVietNam from '@/assets/images/flag-vietnamese.png'
-import location from '@/assets/icons/common/ic-location.svg'
-import time from '@/assets/icons/common/ic-time.svg'
-import internet from '@/assets/icons/common/ic-internet.svg'
-import arrDown from '@/assets/icons/common/ic-arrow-down.svg'
-import userCheck from '@/assets/icons/common/ic-user-check.svg'
-import chorme from '@/assets/icons/common/ic-chorme.svg'
-import cloud from '@/assets/icons/common/ic-cloud.svg'
-import image from '@/assets/icons/common/ic-image.svg'
-import mailInfo from '@/assets/icons/common/ic-mail-info.svg'
-import message from '@/assets/icons/common/ic-message-info.svg'
-import copy from '@/assets/icons/common/ic-copy.svg'
-import edit from '@/assets/icons/common/ic-edit.svg'
-import close from '@/assets/icons/common/ic-close-circle.svg'
-import chatBlue from '@/assets/icons/common/ic-chat-blue.svg'
-import badge from '@/assets/icons/common/ic-badge.svg'
-import addBlue from '@/assets/icons/common/ic-add-blue.svg'
-import earthBlue from '@/assets/icons/common/ic-earth-blue.svg'
-import locationBlue from '@/assets/icons/common/ic-locaion-blue.svg'
-import cloudBlue from '@/assets/icons/common/ic-cloud-blue.svg'
-import screen from '@/assets/icons/common/ic-screen.svg'
-import flagAmerica from '@/assets/icons/common/ic-flag-america.svg'
-import company from '@/assets/icons/common/ic-company.svg'
-import noteBlue from '@/assets/icons/common/ic-note-blue.svg'
-import tagsBlue from '@/assets/icons/common/ic-tags-blue.svg'
-import AvatarWithStatus from "@/shared/components/common/Avatar";
-import Collapse from "@/shared/components/common/Collapse";
+import verify from '@/assets/icons/common/ic-verify.svg';
+import flag from '@/assets/icons/common/ic-flag.svg';
+import defaultAvatar from '@/assets/images/avatar-default.png';
+import flagVietNam from '@/assets/images/flag-vietnamese.png';
+import location from '@/assets/icons/common/ic-location.svg';
+import time from '@/assets/icons/common/ic-time.svg';
+import internet from '@/assets/icons/common/ic-internet.svg';
+import arrDown from '@/assets/icons/common/ic-arrow-down.svg';
+import userCheck from '@/assets/icons/common/ic-user-check.svg';
+import chorme from '@/assets/icons/common/ic-chorme.svg';
+import cloud from '@/assets/icons/common/ic-cloud.svg';
+import image from '@/assets/icons/common/ic-image.svg';
+import mailInfo from '@/assets/icons/common/ic-mail-info.svg';
+import message from '@/assets/icons/common/ic-message-info.svg';
+import copy from '@/assets/icons/common/ic-copy.svg';
+import edit from '@/assets/icons/common/ic-edit.svg';
+import close from '@/assets/icons/common/ic-close-circle.svg';
+import chatBlue from '@/assets/icons/common/ic-chat-blue.svg';
+import badge from '@/assets/icons/common/ic-badge.svg';
+import addBlue from '@/assets/icons/common/ic-add-blue.svg';
+import earthBlue from '@/assets/icons/common/ic-earth-blue.svg';
+import locationBlue from '@/assets/icons/common/ic-locaion-blue.svg';
+import cloudBlue from '@/assets/icons/common/ic-cloud-blue.svg';
+import screen from '@/assets/icons/common/ic-screen.svg';
+import flagAmerica from '@/assets/icons/common/ic-flag-america.svg';
+import company from '@/assets/icons/common/ic-company.svg';
+import noteBlue from '@/assets/icons/common/ic-note-blue.svg';
+import tagsBlue from '@/assets/icons/common/ic-tags-blue.svg';
+import userPlus from '@/assets/icons/inbox/ic-user-plus.svg';
+import closeRed from '@/assets/icons/inbox/ic-close-red.svg';
+import add from '@/assets/icons/inbox/ic-add.svg';
 
 const InboxSidebar = () => {
   const [openCollapse] = useState(true);
-  const [selected, setSelected] = useState("None assigned");
+  const [selected, setSelected] = useState('None assigned');
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [tags, setTags] = useState(initialTags);
+  const [isAddParticipantModalOpen, setIsAddParticipantModalOpen] =
+    useState(false);
+  const [participantEmail, setParticipantEmail] = useState('');
+  const [participants, setParticipants] = useState<string[]>([]);
+  const [openQuickJump, setOpenQuickJump] = useState<{ image: boolean; conversation: boolean }>({ image: false, conversation: false });
 
   const handleSelect = (option: string) => {
     setSelected(option);
@@ -59,7 +69,13 @@ const InboxSidebar = () => {
     setTags([]);
   };
 
-  const options = ["None assigned", "User 1", "User 2", "User 3"];
+  const options = ['None assigned', 'User 1', 'User 2', 'User 3'];
+
+  const openAddParticipantModal = () => setIsAddParticipantModalOpen(true);
+  const closeAddParticipantModal = () => {
+    setIsAddParticipantModalOpen(false);
+    setParticipantEmail('');
+  };
 
   return (
     <S.Container>
@@ -86,7 +102,9 @@ const InboxSidebar = () => {
         </S.HoverArea>
       </S.ProfileSection>
 
-      <S.countryCenter onClick={() => setShowModal(true)}>View profile</S.countryCenter>
+      <S.countryCenter onClick={() => setShowModal(true)}>
+        View profile
+      </S.countryCenter>
 
       {showModal && (
         <ProfilePreviewModal isOpen={true} onClose={() => setShowModal(false)}>
@@ -159,12 +177,8 @@ const InboxSidebar = () => {
               <div className="">
                 <S.SectionCompan>
                   <S.SectionCompoint>
-                    <S.SectionCompanTitle>
-                      Time on website
-                    </S.SectionCompanTitle>
-                    <S.SectionCompanTime>
-                      3s
-                    </S.SectionCompanTime>
+                    <S.SectionCompanTitle>Time on website</S.SectionCompanTitle>
+                    <S.SectionCompanTime>3s</S.SectionCompanTime>
                   </S.SectionCompoint>
 
                   <S.SectionCompointRight>
@@ -217,19 +231,13 @@ const InboxSidebar = () => {
               </S.SectionHeading>
 
               <S.LastSection>
-                <S.LastSectionLeft>
-                  City, country
-                </S.LastSectionLeft>
+                <S.LastSectionLeft>City, country</S.LastSectionLeft>
 
-                <S.LastSectionp>
-                  Da Nang, Vietnam
-                </S.LastSectionp>
+                <S.LastSectionp>Da Nang, Vietnam</S.LastSectionp>
               </S.LastSection>
 
               <S.LastSection>
-                <S.LastSectionLeft>
-                  Local time
-                </S.LastSectionLeft>
+                <S.LastSectionLeft>Local time</S.LastSectionLeft>
 
                 <S.LastSectionp>
                   2:34pm <span>(UTC +7)</span>
@@ -237,9 +245,7 @@ const InboxSidebar = () => {
               </S.LastSection>
 
               <S.LastSection>
-                <S.LastSectionLeft>
-                  Languages
-                </S.LastSectionLeft>
+                <S.LastSectionLeft>Languages</S.LastSectionLeft>
 
                 <S.LastSectionImage>
                   <Image src={flagAmerica} preview={false} />
@@ -257,33 +263,19 @@ const InboxSidebar = () => {
                   </S.SectionWidth>
                 </S.SectionHeading>
 
-                <S.CompanyP>
-                  Company
-                </S.CompanyP>
+                <S.CompanyP>Company</S.CompanyP>
 
-                <S.CompanyP>
-                  Job Title
-                </S.CompanyP>
+                <S.CompanyP>Job Title</S.CompanyP>
 
-                <S.CompanyP>
-                  Job Role
-                </S.CompanyP>
+                <S.CompanyP>Job Role</S.CompanyP>
 
-                <S.CompanyP>
-                  Website
-                </S.CompanyP>
+                <S.CompanyP>Website</S.CompanyP>
 
-                <S.CompanyP>
-                  City
-                </S.CompanyP>
+                <S.CompanyP>City</S.CompanyP>
 
-                <S.CompanyP>
-                  Country
-                </S.CompanyP>
+                <S.CompanyP>Country</S.CompanyP>
 
-                <S.CompanyP>
-                  Employees
-                </S.CompanyP>
+                <S.CompanyP>Employees</S.CompanyP>
               </S.PanelSectionEnd>
 
               <S.PanelSectionNotepad>
@@ -296,7 +288,8 @@ const InboxSidebar = () => {
                   </S.SectionHeading>
 
                   <S.NoteBox>
-                    This is a note. This is a note. This is a note. This is a note.
+                    This is a note. This is a note. This is a note. This is a
+                    note.
                   </S.NoteBox>
                 </S.PanelSectionColumn>
 
@@ -323,10 +316,14 @@ const InboxSidebar = () => {
       <Collapse title="Main Information">
         <S.DropdownWrapper>
           <S.DropdownRow>
-            <S.UserIcon><Image src={userCheck} preview={false} /></S.UserIcon>
+            <S.UserIcon>
+              <Image src={userCheck} preview={false} />
+            </S.UserIcon>
             <S.DropdownHeader onClick={() => setOpenDropdown(!openDropdown)}>
               <span>{selected}</span>
-              <S.ArrowIcon isOpen={openDropdown}><Image src={arrDown} preview={false} /></S.ArrowIcon>
+              <S.ArrowIcon isOpen={openDropdown}>
+                <Image src={arrDown} preview={false} />
+              </S.ArrowIcon>
             </S.DropdownHeader>
           </S.DropdownRow>
 
@@ -349,11 +346,17 @@ const InboxSidebar = () => {
       <Collapse title="Main Information">
         {openCollapse && (
           <S.SectionContent>
-            <S.Field><Image src={location} preview={false} /> Da Nang</S.Field>
-            <S.Field><Image src={time} preview={false} /> 2:34pm (UTC +7)</S.Field>
+            <S.Field>
+              <Image src={location} preview={false} /> Da Nang
+            </S.Field>
+            <S.Field>
+              <Image src={time} preview={false} /> 2:34pm (UTC +7)
+            </S.Field>
             <S.Field>
               <S.CountryRow>
-                <span><Image src={internet} preview={false} /> Viet Nam</span>
+                <span>
+                  <Image src={internet} preview={false} /> Viet Nam
+                </span>
                 <S.CountryFlag src={flagVietNam} />
               </S.CountryRow>
             </S.Field>
@@ -364,8 +367,13 @@ const InboxSidebar = () => {
       <Collapse title="Visitors Devices">
         {openCollapse && (
           <S.SectionContent>
-            <S.Field><Image src={chorme} preview={false} /> Chrome on Win10</S.Field>
-            <S.Field><Image src={cloud} preview={false} /> 190:029:29:918:0ee Da Nang Viet...</S.Field>
+            <S.Field>
+              <Image src={chorme} preview={false} /> Chrome on Win10
+            </S.Field>
+            <S.Field>
+              <Image src={cloud} preview={false} /> 190:029:29:918:0ee Da Nang
+              Viet...
+            </S.Field>
           </S.SectionContent>
         )}
       </Collapse>
@@ -376,19 +384,98 @@ const InboxSidebar = () => {
             <S.Participant>
               <S.DropdownRow>
                 <Image src={mailInfo} preview={false} />
-                <S.Field> admin@mposs.io</S.Field>
+                <S.Field>admin@mposs.io</S.Field>
               </S.DropdownRow>
-              <S.countryCenter>Add</S.countryCenter>
+              <S.countryCenter onClick={openAddParticipantModal}>
+                Add
+              </S.countryCenter>
             </S.Participant>
+            {participants.map((email, idx) => (
+              <S.Participant key={email}>
+                <S.DropdownRow>
+                  <Image src={userPlus} preview={false} />
+                  <S.Field>{email}</S.Field>
+                </S.DropdownRow>
+                <S.countryCenter
+                  onClick={() =>
+                    setParticipants(participants.filter((_e, i) => i !== idx))
+                  }
+                >
+                  <Image src={closeRed} preview={false} />
+                </S.countryCenter>
+              </S.Participant>
+            ))}
           </S.SectionContent>
         )}
       </Collapse>
 
+      <Modal
+        isOpen={isAddParticipantModalOpen}
+        onClose={closeAddParticipantModal}
+        title="Add Participant Email Address"
+        description="Please insert modal description here."
+        width={540}
+        footer={
+          <>
+            <Button
+              type="primary"
+              iconPosition="left"
+              width="170px"
+              icon={<img src={add} alt="" />}
+              onClick={() => {
+                const email = participantEmail.trim();
+                if (email && !participants.includes(email)) {
+                  setParticipants((prev) => {
+                    const updated = [...prev, email];
+                    return updated;
+                  });
+                  closeAddParticipantModal();
+                }
+              }}
+            >
+              Add Participant
+            </Button>
+          </>
+        }
+      >
+        <S.ParticipantP>
+          Email address <span>*</span>
+        </S.ParticipantP>
+        <S.ParticipantInput
+          type="email"
+          placeholder="Enter email address"
+          value={participantEmail}
+          onChange={(e) => setParticipantEmail(e.target.value)}
+        />
+      </Modal>
+
       <Collapse title="Quick Jump">
         {openCollapse && (
           <S.SectionContent>
-            <S.Field><Image src={image} preview={false} /> Shared image files</S.Field>
-            <S.Field><Image src={message} preview={false} /> Other conversation</S.Field>
+            {/* Shared image files */}
+            <S.Field style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setOpenQuickJump(prev => ({ ...prev, image: !prev.image }))}>
+              <Image src={image} preview={false} /> Shared image files
+              <img
+                src={arrDown}
+                alt="toggle"
+                style={{ marginLeft: 'auto', transform: openQuickJump.image ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+              />
+            </S.Field>
+            {openQuickJump.image && (
+              <S.QuickJumpDropdownText>No images were shared.</S.QuickJumpDropdownText>
+            )}
+            {/* Other conversation */}
+            <S.Field style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setOpenQuickJump(prev => ({ ...prev, conversation: !prev.conversation }))}>
+              <Image src={message} preview={false} /> Other conversation
+              <img
+                src={arrDown}
+                alt="toggle"
+                style={{ marginLeft: 'auto', transform: openQuickJump.conversation ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+              />
+            </S.Field>
+            {openQuickJump.conversation && (
+              <S.QuickJumpDropdownText>No images were shared.</S.QuickJumpDropdownText>
+            )}
           </S.SectionContent>
         )}
       </Collapse>
@@ -400,7 +487,10 @@ const InboxSidebar = () => {
               {tags.map((tag, index) => (
                 <S.Tag key={index}>
                   {tag}
-                  <S.RemoveTagButton onClick={() => removeTag(index)}>×</S.RemoveTagButton>
+                  <S.RemoveTagButton onClick={() => removeTag(index)}>
+                    ×
+                  </S.RemoveTagButton>
+                  {/* <img src={removeCircle} alt="" onClick={() => removeTag(index)} /> */}
                 </S.Tag>
               ))}
               {tags.length > 0 && (
@@ -438,7 +528,7 @@ const InboxSidebar = () => {
           </S.SectionContent>
         )}
       </Collapse>
-    </S.Container >
+    </S.Container>
   );
 };
 
