@@ -19,7 +19,6 @@ interface PopoverCommonProps {
     | 'rightTop'
     | 'rightBottom';
   trigger?: 'click' | 'hover' | 'focus' | 'contextMenu';
-  open?: boolean;
 }
 
 function PopoverAction({
@@ -27,7 +26,6 @@ function PopoverAction({
   btnContent,
   placement,
   trigger,
-  open,
 }: PopoverCommonProps) {
   return (
     <S.PopoverContainer>
@@ -36,7 +34,6 @@ function PopoverAction({
         content={content}
         trigger={trigger || 'hover'}
         rootClassName="popover-action"
-        open={open}
       >
         {btnContent}
       </Popover>
