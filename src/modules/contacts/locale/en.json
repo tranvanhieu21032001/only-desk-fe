@@ -51,22 +51,5 @@
   "modal-confirm": {
     "create-filter": "Create filter",
     "this-filter-will": "This filter will be created for everyone in your team"
-  },
-
-  "modal-confirm-export": {
-    "export-contact-database": "Export contact database",
-    "it-will-export": "It will take a few minutes. You will get an email when the export is over.",
-    "cancel": "Cancel"
-  },
-
-  "modal-import-contact": {
-    "import-contact-profile": "Import contact profile",
-    "please-insert-modal-description-here": "Please insert modal description here.",
-    "select-file": "Select file",
-    "configure": "Configure",
-    "proceed": "Proceed",
-    "upload-a-csv": "Upload a CSV file to import contact profiles",
-    "you-can-upload": "You can upload a standard CSV file containing the full name and email of your contacts, to add them to your contact database on OnlyChat.",
-    "continue": "Continue"
   }
 }

@@ -63,12 +63,4 @@ export const FilterAction = styled.div<{ $isRemove?: boolean }>`
   &:hover {
     background-color: ${(props) => props?.theme?.colors?.secondaryLight};
   }
-
-  div {
-    height: 24px;
-
-    svg {
-      color: ${(props) => props?.theme?.colors?.newtralLight};
-    }
-  }
 `;
