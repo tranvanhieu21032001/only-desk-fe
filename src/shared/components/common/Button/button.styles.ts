@@ -37,6 +37,7 @@ export const ButtonContent = styled.span`
     display: flex;
     align-items: center;
     line-height: 0;
+    text-transform: capitalize;
   }
 `;
 

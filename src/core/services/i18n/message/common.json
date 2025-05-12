@@ -1,4 +1,10 @@
 {
-    "success":"Success",
-    "error":"Error"
+  "success": "Success",
+  "error": "Error",
+
+  "upload": {
+    "choose-a-files": "Choose a file or drag & drop it here.",
+    "upload-csv": "Upload CSV file (UTF-8 encoded)",
+    "browse-file": "Browse file"
+  }
 }

@@ -150,4 +150,27 @@ const actionFilterOptions: ActionFilterOptionsInterface[] = [
   },
 ];
 
-export { contactsMockup, actionFilterOptions };
+const csvMockup = [
+  {
+    id: 1,
+    name: 'Email',
+  },
+  {
+    id: 2,
+    name: 'First Name',
+  },
+  {
+    id: 3,
+    name: 'Last Name',
+  },
+  {
+    id: 4,
+    name: 'Phone',
+  },
+  {
+    id: 5,
+    name: 'Address',
+  },
+];
+
+export { contactsMockup, actionFilterOptions, csvMockup };

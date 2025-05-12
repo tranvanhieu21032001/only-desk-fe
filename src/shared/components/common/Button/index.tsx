@@ -1,10 +1,10 @@
-import React from "react";
-import { LoadingOutlined } from "@ant-design/icons";
+import React from 'react';
+import { LoadingOutlined } from '@ant-design/icons';
 
-import * as S from "./button.styles";
+import * as S from './button.styles';
 
 interface ButtonProps {
-  type?: "default" | "primary";
+  type?: 'default' | 'primary';
   backgroundColor?: string;
   children: React.ReactNode;
   disabled?: boolean;
@@ -12,35 +12,35 @@ interface ButtonProps {
   isLoading?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   width?: string;
-  htmlType?: "button" | "submit" | "reset";
+  htmlType?: 'button' | 'submit' | 'reset';
   icon?: React.ReactNode;
-  iconPosition?: "left" | "right";
+  iconPosition?: 'left' | 'right';
 }
 
 export default function Button({
-  type = "default",
+  type = 'default',
   backgroundColor,
   children,
   disabled = false,
   isCancel = false,
   isLoading = false,
-  onClick = () => { },
-  width = "100%",
-  htmlType = "button",
+  onClick = () => {},
+  width = '100%',
+  htmlType = 'button',
   icon,
-  iconPosition = "left",
+  iconPosition = 'left',
   ...rest
 }: ButtonProps) {
   const renderContent = () => (
     <S.ButtonContent>
-      {icon && iconPosition === "left" && !isLoading && (
-        <span style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
+      {icon && iconPosition === 'left' && !isLoading && (
+        <span style={{ display: 'flex', alignItems: 'center', lineHeight: 0 }}>
           {icon}
         </span>
       )}
-      <span style={{ display: "flex", alignItems: "center" }}>{children}</span>
-      {icon && iconPosition === "right" && !isLoading && (
-        <span style={{ display: "flex", alignItems: "center", lineHeight: 0 }}>
+      <span style={{ display: 'flex', alignItems: 'center' }}>{children}</span>
+      {icon && iconPosition === 'right' && !isLoading && (
+        <span style={{ display: 'flex', alignItems: 'center', lineHeight: 0 }}>
           {icon}
         </span>
       )}
@@ -49,7 +49,7 @@ export default function Button({
   );
 
   switch (type) {
-    case "primary":
+    case 'primary':
       return (
         <S.PrimaryButton
           onClick={onClick}

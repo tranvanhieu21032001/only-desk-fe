@@ -43,7 +43,7 @@ export const FilterAction = styled.div<{ $isRemove?: boolean }>`
   ${({ $isRemove }) =>
     $isRemove &&
     css`
-      p {
+      svg {
         color: ${(props) => props?.theme?.colors?.errorDark};
       }
     `}

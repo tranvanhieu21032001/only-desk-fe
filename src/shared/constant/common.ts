@@ -21,4 +21,13 @@ const PAGE_SIZE_OPTIONS = [
 const KEY_PAGE = 'page';
 const KEY_PAGE_SIZE = 'page-size';
 
-export { KEY_PAGE, KEY_PAGE_SIZE, PAGE, PAGE_SIZE, PAGE_SIZE_OPTIONS };
+const MAX_IMAGE_UPLOAD = 10;
+
+export {
+  KEY_PAGE,
+  KEY_PAGE_SIZE,
+  PAGE,
+  PAGE_SIZE,
+  PAGE_SIZE_OPTIONS,
+  MAX_IMAGE_UPLOAD,
+};

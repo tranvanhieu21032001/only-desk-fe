@@ -4,4 +4,10 @@ enum ActionFilterContactTypeEnums {
   REMOVE = 'remove',
 }
 
-export { ActionFilterContactTypeEnums };
+enum TabConfigureEnums {
+  ALL = 'all',
+  MAPPED = 'mapped',
+  SKIPPED = 'skipped',
+}
+
+export { ActionFilterContactTypeEnums, TabConfigureEnums };
