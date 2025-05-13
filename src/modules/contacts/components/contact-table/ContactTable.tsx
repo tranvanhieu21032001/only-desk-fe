@@ -1,8 +1,10 @@
+import { ReactSVG } from 'react-svg';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Image, Rate } from 'antd';
-import { useEffect, useState } from 'react';
-import { ReactSVG } from 'react-svg';
 
+import { MAIN_ROUTES } from '@/core/routes/constants';
 import { contactsMockup } from '@/shared/helper/data/contacts';
 import themeColors from '@/shared/styles/themes/default/colors';
 
@@ -17,6 +19,7 @@ import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 
 function ContactTable() {
   const { t } = useTranslation('contacts');
+  const navigate = useNavigate();
 
   const [params, setParams] = useState<{
     search: string;
@@ -138,12 +141,7 @@ function ContactTable() {
         <PopoverAction
           btnContent={
             <S.TooltipColumn title={t('table.remove')}>
-              <S.ActionRemove
-                preview={false}
-                width={24}
-                height={24}
-                src={icActionRemove}
-              />
+              <ReactSVG width={24} height={24} src={icActionRemove} />
             </S.TooltipColumn>
           }
           content={
@@ -169,6 +167,10 @@ function ContactTable() {
     },
   };
 
+  function handleViewContactProfile(record: any) {
+    navigate(MAIN_ROUTES?.CONTACT_DETAILS?.replace(':id', record?.id));
+  }
+
   return (
     <S.ContactTableContainer>
       <Table
@@ -177,6 +179,10 @@ function ContactTable() {
         totalDocs={10}
         rowSelection={rowSelection}
         loading={params?.isLoading}
+        onRow={(record: any) => ({
+          onClick: () => handleViewContactProfile(record),
+          style: { cursor: 'pointer' },
+        })}
       />
     </S.ContactTableContainer>
   );

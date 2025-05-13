@@ -1,9 +1,17 @@
-import { ActionFilterContactTypeEnums } from '../enums/contacts';
-import { ActionFilterOptionsInterface } from '@/shared/model/contacts';
+import {
+  ActionFilterContactTypeEnums,
+  ActionProfileDetailsTypeEnums,
+} from '../enums/contacts';
+import {
+  ActionFilterOptionsInterface,
+  ActionProfileDetailsOptionsInterface,
+} from '@/shared/model/contacts';
 
+import icEdit from '@/assets/icons/contact/ic-edit.svg';
 import icExport from '@/assets/icons/contact/ic-export.svg';
 import icImport from '@/assets/icons/contact/ic-import.svg';
 import icRemove from '@/assets/icons/contact/ic-remove.svg';
+import icCopyLink from '@/assets/icons/contact/ic-copy-link.svg';
 import icAvatarMockup from '@/assets/icons/layout/ic-avatar-mock.svg';
 
 const contactsMockup = [
@@ -173,4 +181,30 @@ const csvMockup = [
   },
 ];
 
-export { contactsMockup, actionFilterOptions, csvMockup };
+const actionsProfileDetailsOptions: ActionProfileDetailsOptionsInterface[] = [
+  {
+    key: 'edit-profile',
+    label: 'edit-profile',
+    icon: icEdit,
+    actionType: ActionProfileDetailsTypeEnums?.EDIT,
+  },
+  {
+    key: 'copy-link',
+    label: 'copy-link',
+    icon: icCopyLink,
+    actionType: ActionProfileDetailsTypeEnums?.COPY,
+  },
+  {
+    key: 'remove-profile',
+    label: 'remove-profile',
+    icon: icRemove,
+    actionType: ActionProfileDetailsTypeEnums?.REMOVE,
+  },
+];
+
+export {
+  contactsMockup,
+  actionsProfileDetailsOptions,
+  actionFilterOptions,
+  csvMockup,
+};

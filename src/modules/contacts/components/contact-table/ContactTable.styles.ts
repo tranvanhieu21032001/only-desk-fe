@@ -1,4 +1,4 @@
-import { Image, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 
 import { css, styled } from 'styled-components';
 
@@ -7,10 +7,11 @@ export const ContactTableContainer = styled.section`
   height: calc(100% - 74px);
 `;
 
-export const TooltipColumn = styled(Tooltip)``;
-
-export const ActionRemove = styled(Image)`
-  cursor: pointer;
+export const TooltipColumn = styled(Tooltip)`
+  svg {
+    cursor: pointer;
+    color: ${(props) => props?.theme?.colors?.newtralLight};
+  }
 `;
 
 export const FullNameColumn = styled.div`

@@ -39,6 +39,7 @@ interface TableProps {
     type?: 'checkbox' | 'radio';
   };
   rowKey?: string;
+  onRow?: any;
 }
 
 function Table({
@@ -50,6 +51,7 @@ function Table({
   summary,
   rowSelection,
   rowKey = 'id',
+  onRow,
   ...props
 }: TableProps) {
   const { replaceState } = useRouter();
@@ -124,6 +126,7 @@ function Table({
             ...rowSelection,
           }
         }
+        onRow={onRow}
         rowKey={rowKey}
         {...props}
       />

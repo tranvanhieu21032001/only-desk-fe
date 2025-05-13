@@ -91,5 +91,55 @@
     "contacts-imported": "Contacts imported",
     "remaining": "Remaining",
     "close-import": "Close import"
+  },
+
+  "contact-profile": {
+    "edit-profile": "Edit profile",
+    "remove-profile": "Remove profile",
+    "copy-link": "Copy link",
+    "send-a-message": "Send a message",
+    "new-conversation": "New conversation",
+    "start-a-call": "Start a call",
+
+    "contact-information": "Contact information",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "website": "Website",
+    "creation-date": "Creation date",
+    "last-update": "Last update",
+    "gender": "Gender",
+    "notification": "Notification",
+    "segments": "Segments",
+    "company": "Company",
+    "data": "Data",
+    "add-data": "Add Data",
+    "no-data-added": "No data added.",
+    "conversation": "Conversation",
+
+    "page-visited-recently": "Page Visited Recently",
+    "time-on-website": "Time on Website",
+    "device-information": "Device Information",
+
+    "no-campaign-found": "No campaign found",
+    "campaign": "Campaign",
+
+    "private-notepads": "Private notepads",
+    "this-is-content": "This is content in notepad. This is content in notepad. This is content in notepad.",
+
+    "recent-event": "Recent event",
+    "no-event-added": "No event added.",
+
+    "rating-score": "Rating score",
+    "no-rating-submitted": "No rating submitted.",
+
+    "last-reported-location": "Last reported location",
+    "city": "City, country",
+    "local-time": "Local time",
+    "languages": "Languages",
+
+    "contact": "Contact",
+    "profile": "Profile"
   }
 }
