@@ -96,8 +96,6 @@ function UploadMultiImages(props: PropsInterface) {
 
   const onChangeUploadImages = useCallback(
     (file: any) => {
-      console.log(file);
-
       if (file.file.uid === file.fileList?.[file.fileList.length - 1].uid) {
         const originFiles = file.fileList?.map(
           (item: any) => item.originFileObj,

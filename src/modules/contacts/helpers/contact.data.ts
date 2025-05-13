@@ -46,4 +46,86 @@ const proceedMockup = [
   },
 ];
 
-export { progressImport, proceedMockup };
+const lastReportedLocation = [
+  {
+    key: 'city',
+    label: 'city',
+    value: 'New York, USA',
+  },
+  {
+    key: 'local-time',
+    label: 'local-time',
+    value: '2:34pm (UTC +7)',
+  },
+  {
+    key: 'languages',
+    label: 'languages',
+    value: 'English, Spanish',
+  },
+];
+
+const contactInformationMockup = [
+  {
+    key: 'name',
+    label: 'name',
+    value: 'Sophia Williams',
+  },
+  {
+    key: 'email',
+    label: 'email',
+    value: 'admin@gmail.com',
+  },
+  {
+    key: 'phone',
+    label: 'phone',
+    value: '+1 234 567 890',
+  },
+  {
+    key: 'address',
+    label: 'address',
+    value: '123 Main St, New York, NY',
+  },
+  {
+    key: 'website',
+    label: 'website',
+    value: 'www.sophiawilliams.com',
+  },
+  {
+    key: 'creation-date',
+    label: 'creation-date',
+    value: 'Yesterday',
+  },
+  {
+    key: 'last-update',
+    label: 'last-update',
+    value: '6 hour ago',
+  },
+  {
+    key: 'gender',
+    label: 'gender',
+    value: 'Female',
+  },
+  {
+    key: 'notification',
+    label: 'notification',
+    value: 'Active',
+  },
+];
+
+const companyMockup = [
+  'Company',
+  'Job title',
+  'Job role',
+  'Website',
+  'City',
+  'Country',
+  'Employees',
+];
+
+export {
+  progressImport,
+  proceedMockup,
+  contactInformationMockup,
+  companyMockup,
+  lastReportedLocation,
+};

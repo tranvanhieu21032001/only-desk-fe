@@ -92,8 +92,6 @@ function TabAllContent({ onParams }: TabAllContentProps) {
 
   function handleViewAll(type: TabEnums) {
     //Handle later
-    console.log(type);
-
     onParams?.((prev: { search: string; tab: string }) => ({
       ...prev,
       tab: type as string,

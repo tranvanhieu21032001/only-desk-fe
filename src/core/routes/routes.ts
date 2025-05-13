@@ -27,6 +27,9 @@ const PageNotFound = React.lazy(
 const Contacts = React.lazy(
   () => import('@/modules/contacts/pages/contacts/Contacts'),
 );
+const ContactDetails = React.lazy(
+  () => import('@/modules/contacts/pages/contact-details/ContactDetails'),
+);
 
 const routes_admin: RouterElementInterface[] = [];
 
@@ -92,12 +95,18 @@ const routes_main: RouterElementInterface[] = [
     name: 'global',
   },
 
-  //User
+  //Contact
   {
     key: 'contacts',
     path: MAIN_ROUTES.CONTACTS,
     component: Contacts,
     name: 'contacts',
+  },
+  {
+    key: 'contact-details',
+    path: MAIN_ROUTES.CONTACT_DETAILS,
+    component: ContactDetails,
+    name: 'contact-details',
   },
 
   //Ai Automation

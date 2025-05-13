@@ -10,4 +10,14 @@ enum TabConfigureEnums {
   SKIPPED = 'skipped',
 }
 
-export { ActionFilterContactTypeEnums, TabConfigureEnums };
+enum ActionProfileDetailsTypeEnums {
+  EDIT = 'edit',
+  COPY = 'copy',
+  REMOVE = 'remove',
+}
+
+export {
+  ActionProfileDetailsTypeEnums,
+  ActionFilterContactTypeEnums,
+  TabConfigureEnums,
+};
