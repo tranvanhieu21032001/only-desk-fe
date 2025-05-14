@@ -14,7 +14,7 @@ import { useAppDispatch } from '@/shared/hooks';
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
-import { MAX_COUNT } from '@/modules/plugins/helper/data/allPlugins';
+import { MAX_COUNT } from '@/modules/plugins/helpers/data/allPlugins';
 import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
 
 import Header from '../../common/header/Main';

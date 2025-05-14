@@ -3,7 +3,7 @@ import { Col, Row } from 'antd';
 import Button from '@/shared/components/common/Button';
 
 import styled, { css } from 'styled-components';
-import { PluginsTypeEnums } from '../../helper/enums/allPlugins';
+import { PluginsTypeEnums } from '../../helpers/enums/allPlugins';
 
 export const WrapModal = styled.div``;
 

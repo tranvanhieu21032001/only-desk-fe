@@ -46,11 +46,7 @@ export const PrimaryButton = styled(ButtonCommon)<{
   $isCancel?: boolean;
   $width?: string;
 }>`
-  background:
-    linear-gradient(0deg, #3750b2, #3750b2),
-    linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-    linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
-
+  background: ${(props) => props.$bg || props.theme.colors.secondaryDarker};
   color: ${(props) => props.theme.colors.newtralLightest};
   transition: all 0.5s;
   width: ${(props) => props?.$width || '100%'};

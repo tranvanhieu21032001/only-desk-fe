@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { CheckCircleOutlined } from '@ant-design/icons';
 
-import { mockupCardPlugins, pluginTypes } from '../../helper/data/allPlugins';
+import { mockupCardPlugins, pluginTypes } from '../../helpers/data/allPlugins';
 
 import CardPlugin from '../card-plugin/CardPlugin';
 import Input from '@/shared/components/common/Input';

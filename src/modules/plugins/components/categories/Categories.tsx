@@ -2,7 +2,7 @@ import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { categories, MAX_COUNT } from '../../helper/data/allPlugins';
+import { categories, MAX_COUNT } from '../../helpers/data/allPlugins';
 import { CategoriesInterface } from '../../model/allPlugins';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 

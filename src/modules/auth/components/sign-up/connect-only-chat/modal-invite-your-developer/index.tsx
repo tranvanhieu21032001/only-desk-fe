@@ -1,25 +1,25 @@
-import { useEffect } from "react";
-import { Form, Image } from "antd";
-import { useTranslation } from "react-i18next";
-import { isEmpty } from "lodash";
+import { useEffect } from 'react';
+import { Form, Image } from 'antd';
+import { useTranslation } from 'react-i18next';
+import { isEmpty } from 'lodash';
 
-import themeColors from "@/shared/styles/themes/default/colors";
-import fontWeight from "@/shared/styles/themes/default/fontWeight";
+import { constants } from '@/core/settings';
+import webLocalStorage from '@/shared/utils/webLocalStorage';
+import themeColors from '@/shared/styles/themes/default/colors';
+import fontWeight from '@/shared/styles/themes/default/fontWeight';
 
-import Input from "@/shared/components/common/Input";
+import Input from '@/shared/components/common/Input';
 
-import Button from "@/shared/components/common/Button";
-import Typography from "@/shared/components/common/Typography";
-import ModalCommon from "@/shared/components/common/ModalBase";
+import Button from '@/shared/components/common/Button';
+import Typography from '@/shared/components/common/Typography';
+import ModalCommon from '@/shared/components/common/ModalBase';
 
-import icLink from "@/assets/icons/auth/ic-link.svg";
-import icTrash from "@/assets/icons/common/ic-trash.svg";
-import icSetting from "@/assets/icons/auth/ic-setting.svg";
-import icAddCircle from "@/assets/icons/common/ic-add-circle.svg";
+import icLink from '@/assets/icons/auth/ic-link.svg';
+import icTrash from '@/assets/icons/common/ic-trash.svg';
+import icSetting from '@/assets/icons/auth/ic-setting.svg';
+import icAddCircle from '@/assets/icons/common/ic-add-circle.svg';
 
-import * as S from "./invite.styles";
-import webLocalStorage from "@/shared/utils/webLocalStorage";
-import { constants } from "@/core/settings";
+import * as S from './invite.styles';
 
 interface ModalConfirmDeleteProps {
   title?: string;
@@ -37,27 +37,36 @@ function ModalInvite({
   isLoading,
   onCopyInviteLink,
 }: ModalConfirmDeleteProps) {
-  const { t } = useTranslation("auth");
+  const { t } = useTranslation('auth');
   const [form] = Form.useForm();
-  const dataFromLocal =  webLocalStorage.get(constants?.SIGN_UP_INFO)
+  const dataFromLocal = webLocalStorage.get(constants?.SIGN_UP_INFO);
 
   useEffect(() => {
-    form.setFieldValue("invitedDevelopers", !isEmpty(dataFromLocal?.invitedDevelopers) ? (dataFromLocal?.invitedDevelopers || [])?.map((item:string) => ({email:item})) :[{ email: "" }]);
+    form.setFieldValue(
+      'invitedDevelopers',
+      !isEmpty(dataFromLocal?.invitedDevelopers)
+        ? (dataFromLocal?.invitedDevelopers || [])?.map((item: string) => ({
+            email: item,
+          }))
+        : [{ email: '' }],
+    );
   }, [form]);
 
   function handleAddMoreEmail() {
-    const getEmails = form.getFieldValue("invitedDevelopers");
-    form.setFieldValue("invitedDevelopers", [...getEmails, { email: "" }]);
+    const getEmails = form.getFieldValue('invitedDevelopers');
+    form.setFieldValue('invitedDevelopers', [...getEmails, { email: '' }]);
   }
 
-  function handleSendInvite(values:any) {
-    const convertInvited = values?.invitedDevelopers?.map((item:any) => item?.email);
-    
-      webLocalStorage.set(constants?.SIGN_UP_INFO, {
+  function handleSendInvite(values: any) {
+    const convertInvited = values?.invitedDevelopers?.map(
+      (item: any) => item?.email,
+    );
+
+    webLocalStorage.set(constants?.SIGN_UP_INFO, {
       ...dataFromLocal,
       invitedDevelopers: convertInvited || [],
     });
-    onCancel()
+    onCancel();
   }
 
   return (
@@ -74,17 +83,17 @@ function ModalInvite({
           <Image src={icSetting} preview={false} />
           <S.ModalHeaderContent>
             <Typography fontWeight={fontWeight?.semiBold}>
-              {t("invite-modal.invite-your-developer")}
+              {t('invite-modal.invite-your-developer')}
             </Typography>
-            <Typography>{t("invite-modal.invite-developer")}</Typography>
+            <Typography>{t('invite-modal.invite-developer')}</Typography>
           </S.ModalHeaderContent>
         </S.ModalHeader>
 
         <S.ModalContent>
           <S.FormWrap form={form} onFinish={handleSendInvite}>
             <Typography margin="0 0 8px 0">
-              {t("invite-your-team.email-address")}
-              <span style={{ color: "red" }}> *</span>
+              {t('invite-your-team.email-address')}
+              <span style={{ color: 'red' }}> *</span>
             </Typography>
             <S.EmailsWrap>
               <Form.List name="invitedDevelopers">
@@ -93,28 +102,28 @@ function ModalInvite({
                     {fields.map(({ key, name, ...restField }, index) => (
                       <S.EmailWrap
                         key={key}
-                        style={{ display: "flex", marginBottom: 8 }}
+                        style={{ display: 'flex', marginBottom: 8 }}
                         $isFirst={index === 0}
                       >
                         <Form.Item
                           {...restField}
-                          name={[name, "email"]}
+                          name={[name, 'email']}
                           rules={[
                             {
                               required: true,
                               message: t(
-                                "invite-your-team.please-enter-business-email"
+                                'invite-your-team.please-enter-business-email',
                               ),
                             },
                             {
-                              type: "email",
-                              message: t("email-invalid"),
-                        },
+                              type: 'email',
+                              message: t('email-invalid'),
+                            },
                           ]}
                         >
                           <Input
                             placeholder={t(
-                              "invite-your-team.enter-your-business-email"
+                              'invite-your-team.enter-your-business-email',
                             )}
                             type="email"
                           />
@@ -143,7 +152,7 @@ function ModalInvite({
                   color={themeColors?.secondaryDark}
                   fontWeight={fontWeight?.semiBold}
                 >
-                  {t("invite-your-team.add-more-email")}
+                  {t('invite-your-team.add-more-email')}
                 </Typography>
               </S.AddMoreEmail>
             </S.AddMoreEmailWrap>
@@ -158,16 +167,16 @@ function ModalInvite({
               color={themeColors?.secondaryDark}
               fontWeight={fontWeight?.semiBold}
             >
-              {t("invite-modal.copy-invite-link")}
+              {t('invite-modal.copy-invite-link')}
             </Typography>
           </S.CopyInviteLinkWrap>
 
           <S.ActionWrap>
             <S.BtnCancel>
-              <Button>{t("invite-modal.cancel")}</Button>
+              <Button>{t('invite-modal.cancel')}</Button>
             </S.BtnCancel>
             <Button type="primary" onClick={form.submit}>
-              {t("invite-modal.send-invite-and-continue")}
+              {t('invite-modal.send-invite-and-continue')}
             </Button>
           </S.ActionWrap>
         </S.ModalBottom>

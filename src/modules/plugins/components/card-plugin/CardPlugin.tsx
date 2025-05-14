@@ -6,7 +6,7 @@ import { useModal } from '@/shared/hooks';
 import { CardPluginInterface } from '../../model/allPlugins';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
-import { PluginsStatusEnums } from '../../helper/enums/allPlugins';
+import { PluginsStatusEnums } from '../../helpers/enums/allPlugins';
 
 import Typography from '@/shared/components/common/Typography';
 import ModalViewDetailPlugin from '../modal-view-detail-plugin/ModalViewDetailPlugin';

@@ -1,5 +1,5 @@
 import Button from '@/shared/components/common/Button';
-import { PluginsTypeEnums } from '../../helper/enums/allPlugins';
+import { PluginsTypeEnums } from '../../helpers/enums/allPlugins';
 
 import { css, styled } from 'styled-components';
 

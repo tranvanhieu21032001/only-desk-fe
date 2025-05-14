@@ -1,21 +1,23 @@
-import { useState } from "react";
-import { Image, InputProps as InputPropsFromAntd } from "antd";
-import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
+import { useState } from 'react';
+import { Image, InputProps as InputPropsFromAntd } from 'antd';
+import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 
-import themeColors from "@/shared/styles/themes/default/colors";
+import themeColors from '@/shared/styles/themes/default/colors';
 
-import Typography from "../Typography";
+import Typography from '../Typography';
 
-import * as S from "./input.styles";
+import * as S from './input.styles';
 
-import icSearch from '@/assets/icons/common/ic-search.svg'
+import icSearch from '@/assets/icons/common/ic-search.svg';
+import { ReactSVG } from 'react-svg';
 interface InputProps extends InputPropsFromAntd {
   label?: string;
   isRequired?: boolean;
   colorLabel?: string;
   isFormatNumberCurrency?: boolean;
   isPassword?: boolean;
-  prefix?: boolean
+  prefix?: boolean | string;
+  suffix?: string;
 }
 
 export default function Input({
@@ -24,6 +26,7 @@ export default function Input({
   colorLabel = themeColors.primary,
   isPassword = false,
   prefix,
+  suffix,
   ...rest
 }: InputProps) {
   const [isShowPassWord, setIsShowPassWord] = useState<boolean>(true);
@@ -36,15 +39,19 @@ export default function Input({
     <S.WrapInput>
       {label && (
         <Typography padding="0 0 8px 0" color={colorLabel}>
-          {label} {isRequired && <span style={{ color: "red" }}>*</span>}
+          {label} {isRequired && <span style={{ color: 'red' }}>*</span>}
         </Typography>
       )}
 
       {isPassword ? (
         <S.Input
           {...rest}
-          prefix={prefix && <Image preview={false} src={icSearch} />}
-          type={isShowPassWord ? "password" : "text"}
+          prefix={
+            prefix && (
+              <Image preview={false} src={(prefix as string) || icSearch} />
+            )
+          }
+          type={isShowPassWord ? 'password' : 'text'}
           suffix={
             isShowPassWord ? (
               <EyeInvisibleOutlined onClick={handleShowPassWord} />
@@ -54,7 +61,15 @@ export default function Input({
           }
         />
       ) : (
-        <S.Input {...rest} prefix={prefix && <Image preview={false} src={icSearch} />} />
+        <S.Input
+          {...rest}
+          prefix={
+            prefix && (
+              <Image preview={false} src={(prefix as string) || icSearch} />
+            )
+          }
+          suffix={suffix && <ReactSVG src={suffix} />}
+        />
       )}
     </S.WrapInput>
   );

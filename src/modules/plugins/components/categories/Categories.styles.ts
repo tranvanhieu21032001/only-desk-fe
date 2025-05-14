@@ -2,8 +2,9 @@ import { styled } from 'styled-components';
 
 export const CategoryContainer = styled.section`
   padding: 24px;
-  height: fit-content;
+  height: 100%;
 
+  border-radius: 8px 0 0 8px;
   background-color: ${(props) => props?.theme?.colors?.newtralLightest};
 
   @media ${(props) => props?.theme?.breakpoints?.xxlMax} {

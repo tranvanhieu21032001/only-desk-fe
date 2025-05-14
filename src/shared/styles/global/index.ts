@@ -414,6 +414,7 @@ const popOver = css`
   }
 
   .menu-popover {
+    width: 100%;
     max-width: 240px;
     inset-inline-start: 60px !important;
 
