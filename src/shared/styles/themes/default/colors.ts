@@ -70,6 +70,12 @@ const themeColors = {
   borderDisabled: '#d9d9d9',
   borderDark: '#2346a5',
 
+  /**
+   * Danger color for destructive actions
+   */
+  danger: '#D91F11',
+  dangerDark: '#b71c0c',
+
   dark: {
     secondary: '#000',
   },
