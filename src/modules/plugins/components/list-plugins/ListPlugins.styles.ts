@@ -1,12 +1,13 @@
 import { Skeleton } from 'antd';
 
-import { PluginsTypeEnums } from '../../helper/enums/allPlugins';
+import { PluginsTypeEnums } from '../../helpers/enums/allPlugins';
 
 import { css, styled } from 'styled-components';
 
 export const PluginsContainer = styled.section`
   padding: 12px;
-  min-height: 100vh;
+  height: 100%;
+  border-radius: 0 8px 8px 0;
 
   background-color: ${(props) => props?.theme?.colors?.newtralLightest};
 

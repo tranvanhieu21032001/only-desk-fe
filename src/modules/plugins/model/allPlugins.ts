@@ -1,7 +1,7 @@
 import {
   PluginsStatusEnums,
   PluginsTypeEnums,
-} from '../helper/enums/allPlugins';
+} from '../helpers/enums/allPlugins';
 
 export interface CategoriesInterface {
   key: string;

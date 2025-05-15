@@ -1,12 +1,12 @@
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
-import { Input as InputAntd } from "antd";
+import { Input as InputAntd } from 'antd';
 
 export const WrapInput = styled.div``;
 
 export const Input = styled(InputAntd)`
   width: 100%;
-  height: 39px;
+  height: 47px;
   box-shadow: none !important;
   border-color: none !important;
 

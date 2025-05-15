@@ -31,6 +31,11 @@ const ContactDetails = React.lazy(
   () => import('@/modules/contacts/pages/contact-details/ContactDetails'),
 );
 
+//Account
+const Account = React.lazy(
+  () => import('@/modules/settings/pages/account/Account'),
+);
+
 const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
@@ -195,7 +200,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'account',
     path: MAIN_ROUTES.ACCOUNT,
-    component: PageNotFound,
+    component: Account,
     name: 'account',
   },
   {

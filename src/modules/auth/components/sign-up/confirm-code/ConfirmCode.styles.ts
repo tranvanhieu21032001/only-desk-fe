@@ -1,9 +1,9 @@
-import { Form } from "antd";
+import { Form } from 'antd';
 
-import Button from "@/shared/components/common/Button";
-import Typography from "@/shared/components/common/Typography";
+import Button from '@/shared/components/common/Button';
+import Typography from '@/shared/components/common/Typography';
 
-import { css, styled } from "styled-components";
+import { css, styled } from 'styled-components';
 
 export const SignInWrap = styled.section``;
 
@@ -112,8 +112,8 @@ export const LoginLabelWrap = styled.div`
   }
 `;
 
-export const InputNumber= styled.input`
- &[type='number']::-webkit-inner-spin-button,
+export const InputNumber = styled.input`
+  &[type='number']::-webkit-inner-spin-button,
   &[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
@@ -122,7 +122,7 @@ export const InputNumber= styled.input`
   &[type='number'] {
     -moz-appearance: textfield;
   }
-`
+`;
 
 export const Email = styled.span`
   color: ${(props) => props?.theme?.colors?.primary};
@@ -189,4 +189,3 @@ export const DriversLicenseWrap = styled.div`
     margin-bottom: 24px;
   }
 `;
-
