@@ -16,6 +16,7 @@ import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { MAX_COUNT } from '@/modules/plugins/helpers/data/allPlugins';
 import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
+import CreateWorkspaceModal from '@/modules/workspace/pages/create-workspace/CreateWorkspace';
 
 import Header from '../../common/header/Main';
 import Typography from '../../common/Typography';
@@ -81,6 +82,8 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const dispatch = useAppDispatch();
   const [isNewSubInboxModalOpen, setIsNewSubInboxModalOpen] = useState(false);
   const [isChatsPopoverOpen, setIsChatsPopoverOpen] = useState(false);
+  const [isCreateWorkspaceModalOpen, setIsCreateWorkspaceModalOpen] =
+    useState(false);
 
   const routePath = window?.location?.pathname;
 
@@ -437,7 +440,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   ];
 
   function handleCreateWorkspace() {
-    //TODO handle later
+    setIsCreateWorkspaceModalOpen(true);
   }
 
   function handleProfileDetail() {
@@ -769,6 +772,12 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         <NewSubInboxPage
           isOpen={isNewSubInboxModalOpen}
           onClose={() => setIsNewSubInboxModalOpen(false)}
+        />
+      )}
+      {isCreateWorkspaceModalOpen && (
+        <CreateWorkspaceModal
+          isOpen={isCreateWorkspaceModalOpen}
+          onClose={() => setIsCreateWorkspaceModalOpen(false)}
         />
       )}
     </S.LayoutWrapper>

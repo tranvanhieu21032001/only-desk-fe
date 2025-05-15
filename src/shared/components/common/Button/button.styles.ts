@@ -110,3 +110,30 @@ export const DefaultButton = styled(ButtonCommon)<{
       props.theme.colors.primaryLighter} !important;
   }
 `;
+
+export const DangerButton = styled(ButtonCommon)<{
+  $width?: string;
+}>`
+  background: ${(props) => props.theme.colors.danger};
+  color: #fff;
+  border-radius: 8px;
+  min-width: ${(props) => props?.$width || '180px'};
+  font-size: ${(props) => props.theme.fontSize.base};
+  font-weight: ${(props) => props.theme.fontWeight.semiBold};
+  box-shadow: 0px 4px 4px 0px #1b1c1d12;
+  transition: all 0.3s;
+
+  &:not(:disabled):hover {
+    background: ${(props) => props.theme.colors.dangerDark};
+    box-shadow: 0px 11px 27px 0px #00000040;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &:active {
+    background: ${(props) => props.theme.colors.dangerDark} !important;
+  }
+`;

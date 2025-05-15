@@ -4,7 +4,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import * as S from './button.styles';
 
 interface ButtonProps {
-  type?: 'default' | 'primary';
+  type?: 'default' | 'primary' | 'danger';
   backgroundColor?: string;
   children: React.ReactNode;
   disabled?: boolean;
@@ -24,7 +24,7 @@ export default function Button({
   disabled = false,
   isCancel = false,
   isLoading = false,
-  onClick = () => {},
+  onClick = () => { },
   width = '100%',
   htmlType = 'button',
   icon,
@@ -62,6 +62,18 @@ export default function Button({
         >
           {renderContent()}
         </S.PrimaryButton>
+      );
+    case 'danger':
+      return (
+        <S.DangerButton
+          onClick={onClick}
+          disabled={disabled || isLoading}
+          $width={width}
+          type={htmlType}
+          {...rest}
+        >
+          {renderContent()}
+        </S.DangerButton>
       );
     default:
       return (

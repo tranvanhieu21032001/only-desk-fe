@@ -13,6 +13,7 @@ interface ModalProps {
     children?: React.ReactNode;
     footer?: React.ReactNode;
     width?: number;
+    hideHeader?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -23,21 +24,24 @@ const Modal: React.FC<ModalProps> = ({
     children,
     footer,
     width,
+    hideHeader = false,
 }) => {
     if (!isOpen) return null;
 
     return (
         <S.Overlay onClick={onClose}>
             <S.ModalContainer onClick={(e) => e.stopPropagation()} $width={width}>
-                <S.ModalHeader>
-                    <div className="" style={{ display: "flex", flexDirection: "column" }}>
-                        {title && <S.ModalTitle>{title}</S.ModalTitle>}
-                        {description && <S.ModalDescription>{description}</S.ModalDescription>}
-                    </div>
-                    <S.CloseButton onClick={onClose}>
-                        <Image src={closeModal} preview={false} />
-                    </S.CloseButton>
-                </S.ModalHeader>
+                {!hideHeader && (
+                    <S.ModalHeader>
+                        <div className="" style={{ display: "flex", flexDirection: "column" }}>
+                            {title && <S.ModalTitle>{title}</S.ModalTitle>}
+                            {description && <S.ModalDescription>{description}</S.ModalDescription>}
+                        </div>
+                        <S.CloseButton onClick={onClose}>
+                            <Image src={closeModal} preview={false} />
+                        </S.CloseButton>
+                    </S.ModalHeader>
+                )}
 
                 <S.ModalChildren>
                     {children}
