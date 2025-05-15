@@ -10,6 +10,7 @@ import * as S from './input.styles';
 
 import icSearch from '@/assets/icons/common/ic-search.svg';
 import { ReactSVG } from 'react-svg';
+import { isString } from 'lodash';
 interface InputProps extends InputPropsFromAntd {
   label?: string;
   isRequired?: boolean;
@@ -48,7 +49,10 @@ export default function Input({
           {...rest}
           prefix={
             prefix && (
-              <Image preview={false} src={(prefix as string) || icSearch} />
+              <Image
+                preview={false}
+                src={isString(prefix) ? prefix : icSearch}
+              />
             )
           }
           type={isShowPassWord ? 'password' : 'text'}
@@ -65,7 +69,10 @@ export default function Input({
           {...rest}
           prefix={
             prefix && (
-              <Image preview={false} src={(prefix as string) || icSearch} />
+              <Image
+                preview={false}
+                src={isString(prefix) ? prefix : icSearch}
+              />
             )
           }
           suffix={suffix && <ReactSVG src={suffix} />}

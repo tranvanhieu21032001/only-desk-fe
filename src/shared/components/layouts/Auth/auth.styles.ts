@@ -1,8 +1,9 @@
 import { Option } from 'antd/es/mentions';
-import { css, styled } from 'styled-components';
 
 import Select from '@/shared/components/common/Select';
 import Typography from '@/shared/components/common/Typography';
+
+import { css, styled } from 'styled-components';
 
 export const ChildrenWrap = styled.div``;
 

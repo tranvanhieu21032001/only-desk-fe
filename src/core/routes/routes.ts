@@ -36,6 +36,11 @@ const Account = React.lazy(
   () => import('@/modules/settings/pages/account/Account'),
 );
 
+//Knowledge Base
+const Articles = React.lazy(
+  () => import('@/modules/knowledge-base/pages/articles/Articles'),
+);
+
 const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
@@ -145,12 +150,6 @@ const routes_main: RouterElementInterface[] = [
     component: PageNotFound,
     name: 'inbox-messages',
   },
-  {
-    key: 'knowledge-base-article',
-    path: MAIN_ROUTES.KNOWLEDGE_BASE_ARTICLE,
-    component: PageNotFound,
-    name: 'knowledge-base-article',
-  },
 
   //Campaign
   {
@@ -162,9 +161,16 @@ const routes_main: RouterElementInterface[] = [
 
   //Knowledge Base
   {
+    key: 'knowledge-base-article',
+    path: MAIN_ROUTES.KNOWLEDGE_BASE_ARTICLE,
+    component: Articles,
+    name: 'knowledge-base-article',
+  },
+
+  {
     key: 'articles',
     path: MAIN_ROUTES.ARTICLES,
-    component: PageNotFound,
+    component: Articles,
     name: 'articles',
   },
   {

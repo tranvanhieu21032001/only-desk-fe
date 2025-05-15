@@ -14,6 +14,8 @@ import icRemove from '@/assets/icons/contact/ic-remove.svg';
 import icCopyLink from '@/assets/icons/contact/ic-copy-link.svg';
 import icAvatarMockup from '@/assets/icons/layout/ic-avatar-mock.svg';
 
+const MAX_COUNT: number = 10;
+
 const contactsMockup = [
   {
     id: 1,
@@ -207,4 +209,5 @@ export {
   actionsProfileDetailsOptions,
   actionFilterOptions,
   csvMockup,
+  MAX_COUNT,
 };

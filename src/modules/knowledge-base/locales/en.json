@@ -1,0 +1,32 @@
+{
+  "article-menu": {
+    "status": "Status",
+    "published": "Published",
+    "draft": "Draft",
+    "visible": "Visible",
+    "hidden": "Hidden",
+    "new-article": "New article",
+    "action": "Action",
+    "search": "Search...",
+
+    "language": {
+      "english": "English"
+    },
+
+    "filter": {
+      "view-my-knowledge-base": "View my knowledge base",
+      "add-a-new-language": "Add a new language",
+      "import-articles": "Import articles",
+      "export-articles": "Export articles",
+      "destroy-current-language": "Destroy current language",
+      "remove-selected-articles": "Remove selected articles"
+    },
+
+    "install-helpdesk": {
+      "helpdesk-is-available": "Helpdesk Is Available In Your OnlyChat Essential",
+      "the-helpdesk": "The Helpdesk plugin is available in your Essential plan.",
+      "install-helpdesk": "Install Helpdesk",
+      "cancel": "Cancel"
+    }
+  }
+}
