@@ -7,6 +7,8 @@ import contacts from '@/modules/contacts/locales/en.json';
 import settings from '@/modules/settings/locales/en.json';
 import layout from '@/shared/components/layouts/locales/en.json';
 import header from '@/shared/components/common/header/locale/en.json';
+import workspaces from '@/modules/workspace/locales/en.json';
+import inbox from '@/modules/inbox/locales/en.json';
 
 const translationEN = {
   messages,
@@ -18,6 +20,8 @@ const translationEN = {
   contacts,
   common,
   settings,
+  workspaces,
+  inbox,
 };
 
 export default translationEN;

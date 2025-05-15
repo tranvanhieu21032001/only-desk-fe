@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image } from "antd";
+import { useTranslation } from 'react-i18next';
 
 import Button from '../../../../shared/components/common/Button';
 
@@ -14,6 +15,7 @@ interface ProfilePreviewModalProps {
 }
 
 const ProfilePreviewModal: React.FC<ProfilePreviewModalProps> = ({ isOpen, onClose, children }) => {
+    const { t } = useTranslation('inbox');
     if (!isOpen) return null;
 
     return (
@@ -22,10 +24,10 @@ const ProfilePreviewModal: React.FC<ProfilePreviewModalProps> = ({ isOpen, onClo
                 <S.Header>
                     <S.ModalColumn>
                         <S.Title>
-                            Profile Preview
+                            {t('profilePreviewModal.title')}
                         </S.Title>
                         <S.Description>
-                            Insert page description here.
+                            {t('profilePreviewModal.description')}
                         </S.Description>
                     </S.ModalColumn>
                     <S.CloseButton onClick={onClose}>
@@ -35,9 +37,8 @@ const ProfilePreviewModal: React.FC<ProfilePreviewModalProps> = ({ isOpen, onClo
                 <S.Body>{children}</S.Body>
                 <S.Footer>
                     <Button onClick={onClose} width='100px'
-
-                    >Back</Button>
-                    <Button type='primary' width='190px'>View Profile Detail</Button>
+                    >{t('profilePreviewModal.back')}</Button>
+                    <Button type='primary' width='190px'>{t('profilePreviewModal.viewProfileDetail')}</Button>
                 </S.Footer>
             </S.Panel>
         </S.Overlay>

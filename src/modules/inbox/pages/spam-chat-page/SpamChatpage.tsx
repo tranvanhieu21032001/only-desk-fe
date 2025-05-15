@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import Button from '@/shared/components/common/Button';
 
@@ -8,21 +9,16 @@ import * as S from './SpamChatPage.styles';
 import arrRight from '@/assets/icons/common/ic-arr-right.svg';
 
 const SpamChatPage: React.FC = () => {
+    const { t } = useTranslation('inbox');
+
     return (
         <S.SpamChatsWrapper>
             <S.SpamChatsContent>
-                <S.Title>Configure your spam filter</S.Title>
-                <S.Description>Spam filters help keep your inbox clean</S.Description>
-                <S.SubDescription>
-                    OnlyChat runs spam checks on all message you receive. Messages that
-                    are likely spam end up here. If we made a mistake, you can still move
-                    a spam to your main inbox.
-                </S.SubDescription>
+                <S.Title>{t('spam.configureSpamFilter')}</S.Title>
+                <S.Description>{t('spam.spamFilterDesc')}</S.Description>
+                <S.SubDescription>{t('spam.subDesc1')}</S.SubDescription>
 
-                <S.SubDescription>
-                    You can tune your spam filter options so that more emails get to your
-                    inbox, or else more emails go to spams.
-                </S.SubDescription>
+                <S.SubDescription>{t('spam.subDesc2')}</S.SubDescription>
 
                 <Button
                     type="primary"
@@ -30,7 +26,7 @@ const SpamChatPage: React.FC = () => {
                     icon={<Image src={arrRight} preview={false} />}
                     iconPosition="right"
                 >
-                    Configure My Spam Filter
+                    {t('spam.configureMySpamFilter')}
                 </Button>
             </S.SpamChatsContent>
         </S.SpamChatsWrapper>

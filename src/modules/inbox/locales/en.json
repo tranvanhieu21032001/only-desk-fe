@@ -21,12 +21,114 @@
   },
 
   "spam": {
-    "title": "Spam Chats"
+    "title": "Spam Chats",
+    "configureSpamFilter": "Configure your spam filter",
+    "spamFilterDesc": "Spam filters help keep your inbox clean",
+    "subDesc1": "OnlyChat runs spam checks on all message you receive. Messages that are likely spam end up here. If we made a mistake, you can still move a spam to your main inbox.",
+    "subDesc2": "You can tune your spam filter options so that more emails get to your inbox, or else more emails go to spams.",
+    "configureMySpamFilter": "Configure My Spam Filter"
   },
 
   "plugins": {
     "title": "All Plugins",
     "inviteTeamMembers": "Invite Team Members",
     "notifications": "Notifications"
+  },
+
+  "profilePreviewModal": {
+    "title": "Profile Preview",
+    "description": "Insert page description here.",
+    "back": "Back",
+    "viewProfileDetail": "View Profile Detail"
+  },
+
+  "messageInput": {
+    "placeholder": "Messages...",
+    "edit": "Edit",
+    "reminder": "Reminder",
+    "note": "Note",
+    "sendMessage": "Send Message",
+    "sendMessageDesc": "This user is now offline, meaning that this message will be sent via email once you confirm. It won't be editable.",
+    "dontShowAgain": "Don't show it again"
+  },
+
+  "newSubInbox": {
+    "title": "Create New Sub-inbox",
+    "description": "Please insert modal description here.",
+    "continueToAccess": "Continue To Sub-inbox Access",
+    "back": "Back",
+    "pickIconAndName": "Pick an icon and a name for your sub-inbox",
+    "pickIconAndNameDesc": "The name helps you identify this specific sub-inbox among all your sub-inboxes.",
+    "icon": "Icon",
+    "nameOfSubInbox": "Name of the Sub-inbox",
+    "enterNameOfSubInbox": "Enter the name of the sub-inbox",
+    "publicAccess": "Public access",
+    "publicAccessDesc": "Anyone will have access to the sub-inbox, including new operators to come.",
+    "public": "Public - Any operator in the workspace",
+    "private": "Private - Only some operators of the workspace",
+    "dontForgetPriority": "Don't forget to adjust the sub-inbox priority once created",
+    "priorityDesc": "In case there are conditions overlapping with other sub-inboxes. Inboxes with the most specific conditions should have higher priority.",
+    "selectCriterion": "Select a criterion",
+    "select": "Select...",
+    "equalsTo": "Equals to",
+    "differsTo": "Differs to",
+    "addAnotherCondition": "Add Another Conditions",
+    "disableConditions": "Disable conditions (manual sub-inbox)",
+    "country": "Country",
+    "userLanguage": "User language",
+    "conversationData": "Conversation data",
+    "conversationSegments": "Conversation segments",
+    "conversationChannel": "Conversation channel",
+    "userEmail": "User email"
+  },
+
+  "inboxDetail": {
+    "markResolved": "Mark Resolved",
+    "reply": "Reply",
+    "shortcuts": "Shortcuts",
+    "shortcutsHello": "Hello. Can I help you?",
+    "shortcutsWelcome": "Welcome to our service!",
+    "reminder1": "In 1 hour",
+    "reminder2": "In 2 hour",
+    "reminderTomorrow": "Tomorrow. same time",
+    "knowledgeBase": "Knowledge Base",
+    "articleTitle1": "Article title 1",
+    "articleTitle2": "Article title 2"
+  },
+
+  "inboxSidebar": {
+    "viewProfile": "View profile",
+    "createdDate": "Created Date",
+    "lastActive": "Last active",
+    "mainInformation": "Main Information",
+    "visitorsDevices": "Visitors Devices",
+    "conversationParticipants": "Conversation Participants",
+    "addParticipant": "Add Participant",
+    "addParticipantEmail": "Add Participant Email Address",
+    "emailAddress": "Email address",
+    "enterEmailAddress": "Enter email address",
+    "quickJump": "Quick Jump",
+    "sharedImageFiles": "Shared image files",
+    "otherConversation": "Other conversation",
+    "segmentForConversation": "Segment For Conversation",
+    "visitorsData": "Visitors Data",
+    "userID": "UserID",
+    "info": "Info",
+    "add": "Add"
+  },
+
+  "inboxList": {
+    "search": "Search...",
+    "filter": "Filter",
+    "cancelCurrentFilter": "Cancel current filter",
+    "newCustomFilter": "New Custom Filter",
+    "advancedFilter": "Advanced Filter",
+    "saveCustomFilter": "Save Custom Filter",
+    "labelForCustomFilter": "Label for the custom filter",
+    "enterLabelForCustomFilter": "Enter a label for custom filter",
+    "done": "Done",
+    "newFilter": "New Filter",
+    "enterAValue": "Enter a value",
+    "addAnotherConditions": "Add Another Conditions"
   }
 }

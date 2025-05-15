@@ -7,7 +7,7 @@ import { MAIN_ROUTES } from '@/core/routes/constants';
 
 const RouteTitleManager: React.FC = () => {
     const location = useLocation();
-    const { t } = useTranslation("main");
+    const { t } = useTranslation("inbox");
     const { setTitle } = useTitle();
 
     useEffect(() => {

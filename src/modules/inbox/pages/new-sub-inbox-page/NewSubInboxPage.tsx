@@ -1,5 +1,6 @@
 import { Image } from 'antd';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Modal from '@/shared/components/common/Modal';
 import StepProgress from '@/shared/components/common/Steps';
@@ -57,6 +58,7 @@ const NewSubInboxPage = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const { t } = useTranslation('inbox');
   const [currentStep, setCurrentStep] = useState(0);
   const [isPublic, setIsPublic] = useState(true);
   const [selectedModalFilter, setSelectedModalFilter] = useState<string | null>(
@@ -101,7 +103,7 @@ const NewSubInboxPage = ({
           onClick={() => setCurrentStep(1)}
           width="276px"
         >
-          Continue To Sub-inbox Access
+          {t('newSubInbox.continueToAccess')}
         </Button>
       );
     }
@@ -113,7 +115,7 @@ const NewSubInboxPage = ({
             onClick={() => setCurrentStep(0)}
             width="120px"
           >
-            Back
+            {t('newSubInbox.back')}
           </Button>
           <Button
             type="primary"
@@ -122,7 +124,7 @@ const NewSubInboxPage = ({
             onClick={() => setCurrentStep(2)}
             width="276px"
           >
-            Continue To Sub-inbox Access
+            {t('newSubInbox.continueToAccess')}
           </Button>
         </S.FooterWrapper>
       );
@@ -135,7 +137,7 @@ const NewSubInboxPage = ({
             onClick={() => setCurrentStep(1)}
             width="120px"
           >
-            Back
+            {t('newSubInbox.back')}
           </Button>
           <Button
             type="primary"
@@ -144,7 +146,7 @@ const NewSubInboxPage = ({
             onClick={onClose}
             width="276px"
           >
-            Continue To Sub-inbox Access
+            {t('newSubInbox.continueToAccess')}
           </Button>
         </S.FooterWrapper>
       );
@@ -157,14 +159,13 @@ const NewSubInboxPage = ({
       return (
         <S.StepContent>
           <div>
-            <S.Label>Pick an icon and a name for your sub-inbox</S.Label>
+            <S.Label>{t('newSubInbox.pickIconAndName')}</S.Label>
             <S.LabelP>
-              The name helps you identify this specific sub-inbox among all your
-              sub-inboxes.
+              {t('newSubInbox.pickIconAndNameDesc')}
             </S.LabelP>
             <S.IconNameRow>
               <S.LabelColumn>
-                <S.LabelText>Icon</S.LabelText>
+                <S.LabelText>{t('newSubInbox.icon')}</S.LabelText>
                 <S.IconBox>
                   <Image
                     src={emoji}
@@ -176,10 +177,10 @@ const NewSubInboxPage = ({
 
               <S.LabelInput>
                 <S.LabelText>
-                  Name of the Sub-inbox
+                  {t('newSubInbox.nameOfSubInbox')}
                   <S.LabelRequiredStar>*</S.LabelRequiredStar>
                 </S.LabelText>
-                <S.NameInput placeholder="Enter the name of the sub-inbox" />
+                <S.NameInput placeholder={t('newSubInbox.enterNameOfSubInbox')} />
               </S.LabelInput>
             </S.IconNameRow>
           </div>
@@ -193,16 +194,15 @@ const NewSubInboxPage = ({
             <S.AccessBox>
               <S.AccessIcon src={check} alt="" />
               <div>
-                <S.AccessTitle>Public access</S.AccessTitle>
+                <S.AccessTitle>{t('newSubInbox.publicAccess')}</S.AccessTitle>
                 <S.AccessDesc>
-                  Anyone will have access to the sub-inbox, including new
-                  operators to come.
+                  {t('newSubInbox.publicAccessDesc')}
                 </S.AccessDesc>
               </div>
             </S.AccessBox>
             <S.AccessRadioRow>
               <S.AccessRadioLabel>
-                Public - Any operator in the workspace
+                {t('newSubInbox.public')}
               </S.AccessRadioLabel>
               <S.AccessSwitchWrapper>
                 <S.AccessSwitchInput
@@ -214,7 +214,7 @@ const NewSubInboxPage = ({
             </S.AccessRadioRow>
             <S.AccessRadioRow>
               <S.AccessRadioLabel>
-                Private - Only some operators of the workspace
+                {t('newSubInbox.private')}
               </S.AccessRadioLabel>
               <S.AccessSwitchWrapper>
                 <S.AccessSwitchInput
@@ -238,12 +238,10 @@ const NewSubInboxPage = ({
               </S.ConditionsIcon>
               <div>
                 <S.ConditionsTitle>
-                  Don't forget to adjust the sub-inbox priority once created
+                  {t('newSubInbox.dontForgetPriority')}
                 </S.ConditionsTitle>
                 <S.ConditionsDesc>
-                  In case there are conditions overlapping with other
-                  sub-inboxes. Inboxes with the most specific conditions should
-                  have higher priority.
+                  {t('newSubInbox.priorityDesc')}
                 </S.ConditionsDesc>
               </div>
             </S.ConditionsBox>
@@ -258,7 +256,7 @@ const NewSubInboxPage = ({
                           setIsMainFilterDropdownOpen((prev) => !prev)
                         }
                       >
-                        {selectedModalFilter || 'Select a crioterion'}{' '}
+                        {selectedModalFilter || t('newSubInbox.selectCriterion', 'Select a criterion')} {' '}
                         <Image
                           src={arrowDown}
                           alt="Arrow down icon"
@@ -348,7 +346,7 @@ const NewSubInboxPage = ({
                               setIsConditionDropdownOpen((prev) => !prev)
                             }
                           >
-                            {selectedCondition || 'Select...'}{' '}
+                            {selectedCondition || t('newSubInbox.select', 'Select...')} {' '}
                             <Image
                               src={arrowDown}
                               alt="Arrow down icon"
@@ -395,7 +393,12 @@ const NewSubInboxPage = ({
                                       setConditionSearchTerm('');
                                     }}
                                   >
-                                    {condition}
+                                    {t(
+                                      condition === 'Equals to'
+                                        ? 'newSubInbox.equalsTo'
+                                        : 'newSubInbox.differsTo',
+                                      condition,
+                                    )}
                                   </S.DropdownItem>
                                 ))}
                             </S.ModalDropdownBox>
@@ -508,7 +511,7 @@ const NewSubInboxPage = ({
                         }
                       }}
                     >
-                      Add Another Conditions
+                      {t('newSubInbox.addAnotherCondition')}
                     </Button>
                   </S.AddConditionWrapper>
                 )}
@@ -517,7 +520,7 @@ const NewSubInboxPage = ({
 
             <S.ConditionsRow>
               <span style={{ color: '#222', fontSize: 15 }}>
-                Disable conditions (manual sub-inbox)
+                {t('newSubInbox.disableConditions')}
               </span>
               <S.AccessSwitchWrapper>
                 <S.AccessSwitchInput
@@ -538,8 +541,8 @@ const NewSubInboxPage = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Create New Sub-inbox"
-      description="Please insert modal description here."
+      title={t('newSubInbox.title')}
+      description={t('newSubInbox.description')}
       footer={renderFooter()}
       width={700}
     >

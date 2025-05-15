@@ -1,4 +1,5 @@
 import { Image } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef } from 'react';
 
 import AvatarWithStatus from '@/shared/components/common/Avatar';
@@ -32,6 +33,7 @@ import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
 
 const NotificationList = () => {
+  const { t } = useTranslation('inbox');
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [isAllDropdownOpen, setIsAllDropdownOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('All');
@@ -124,7 +126,7 @@ const NotificationList = () => {
           <S.SearchIcon>
             <Image src={search} alt="Search icon" preview={false} />
           </S.SearchIcon>
-          <S.SearchInput placeholder="Search..." />
+          <S.SearchInput placeholder={t('inboxList.search')} />
         </S.SearchInputWrapper>
 
         <S.FilterRef ref={customFilterRef}>
@@ -140,7 +142,7 @@ const NotificationList = () => {
               alt="Filter icon"
               preview={false}
             />{' '}
-            Filter
+            {t('inboxList.filter')}
           </S.Button>
 
           {isCustomFilterDropdownOpen && (
@@ -176,7 +178,7 @@ const NotificationList = () => {
                 }
                 onClick={() => setSelectedOption('')}
               >
-                Cancel current filter
+                {t('inboxList.cancelCurrentFilter')}
               </Button>
               <S.DistanceBox />
               <Button
@@ -194,7 +196,7 @@ const NotificationList = () => {
                   setIsCustomFilterDropdownOpen(false);
                 }}
               >
-                New Custom Filter
+                {t('inboxList.newCustomFilter')}
               </Button>
             </S.FilterDropdownBox>
           )}
@@ -283,8 +285,8 @@ const NotificationList = () => {
           setIsModalDropdownOpen(false);
           resetFilterStates();
         }}
-        title="Advanced Filter"
-        description="Please insert modal description here."
+        title={t('inboxList.advancedFilter')}
+        description={t('newSubInbox.description')}
         footer={
           <S.ModalFooter>
             <Button
@@ -295,14 +297,14 @@ const NotificationList = () => {
                 resetFilterStates();
               }}
             >
-              Save Custom Filter
+              {t('inboxList.saveCustomFilter')}
             </Button>
           </S.ModalFooter>
         }
       >
         <S.ModalContent>
           <S.ModalLabel>
-            Label for the custom filter <span style={{ color: 'red' }}>*</span>
+            {t('inboxList.labelForCustomFilter')} <span style={{ color: 'red' }}>*</span>
           </S.ModalLabel>
 
           <S.ModalFilterWrapper>
@@ -311,7 +313,7 @@ const NotificationList = () => {
               <S.ButtonModalDropdown
                 onClick={() => setIsModalDropdownOpen((prev) => !prev)}
               >
-                {selectedModalFilter || 'Enter a label for custom filter'}{' '}
+                {selectedModalFilter || t('inboxList.enterLabelForCustomFilter')}{' '}
                 <Image src={arrowDown} alt="Arrow down icon" preview={false} />
               </S.ButtonModalDropdown>
 
@@ -341,15 +343,15 @@ const NotificationList = () => {
           setIsCustomFilterModalOpen(false);
           resetFilterStates();
         }}
-        title="Advanced Filter"
-        description="Please insert modal description here."
+        title={t('inboxList.advancedFilter')}
+        description={t('newSubInbox.description')}
         footer={
           <S.ModalFooter>
             <Button
               type={selectedCondition ? 'primary' : undefined}
               disabled={!selectedCondition}
             >
-              Done
+              {t('inboxList.done')}
             </Button>
           </S.ModalFooter>
         }
@@ -364,7 +366,7 @@ const NotificationList = () => {
                 iconPosition="left"
                 onClick={() => setIsFilterDropdownOpen((prev) => !prev)}
               >
-                New Filter
+                {t('inboxList.newFilter')}
               </Button>
             )}
 
@@ -380,7 +382,7 @@ const NotificationList = () => {
                         }
                       >
                         {selectedModalFilter ||
-                          'Enter a label for custom filter'}{' '}
+                          t('inboxList.enterLabelForCustomFilter')}{' '}
                         <Image
                           src={arrowDown}
                           alt="Arrow down icon"
@@ -403,7 +405,7 @@ const NotificationList = () => {
                               />
                             </S.SearchIconDropdown>
                             <S.SearchInputDropdown
-                              placeholder="Filter choices"
+                              placeholder={t('inboxList.filter')}
                               value={filterSearchTerm}
                               onChange={(e) =>
                                 setFilterSearchTerm(e.target.value)
@@ -546,7 +548,7 @@ const NotificationList = () => {
                         {selectedCondition && (
                           <S.InputWrapperAdd>
                             <S.ModalInputCustom
-                              placeholder="Enter a value"
+                              placeholder={t('inboxList.enterAValue')}
                               value={inputValue}
                               onChange={(e) => setInputValue(e.target.value)}
                             />
@@ -585,7 +587,7 @@ const NotificationList = () => {
                         }
                       }}
                     >
-                      Add Another Conditions
+                      {t('inboxList.addAnotherConditions')}
                     </Button>
                   </S.AddConditionWrapper>
                 )}
