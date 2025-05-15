@@ -12,9 +12,10 @@ import {
 } from '@/shared/helper/data/layout';
 import { useAppDispatch } from '@/shared/hooks';
 import { MAIN_ROUTES } from '@/core/routes/constants';
+import { MAX_COUNT } from '@/shared/helper/data/contacts';
 import themeColors from '@/shared/styles/themes/default/colors';
+import { actionLogout } from '@/modules/auth/store/features/auth';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
-import { MAX_COUNT } from '@/modules/plugins/helpers/data/allPlugins';
 import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
 import CreateWorkspaceModal from '@/modules/workspace/pages/create-workspace/CreateWorkspace';
 
@@ -68,7 +69,6 @@ import icVector from '@/assets/icons/layout/ic-vector.svg';
 import icUserEdit from '@/assets/icons/layout/ic-user-edit.svg';
 import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
-import { actionLogout } from '@/modules/auth/store/features/auth';
 
 // const { Header, Content } = Layout;
 
@@ -339,8 +339,10 @@ const MainLayout: React.FC<Props> = ({ children }) => {
           <S.Line />
           <S.PopoverLabelWrapNoBorder>
             <S.ChildrenMenuWrap
-              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.ARTICLES)}
-              $isActive={routePath === MAIN_ROUTES?.ARTICLES}
+              onClick={() =>
+                handleClickChildrenMenu(MAIN_ROUTES?.KNOWLEDGE_BASE_ARTICLE)
+              }
+              $isActive={routePath === MAIN_ROUTES?.KNOWLEDGE_BASE_ARTICLE}
             >
               <S.ChildrenMenuLabel>
                 <Image

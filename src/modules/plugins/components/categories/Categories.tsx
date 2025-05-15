@@ -2,9 +2,9 @@ import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { categories, MAX_COUNT } from '../../helpers/data/allPlugins';
 import { CategoriesInterface } from '../../model/allPlugins';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
+import { categories, MAX_COUNT } from '../../helpers/data/allPlugins';
 
 import Typography from '@/shared/components/common/Typography';
 
