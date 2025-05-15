@@ -1,0 +1,23 @@
+{
+  "workspaces": {
+    "title": "Create Workspace",
+    "description": "Please insert modal description here.",
+    "workspaceName": {
+      "label": "Workspace name",
+      "placeholder": "Enter workspace name"
+    },
+    "websiteDomain": {
+      "label": "Website domain",
+      "placeholder": "Enter website domain"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create Workspace",
+      "confirmCreate": "Yes, Create Workspace"
+    },
+    "confirmModal": {
+      "title": "This domain already exists on OnlyChat",
+      "description": "You may be duplicating a workspace that already exists on OnlyChat, which may create confusion into which workspace is the correct one. The workspace may exist on your own OnlyChat account or someone else's OnlyChat account."
+    }
+  }
+}

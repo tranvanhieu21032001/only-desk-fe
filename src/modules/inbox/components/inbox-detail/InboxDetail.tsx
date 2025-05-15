@@ -24,6 +24,7 @@ import ringBlue from '@/assets/icons/inbox/ic-ring-blue.svg';
 import noteBlue from '@/assets/icons/inbox/ic-note-blue.svg';
 import editBlue from '@/assets/icons/inbox/ic-edit-blue.svg';
 import MessageInput from '../message-input/MessageInput';
+import { useTranslation } from 'react-i18next';
 
 interface InboxDetailProps {
   isSidebarOpen: boolean;
@@ -55,6 +56,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     },
   ]);
 
+  const { t } = useTranslation('inbox');
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [selectedReminder, setSelectedReminder] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -92,14 +94,14 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       case 'Shortcuts':
         return (
           <S.TabPanel>
-            <S.TabTitle>Shortcuts</S.TabTitle>
+            <S.TabTitle>{t('inboxDetail.shortcuts')}</S.TabTitle>
             <S.ShortcutItem>
               <span>Hello</span>
-              <p>Hello. Can I help you?</p>
+              <p>{t('inboxDetail.shortcutsHello')}</p>
             </S.ShortcutItem>
             <S.ShortcutItem>
               <span>Welcome</span>
-              <p>Welcome to our service!</p>
+              <p>{t('inboxDetail.shortcutsWelcome')}</p>
             </S.ShortcutItem>
           </S.TabPanel>
         );
@@ -108,12 +110,12 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       case 'Reminder':
         return (
           <S.TabPanel>
-            <S.TabTitle>Reminder</S.TabTitle>
+            <S.TabTitle>{t('inboxDetail.reminder')}</S.TabTitle>
             <S.ShortcutItem>
-              <p>In 1 hour</p>
+              <p>{t('inboxDetail.reminder1')}</p>
             </S.ShortcutItem>
             <S.ShortcutItem>
-              <p>In 2 hour</p>
+              <p>{t('inboxDetail.reminder2')}</p>
             </S.ShortcutItem>
             <S.ShortcutItem
               onClick={() => {
@@ -131,21 +133,21 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                 }, 0);
               }}
             >
-              <p>Tomorrow. same time</p>
+              <p>{t('inboxDetail.reminderTomorrow')}</p>
             </S.ShortcutItem>
           </S.TabPanel>
         );
       case 'Knowledge Base':
         return (
           <S.TabPanel>
-            <S.TabTitle>Knowledge Base</S.TabTitle>
+            <S.TabTitle>{t('inboxDetail.knowledgeBase')}</S.TabTitle>
             <S.ShortcutItem>
               <S.KnowBaseItem>Women</S.KnowBaseItem>
-              <p>Article title 1</p>
+              <p>{t('inboxDetail.articleTitle1')}</p>
             </S.ShortcutItem>
             <S.ShortcutItem>
               <S.KnowBaseItem>Women</S.KnowBaseItem>
-              <p>Article title 2</p>
+              <p>{t('inboxDetail.articleTitle2')}</p>
             </S.ShortcutItem>
           </S.TabPanel>
         );
@@ -169,7 +171,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
         </S.HeaderLeft>
         <S.HeaderRight>
           <S.MarkResolvedButton>
-            <Image src={check} preview={false} /> Mark Resolved
+            <Image src={check} preview={false} /> {t('inboxDetail.markResolved')}
           </S.MarkResolvedButton>
           <S.ToggleSidebarButton onClick={toggleSidebar}>
             <Image src={isSidebarOpen ? barClose : barOpen} preview={false} />
@@ -213,7 +215,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
         <S.ActionIcons>
           <S.IconProps isActive={false}>
             <Image src={undo} preview={false} />
-            Reply
+            {t('inboxDetail.reply')}
           </S.IconProps>
           <S.IconProps
             isActive={activeTab === 'Edit'}
@@ -223,7 +225,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
               src={activeTab === 'Edit' ? editBlue : edit}
               preview={false}
             />
-            Edit
+            {t('messageInput.edit')}
           </S.IconProps>
           <S.IconProps
             isActive={activeTab === 'Note'}
@@ -233,7 +235,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
               src={activeTab === 'Note' ? noteBlue : note}
               preview={false}
             />
-            Note
+            {t('messageInput.note')}
           </S.IconProps>
           <S.IconProps
             isActive={activeTab === 'Reminder'}
@@ -243,7 +245,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
               src={activeTab === 'Reminder' ? ringBlue : ring}
               preview={false}
             />
-            Reminder
+            {t('messageInput.reminder')}
           </S.IconProps>
           <S.IconProps
             isActive={activeTab === 'Shortcuts'}
@@ -253,7 +255,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
               src={activeTab === 'Shortcuts' ? shorcutBlue : shortCut}
               preview={false}
             />
-            Shortcuts
+            {t('inboxDetail.shortcuts')}
           </S.IconProps>
           <S.IconProps
             isActive={activeTab === 'Knowledge Base'}
@@ -263,7 +265,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
               src={activeTab === 'Knowledge Base' ? tagBlue : tag}
               preview={false}
             />
-            Knowledge Base
+            {t('inboxDetail.knowledgeBase')}
           </S.IconProps>
         </S.ActionIcons>
 

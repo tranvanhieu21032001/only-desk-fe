@@ -1,5 +1,6 @@
 import { Image } from 'antd';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import ProfilePreviewModal from '../profile-preview-modal/ProfilePreviewModal';
 import Modal from '@/shared/components/common/Modal';
@@ -44,6 +45,7 @@ import closeRed from '@/assets/icons/inbox/ic-close-red.svg';
 import add from '@/assets/icons/inbox/ic-add.svg';
 
 const InboxSidebar = () => {
+  const { t } = useTranslation('inbox');
   const [openCollapse] = useState(true);
   const [selected, setSelected] = useState('None assigned');
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -103,7 +105,7 @@ const InboxSidebar = () => {
       </S.ProfileSection>
 
       <S.countryCenter onClick={() => setShowModal(true)}>
-        View profile
+        {t('inboxSidebar.viewProfile')}
       </S.countryCenter>
 
       {showModal && (
@@ -127,8 +129,8 @@ const InboxSidebar = () => {
                 </S.ProfileSection>
 
                 <S.PanelItem>
-                  <S.PanelP>Created Date: 19/04/2024</S.PanelP>
-                  <S.PanelP>Last active: 5 hour ago</S.PanelP>
+                  <S.PanelP>{t('inboxSidebar.createdDate')}: 19/04/2024</S.PanelP>
+                  <S.PanelP>{t('inboxSidebar.lastActive')}: 5 hour ago</S.PanelP>
                 </S.PanelItem>
               </S.PanelColumn>
             </S.PanelHeader>
@@ -364,21 +366,20 @@ const InboxSidebar = () => {
         )}
       </Collapse>
 
-      <Collapse title="Visitors Devices">
+      <Collapse title={t('inboxSidebar.visitorsDevices')}>
         {openCollapse && (
           <S.SectionContent>
             <S.Field>
               <Image src={chorme} preview={false} /> Chrome on Win10
             </S.Field>
             <S.Field>
-              <Image src={cloud} preview={false} /> 190:029:29:918:0ee Da Nang
-              Viet...
+              <Image src={cloud} preview={false} /> 190:029:29:918:0ee Da Nang Viet...
             </S.Field>
           </S.SectionContent>
         )}
       </Collapse>
 
-      <Collapse title="Conversation Participants">
+      <Collapse title={t('inboxSidebar.conversationParticipants')}>
         {openCollapse && (
           <S.SectionContent>
             <S.Participant>
@@ -387,7 +388,7 @@ const InboxSidebar = () => {
                 <S.Field>admin@mposs.io</S.Field>
               </S.DropdownRow>
               <S.countryCenter onClick={openAddParticipantModal}>
-                Add
+                {t('add')}
               </S.countryCenter>
             </S.Participant>
             {participants.map((email, idx) => (
@@ -412,8 +413,8 @@ const InboxSidebar = () => {
       <Modal
         isOpen={isAddParticipantModalOpen}
         onClose={closeAddParticipantModal}
-        title="Add Participant Email Address"
-        description="Please insert modal description here."
+        title={t('inboxSidebar.addParticipantEmail')}
+        description={t('newSubInbox.description')}
         width={540}
         footer={
           <>
@@ -433,28 +434,28 @@ const InboxSidebar = () => {
                 }
               }}
             >
-              Add Participant
+              {t('inboxSidebar.addParticipant')}
             </Button>
           </>
         }
       >
         <S.ParticipantP>
-          Email address <span>*</span>
+          {t('inboxSidebar.emailAddress')} <span>*</span>
         </S.ParticipantP>
         <S.ParticipantInput
           type="email"
-          placeholder="Enter email address"
+          placeholder={t('inboxSidebar.enterEmailAddress')}
           value={participantEmail}
           onChange={(e) => setParticipantEmail(e.target.value)}
         />
       </Modal>
 
-      <Collapse title="Quick Jump">
+      <Collapse title={t('inboxSidebar.quickJump')}>
         {openCollapse && (
           <S.SectionContent>
             {/* Shared image files */}
             <S.Field style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setOpenQuickJump(prev => ({ ...prev, image: !prev.image }))}>
-              <Image src={image} preview={false} /> Shared image files
+              <Image src={image} preview={false} /> {t('inboxSidebar.sharedImageFiles')}
               <img
                 src={arrDown}
                 alt="toggle"
@@ -466,7 +467,7 @@ const InboxSidebar = () => {
             )}
             {/* Other conversation */}
             <S.Field style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setOpenQuickJump(prev => ({ ...prev, conversation: !prev.conversation }))}>
-              <Image src={message} preview={false} /> Other conversation
+              <Image src={message} preview={false} /> {t('inboxSidebar.otherConversation')}
               <img
                 src={arrDown}
                 alt="toggle"
@@ -480,7 +481,7 @@ const InboxSidebar = () => {
         )}
       </Collapse>
 
-      <Collapse title="Segment For Conversation">
+      <Collapse title={t('inboxSidebar.segmentForConversation')}>
         {openCollapse && (
           <S.SectionContent>
             <S.TagsWrapper>
@@ -501,18 +502,18 @@ const InboxSidebar = () => {
         )}
       </Collapse>
 
-      <Collapse title="Visitors Data">
+      <Collapse title={t('inboxSidebar.visitorsData')}>
         {openCollapse && (
           <S.SectionContent>
             <S.DataRow>
               <S.DataWidth>
-                <S.Field>UserID</S.Field>
+                <S.Field>{t('inboxSidebar.userID')}</S.Field>
               </S.DataWidth>
               <S.DataValue>566</S.DataValue>
             </S.DataRow>
             <S.DataRow>
               <S.DataWidth>
-                <S.Field>Info</S.Field>
+                <S.Field>{t('inboxSidebar.info')}</S.Field>
               </S.DataWidth>
               <S.DataValue>
                 <S.DataLinkWrapper>
@@ -524,7 +525,9 @@ const InboxSidebar = () => {
                 </S.DataLinkWrapper>
               </S.DataValue>
             </S.DataRow>
-            <S.countryCenter>Add</S.countryCenter>
+            <S.countryCenter>
+              {t('inboxSidebar.add')}
+            </S.countryCenter>
           </S.SectionContent>
         )}
       </Collapse>

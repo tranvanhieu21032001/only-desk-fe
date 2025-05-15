@@ -31,7 +31,7 @@ import flag from '@/assets/icons/common/ic-flag.svg';
 import defaultAvatar from '@/assets/images/avatar-default.png';
 
 const Header: React.FC = () => {
-  const { t } = useTranslation('main');
+  const { t } = useTranslation('inbox');
   const { title } = useTitle();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
