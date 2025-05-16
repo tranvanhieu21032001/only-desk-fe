@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
 import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
+import React, { useState, useRef, useEffect } from 'react';
 
 import Search from '../search/Main';
 import Button from '../../Button';
+import { useModal } from '@/shared/hooks';
 import AvatarWithStatus from '../../Avatar';
 import CreateConversationModal from '../../Modal';
 
@@ -16,19 +17,20 @@ import { useTitle } from '@/core/context/TitleContext';
 
 import * as S from './header.styles';
 
+import flag from '@/assets/icons/common/ic-flag.svg';
 import bell from '@/assets/icons/common/ic-bell.svg';
-import search from '@/assets/icons/common/ic-search.svg';
-import conversation from '@/assets/icons/common/ic-conversation.svg';
-import addContact from '@/assets/icons/common/ic-add-contact.svg';
 import team from '@/assets/icons/common/ic-team.svg';
+import search from '@/assets/icons/common/ic-search.svg';
 import arrDown from '@/assets/icons/common/ic-arrow-down.svg';
-import closeCircle from '@/assets/icons/common/ic-close-circle.svg';
-import closeModal from '@/assets/icons/common/ic-close-modal.svg';
+import defaultAvatar from '@/assets/images/avatar-default.png';
 import addCircle from '@/assets/icons/common/ic-add-white.svg';
 import addHeader from '@/assets/icons/common/ic-add-header.svg';
+import closeModal from '@/assets/icons/common/ic-close-modal.svg';
+import icAddContact from '@/assets/icons/common/ic-add-contact.svg';
+import closeCircle from '@/assets/icons/common/ic-close-circle.svg';
+import conversation from '@/assets/icons/common/ic-conversation.svg';
 import bellBlue from '@/assets/icons/common/ic-notification-blue.svg';
-import flag from '@/assets/icons/common/ic-flag.svg';
-import defaultAvatar from '@/assets/images/avatar-default.png';
+import ModalAddContact from '@/modules/contacts/components/modal-add-contact/ModalAddContact';
 
 const Header: React.FC = () => {
   const { t } = useTranslation('inbox');
@@ -40,6 +42,9 @@ const Header: React.FC = () => {
   const [tags, setTags] = useState(participant);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState(notificationOptions);
+  const [isLoading] = useState<boolean>(false);
+
+  const { visible: addContact, toggle: handleOpenModalAddContact } = useModal();
 
   const removeTag = (index: number) => {
     const newTags = tags.filter((_, i) => i !== index);
@@ -78,6 +83,10 @@ const Header: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  function handleAddContact() {
+    //TODO handle later
+  }
 
   return (
     <S.Header>
@@ -168,8 +177,8 @@ const Header: React.FC = () => {
               <Image src={conversation} alt="conversation" preview={false} />
               {t('header.createConversation')}
             </S.DropdownItem>
-            <S.DropdownItem>
-              <Image src={addContact} alt="contact" preview={false} />
+            <S.DropdownItem onClick={handleOpenModalAddContact}>
+              <Image src={icAddContact} alt="contact" preview={false} />
               {t('header.addNewContact')}
             </S.DropdownItem>
             <S.DropdownItem>
@@ -278,6 +287,15 @@ const Header: React.FC = () => {
           </S.FormWrapper>
         </CreateConversationModal>
       </S.RightSection>
+
+      {addContact && (
+        <ModalAddContact
+          open={addContact}
+          onCancel={handleOpenModalAddContact}
+          onOk={handleAddContact}
+          isLoading={isLoading}
+        />
+      )}
     </S.Header>
   );
 };

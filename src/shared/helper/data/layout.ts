@@ -22,4 +22,6 @@ const settingsPaths: string[] = [
   MAIN_ROUTES?.STATUS_PAGE,
 ];
 
-export { chatsPaths, pluginsPaths, settingsPaths };
+const hiddenHeaderRouter: string[] = [MAIN_ROUTES?.CONTACT_DETAILS];
+
+export { chatsPaths, pluginsPaths, settingsPaths, hiddenHeaderRouter };

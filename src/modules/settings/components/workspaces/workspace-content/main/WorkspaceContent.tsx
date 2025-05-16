@@ -4,11 +4,11 @@ import { useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '@/shared/hooks';
 import { WorkspaceMenusEnums } from '@/modules/settings/helpers/enums/workspace';
 import { workspaceMenuType } from '@/modules/settings/constants/workspace.constant';
+import WorkspaceSetupIntegrations from '../workspace-setup-integrations/WorkspaceSetupIntefrations';
 
 import WorkspaceInformation from '../workspace-information/WorkspaceInformation';
 
 import * as S from './WorkspaceContent.styles';
-import WorkspaceSetupIntegrations from '../workspace-setup-integrations/WorkspaceSetupIntefrations';
 
 function Account() {
   const [search] = useSearchParams();

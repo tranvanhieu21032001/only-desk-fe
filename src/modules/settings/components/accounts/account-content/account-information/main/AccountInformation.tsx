@@ -17,7 +17,7 @@ import ModalEnableTwoFactor from '../modal-enable-two-factor/main/ModalEnableTwo
 
 import * as S from './AccountInformation.styles';
 
-import icTickCircle from '@/assets/icons/contact/ic-tick-circle.svg';
+// import icTickCircle from '@/assets/icons/contact/ic-tick-circle.svg';
 import imgAvatarDefault from '@/assets/images/settings/ic-avatar-default.png';
 
 function AccountInformation() {
@@ -29,7 +29,7 @@ function AccountInformation() {
     countUpload: number;
   }>({ isLoading: false, countUpload: 0 });
   const [avatar, setAvatar] = useState<string[]>([]);
-  const [enableTwoFactor, setEnableTwoFactor] = useState<boolean>(false);
+  // const [enableTwoFactor, setEnableTwoFactor] = useState<boolean>(false);
 
   const { visible: modalEnableTwoFactor, toggle: handleEnableTwoFactor } =
     useModal();
@@ -210,7 +210,9 @@ function AccountInformation() {
                     {t('account-information.change-password')}
                   </Button>
                 </S.Column>
-                <S.Column sm={3} xs={24}>
+
+                {/* TODO */}
+                {/* <S.Column sm={3} xs={24}>
                   <Typography>{t('account-information.two-step')}</Typography>
                 </S.Column>
                 <S.Column sm={21} xs={24} $isEnableTwoFactor={enableTwoFactor}>
@@ -225,7 +227,7 @@ function AccountInformation() {
                       `${enableTwoFactor ? 'account-information.disable-two-factor-authentication' : 'account-information.enable-two-step'}`,
                     )}
                   </Button>
-                </S.Column>
+                </S.Column> */}
               </Row>
             </S.BodyBlock>
           </S.InformationBlock>
@@ -240,17 +242,18 @@ function AccountInformation() {
           </Button>
         </S.LookingAccountWrap>
 
-        <S.Automatically>
+        {/* TODO */}
+        {/* <S.Automatically>
           <Image src={icTickCircle} preview={false} width={20} height={20} />
           <Typography>{t('account-information.delete-account')}</Typography>
-        </S.Automatically>
+        </S.Automatically> */}
       </S.LookingAccountInformation>
 
       {modalEnableTwoFactor && (
         <ModalEnableTwoFactor
           open={modalEnableTwoFactor}
           onCancel={handleEnableTwoFactor}
-          onEnableTwoFactor={setEnableTwoFactor}
+          // onEnableTwoFactor={setEnableTwoFactor}
         />
       )}
 

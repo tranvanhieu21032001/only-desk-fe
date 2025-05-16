@@ -1,12 +1,14 @@
 import { isEmpty } from 'lodash';
-import React, { ReactNode, useState } from 'react';
 import { Image, Popover } from 'antd';
+import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
+import React, { ReactNode, useMemo, useState } from 'react';
 
 import {
   chatsPaths,
+  hiddenHeaderRouter,
   pluginsPaths,
   settingsPaths,
 } from '@/shared/helper/data/layout';
@@ -87,10 +89,11 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const { t } = useTranslation('layout');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [isNewSubInboxModalOpen, setIsNewSubInboxModalOpen] = useState(false);
+
   const [isChatsPopoverOpen, setIsChatsPopoverOpen] = useState(false);
   const [isCreateWorkspaceModalOpen, setIsCreateWorkspaceModalOpen] =
     useState(false);
+  const [isNewSubInboxModalOpen, setIsNewSubInboxModalOpen] = useState(false);
 
   const routePath = window?.location?.pathname;
 
@@ -682,6 +685,15 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     </S.PopoverContent>
   );
 
+  const renderHeader = useMemo(() => {
+    const hasMatch = hiddenHeaderRouter.some((pattern) =>
+      matchPath({ path: pattern, end: true }, routePath),
+    );
+    return !hasMatch;
+  }, [routePath]);
+
+  console.log(renderHeader);
+
   const renderMenu = ({
     key,
     icon,
@@ -793,7 +805,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         </S.SiderBottom>
       </S.SiderWrap>
       <S.LayoutWrap>
-        <Header />
+        {renderHeader && <Header />}
         <S.Body>{children}</S.Body>
       </S.LayoutWrap>
       {isNewSubInboxModalOpen && (

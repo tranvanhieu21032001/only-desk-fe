@@ -12,7 +12,7 @@ import Typography from '@/shared/components/common/Typography';
 
 import * as S from './WorkspaceInformation.styles';
 
-import icTickCircle from '@/assets/icons/contact/ic-tick-circle.svg';
+// import icTickCircle from '@/assets/icons/contact/ic-tick-circle.svg';
 import imgAvatarDefault from '@/assets/images/settings/ic-avatar-default.png';
 
 function WorkspaceInformation() {
@@ -226,14 +226,15 @@ function WorkspaceInformation() {
         </Form>
       </S.AccountInformation>
 
-      <S.LookingAccountInformation>
+      {/* TODO */}
+      {/* <S.LookingAccountInformation>
         <S.Automatically>
           <Image src={icTickCircle} preview={false} width={20} height={20} />
           <Typography>
             {t('workspace-information.automatically-saved')}
           </Typography>
         </S.Automatically>
-      </S.LookingAccountInformation>
+      </S.LookingAccountInformation> */}
     </S.AccountInformationContainer>
   );
 }

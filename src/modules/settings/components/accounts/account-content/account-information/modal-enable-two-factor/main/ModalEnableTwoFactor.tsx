@@ -29,7 +29,7 @@ import icTickCircle from '@/assets/icons/contact/ic-tick-circle.svg';
 interface ModalImportContactProps {
   open: boolean;
   onCancel: () => void;
-  onEnableTwoFactor: React.Dispatch<React.SetStateAction<boolean>>;
+  onEnableTwoFactor?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function ModalEnableTwoFactor({
@@ -268,7 +268,7 @@ function ModalEnableTwoFactor({
         ),
       }),
     );
-    onEnableTwoFactor((prev) => !prev);
+    onEnableTwoFactor && onEnableTwoFactor((prev) => !prev);
     onCancel();
   }
 
