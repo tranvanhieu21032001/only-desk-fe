@@ -180,6 +180,13 @@ export const PopoverLabel = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+
+  max-height: 300px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
 `;
 
 export const PopoverLabelWrap = styled.div`
@@ -219,10 +226,10 @@ export const WorkSpacesCard = styled.div`
 
 export const WorkSpacesLabel = styled.div`
   p {
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 160px;
   }
 `;
 

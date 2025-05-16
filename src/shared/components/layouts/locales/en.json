@@ -49,5 +49,9 @@
     "guide": "Guide",
     "help-center": "Help Center",
     "logout": "Logout"
+  },
+
+  "create-workspace": {
+    "create-workspace-success": "Create workspace successfully"
   }
 }
