@@ -20,14 +20,15 @@ import { actionLogout } from '@/modules/auth/store/features/auth';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
 import CreateWorkspaceModal from '@/modules/workspace/pages/create-workspace/CreateWorkspace';
-import { DEFAULT_EMAIL, DEFAULT_USER_NAME } from '@/core/settings/constants';
+import { DEFAULT_EMAIL, DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { MeQuery } from '@/relay/__generated__/MeQuery.graphql';
 import { meQuery } from '@/relay/MeQuery';
 import { workspaceQuery } from '@/relay/workspaceQuery';
-import { workspaceQuery as WorkspaceQueryType } from '@/relay/__generated__/workspaceQuery.graphql';
+import { WorkspaceQuery } from '@/relay/__generated__/WorkspaceQuery.graphql';
 
 import Header from '../../common/header/Main';
 import Typography from '../../common/Typography';
+import AvatarWithStatus from '../../common/Avatar';
 
 import { useRelayQuery } from '@/shared/hooks/useRelayQuery';
 
@@ -45,7 +46,7 @@ import icSpamChats from '@/assets/icons/layout/ic-spam-chats.svg';
 import icKnowledge from '@/assets/icons/layout/ic-knowledge.svg';
 import icPlusCircle from '@/assets/icons/layout/ic-plus-circle.svg';
 import icAiAutomation from '@/assets/icons/layout/ic-ai-automation.svg';
-import icMockupWorkSpaces from '@/assets/icons/layout/ic-mockup-workspaces.svg';
+import icDefaultAvatar from '@/assets/images/avatar-default.png';
 
 //AI Automation
 import icAiChatBox from '@/assets/icons/layout/ic-ai-chatbox.svg';
@@ -69,7 +70,6 @@ import icAccount from '@/assets/icons/layout/ic-account.svg';
 import icBilling from '@/assets/icons/layout/ic-billing.svg';
 import icWorkspace from '@/assets/icons/layout/ic-workspace.svg';
 import icSettings from '@/assets/icons/layout/ic-settings.svg';
-import icAvatarMockup from '@/assets/icons/layout/ic-avatar-mock.svg';
 
 //Profiles
 import icGuide from '@/assets/icons/layout/ic-guide.svg';
@@ -78,6 +78,7 @@ import icVector from '@/assets/icons/layout/ic-vector.svg';
 import icUserEdit from '@/assets/icons/layout/ic-user-edit.svg';
 import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
+import flag from '@/assets/icons/common/ic-flag.svg';
 
 // const { Header, Content } = Layout;
 
@@ -112,7 +113,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   );
   const user = userData.me;
 
-  const workspaceData = useRelayQuery<WorkspaceQueryType>(
+  const workspaceData = useRelayQuery<WorkspaceQuery>(
     workspaceQuery,
     {},
     { fetchPolicy: 'store-or-network' },
@@ -486,12 +487,14 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       <S.PopoverLabel>
         {workspaces.map((ws) => (
           <S.WorkSpacesCard key={ws.id}>
-            <Image
-              src={ws?.logo || icMockupWorkSpaces}
-              preview={false}
-              width={40}
-              height={40}
-            />
+            <S.AvatarImage>
+              <Image
+                src={ws?.logo || icDefaultAvatar}
+                preview={false}
+                width={40}
+                height={40}
+              />
+            </S.AvatarImage>
             <S.WorkSpacesLabel>
               <Typography fontWeight={fontWeight?.semiBold}>
                 {ws?.name}
@@ -601,17 +604,19 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const renderProfiles = (
     <S.PopoverContent>
       <S.ProfilesWrap>
-        <S.AvatarImage>
-          <Image
-            src={user?.avatar || icAvatarMockup}
-            preview={false}
-            width={40}
-            height={50}
-          />
-        </S.AvatarImage>
+        <AvatarWithStatus
+          avatarSrc={user?.avatar || icDefaultAvatar}
+          flagSrc={flag}
+          isOnline={true}
+        />
         <S.ProfilesInfo>
           <S.ProfilesName>
-            <Typography>{user?.firstName || DEFAULT_USER_NAME}</Typography>
+            <Typography>
+              {user?.firstName && user?.lastName
+                ? `${user.firstName} ${user.lastName}`
+                : DEFAULT_FULL_NAME}
+            </Typography>
+
             <Image src={icVector} preview={false} width={13} height={13} />
           </S.ProfilesName>
           <Typography>{user?.email || DEFAULT_EMAIL}</Typography>
@@ -756,12 +761,14 @@ const MainLayout: React.FC<Props> = ({ children }) => {
               content={renderWorkSpaces}
               rootClassName="workspaces-popover"
             >
-              <Image
-                src={icMockupWorkSpaces}
-                preview={false}
-                width={36}
-                height={36}
-              />
+              <S.AvatarImage>
+                <Image
+                  src={user?.avatar || icDefaultAvatar}
+                  preview={false}
+                  width={36}
+                  height={36}
+                />
+              </S.AvatarImage>
             </Popover>
           </S.WorkSpaces>
           <S.MenuWrapper>
@@ -794,11 +801,10 @@ const MainLayout: React.FC<Props> = ({ children }) => {
             rootClassName="profile-popover"
           >
             <S.Profiles>
-              <Image
-                src={icAvatarMockup}
-                preview={false}
-                width={36}
-                height={36}
+              <AvatarWithStatus
+                avatarSrc={user?.avatar || icDefaultAvatar}
+                flagSrc={flag}
+                isOnline={true}
               />
             </S.Profiles>
           </Popover>

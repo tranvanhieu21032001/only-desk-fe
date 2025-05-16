@@ -27,7 +27,7 @@ export type ResizerConfig = {
   defaultWidth?: number;
 };
 
-export const DEFAULT_USER_NAME = 'Username';
+export const DEFAULT_FULL_NAME = 'Full name';
 export const DEFAULT_EMAIL = 'default@gmail.com';
 
 export default constants;
