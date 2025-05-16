@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay';
 
-export const workspaceQuery = graphql`
-  query WorkspaceQuery {
+export const workspaceInfoQuery = graphql`
+  query WorkspaceInfoQuery {
     workspaces {
       id
       name
