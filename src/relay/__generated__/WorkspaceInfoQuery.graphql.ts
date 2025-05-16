@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c4777db0db887db56939c1b87e4192ad>>
+ * @generated SignedSource<<2f3f106a5c1012a09528851edb85d85a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,8 +9,8 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type WorkspaceQuery$variables = Record<PropertyKey, never>;
-export type WorkspaceQuery$data = {
+export type WorkspaceInfoQuery$variables = Record<PropertyKey, never>;
+export type WorkspaceInfoQuery$data = {
   readonly workspaces: ReadonlyArray<{
     readonly id: string;
     readonly logo: string | null | undefined;
@@ -19,9 +19,9 @@ export type WorkspaceQuery$data = {
     readonly websiteUrl: string;
   }>;
 };
-export type WorkspaceQuery = {
-  response: WorkspaceQuery$data;
-  variables: WorkspaceQuery$variables;
+export type WorkspaceInfoQuery = {
+  response: WorkspaceInfoQuery$data;
+  variables: WorkspaceInfoQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -78,7 +78,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "WorkspaceQuery",
+    "name": "WorkspaceInfoQuery",
     "selections": (v0/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -87,20 +87,20 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "WorkspaceQuery",
+    "name": "WorkspaceInfoQuery",
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "b4e6dc1833e580193fb15901f0a68b75",
+    "cacheID": "927328982470f3e181a51c62254122e3",
     "id": null,
     "metadata": {},
-    "name": "WorkspaceQuery",
+    "name": "WorkspaceInfoQuery",
     "operationKind": "query",
-    "text": "query WorkspaceQuery {\n  workspaces {\n    id\n    name\n    websiteID\n    websiteUrl\n    logo\n  }\n}\n"
+    "text": "query WorkspaceInfoQuery {\n  workspaces {\n    id\n    name\n    websiteID\n    websiteUrl\n    logo\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "10a673caa673d5aaa0430edd2b5266b0";
+(node as any).hash = "b2b09d0b9f2c33789bf3eb74b5678e03";
 
 export default node;

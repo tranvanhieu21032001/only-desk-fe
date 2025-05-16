@@ -23,8 +23,8 @@ import CreateWorkspaceModal from '@/modules/workspace/pages/create-workspace/Cre
 import { DEFAULT_EMAIL, DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { MeQuery } from '@/relay/__generated__/MeQuery.graphql';
 import { meQuery } from '@/relay/MeQuery';
-import { workspaceQuery } from '@/relay/workspaceQuery';
-import { WorkspaceQuery } from '@/relay/__generated__/WorkspaceQuery.graphql';
+import { workspaceInfoQuery } from '@/relay/WorkspaceInfoQuery';
+import { WorkspaceInfoQuery } from '@/relay/__generated__/WorkspaceInfoQuery.graphql';
 
 import Header from '../../common/header/Main';
 import Typography from '../../common/Typography';
@@ -47,6 +47,7 @@ import icKnowledge from '@/assets/icons/layout/ic-knowledge.svg';
 import icPlusCircle from '@/assets/icons/layout/ic-plus-circle.svg';
 import icAiAutomation from '@/assets/icons/layout/ic-ai-automation.svg';
 import icDefaultAvatar from '@/assets/images/avatar-default.png';
+import icDefaultWorkspace from '@/assets/images/workspace-default.png';
 
 //AI Automation
 import icAiChatBox from '@/assets/icons/layout/ic-ai-chatbox.svg';
@@ -113,8 +114,8 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   );
   const user = userData.me;
 
-  const workspaceData = useRelayQuery<WorkspaceQuery>(
-    workspaceQuery,
+  const workspaceData = useRelayQuery<WorkspaceInfoQuery>(
+    workspaceInfoQuery,
     {},
     { fetchPolicy: 'store-or-network' },
   );
@@ -489,7 +490,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
           <S.WorkSpacesCard key={ws.id}>
             <S.AvatarImage>
               <Image
-                src={ws?.logo || icDefaultAvatar}
+                src={ws?.logo || icDefaultWorkspace}
                 preview={false}
                 width={40}
                 height={40}
@@ -612,8 +613,8 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         <S.ProfilesInfo>
           <S.ProfilesName>
             <Typography>
-              {user?.firstName && user?.lastName
-                ? `${user.firstName} ${user.lastName}`
+              {user?.firstName
+                ? `${user.firstName} ${user.lastName ?? ''}`
                 : DEFAULT_FULL_NAME}
             </Typography>
 
@@ -763,7 +764,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
             >
               <S.AvatarImage>
                 <Image
-                  src={user?.avatar || icDefaultAvatar}
+                  src={user?.avatar || icDefaultWorkspace}
                   preview={false}
                   width={36}
                   height={36}
