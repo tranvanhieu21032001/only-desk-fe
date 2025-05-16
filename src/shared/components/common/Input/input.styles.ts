@@ -4,9 +4,9 @@ import { Input as InputAntd } from 'antd';
 
 export const WrapInput = styled.div``;
 
-export const Input = styled(InputAntd)`
+export const Input = styled(InputAntd)<{ $isHeight?: string }>`
   width: 100%;
-  height: 39px;
+  height: ${({ $isHeight }) => $isHeight || '39px'};
   box-shadow: none !important;
   border-color: none !important;
 

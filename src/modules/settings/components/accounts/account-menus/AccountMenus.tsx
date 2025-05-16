@@ -3,10 +3,10 @@ import { useSearchParams } from 'react-router-dom';
 
 import { useAppSelector } from '@/shared/hooks';
 import { useRouter } from '@/shared/hooks/useRouter';
-import { accountMenus } from '../../helpers/data/account';
-import { AccountMenusEnums } from '../../helpers/enums/account';
-import { AccountMenuInterface } from '../../models/account.model';
-import { accountMenuType } from '../../constants/account.constant';
+import { accountMenus } from '../../../helpers/data/account';
+import { AccountMenusEnums } from '../../../helpers/enums/account';
+import { AccountMenuInterface } from '../../../models/account.model';
+import { accountMenuType } from '../../../constants/account.constant';
 
 import Typography from '@/shared/components/common/Typography';
 

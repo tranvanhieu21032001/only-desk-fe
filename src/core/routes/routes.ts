@@ -31,9 +31,12 @@ const ContactDetails = React.lazy(
   () => import('@/modules/contacts/pages/contact-details/ContactDetails'),
 );
 
-//Account
+//Settings
 const Account = React.lazy(
   () => import('@/modules/settings/pages/account/Account'),
+);
+const Workspace = React.lazy(
+  () => import('@/modules/settings/pages/workspace/Workspace'),
 );
 
 //Knowledge Base
@@ -216,10 +219,10 @@ const routes_main: RouterElementInterface[] = [
     name: 'billing',
   },
   {
-    key: 'workspace',
+    key: 'setting-workspace',
     path: MAIN_ROUTES.WORKSPACE,
-    component: PageNotFound,
-    name: 'workspace',
+    component: Workspace,
+    name: 'setting-workspace',
   },
   {
     key: 'chatbox',
