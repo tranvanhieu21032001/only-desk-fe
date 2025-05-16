@@ -4,11 +4,14 @@
     "description": "Please insert modal description here.",
     "workspaceName": {
       "label": "Workspace name",
-      "placeholder": "Enter workspace name"
+      "placeholder": "Enter workspace name",
+      "please-enter": "Please enter workspace name"
     },
     "websiteDomain": {
       "label": "Website domain",
-      "placeholder": "Enter website domain"
+      "placeholder": "Enter website domain",
+      "please-enter": "Please enter website domain",
+      "invalid": "Domain is invalid"
     },
     "buttons": {
       "cancel": "Cancel",
@@ -19,5 +22,12 @@
       "title": "This domain already exists on OnlyChat",
       "description": "You may be duplicating a workspace that already exists on OnlyChat, which may create confusion into which workspace is the correct one. The workspace may exist on your own OnlyChat account or someone else's OnlyChat account."
     }
+  },
+
+  "modal-confirm-create-workspace": {
+    "this-domain": "This domain already exists on OnlyChat",
+    "you-may-be": "You may be duplicating a workspace that already exists on OnlyChat, which may create confusion into which workspace is the correct one. The workspace may exists on your own OnlyChat account on or someone else OnlyChat account.",
+    "cancel": "Cancel",
+    "yes-create-workspace": "Yes, Create Workspace"
   }
 }

@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { Image, Popover } from 'antd';
+import { Image, Popover, Tooltip } from 'antd';
 import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -12,19 +12,21 @@ import {
   pluginsPaths,
   settingsPaths,
 } from '@/shared/helper/data/layout';
-import { useAppDispatch } from '@/shared/hooks';
+import { useAppDispatch, useModal } from '@/shared/hooks';
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import { MAX_COUNT } from '@/shared/helper/data/contacts';
 import themeColors from '@/shared/styles/themes/default/colors';
 import { actionLogout } from '@/modules/auth/store/features/auth';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
-import CreateWorkspaceModal from '@/modules/workspace/pages/create-workspace/CreateWorkspace';
+import CreateWorkspaceModal from '@/modules/workspace/pages/modal-create-workspace/CreateWorkspace';
 import { DEFAULT_EMAIL, DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { MeQuery } from '@/relay/__generated__/MeQuery.graphql';
 import { meQuery } from '@/relay/MeQuery';
 import { workspaceInfoQuery } from '@/relay/WorkspaceInfoQuery';
 import { WorkspaceInfoQuery } from '@/relay/__generated__/WorkspaceInfoQuery.graphql';
+import { handleCreateWorkspaceApi } from '@/modules/workspace/api/workspace';
+import ModalConfirmCreateWorkspace from '@/modules/workspace/pages/modal-confirm-create-workspace/ModalConfirmCreateWorkspace';
 
 import Header from '../../common/header/Main';
 import Typography from '../../common/Typography';
@@ -73,15 +75,13 @@ import icWorkspace from '@/assets/icons/layout/ic-workspace.svg';
 import icSettings from '@/assets/icons/layout/ic-settings.svg';
 
 //Profiles
+import flag from '@/assets/icons/common/ic-flag.svg';
 import icGuide from '@/assets/icons/layout/ic-guide.svg';
 import icLogout from '@/assets/icons/layout/ic-logout.svg';
 import icVector from '@/assets/icons/layout/ic-vector.svg';
 import icUserEdit from '@/assets/icons/layout/ic-user-edit.svg';
 import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
-import flag from '@/assets/icons/common/ic-flag.svg';
-
-// const { Header, Content } = Layout;
 
 interface Props {
   children: React.ReactNode;
@@ -92,10 +92,18 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const {
+    visible: isModalCreateWorkspace,
+    toggle: handleOpenModalCreateWorkspace,
+  } = useModal();
+  const {
+    visible: isModalWarningCreateWorkspace,
+    toggle: handleOpenModalWarningCreateWorkspace,
+  } = useModal();
+
   const [isChatsPopoverOpen, setIsChatsPopoverOpen] = useState(false);
-  const [isCreateWorkspaceModalOpen, setIsCreateWorkspaceModalOpen] =
-    useState(false);
   const [isNewSubInboxModalOpen, setIsNewSubInboxModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const routePath = window?.location?.pathname;
 
@@ -467,10 +475,6 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     },
   ];
 
-  function handleCreateWorkspace() {
-    setIsCreateWorkspaceModalOpen(true);
-  }
-
   function handleProfileDetail() {
     //TODO handle later
   }
@@ -497,16 +501,20 @@ const MainLayout: React.FC<Props> = ({ children }) => {
               />
             </S.AvatarImage>
             <S.WorkSpacesLabel>
-              <Typography fontWeight={fontWeight?.semiBold}>
-                {ws?.name}
-              </Typography>
-              <Typography>{ws.websiteUrl}</Typography>
+              <Tooltip title={ws?.name || ''}>
+                <Typography fontWeight={fontWeight?.semiBold}>
+                  {ws?.name}
+                </Typography>
+              </Tooltip>
+              <Tooltip title={ws?.websiteUrl || ''}>
+                <Typography>{ws.websiteUrl}</Typography>
+              </Tooltip>
             </S.WorkSpacesLabel>
           </S.WorkSpacesCard>
         ))}
       </S.PopoverLabel>
 
-      <S.PopoverAction onClick={handleCreateWorkspace} type="primary">
+      <S.PopoverAction onClick={handleOpenModalCreateWorkspace} type="primary">
         <PlusCircleOutlined />
         <Typography
           color={themeColors?.newtralLightest}
@@ -698,7 +706,15 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     return !hasMatch;
   }, [routePath]);
 
-  console.log(renderHeader);
+  function handleCreateWorkspace(values: any) {
+    setIsLoading((prev) => !prev);
+    handleCreateWorkspaceApi(
+      values,
+      t,
+      handleOpenModalCreateWorkspace,
+      setIsLoading,
+    );
+  }
 
   const renderMenu = ({
     key,
@@ -821,10 +837,18 @@ const MainLayout: React.FC<Props> = ({ children }) => {
           onClose={() => setIsNewSubInboxModalOpen(false)}
         />
       )}
-      {isCreateWorkspaceModalOpen && (
+      {isModalCreateWorkspace && (
         <CreateWorkspaceModal
-          isOpen={isCreateWorkspaceModalOpen}
-          onClose={() => setIsCreateWorkspaceModalOpen(false)}
+          isOpen={isModalCreateWorkspace}
+          onClose={handleOpenModalCreateWorkspace}
+          onOk={handleCreateWorkspace}
+          isLoading={isLoading}
+        />
+      )}
+      {isModalWarningCreateWorkspace && (
+        <ModalConfirmCreateWorkspace
+          open={isModalWarningCreateWorkspace}
+          onCancel={handleOpenModalWarningCreateWorkspace}
         />
       )}
     </S.LayoutWrapper>

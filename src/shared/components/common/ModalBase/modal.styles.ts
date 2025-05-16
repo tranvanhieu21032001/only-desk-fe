@@ -1,6 +1,6 @@
-import { Modal } from "antd";
+import { Modal } from 'antd';
 
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 export const ModalCustom = styled(Modal)<{ $isFullScreen: boolean }>`
   ${({ $isFullScreen }) =>
@@ -65,7 +65,7 @@ export const Footer = styled.div`
   display: flex;
   justify-content: center;
   gap: 24px;
-  padding: 0px 32px 24px;
+  /* padding: 0px 32px 24px; */
 
   .ant-btn {
     width: auto !important;
