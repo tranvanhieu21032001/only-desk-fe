@@ -15,7 +15,7 @@ interface ModalAddContactProps {
   open: boolean;
   onCancel: () => void;
   onOk?: () => void;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 function ModalAddContact({

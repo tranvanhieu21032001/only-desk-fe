@@ -77,7 +77,7 @@ export const ButtonAction = styled(Button)`
   height: fit-content;
 
   aspect-ratio: 1 / 1;
-  width: 47px;
+  width: 46px;
 
   border-color: ${(props) => props?.theme?.colors?.secondaryDarker};
 
@@ -123,7 +123,7 @@ export const FilterAction = styled.div<{ $isRemove?: boolean }>`
 `;
 
 export const ContactContainerWrap = styled(Row)`
-  height: calc(100vh - 300px);
+  height: calc(100vh - 220px);
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -131,15 +131,11 @@ export const ContactContainerWrap = styled(Row)`
     height: 9px;
   }
 
-  @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-    height: calc(100vh - 300px);
+  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
+    height: calc(100vh - 280px);
   }
 
   @media ${(props) => props?.theme?.breakpoints?.smMax} {
-    height: calc(100vh - 310px);
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.xsMax} {
-    height: calc(100vh - 400px);
+    height: calc(100vh - 330px);
   }
 `;

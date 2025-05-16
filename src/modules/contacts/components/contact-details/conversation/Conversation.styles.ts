@@ -15,6 +15,12 @@ export const Header = styled.div`
   align-items: center;
   gap: 10px;
   justify-content: space-between;
+
+  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0px;
+  }
 `;
 
 export const HeaderWrap = styled.div`
@@ -27,6 +33,10 @@ export const HeaderWrap = styled.div`
 
   svg {
     color: ${(props) => props?.theme?.colors?.secondaryDarker};
+  }
+
+  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
+    margin-bottom: 0px;
   }
 `;
 

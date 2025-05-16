@@ -28,7 +28,9 @@ function Account() {
       default:
         return null;
     }
-  }, []);
+  }, [typeAccount]);
+
+  console.log(typeAccount);
 
   return <S.AccountContainer>{renderContentAccount}</S.AccountContainer>;
 }
