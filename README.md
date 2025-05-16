@@ -32,8 +32,10 @@ pnpm dev
 ## 🔐 Environment Variables
 
 Create a `.env` for run local:
+
 ```env
 VITE_API_SERVER=https://api.sombes.com/api
+VITE_GRAPHQL_ENDPOINT=https://api.sombes.com/graphql
 ```
 
 You can duplicate `.env.dev` if available.
@@ -86,24 +88,22 @@ pnpm build
 ### ⚠️ Notes Before Pushing a PR
 
 - Ensure all errors and warnings are fixed:
-    - Run `pnpm lint` to check for linting issues.
-    - Run `pnpm test` to ensure all tests pass.
+  - Run `pnpm lint` to check for linting issues.
+  - Run `pnpm test` to ensure all tests pass.
 - Verify the build:
-    - Run `pnpm build` to confirm the project builds without errors.
+  - Run `pnpm build` to confirm the project builds without errors.
 - Double-check your changes:
-    - Ensure your code follows the project's coding standards.
-    - Update or add relevant documentation if necessary.
+  - Ensure your code follows the project's coding standards.
+  - Update or add relevant documentation if necessary.
 - Rebase your branch with the latest `dev` branch:
-    ```bash
-    git checkout dev
-    git pull origin dev
-    git checkout feature/your-feature-name
-    git rebase dev
-    ```
+  ```bash
+  git checkout dev
+  git pull origin dev
+  git checkout feature/your-feature-name
+  git rebase dev
+  ```
 - Test your feature thoroughly in a local environment.
 - Add meaningful commit messages following the [Commit Convention](#-commit-convention-conventional-commits).
 - Review your code before creating the pull request.
 - Tag relevant reviewers when submitting the PR.
 - Include a clear description of the changes in the PR.
-
-

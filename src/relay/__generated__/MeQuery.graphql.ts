@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<00a496272c1230ea8ed7017220ba0d24>>
+ * @generated SignedSource<<6255e494df9de2b128f5a39338a2611e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type MeQuery$data = {
     readonly email: string;
     readonly firstName: string | null | undefined;
     readonly id: string;
+    readonly lastName: string | null | undefined;
   } | null | undefined;
 };
 export type MeQuery = {
@@ -45,6 +46,13 @@ var v0 = [
         "args": null,
         "kind": "ScalarField",
         "name": "firstName",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "lastName",
         "storageKey": null
       },
       {
@@ -83,16 +91,16 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "82515e8d41b4e076cd53f8ba06fc66c3",
+    "cacheID": "05f49fc08b7b3744c6f75e72dc5d7cc0",
     "id": null,
     "metadata": {},
     "name": "MeQuery",
     "operationKind": "query",
-    "text": "query MeQuery {\n  me {\n    id\n    firstName\n    email\n    avatar\n  }\n}\n"
+    "text": "query MeQuery {\n  me {\n    id\n    firstName\n    lastName\n    email\n    avatar\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "f8db9de83a3655d85457d3e1aeacdccc";
+(node as any).hash = "f91b5ce5f0577eea62f93a759e394816";
 
 export default node;

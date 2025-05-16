@@ -1,9 +1,11 @@
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import Cookies from 'js-cookie';
 
+const GRAPHQL_ENDPOINT = import.meta.env.VITE_GRAPHQL_ENDPOINT as string;
+
 const fetchQuery = async (operation: any, variables: any) => {
   const accessToken = Cookies.get('_access_token');
-  const response = await fetch('https://api.sombes.com/graphql', {
+  const response = await fetch(GRAPHQL_ENDPOINT, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -5,6 +5,7 @@ export const meQuery = graphql`
     me {
       id
       firstName
+      lastName
       email
       avatar
     }

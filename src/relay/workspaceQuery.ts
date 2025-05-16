@@ -1,20 +1,13 @@
 import { graphql } from 'react-relay';
 
 export const workspaceQuery = graphql`
-  query workspaceQuery {
+  query WorkspaceQuery {
     workspaces {
       id
       name
       websiteID
       websiteUrl
       logo
-      contactEmail
-      contactPhone
-      owner {
-        firstName
-        email
-      }
-      role
     }
   }
 `;
