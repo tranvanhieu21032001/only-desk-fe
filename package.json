@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint \"src/**/*.+(ts|js|tsx)\" --ignore-pattern .gitignore",
     "preview": "vite preview",
-    "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write"
+    "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write",
+    "relay": "relay-compiler",
+    "relay:watch": "relay-compiler --watch"
   },
   "lint-staged": {
     "./src/**/*.{ts,js,jsx,tsx}": [
@@ -19,26 +21,31 @@
   "dependencies": {
     "@ant-design/icons": "^6.0.0",
     "@reduxjs/toolkit": "^2.6.1",
+    "@types/react-relay": "^18.2.1",
     "antd": "^5.24.7",
     "axios": "^1.8.4",
+    "graphql": "^16.11.0",
     "i18next": "^24.2.3",
     "i18next-browser-languagedetector": "^8.0.4",
     "i18next-http-backend": "^3.0.2",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
-     "react": "^18.3.1",
+    "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "^15.4.1",
     "react-otp-input": "^3.1.1",
     "react-phone-number-input": "^3.4.12",
     "react-redux": "^9.2.0",
+    "react-relay": "^19.0.0",
     "react-router-dom": "^6.30.0",
     "react-svg": "^16.3.0",
     "react-toastify": "^11.0.5",
+    "relay-runtime": "^19.0.0",
     "styled-components": "^6.1.17"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@types/graphql": "^14.5.0",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.16",
     "@types/react": "^19.0.10",
@@ -48,6 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "babel-plugin-relay": "^19.0.0",
     "eslint": "^9.25.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -57,9 +65,11 @@
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "relay-compiler": "^19.0.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.2.0",
+    "vite-plugin-relay": "^2.1.0",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }

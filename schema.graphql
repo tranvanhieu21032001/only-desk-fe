@@ -1,0 +1,170 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User implements Node {
+  id: ID!
+  firstName: String
+  lastName: String
+  email: String!
+  phone: String
+  avatar: String
+  role: String!
+  isVerified: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+interface Node {
+  id: ID!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Workspace implements Node {
+  id: ID!
+  name: String!
+  websiteUrl: String!
+  websiteID: String!
+  logo: String
+  contactEmail: String
+  contactPhone: String
+  owner: User
+  role: WorkspaceMemberRole
+  metadata: JSON
+}
+
+"""
+Type of member
+"""
+enum WorkspaceMemberRole {
+  ADMIN
+  DEVELOPER
+  SUPPORTER
+  VIEWER
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type WorkspaceTypeEdge {
+  cursor: String!
+  node: Workspace!
+}
+
+type Message implements Node {
+  id: ID!
+  conversationId: ID!
+  content: String!
+  sender: MessageSender!
+  user: User
+  type: MessageTypeEnum
+  status: MessageStatus!
+  metadata: JSON
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+Type of message sender
+"""
+enum MessageSender {
+  GUEST
+  AGENT
+  SYSTEM
+}
+
+"""
+Type of message content
+"""
+enum MessageTypeEnum {
+  TEXT
+  FILE
+  IMAGE
+  SYSTEM
+}
+
+"""
+Status of a message
+"""
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+type MessageTypeEdge {
+  cursor: String!
+  node: Message!
+}
+
+type MessageConnection {
+  edges: [MessageTypeEdge!]!
+  pageInfo: PageInfo!
+}
+
+type Conversation implements Node {
+  id: ID!
+  guestIdentifier: String!
+  guestName: String
+  assignedTo: User
+  status: ConversationStatus!
+  subject: String
+  metadata: JSON
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  lastActivityAt: DateTime!
+  closedAt: DateTime
+  unreadGuestCount: Int
+  unreadAgentCount: Int
+  latestMessage: Message
+}
+
+"""
+Status of a conversation
+"""
+enum ConversationStatus {
+  ACTIVE
+  CLOSED
+  PENDING
+}
+
+type ConversationTypeEdge {
+  cursor: String!
+  node: Conversation!
+}
+
+type ConversationConnection {
+  edges: [ConversationTypeEdge!]!
+  pageInfo: PageInfo!
+}
+
+type Query {
+  me: User
+  workspaces: [Workspace!]!
+  conversations(
+    workspaceId: ID!
+    args: ConnectionArgs!
+  ): ConversationConnection!
+  messages(conversationId: ID!, args: ConnectionArgs!): MessageConnection!
+}
+
+input ConnectionArgs {
+  first: Int = 10
+  after: String
+  last: Int
+  before: String
+}

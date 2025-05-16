@@ -364,6 +364,14 @@ export const ProfilesWrap = styled.div`
   padding: 13px 12px;
 `;
 
+export const AvatarImage = styled.div`
+  img,
+  svg {
+    width: 50px;
+    height: 50px;
+  }s
+`;
+
 export const ProfilesInfo = styled.div``;
 
 export const ProfilesName = styled.div`

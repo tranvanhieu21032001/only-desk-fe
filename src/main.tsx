@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from 'styled-components';
 import { I18nextProvider } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
+import { RelayEnvironmentProvider } from 'react-relay';
 
 import { store } from './core/store/index.tsx';
 import { themes } from './shared/styles/themes/index.ts';
@@ -12,6 +13,7 @@ import GlobalStyle from './shared/styles/global/index.ts';
 
 import App from './App.tsx';
 import { TitleProvider } from './core/context/TitleContext.tsx';
+import environment from './relay/RelayEnvironment.ts';
 
 function Index() {
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
@@ -22,17 +24,19 @@ function Index() {
 
   return (
     <Provider store={store}>
-      <ThemeProvider theme={isDarkTheme ? themes?.darkTheme : themes.default}>
-        <GlobalStyle />
-        <StrictMode>
-          <I18nextProvider i18n={i18n}>
-            <TitleProvider>
-              <App />
-            </TitleProvider>
-            <ToastContainer position="bottom-right" hideProgressBar={true} />
-          </I18nextProvider>
-        </StrictMode>
-      </ThemeProvider>
+      <RelayEnvironmentProvider environment={environment}>
+        <ThemeProvider theme={isDarkTheme ? themes?.darkTheme : themes.default}>
+          <GlobalStyle />
+          <StrictMode>
+            <I18nextProvider i18n={i18n}>
+              <TitleProvider>
+                <App />
+              </TitleProvider>
+              <ToastContainer position="bottom-right" hideProgressBar={true} />
+            </I18nextProvider>
+          </StrictMode>
+        </ThemeProvider>
+      </RelayEnvironmentProvider>
     </Provider>
   );
 }

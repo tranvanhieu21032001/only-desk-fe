@@ -17,9 +17,16 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { MAX_COUNT } from '@/modules/plugins/helpers/data/allPlugins';
 import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
 import CreateWorkspaceModal from '@/modules/workspace/pages/create-workspace/CreateWorkspace';
+import { DEFAULT_EMAIL, DEFAULT_USER_NAME } from '@/core/settings/constants';
+import { MeQuery } from '@/relay/__generated__/MeQuery.graphql';
+import { meQuery } from '@/relay/MeQuery';
+import { workspaceQuery } from '@/relay/workspaceQuery';
+import { workspaceQuery as WorkspaceQueryType } from '@/relay/__generated__/workspaceQuery.graphql';
 
 import Header from '../../common/header/Main';
 import Typography from '../../common/Typography';
+
+import { useRelayQuery } from '@/shared/hooks/useRelayQuery';
 
 import * as S from './main.styles';
 
@@ -94,6 +101,20 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       navigate(`${MAIN_ROUTES?.HOME}`, { replace: true });
     }
   }
+
+  const userData = useRelayQuery<MeQuery>(
+    meQuery,
+    {},
+    { fetchPolicy: 'store-or-network' },
+  );
+  const user = userData.me;
+
+  const workspaceData = useRelayQuery<WorkspaceQueryType>(
+    workspaceQuery,
+    {},
+    { fetchPolicy: 'store-or-network' },
+  );
+  const workspaces = workspaceData.workspaces;
 
   const menus = [
     {
@@ -458,22 +479,22 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       </Typography>
       <S.Line />
       <S.PopoverLabel>
-        {Array(3)
-          ?.fill(0)
-          ?.map((_, index: number) => (
-            <S.WorkSpacesCard key={index}>
-              <Image
-                src={icMockupWorkSpaces}
-                preview={false}
-                width={40}
-                height={40}
-              />
-              <S.WorkSpacesLabel>
-                <Typography fontWeight={fontWeight?.semiBold}>Apex</Typography>
-                <Typography>apex.com</Typography>
-              </S.WorkSpacesLabel>
-            </S.WorkSpacesCard>
-          ))}
+        {workspaces.map((ws) => (
+          <S.WorkSpacesCard key={ws.id}>
+            <Image
+              src={ws?.logo || icMockupWorkSpaces}
+              preview={false}
+              width={40}
+              height={40}
+            />
+            <S.WorkSpacesLabel>
+              <Typography fontWeight={fontWeight?.semiBold}>
+                {ws?.name}
+              </Typography>
+              <Typography>{ws.websiteUrl}</Typography>
+            </S.WorkSpacesLabel>
+          </S.WorkSpacesCard>
+        ))}
       </S.PopoverLabel>
 
       <S.PopoverAction onClick={handleCreateWorkspace} type="primary">
@@ -575,15 +596,20 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const renderProfiles = (
     <S.PopoverContent>
       <S.ProfilesWrap>
-        <Image src={icAvatarMockup} preview={false} width={40} height={40} />
+        <S.AvatarImage>
+          <Image
+            src={user?.avatar || icAvatarMockup}
+            preview={false}
+            width={40}
+            height={50}
+          />
+        </S.AvatarImage>
         <S.ProfilesInfo>
           <S.ProfilesName>
-            <Typography fontWeight={fontWeight?.semiBold}>
-              Sophia William
-            </Typography>
+            <Typography>{user?.firstName || DEFAULT_USER_NAME}</Typography>
             <Image src={icVector} preview={false} width={13} height={13} />
           </S.ProfilesName>
-          <Typography>sophia@alignui.com</Typography>
+          <Typography>{user?.email || DEFAULT_EMAIL}</Typography>
         </S.ProfilesInfo>
         <S.ProfileDetail
           onClick={handleProfileDetail}
