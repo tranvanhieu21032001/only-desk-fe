@@ -111,5 +111,16 @@
     "two-factor-authentication-has-been-disabled": "Two Factor Authentication has been disabled",
     "success": "Success",
     "you-have-verify-yourself": "You have verified yourself. Now, submit to proceed this action."
+  },
+
+  "workspace": {
+    "workspace-informations": "Workspace informations",
+    "setup-integrations": "Setup & Integrations",
+    "operator-teams": "Operator & Teams",
+    "billing-settings": "Billing settings",
+    "team-transparency-log": "Team transparency log",
+    "advanced-configuration": "Advanced configuration",
+    "data-limits-legal": "Data & Limits & Legal",
+    "danger-zone": "Danger zone"
   }
 }

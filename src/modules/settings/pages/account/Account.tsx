@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd';
 
-import AccountContent from '../../components/account/main/Account';
-import AccountMenus from '../../components/account-menus/AccountMenus';
+import AccountMenus from '../../components/accounts/account-menus/AccountMenus';
+import AccountContent from '../../components/accounts/account-content/main/Account';
 
 import * as S from './Account.styles';
 

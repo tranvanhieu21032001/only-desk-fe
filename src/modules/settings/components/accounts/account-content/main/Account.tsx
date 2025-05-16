@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useAppSelector } from '@/shared/hooks';
-import { AccountMenusEnums } from '../../../helpers/enums/account';
-import { accountMenuType } from '../../../constants/account.constant';
+import { AccountMenusEnums } from '@/modules/settings/helpers/enums/account';
+import { accountMenuType } from '@/modules/settings/constants/account.constant';
 
 import AccountInformation from '../account-information/main/AccountInformation';
 
