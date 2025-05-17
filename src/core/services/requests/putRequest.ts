@@ -1,13 +1,13 @@
-import { message } from "antd";
+import { message } from 'antd';
 
-import i18n from "@/core/services/i18n";
-import axiosInstance from "../base/axiosInstance";
-import webStorageClient from "@/shared/utils/webStorageClient";
-import { RequestOptionsInterface } from "@/core/model/requestOptions";
+import i18n from '@/core/services/i18n';
+import axiosInstance from '../base/axiosInstance';
+import webStorageClient from '@/shared/utils/webStorageClient';
+import { RequestOptionsInterface } from '@/core/model/requestOptions';
 
 const updateRequest = <T = any>(
   url: string,
-  options?: RequestOptionsInterface
+  options?: RequestOptionsInterface,
 ): Promise<T> => {
   const {
     data,
@@ -21,7 +21,7 @@ const updateRequest = <T = any>(
   const config = {
     headers: {
       ...(tokenClient && { Authorization: `Bearer ${tokenClient}` }),
-      "Content-Type": isFormData ? "multipart/form-data" : "application/json",
+      'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
     },
   };
 
@@ -31,8 +31,8 @@ const updateRequest = <T = any>(
       if (enableFlashMessageSuccess && res.data?.message) {
         message.success(
           i18n.t(`messages:messages.${res.data?.message}`, {
-            defaultValue: res.data?.message || "",
-          })
+            defaultValue: res.data?.message || '',
+          }),
         );
       }
       return res;
@@ -42,8 +42,8 @@ const updateRequest = <T = any>(
         err.response.data.errors.forEach((item: any) => {
           message.error(
             i18n.t(`messages:messages.${item.detail}`, {
-              defaultValue: item.detail || "",
-            })
+              defaultValue: item.detail || '',
+            }),
           );
         });
       }
