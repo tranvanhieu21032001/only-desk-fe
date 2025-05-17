@@ -2,19 +2,19 @@ import { Image, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import themeColors from '@/shared/styles/themes/default/colors';
-import { contactInformationMockup } from '@/modules/contacts/helpers/contact.data';
+import { lastReportedLocation } from '@/modules/contacts/helpers/contact.data';
 
 import Typography from '@/shared/components/common/Typography';
 
-import * as S from './Company.styles';
+import * as S from './LastReportedLocation.styles';
 
-import icInfo from '@/assets/icons/contact/ic-info-circle.svg';
+import icLocation from '@/assets/icons/contact/ic-location.svg';
 
 interface ContactInformationProps {
   isLoading?: boolean;
 }
 
-function ContactInformation({ isLoading }: ContactInformationProps) {
+function LastReportedLocation({ isLoading }: ContactInformationProps) {
   const { t } = useTranslation('contacts');
 
   return (
@@ -22,21 +22,21 @@ function ContactInformation({ isLoading }: ContactInformationProps) {
       {isLoading ? (
         <S.Container>
           <S.Header>
-            <Image src={icInfo} width={24} height={24} />
+            <Image src={icLocation} width={24} height={24} preview={false} />
             <Typography variant="h5" color={themeColors?.secondaryDarker}>
-              {t('contact-profile.company')}
+              {t('contact-profile.last-reported-location')}
             </Typography>
           </S.Header>
 
           <S.Body>
-            {contactInformationMockup?.map((item) => (
+            {lastReportedLocation?.map((item) => (
               <S.ContentWrap key={item?.key}>
+                <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
                 <Skeleton.Input
                   active
                   style={{
                     height: '23px',
                     width: '100%',
-                    minWidth: '200px',
                   }}
                 />
               </S.ContentWrap>
@@ -46,14 +46,14 @@ function ContactInformation({ isLoading }: ContactInformationProps) {
       ) : (
         <S.Container>
           <S.Header>
-            <Image src={icInfo} width={24} height={24} />
+            <Image src={icLocation} width={24} height={24} preview={false} />
             <Typography variant="h5" color={themeColors?.secondaryDarker}>
-              {t('contact-profile.contact-information')}
+              {t('contact-profile.last-reported-location')}
             </Typography>
           </S.Header>
 
           <S.Body>
-            {contactInformationMockup?.map((item) => (
+            {lastReportedLocation?.map((item) => (
               <S.ContentWrap key={item?.key}>
                 <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
                 <Typography>{t(item?.value)}</Typography>
@@ -66,4 +66,4 @@ function ContactInformation({ isLoading }: ContactInformationProps) {
   );
 }
 
-export default ContactInformation;
+export default LastReportedLocation;

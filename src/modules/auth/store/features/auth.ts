@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { UserInforInterface } from '@/modules/auth/model/user';
+import { UserInforInterface } from '@/modules/auth/models/user';
 
 import { constants } from '@/core/settings';
 import webStorageClient from '@/shared/utils/webStorageClient';

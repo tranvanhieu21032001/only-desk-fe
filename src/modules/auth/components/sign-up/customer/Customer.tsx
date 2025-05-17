@@ -6,7 +6,7 @@ import { handleFinishSignUp } from '@/modules/auth/api/auth';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { chatWithCustomers } from '@/modules/auth/helpers/data/signUp';
-import { chatWithCustomersInterface } from '@/modules/auth/model/auth';
+import { chatWithCustomersInterface } from '@/modules/auth/models/auth';
 
 import Typography from '@/shared/components/common/Typography';
 

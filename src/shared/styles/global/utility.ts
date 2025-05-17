@@ -1,4 +1,4 @@
-import { css } from "styled-components";
+import { css } from 'styled-components';
 
 const checkbox = css`
   .ant-checkbox-wrapper {
@@ -31,10 +31,12 @@ const checkbox = css`
   .ant-checkbox-wrapper:hover
     .ant-checkbox.ant-checkbox-checked:not(.ant-checkbox-disabled)
     .ant-checkbox-inner {
-    border-color: linear-gradient(0deg, #3750b2, #3750b2),
+    border-color:
+      linear-gradient(0deg, #3750b2, #3750b2),
       linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
       linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
-    background: linear-gradient(0deg, #3750b2, #3750b2),
+    background:
+      linear-gradient(0deg, #3750b2, #3750b2),
       linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
       linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
 
@@ -88,6 +90,10 @@ const select = css`
         gap: 8px;
       }
     }
+  }
+
+  .ant-select-selection-item-content {
+    color: #141414;
   }
 `;
 

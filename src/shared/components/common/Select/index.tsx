@@ -1,11 +1,11 @@
-import { SelectProps as SelectPropsFromAntd } from "antd";
+import { SelectProps as SelectPropsFromAntd } from 'antd';
 
-import themeColors from "@/shared/styles/themes/default/colors";
-import { DefaultOptionType } from "antd/es/select";
+import themeColors from '@/shared/styles/themes/default/colors';
+import { DefaultOptionType } from 'antd/es/select';
 
-import Typography from "../Typography";
+import Typography from '../Typography';
 
-import * as S from "./select.styles";
+import * as S from './select.styles';
 
 interface SelectProps extends SelectPropsFromAntd {
   label?: string;
@@ -34,7 +34,7 @@ export default function Select({
           variant="caption-small"
           color={colorLabel}
         >
-          {label} {isRequired && <span style={{ color: "red" }}>*</span>}
+          {label} {isRequired && <span style={{ color: 'red' }}>*</span>}
         </Typography>
       )}
       {prefixIcon && <S.PrefixIcon>{prefixIcon}</S.PrefixIcon>}
@@ -44,7 +44,7 @@ export default function Select({
         filterOption={(input, option) =>
           filterOption(input, option as { label?: string; value?: string })
         }
-        maxTagCount={isResponsiveTag ? undefined : "responsive"}
+        maxTagCount={isResponsiveTag ? undefined : 'responsive'}
         {...rest}
       />
     </S.WrapSelect>
