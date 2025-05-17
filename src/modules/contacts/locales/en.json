@@ -140,6 +140,25 @@
     "languages": "Languages",
 
     "contact": "Contact",
-    "profile": "Profile"
+    "profile": "Profile",
+
+    "save": "Save",
+    "select-segments": "Select segments",
+
+    "enter-company-name": "Enter company name",
+    "job-title": "Job title",
+    "enter-job-title": "Enter job title",
+    "job-role": "Job role",
+    "enter-job-role": "Enter job role",
+    "enter-website": "Enter website",
+    "city-label": "City",
+    "enter-city": "Enter city",
+    "country": "Country",
+    "enter-country": "Enter country",
+    "employees": "Employees",
+    "enter-employees": "Enter employees",
+    "select-country": "Select country",
+    "select-key": "Select key",
+    "enter-value": "Enter value"
   }
 }

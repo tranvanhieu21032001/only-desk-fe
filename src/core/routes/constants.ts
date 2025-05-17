@@ -28,6 +28,7 @@ const MAIN_ROUTES = {
   //User
   CONTACTS: `${preRouterMain}/contacts`,
   CONTACT_DETAILS: `${preRouterMain}/contacts/:id`,
+  CONTACT_EDIT: `${preRouterMain}/contacts/edit/:id`,
 
   //Campaigns
   CAMPAIGNS: `${preRouterMain}/campaigns`,

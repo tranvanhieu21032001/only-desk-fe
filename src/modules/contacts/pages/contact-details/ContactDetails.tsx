@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Col, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { ReactSVG } from 'react-svg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import { actionsProfileDetailsOptions } from '@/shared/helper/data/contacts';
@@ -39,6 +39,8 @@ import icConversation from '@/assets/icons/contact/ic-new-conversation.svg';
 
 function ContactDetails() {
   const { t } = useTranslation('contacts');
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -57,8 +59,7 @@ function ContactDetails() {
   ) {
     switch (actionType) {
       case ActionProfileDetailsTypeEnums?.EDIT:
-        //TODO handle later
-        return;
+        return navigate(MAIN_ROUTES?.CONTACT_EDIT?.replace(':id', id || ''));
       case ActionProfileDetailsTypeEnums?.COPY:
         //TODO handle later
         return;
