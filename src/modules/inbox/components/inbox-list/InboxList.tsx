@@ -1,16 +1,21 @@
 import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef } from 'react';
+import { conversationListQuery } from '@/relay/ConversationListQuery';
+import { ConversationListQuery } from '@/relay/__generated__/ConversationListQuery.graphql';
+import { fetchQuery } from 'relay-runtime';
+import relayEnvironment from '@/relay/RelayEnvironment';
+import { workspaceInfoQuery } from '@/relay/WorkspaceInfoQuery';
+import { WorkspaceInfoQuery } from '@/relay/__generated__/WorkspaceInfoQuery.graphql';
 
 import AvatarWithStatus from '@/shared/components/common/Avatar';
 import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
 
-import {
-  filterOptions,
-  filtersDropdown,
-  notifications,
-} from '@/core/settings/options';
+import { useRelayQuery } from '@/shared/hooks/useRelayQuery';
+import { getFormattedTime } from '../../helpers/inbox.logic';
+
+import { filterOptions, filtersDropdown } from '@/core/settings/options';
 
 import * as S from './InboxList.styles';
 
@@ -31,6 +36,7 @@ import close from '@/assets/icons/inbox/ic-close-circle.svg';
 import add from '@/assets/icons/inbox/ic-add-circle.svg';
 import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
+import avatarDefault from '@/assets/images/avatar-default.png';
 
 const NotificationList = () => {
   const { t } = useTranslation('inbox');
@@ -61,6 +67,66 @@ const NotificationList = () => {
   const [conditionValues, setConditionValues] = useState<string[]>([]);
   const [isCustomFilterDropdownOpen, setIsCustomFilterDropdownOpen] =
     useState(false);
+  const [conversationEdges, setConversationEdges] = useState<any[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const conversationListWrapperRef = useRef<HTMLDivElement>(null);
+  const [lastCursor, setLastCursor] = useState<string | null>(null);
+
+  // Fetch workspaceId from workspaceInfoQuery
+  const workspaceData = useRelayQuery<WorkspaceInfoQuery>(workspaceInfoQuery);
+  const workspaceId = workspaceData.workspaces[0]?.id;
+
+  // Fetch initial conversation list
+  useEffect(() => {
+    const fetchInitial = async () => {
+      setLoadingMore(true);
+      const res = (await fetchQuery(relayEnvironment, conversationListQuery, {
+        workspaceId: workspaceId || '',
+        args: { first: 10 },
+      }).toPromise()) as ConversationListQuery['response'];
+      const edges = res?.conversations?.edges || [];
+      setConversationEdges([...edges]);
+      setLastCursor(edges.length > 0 ? edges[edges.length - 1].cursor : null);
+      setHasMore(edges.length === 10);
+      setLoadingMore(false);
+    };
+    fetchInitial();
+  }, [workspaceId]);
+
+  // Load more conversations
+  const loadMore = async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    const res = (await fetchQuery(relayEnvironment, conversationListQuery, {
+      workspaceId: workspaceId || '',
+      args: { first: 10, after: lastCursor },
+    }).toPromise()) as ConversationListQuery['response'];
+    const edges = res?.conversations?.edges || [];
+    setConversationEdges((prev) => [...prev, ...edges]);
+    setLastCursor(
+      edges.length > 0 ? edges[edges.length - 1].cursor : lastCursor,
+    );
+    setHasMore(edges.length === 10);
+    setLoadingMore(false);
+  };
+
+  // Listen for scroll event
+  useEffect(() => {
+    const wrapper = conversationListWrapperRef.current;
+    if (!wrapper) return;
+    const handleScroll = () => {
+      if (
+        wrapper.scrollTop + wrapper.clientHeight >= wrapper.scrollHeight - 50 &&
+        hasMore &&
+        !loadingMore
+      ) {
+        loadMore();
+      }
+    };
+    wrapper.addEventListener('scroll', handleScroll);
+    return () => wrapper.removeEventListener('scroll', handleScroll);
+  }, [hasMore, loadingMore, lastCursor]);
 
   const resetFilterStates = () => {
     setSelectedModalFilter(null);
@@ -228,55 +294,83 @@ const NotificationList = () => {
         </S.FilterWrapper>
       </S.SearchFilterWrapper>
 
-      {notifications.map((n, index) => (
-        <S.NotificationItem key={n.id}>
-          <S.Avatar>
-            <AvatarWithStatus
-              avatarSrc={n.avatar}
-              flagSrc={flag}
-              isOnline={true}
-            />
-          </S.Avatar>
-          <S.Content>
-            <S.Title>{n.title}</S.Title>
-            <S.Subtitle>{n.subtitle}</S.Subtitle>
-          </S.Content>
-          <S.RightSection ref={menuRef}>
-            <S.Time className="time">{n.time}</S.Time>
-            <S.BarIcon onClick={(e) => handleMenuClick(index, e)}>
-              <Image src={barColumn} preview={false} />
-            </S.BarIcon>
-            {n.badge && <S.Badge>{n.badge}</S.Badge>}
-            {activeMenu === index && (
-              <S.MenuDropdown isOpen={true}>
-                <S.MenuItem onClick={(e) => handleMenuItemClick('resolve', e)}>
-                  <Image src={check} preview={false} />
-                  Mark as resolved
-                </S.MenuItem>
-                <S.MenuItem onClick={(e) => handleMenuItemClick('unread', e)}>
-                  <Image src={unreadIcon} preview={false} />
-                  Mark as unread
-                </S.MenuItem>
-                <S.MenuItem onClick={(e) => handleMenuItemClick('copy', e)}>
-                  <Image src={copyIcon} preview={false} />
-                  Copy link
-                </S.MenuItem>
-                <S.MenuItem onClick={(e) => handleMenuItemClick('block', e)}>
-                  <Image src={blockIcon} preview={false} />
-                  Block Admin 3
-                </S.MenuItem>
-                <S.MenuItem
-                  className="delete"
-                  onClick={(e) => handleMenuItemClick('delete', e)}
-                >
-                  <Image src={deleteIcon} preview={false} />
-                  Delete conversation
-                </S.MenuItem>
-              </S.MenuDropdown>
-            )}
-          </S.RightSection>
-        </S.NotificationItem>
-      ))}
+      <S.ConversationListWrapper ref={conversationListWrapperRef}>
+        {conversationEdges.length === 0 && !loadingMore && (
+          <S.AllDataLoaded>{t('inboxList.noConversationYet')}</S.AllDataLoaded>
+        )}
+        {conversationEdges.map((edge, index) => {
+          const c = edge.node;
+          return (
+            <S.NotificationItem key={c.id}>
+              <S.Avatar>
+                <AvatarWithStatus
+                  avatarSrc={avatarDefault}
+                  isOnline={true}
+                  flagSrc={flag}
+                />
+              </S.Avatar>
+              <S.Content>
+                <S.Title>{c.guestName || 'No Name'}</S.Title>
+                <S.Subtitle>
+                  {c.latestMessage?.content || <p>No message</p>}
+                </S.Subtitle>
+              </S.Content>
+              <S.RightSection ref={menuRef}>
+                <S.Time className="time">
+                  {getFormattedTime(c.lastActivityAt)}
+                </S.Time>
+                <S.BarIcon onClick={(e) => handleMenuClick(index, e)}>
+                  <Image src={barColumn} preview={false} />
+                </S.BarIcon>
+                {c.unreadAgentCount ? (
+                  <S.Badge>{c.unreadAgentCount}</S.Badge>
+                ) : (
+                  <S.Badge></S.Badge>
+                )}
+                {activeMenu === index && (
+                  <S.MenuDropdown isOpen={true}>
+                    <S.MenuItem
+                      onClick={(e) => handleMenuItemClick('resolve', e)}
+                    >
+                      <Image src={check} preview={false} />
+                      Mark as resolved
+                    </S.MenuItem>
+                    <S.MenuItem
+                      onClick={(e) => handleMenuItemClick('unread', e)}
+                    >
+                      <Image src={unreadIcon} preview={false} />
+                      Mark as unread
+                    </S.MenuItem>
+                    <S.MenuItem onClick={(e) => handleMenuItemClick('copy', e)}>
+                      <Image src={copyIcon} preview={false} />
+                      Copy link
+                    </S.MenuItem>
+                    <S.MenuItem
+                      onClick={(e) => handleMenuItemClick('block', e)}
+                    >
+                      <Image src={blockIcon} preview={false} />
+                      Block Admin 3
+                    </S.MenuItem>
+                    <S.MenuItem
+                      className="delete"
+                      onClick={(e) => handleMenuItemClick('delete', e)}
+                    >
+                      <Image src={deleteIcon} preview={false} />
+                      Delete conversation
+                    </S.MenuItem>
+                  </S.MenuDropdown>
+                )}
+              </S.RightSection>
+            </S.NotificationItem>
+          );
+        })}
+        {loadingMore && (
+          <S.LoadingMore>{t('inboxList.loadMore')}</S.LoadingMore>
+        )}
+        {!hasMore && conversationEdges.length > 0 && (
+          <S.AllDataLoaded>All data loaded</S.AllDataLoaded>
+        )}
+      </S.ConversationListWrapper>
 
       <Modal
         isOpen={isModalOpen}
@@ -304,7 +398,8 @@ const NotificationList = () => {
       >
         <S.ModalContent>
           <S.ModalLabel>
-            {t('inboxList.labelForCustomFilter')} <span style={{ color: 'red' }}>*</span>
+            {t('inboxList.labelForCustomFilter')}{' '}
+            <span style={{ color: 'red' }}>*</span>
           </S.ModalLabel>
 
           <S.ModalFilterWrapper>
@@ -313,7 +408,8 @@ const NotificationList = () => {
               <S.ButtonModalDropdown
                 onClick={() => setIsModalDropdownOpen((prev) => !prev)}
               >
-                {selectedModalFilter || t('inboxList.enterLabelForCustomFilter')}{' '}
+                {selectedModalFilter ||
+                  t('inboxList.enterLabelForCustomFilter')}{' '}
                 <Image src={arrowDown} alt="Arrow down icon" preview={false} />
               </S.ButtonModalDropdown>
 
