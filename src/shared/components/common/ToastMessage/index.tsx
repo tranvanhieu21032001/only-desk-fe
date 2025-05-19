@@ -17,9 +17,6 @@ interface ToastMessageProps {
 const ToastMessage: React.FC<ToastMessageProps> = ({ typeToast, message }) => {
   const { t } = useTranslation('messages');
 
-  console.log(typeToast);
-  console.log(message);
-
   const renderContentToast = useMemo(() => {
     switch (typeToast) {
       case ToastMessageType?.INFO:

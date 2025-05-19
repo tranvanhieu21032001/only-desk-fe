@@ -1,4 +1,4 @@
-import { styled, css } from "styled-components";
+import { styled, css } from 'styled-components';
 
 export const H1 = styled.h1<{
   $color?: string;
@@ -8,8 +8,9 @@ export const H1 = styled.h1<{
   $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
-  text-align: ${(props) => props.$textAlign || "left"};
-  font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
+  text-align: ${(props) => props.$textAlign || 'left'};
+  font-weight: ${(props) =>
+    props.$fontWeight || props.theme.fontWeight.bold} !important;
 
   ${(props) =>
     props.$padding &&
@@ -32,8 +33,9 @@ export const H2 = styled.h2<{
   $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
-  font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
-  text-align: ${(props) => props.$textAlign || "left"};
+  font-weight: ${(props) =>
+    props.$fontWeight || props.theme.fontWeight.bold} !important;
+  text-align: ${(props) => props.$textAlign || 'left'};
 
   ${(props) =>
     props.$padding &&
@@ -56,8 +58,9 @@ export const H3 = styled.h3<{
   $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
-  font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
-  text-align: ${(props) => props.$textAlign || "left"};
+  font-weight: ${(props) =>
+    props.$fontWeight || props.theme.fontWeight.bold} !important;
+  text-align: ${(props) => props.$textAlign || 'left'};
 
   ${(props) =>
     props.$padding &&
@@ -80,8 +83,9 @@ export const H4 = styled.h4<{
   $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
-  font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
-  text-align: ${(props) => props.$textAlign || "left"};
+  font-weight: ${(props) =>
+    props.$fontWeight || props.theme.fontWeight.bold} !important;
+  text-align: ${(props) => props.$textAlign || 'left'};
 
   ${(props) =>
     props.$padding &&
@@ -104,8 +108,9 @@ export const H5 = styled.h5<{
   $textAlign?: string;
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
-  font-weight: ${(props) => props.$fontWeight || props.theme.fontWeight.bold};
-  text-align: ${(props) => props.$textAlign || "left"};
+  font-weight: ${(props) =>
+    props.$fontWeight || props.theme.fontWeight.bold} !important;
+  text-align: ${(props) => props.$textAlign || 'left'};
 
   ${(props) =>
     props.$padding &&
@@ -129,8 +134,8 @@ export const P = styled.p<{
 }>`
   color: ${(props) => props.$color || props.theme.colors.primary};
   font-weight: ${(props) =>
-    props.$fontWeight || props.theme.fontWeight.regular};
-  text-align: ${(props) => props.$textAlign || "left"};
+    props.$fontWeight || props.theme.fontWeight.regular} !important;
+  text-align: ${(props) => props.$textAlign || 'left'};
 
   ${(props) =>
     props.$padding &&

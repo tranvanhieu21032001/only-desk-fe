@@ -8,6 +8,7 @@ export const meQuery = graphql`
       lastName
       email
       avatar
+      phone
     }
   }
 `;

@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { UserInforInterface } from '@/modules/auth/models/user';
-
 import { constants } from '@/core/settings';
 import webStorageClient from '@/shared/utils/webStorageClient';
+import { UserInforInterface } from '@/modules/auth/models/user';
 
 const isAuthFromStorage: boolean =
   webStorageClient.get(constants.IS_AUTH) || false;
@@ -54,14 +53,14 @@ const slice = createSlice({
         rememberMe ? { expires: 30 } : {},
       );
     },
-    actionUpdateAvatar: (state, action) => {
+    actionUpdateUserInfo: (state, action) => {
       state.userInfo = {
         ...state.userInfo,
-        avatar: action.payload,
+        ...action.payload,
       };
       webStorageClient.set(constants.USER_INFO, {
         ...state.userInfo,
-        avatar: action.payload,
+        ...action.payload,
       });
     },
     actionLogout: (state) => {
@@ -75,7 +74,7 @@ const slice = createSlice({
   extraReducers: () => {},
 });
 
-export const { actionLogin, actionLogout, actionUpdateAvatar, actionSignUp } =
+export const { actionLogin, actionLogout, actionUpdateUserInfo, actionSignUp } =
   slice.actions;
 
 export default slice.reducer;

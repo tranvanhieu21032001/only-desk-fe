@@ -30,8 +30,6 @@ function Account() {
     }
   }, [typeAccount]);
 
-  console.log(typeAccount);
-
   return <S.AccountContainer>{renderContentAccount}</S.AccountContainer>;
 }
 

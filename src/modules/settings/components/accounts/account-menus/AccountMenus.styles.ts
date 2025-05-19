@@ -3,12 +3,11 @@ import { css, styled } from 'styled-components';
 export const CategoryContainer = styled.section`
   padding: 24px;
   height: 100%;
-  border-radius: 8px 0 0 8px;
 
   background-color: ${(props) => props?.theme?.colors?.newtralLightest};
 
   @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-    padding: 12px 12px 0;
+    padding: 12px 12px;
     margin-bottom: 0px;
   }
 `;
@@ -41,7 +40,8 @@ export const CategoryWrap = styled.div<{ $isActive?: boolean }>`
 
       p {
         color: ${(props) => props?.theme?.colors?.secondaryDarker};
-        font-weight: ${(props) => props?.theme?.fontWeight?.semiBold};
+        font-weight: ${(props) =>
+          props?.theme?.fontWeight?.semiBold} !important;
       }
     `}
 
@@ -50,7 +50,7 @@ export const CategoryWrap = styled.div<{ $isActive?: boolean }>`
 
     p {
       color: ${(props) => props?.theme?.colors?.secondaryDarker};
-      font-weight: ${(props) => props?.theme?.fontWeight?.semiBold};
+      font-weight: ${(props) => props?.theme?.fontWeight?.semiBold} !important;
     }
   }
 `;
