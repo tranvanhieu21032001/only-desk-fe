@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { RcFile } from 'antd/es/upload';
-import { FormInstance, message } from 'antd';
+import { FormInstance, message, Progress } from 'antd';
 
 // import { constants } from '@/settings';
-// import { postRequest } from '@/services/requests';
+import { postRequest } from '@/core/services/requests';
+import { patchRequest } from '@/core/services/requests/patchRequest';
 // import { endpointBase } from '@/services/endpoint';
 // import themeColors from '@/styles/themes/default/colors';
 // import { formatImagePreview } from '@/utils/formatImage';
@@ -52,6 +53,8 @@ function UploadImage(props: PropsInterface) {
     content,
   } = props;
 
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+
   const beforeUpload = (file: RcFile) => {
     const isMaxSize = file.size / 1024 / 1024 < maxSize;
     if (!isMaxSize) {
@@ -63,26 +66,43 @@ function UploadImage(props: PropsInterface) {
   const handleUploadMultiImages = useCallback(
     async (images: RcFile[]) => {
       const formData = new FormData();
-
-      images.forEach((image) => {
-        formData.append('files', image);
-      });
-
-      const uploadedImages = images.map((image) => URL.createObjectURL(image));
-
-      //TODO handle api
-      // const { data }: any = await postRequest(endpointBase.UPLOAD, {
-      //   data: formData,
-      //   isFormData: true,
-      // });
-      // const tempData = [...imagesPreview, ...(data?.file || [])];
-
-      onFields(uploadedImages);
-      onParams((prev) => ({
-        ...prev,
-        isLoading: false,
-      }));
-      currentForm?.setFieldValue(name, uploadedImages);
+      formData.append('image', images[0]);
+      try {
+        setUploadProgress(1);
+        const res: any = await postRequest('/file-upload/image', {
+          data: formData,
+          isFormData: true,
+          onUploadProgress: (progressEvent: ProgressEvent) => {
+            if (progressEvent.total) {
+              const percent = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total,
+              );
+              setUploadProgress(percent);
+            }
+          },
+        });
+        setUploadProgress(100);
+        setTimeout(() => setUploadProgress(0), 400);
+        const url = res?.fileUrl;
+        if (url) {
+          await patchRequest('/users/profile', {
+            data: { avatar: url },
+          });
+          onFields([url]);
+        } else {
+          onFields([]);
+        }
+      } catch (error) {
+        setUploadProgress(0);
+        message.error('Upload image Failed!');
+        onFields([]);
+      } finally {
+        onParams((prev) => ({
+          ...prev,
+          isLoading: false,
+        }));
+        currentForm?.setFieldValue(name, []);
+      }
     },
     [currentForm, fields, name],
   );
@@ -110,18 +130,36 @@ function UploadImage(props: PropsInterface) {
           {label} {isRequired && <span style={{ color: 'red' }}>*</span>}
         </Typography>
       )}
-      <S.UploadMultiImage
-        accept={'image/*'}
-        maxCount={maxCount}
-        beforeUpload={beforeUpload}
-        className="avatar-uploader"
-        fileList={[]}
-        showUploadList={false}
-        onChange={onChangeUploadImages}
-        disabled={disabled || isLoading}
+      <div
+        style={{
+          position: 'relative',
+          display: 'inline-block',
+          width: 120,
+          height: 120,
+        }}
       >
-        {content}
-      </S.UploadMultiImage>
+        <S.UploadMultiImage
+          accept={'image/*'}
+          maxCount={maxCount}
+          beforeUpload={beforeUpload}
+          className="avatar-uploader"
+          fileList={[]}
+          showUploadList={false}
+          onChange={onChangeUploadImages}
+          disabled={disabled || isLoading}
+        >
+          {content}
+        </S.UploadMultiImage>
+        {uploadProgress > 0 && uploadProgress < 100 && (
+          <Progress
+            type="circle"
+            percent={uploadProgress}
+            width={100}
+            strokeColor="#1890ff"
+            showInfo={true}
+          />
+        )}
+      </div>
     </>
   );
 }

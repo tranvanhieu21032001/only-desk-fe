@@ -6,6 +6,7 @@ export interface RequestOptionsInterface {
   enableFlashMessageError?: boolean;
   messageSuccess?: string;
   messageError?: string;
+  onUploadProgress?: (progressEvent: ProgressEvent) => void;
 }
 
 export interface ParamsInterface {

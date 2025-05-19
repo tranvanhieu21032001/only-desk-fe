@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Col, Form, Image, Row } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -19,6 +19,7 @@ import * as S from './AccountInformation.styles';
 
 // import icTickCircle from '@/assets/icons/contact/ic-tick-circle.svg';
 import imgAvatarDefault from '@/assets/images/settings/ic-avatar-default.png';
+import { patchRequest } from '@/core/services/requests/patchRequest';
 
 function AccountInformation() {
   const { t } = useTranslation('settings');
@@ -44,10 +45,15 @@ function AccountInformation() {
     toggle: handleOpenModalDisableTwoFactor,
   } = useModal();
 
-  function handleChangePassword() {
-    // TODO handle later
-    handleOpenModalChangePassword();
-  }
+  const handleUpdateProfile = async (values: any) => {
+    const avatarUrl = avatar[0];
+    await patchRequest('/users/profile', {
+      data: {
+        ...values,
+        avatar: avatarUrl,
+      },
+    });
+  };
 
   return (
     <S.AccountInformationContainer>
@@ -61,7 +67,7 @@ function AccountInformation() {
           </Typography>
         </S.AccountInformationLabel>
 
-        <Form form={form} onFinish={handleChangePassword}>
+        <Form form={form} onFinish={handleUpdateProfile}>
           <S.InformationBlock>
             <S.HeaderBlock>
               <Typography variant="h5" color={themeColors?.secondaryDarker}>
@@ -253,7 +259,7 @@ function AccountInformation() {
         <ModalEnableTwoFactor
           open={modalEnableTwoFactor}
           onCancel={handleEnableTwoFactor}
-          // onEnableTwoFactor={setEnableTwoFactor}
+        // onEnableTwoFactor={setEnableTwoFactor}
         />
       )}
 

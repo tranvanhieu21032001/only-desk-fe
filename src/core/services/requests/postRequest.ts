@@ -37,6 +37,9 @@ const postRequest = <T = any>(
       'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
       'Accept-Language': i18n.language,
     },
+    ...(options?.onUploadProgress
+      ? { onUploadProgress: options.onUploadProgress }
+      : {}),
   };
 
   return (axiosInstance as any)
