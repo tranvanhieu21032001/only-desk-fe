@@ -129,6 +129,8 @@
     "done": "Done",
     "newFilter": "New Filter",
     "enterAValue": "Enter a value",
-    "addAnotherConditions": "Add Another Conditions"
+    "addAnotherConditions": "Add Another Conditions",
+    "loadMore": "Load more",
+    "noConversationYet": "No conversation yet"
   }
 }

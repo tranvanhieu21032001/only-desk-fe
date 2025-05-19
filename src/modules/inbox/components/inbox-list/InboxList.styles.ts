@@ -5,9 +5,11 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
   background-color: ${(props) => props?.theme?.colors?.newtralLightest};
-  overflow-y: auto;
+  overflow: hidden;
   border-top-left-radius: ${(props) => props?.theme?.radius?.normalRadius};
   border-bottom-left-radius: ${(props) => props?.theme?.radius?.normalRadius};
+  display: flex;
+  flex-direction: column;
 `;
 
 export const SearchFilterWrapper = styled.div`
@@ -16,6 +18,10 @@ export const SearchFilterWrapper = styled.div`
   margin-bottom: 16px;
   align-items: center;
   width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: ${(props) => props?.theme?.colors?.newtralLightest};
 `;
 
 export const SearchInputWrapper = styled.div`
@@ -738,4 +744,22 @@ export const LabelDropdownWrapper = styled.div`
 export const MainFilterDropdownWrapper = styled.div`
   position: relative;
   width: 100%;
+`;
+
+export const ConversationListWrapper = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+`;
+
+export const LoadingMore = styled.div`
+  text-align: center;
+  padding: 16px;
+  color: ${(props) => props.theme.colors.primary};
+`;
+
+export const AllDataLoaded = styled.div`
+  text-align: center;
+  padding: 16px;
+  color: #888;
 `;
