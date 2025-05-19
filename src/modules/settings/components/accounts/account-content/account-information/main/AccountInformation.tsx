@@ -1,36 +1,39 @@
 import { useState, useEffect } from 'react';
-import { Col, Form, Image, Row } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { Col, Form, Image, Row, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
-import { useModal } from '@/shared/hooks';
+import { constants } from '@/core/settings';
+import { useAppDispatch, useModal } from '@/shared/hooks';
+import webStorageClient from '@/shared/utils/webStorageClient';
 import themeColors from '@/shared/styles/themes/default/colors';
+import { UserInforInterface } from '@/modules/auth/models/user';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
+import { handleUpdateAccountInformation } from '@/modules/settings/api/account';
 
 import Input from '@/shared/components/common/Input';
 import Button from '@/shared/components/common/Button';
-import UploadImage from '@/shared/components/common/Upload';
+import UploadImage from '@/shared/components/common/Upload/main';
 import Typography from '@/shared/components/common/Typography';
 import ModalDeleteAccount from '../modal-delete-account/ModalDeleteAccount';
 import ModalChangePassword from '../modal-change-password/ModalChangePassword';
+
 import ModalDisableTwoFactor from '../modal-disable-two-factor/ModalDisableTwoFactor';
 import ModalEnableTwoFactor from '../modal-enable-two-factor/main/ModalEnableTwoFactor';
 
 import * as S from './AccountInformation.styles';
 
-// import icTickCircle from '@/assets/icons/contact/ic-tick-circle.svg';
 import imgAvatarDefault from '@/assets/images/settings/ic-avatar-default.png';
-import { patchRequest } from '@/core/services/requests/patchRequest';
 
 function AccountInformation() {
   const { t } = useTranslation('settings');
   const [form] = Form.useForm();
+  const dispatch = useAppDispatch();
 
-  const [_, setParams] = useState<{
-    isLoading: boolean;
-    countUpload: number;
-  }>({ isLoading: false, countUpload: 0 });
-  const [avatar, setAvatar] = useState<string[]>([]);
-  // const [enableTwoFactor, setEnableTwoFactor] = useState<boolean>(false);
+  const avatarWatch = Form.useWatch('avatar', form) || '';
+  const userInfoFromStorage: UserInforInterface = webStorageClient.get(
+    constants.USER_INFO,
+  );
 
   const { visible: modalEnableTwoFactor, toggle: handleEnableTwoFactor } =
     useModal();
@@ -45,15 +48,52 @@ function AccountInformation() {
     toggle: handleOpenModalDisableTwoFactor,
   } = useModal();
 
-  const handleUpdateProfile = async (values: any) => {
-    const avatarUrl = avatar[0];
-    await patchRequest('/users/profile', {
-      data: {
-        ...values,
-        avatar: avatarUrl,
-      },
-    });
+  const [params, setParams] = useState<{
+    isLoading: boolean;
+    countUpload: number;
+    progressPercent: number;
+    isLoadingDifferentField?: boolean;
+  }>({
+    isLoading: false,
+    countUpload: 0,
+    progressPercent: 0,
+    isLoadingDifferentField: false,
+  });
+
+  useEffect(() => {
+    form.setFieldsValue(userInfoFromStorage);
+  }, []);
+
+  /**
+   * @param {string} avatarPath - The path to the avatar image when was uploaded successfully.
+   */
+  const handleUpdateAvatarInformation = (avatarPath: string) => {
+    handleUpdateAccountInformation(
+      t('account-information.update-avatar-success'),
+      { avatar: avatarPath },
+      setParams,
+      dispatch,
+    );
   };
+
+  /**
+   * @param {string} nameFile - The name of the form field need to update (nameField is dynamic).
+   */
+  function handleBlurUpdateAccountInformation(nameFile: string) {
+    const getValueField = form.getFieldValue(nameFile);
+
+    setParams((prev) => ({
+      ...prev,
+      isLoadingDifferentField: true,
+    }));
+
+    handleUpdateAccountInformation(
+      t('account-information.update-account-information-success'),
+      { [nameFile]: getValueField },
+      setParams,
+      dispatch,
+    );
+  }
 
   return (
     <S.AccountInformationContainer>
@@ -67,7 +107,7 @@ function AccountInformation() {
           </Typography>
         </S.AccountInformationLabel>
 
-        <Form form={form} onFinish={handleUpdateProfile}>
+        <Form form={form}>
           <S.InformationBlock>
             <S.HeaderBlock>
               <Typography variant="h5" color={themeColors?.secondaryDarker}>
@@ -77,25 +117,49 @@ function AccountInformation() {
 
             <S.BodyBlock>
               <Row gutter={[24, 24]}>
-                <S.Column xs={24} sm={7} md={4}>
-                  <Image
-                    src={avatar?.[0] || imgAvatarDefault}
-                    preview={false}
-                    width={120}
-                    height={120}
-                    onError={(e) => (e.currentTarget.src = imgAvatarDefault)}
-                  />
+                <S.Column xs={24} sm={7} md={6} lg={4}>
+                  <S.ImageUpload $isLoading={params?.isLoading || false}>
+                    <Form.Item name="avatar">
+                      <Image
+                        src={avatarWatch || imgAvatarDefault}
+                        preview={false}
+                        width={120}
+                        height={120}
+                        onError={(e) =>
+                          (e.currentTarget.src = imgAvatarDefault)
+                        }
+                      />
+                    </Form.Item>
+
+                    {params?.isLoading && (
+                      <>
+                        <Spin
+                          indicator={
+                            <LoadingOutlined style={{ fontSize: 48 }} spin />
+                          }
+                        />
+                        <Typography
+                          fontWeight={fontWeight?.semiBold}
+                          color={themeColors?.successDark}
+                        >
+                          {params?.progressPercent}%
+                        </Typography>
+                      </>
+                    )}
+                  </S.ImageUpload>
                 </S.Column>
-                <S.ColumnAvatar xs={24} sm={17} md={20}>
+                <S.ColumnAvatar xs={24} sm={17} md={18} lg={20}>
                   <UploadImage
                     onParams={setParams}
-                    onFields={setAvatar}
-                    // currentForm={form}
-                    fields={avatar}
+                    currentForm={form}
+                    fieldName="avatar"
                     maxCount={1}
+                    handleUpdateAvatarInformation={
+                      handleUpdateAvatarInformation
+                    }
                     content={
                       <S.ButtonUpload>
-                        <Button type="primary">
+                        <Button type="primary" isLoading={params?.isLoading}>
                           {t('account-information.upload-image')}
                         </Button>
                         <Typography
@@ -135,6 +199,9 @@ function AccountInformation() {
                       isRequired
                       label={t('account-information.first-name')}
                       placeholder={t('account-information.first-name')}
+                      onBlur={() =>
+                        handleBlurUpdateAccountInformation('firstName')
+                      }
                     />
                   </Form.Item>
                 </Col>
@@ -152,6 +219,9 @@ function AccountInformation() {
                       isRequired
                       label={t('account-information.last-name')}
                       placeholder={t('account-information.last-name')}
+                      onBlur={() =>
+                        handleBlurUpdateAccountInformation('lastName')
+                      }
                     />
                   </Form.Item>
                 </Col>
@@ -174,6 +244,7 @@ function AccountInformation() {
                       type="email"
                       label={t('account-information.email')}
                       placeholder={t('account-information.email')}
+                      onBlur={() => handleBlurUpdateAccountInformation('email')}
                     />
                   </Form.Item>
                 </Col>
@@ -192,6 +263,7 @@ function AccountInformation() {
                       type="number"
                       label={t('account-information.phone')}
                       placeholder={t('account-information.phone')}
+                      onBlur={() => handleBlurUpdateAccountInformation('phone')}
                     />
                   </Form.Item>
                 </Col>
@@ -212,7 +284,11 @@ function AccountInformation() {
                   <Typography>{t('account-information.password')}</Typography>
                 </S.Column>
                 <S.Column sm={21} xs={24}>
-                  <Button type="primary" onClick={form.submit}>
+                  <Button
+                    type="primary"
+                    onClick={form.submit}
+                    isLoading={params?.isLoadingDifferentField}
+                  >
                     {t('account-information.change-password')}
                   </Button>
                 </S.Column>
@@ -259,7 +335,7 @@ function AccountInformation() {
         <ModalEnableTwoFactor
           open={modalEnableTwoFactor}
           onCancel={handleEnableTwoFactor}
-        // onEnableTwoFactor={setEnableTwoFactor}
+          // onEnableTwoFactor={setEnableTwoFactor}
         />
       )}
 

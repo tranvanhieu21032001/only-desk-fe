@@ -22,11 +22,10 @@ const postRequest = <T = any>(
     messageSuccess = '',
     messageError = '',
     enableFlashMessageError = true,
+    enableFlashMessageSuccess = true,
   } = options || {};
   const tokenClient = webLocalStorage.get(constants?.ACCESS_TOKEN);
   const tokenFromCookies = webStorageClient.getToken();
-
-  console.log(tokenClient);
 
   // Common request configuration
   const config = {
@@ -45,12 +44,13 @@ const postRequest = <T = any>(
   return (axiosInstance as any)
     .post(url, data, config)
     .then((res: any) => {
-      toast(
-        React.createElement(ToastMessage, {
-          typeToast: ToastMessageType?.SUCCESS,
-          message: messageSuccess ? messageSuccess : res.data?.message,
-        }),
-      );
+      enableFlashMessageSuccess &&
+        toast(
+          React.createElement(ToastMessage, {
+            typeToast: ToastMessageType?.SUCCESS,
+            message: messageSuccess ? messageSuccess : res.data?.message,
+          }),
+        );
       return res;
     })
     .catch((err: any) => {

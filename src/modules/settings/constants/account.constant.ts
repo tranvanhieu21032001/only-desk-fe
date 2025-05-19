@@ -1,3 +1,5 @@
 const accountMenuType = 'type';
 
-export { accountMenuType };
+const avatarLoadingField = 'avatarLoadingField';
+
+export { accountMenuType, avatarLoadingField };

@@ -53,7 +53,7 @@ const MAIN_ROUTES = {
   INSTALLED_PLUGINS: `${preRouterMain}/installed-plugins`,
 
   // Settings
-  ACCOUNT: `${preRouterMain}/account`,
+  ACCOUNT: `${preRouterMain}/setting-account`,
   BILLING: `${preRouterMain}/billing`,
   WORKSPACE: `${preRouterMain}/setting-workspace`,
   CHATBOX: `${preRouterMain}/chatbox`,

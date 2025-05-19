@@ -1,4 +1,5 @@
 import { Col } from 'antd';
+
 import { css, styled } from 'styled-components';
 
 export const AccountInformationContainer = styled.section`
@@ -99,6 +100,20 @@ export const BodyBlock = styled.div`
   padding: 8px;
 `;
 
+export const ImageUpload = styled.div<{ $isLoading?: boolean }>`
+  position: relative;
+  width: fit-content;
+
+  ${({ $isLoading }) =>
+    $isLoading &&
+    css`
+      .ant-image-img {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    `};
+`;
+
 export const Column = styled(Col)<{ $isEnableTwoFactor?: boolean }>`
   button {
     width: fit-content;
@@ -124,6 +139,30 @@ export const Column = styled(Col)<{ $isEnableTwoFactor?: boolean }>`
   img {
     border-radius: 100px;
     object-fit: cover;
+  }
+
+  .ant-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    opacity: 1;
+    z-index: 2;
+
+    svg {
+      color: ${(props) => props.theme.colors?.successDark};
+    }
+  }
+
+  p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    opacity: 1;
+    z-index: 2;
   }
 
   @media ${(props) => props?.theme?.breakpoints?.smMax} {

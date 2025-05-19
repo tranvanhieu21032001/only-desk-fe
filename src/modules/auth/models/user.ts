@@ -2,10 +2,11 @@ export interface UserInforInterface {
   email?: string;
   role?: string[];
   avatar?: string | File;
-  rbacUiUser?: {
-    id?: string;
-    _id: string;
-    name: string;
-  };
+  isVerified?: boolean;
   userId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
 }

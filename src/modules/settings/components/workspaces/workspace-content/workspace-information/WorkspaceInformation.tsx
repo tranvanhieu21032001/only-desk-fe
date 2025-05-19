@@ -7,7 +7,7 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 
 import Input from '@/shared/components/common/Input';
 import Button from '@/shared/components/common/Button';
-import UploadImage from '@/shared/components/common/Upload';
+import UploadImage from '@/shared/components/common/Upload/main';
 import Typography from '@/shared/components/common/Typography';
 
 import * as S from './WorkspaceInformation.styles';
