@@ -5,6 +5,7 @@ const USER_INFO = '_user_info';
 const IS_AUTH = '_is_auth';
 const ACCESS_TOKEN = '_access_token';
 const SIGN_UP_INFO = '_sign_up_info';
+const WORK_SPACE_CURRENT = '_current_work_space';
 
 const constants = {
   API_SERVER,
@@ -13,6 +14,7 @@ const constants = {
   IS_AUTH,
   ACCESS_TOKEN,
   SIGN_UP_INFO,
+  WORK_SPACE_CURRENT,
 };
 
 export const DEFAULT_RESIZER_CONFIG = {

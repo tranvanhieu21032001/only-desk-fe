@@ -105,6 +105,7 @@ function AccountInformation() {
           >
             {t('account-information.account-information')}
           </Typography>
+          {params?.isLoadingDifferentField && <Spin />}
         </S.AccountInformationLabel>
 
         <Form form={form}>
@@ -286,8 +287,7 @@ function AccountInformation() {
                 <S.Column sm={21} xs={24}>
                   <Button
                     type="primary"
-                    onClick={form.submit}
-                    isLoading={params?.isLoadingDifferentField}
+                    onClick={handleOpenModalChangePassword}
                   >
                     {t('account-information.change-password')}
                   </Button>

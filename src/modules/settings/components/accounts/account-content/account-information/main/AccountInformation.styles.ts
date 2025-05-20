@@ -74,6 +74,13 @@ export const Automatically = styled.div`
 `;
 
 export const AccountInformationLabel = styled.div`
+  display: flex;
+  gap: 14px;
+
+  .ant-spin-dot-holder {
+    color: ${(props) => props.theme.colors?.successDark};
+  }
+
   p {
     font-size: 20px;
   }
