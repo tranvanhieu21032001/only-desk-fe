@@ -1,6 +1,7 @@
 import { TFunction } from 'i18next';
 
 import { postRequest } from '@/core/services/requests';
+import { actionUpdateWorkSpaces } from '@/modules/auth/store/features/auth';
 
 const prefixAuth: string = '';
 
@@ -13,13 +14,15 @@ const handleCreateWorkspaceApi = async (
   t: TFunction,
   handleOpenModalCreateWorkspace: () => void,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  dispatch: React.Dispatch<any>,
 ) => {
   await postRequest(endpointAuth?.WORKSPACE, {
     data: values,
     messageSuccess: t('create-workspace.create-workspace-success'),
   })
-    .then(() => {
+    .then((res) => {
       handleOpenModalCreateWorkspace();
+      dispatch(actionUpdateWorkSpaces(res));
     })
     .catch((err) => err)
     .finally(() => setIsLoading((prev) => !prev));

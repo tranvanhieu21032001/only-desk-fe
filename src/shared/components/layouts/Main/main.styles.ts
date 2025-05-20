@@ -207,7 +207,7 @@ export const PopoverLabelWrapNoBorder = styled.div`
   gap: 4px;
 `;
 
-export const WorkSpacesCard = styled.div`
+export const WorkSpacesCard = styled.div<{ $isActive?: boolean }>`
   padding: 9px 12px;
   cursor: pointer;
 
@@ -221,7 +221,14 @@ export const WorkSpacesCard = styled.div`
   &:hover {
     transition: box-shadow 0.2s;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    background: ${(props) => props.theme.colors.secondaryLight};
   }
+
+  ${({ $isActive }) =>
+    $isActive &&
+    css`
+      background: ${(props) => props.theme.colors.secondaryLight};
+    `}
 `;
 
 export const WorkSpacesLabel = styled.div`
@@ -381,7 +388,15 @@ export const AvatarImage = styled.div`
   }s
 `;
 
-export const ProfilesInfo = styled.div``;
+export const ProfilesInfo = styled.div`
+  width: 80%;
+
+  p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
 
 export const ProfilesName = styled.div`
   display: flex;
@@ -391,12 +406,6 @@ export const ProfilesName = styled.div`
   .ant-image {
     display: flex;
     align-items: center;
-  }
-
-  p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 `;
 

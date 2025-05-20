@@ -1,7 +1,7 @@
 export interface UserInforInterface {
   email?: string;
   role?: string[];
-  avatar?: string | File;
+  avatar?: string;
   isVerified?: boolean;
   userId?: string;
   createdAt?: string;
@@ -9,4 +9,12 @@ export interface UserInforInterface {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
+}
+
+export interface WorkSpaceInterface {
+  id: string;
+  logo: string;
+  name: string;
+  websiteID: string;
+  websiteUrl: string;
 }

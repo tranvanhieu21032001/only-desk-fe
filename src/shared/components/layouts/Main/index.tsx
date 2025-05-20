@@ -4,7 +4,7 @@ import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 
 import {
   chatsPaths,
@@ -12,27 +12,29 @@ import {
   pluginsPaths,
   settingsPaths,
 } from '@/shared/helper/data/layout';
-import { useAppDispatch, useModal } from '@/shared/hooks';
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import { MAX_COUNT } from '@/shared/helper/data/contacts';
 import themeColors from '@/shared/styles/themes/default/colors';
-import { actionLogout } from '@/modules/auth/store/features/auth';
+import {
+  actionLogout,
+  actionUpdateWorkSpaceCurrent,
+  fetchGetUserInfo,
+  fetchWorkspace,
+} from '@/modules/auth/store/features/auth';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
+import { useAppDispatch, useAppSelector, useModal } from '@/shared/hooks';
+import constants, {
+  DEFAULT_EMAIL,
+  DEFAULT_FULL_NAME,
+} from '@/core/settings/constants';
+import { handleCreateWorkspaceApi } from '@/modules/workspace/api/workspace';
 import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
 import CreateWorkspaceModal from '@/modules/workspace/pages/modal-create-workspace/CreateWorkspace';
-import { DEFAULT_EMAIL, DEFAULT_FULL_NAME } from '@/core/settings/constants';
-import { MeQuery } from '@/relay/__generated__/MeQuery.graphql';
-import { meQuery } from '@/relay/MeQuery';
-import { workspaceInfoQuery } from '@/relay/WorkspaceInfoQuery';
-import { WorkspaceInfoQuery } from '@/relay/__generated__/WorkspaceInfoQuery.graphql';
-import { handleCreateWorkspaceApi } from '@/modules/workspace/api/workspace';
 import ModalConfirmCreateWorkspace from '@/modules/workspace/pages/modal-confirm-create-workspace/ModalConfirmCreateWorkspace';
 
 import Header from '../../common/header/Main';
 import Typography from '../../common/Typography';
 import AvatarWithStatus from '../../common/Avatar';
-
-import { useRelayQuery } from '@/shared/hooks/useRelayQuery';
 
 import * as S from './main.styles';
 
@@ -82,6 +84,8 @@ import icVector from '@/assets/icons/layout/ic-vector.svg';
 import icUserEdit from '@/assets/icons/layout/ic-user-edit.svg';
 import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
+import { WorkSpaceInterface } from '@/modules/auth/models/user';
+import webLocalStorage from '@/shared/utils/webLocalStorage';
 
 interface Props {
   children: React.ReactNode;
@@ -91,6 +95,10 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const { t } = useTranslation('layout');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const { userInfo, workSpaceList, currentWorkSpace } = useAppSelector(
+    (state) => state.auth,
+  );
 
   const {
     visible: isModalCreateWorkspace,
@@ -115,19 +123,23 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     }
   }
 
-  const userData = useRelayQuery<MeQuery>(
-    meQuery,
-    {},
-    { fetchPolicy: 'store-or-network' },
-  );
-  const user = userData.me;
+  useEffect(() => {
+    dispatch(fetchGetUserInfo());
+    dispatch(fetchWorkspace());
+  }, [dispatch]);
 
-  const workspaceData = useRelayQuery<WorkspaceInfoQuery>(
-    workspaceInfoQuery,
-    {},
-    { fetchPolicy: 'store-or-network' },
-  );
-  const workspaces = workspaceData.workspaces;
+  useEffect(() => {
+    if (workSpaceList && workSpaceList[0]) {
+      const getCurrentWorkSpaceFromLocal = webLocalStorage.get(
+        constants.WORK_SPACE_CURRENT,
+      );
+      dispatch(
+        actionUpdateWorkSpaceCurrent(
+          getCurrentWorkSpaceFromLocal || workSpaceList[0],
+        ),
+      );
+    }
+  }, [workSpaceList]);
 
   const menus = [
     {
@@ -483,6 +495,10 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     dispatch(actionLogout());
   }
 
+  function handleSelectWorkSpaceCurrent(workSpace: WorkSpaceInterface) {
+    dispatch(actionUpdateWorkSpaceCurrent(workSpace));
+  }
+
   const renderWorkSpaces = (
     <S.PopoverContent>
       <Typography fontWeight={fontWeight?.semiBold} variant="body-text-larger">
@@ -490,8 +506,12 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       </Typography>
       <S.Line />
       <S.PopoverLabel>
-        {workspaces.map((ws) => (
-          <S.WorkSpacesCard key={ws.id}>
+        {(workSpaceList || []).map((ws) => (
+          <S.WorkSpacesCard
+            key={ws.id}
+            $isActive={ws.id === currentWorkSpace?.id}
+            onClick={() => handleSelectWorkSpaceCurrent(ws)}
+          >
             <S.AvatarImage>
               <Image
                 src={ws?.logo || icDefaultWorkspace}
@@ -614,21 +634,21 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     <S.PopoverContent>
       <S.ProfilesWrap>
         <AvatarWithStatus
-          avatarSrc={user?.avatar || icDefaultAvatar}
+          avatarSrc={userInfo?.avatar || icDefaultAvatar}
           flagSrc={flag}
           isOnline={true}
         />
         <S.ProfilesInfo>
           <S.ProfilesName>
             <Typography>
-              {user?.firstName
-                ? `${user.firstName} ${user.lastName ?? ''}`
+              {userInfo?.firstName
+                ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
                 : DEFAULT_FULL_NAME}
             </Typography>
 
             <Image src={icVector} preview={false} width={13} height={13} />
           </S.ProfilesName>
-          <Typography>{user?.email || DEFAULT_EMAIL}</Typography>
+          <Typography>{userInfo?.email || DEFAULT_EMAIL}</Typography>
         </S.ProfilesInfo>
         <S.ProfileDetail
           onClick={handleProfileDetail}
@@ -708,11 +728,13 @@ const MainLayout: React.FC<Props> = ({ children }) => {
 
   function handleCreateWorkspace(values: any) {
     setIsLoading((prev) => !prev);
+
     handleCreateWorkspaceApi(
       values,
       t,
       handleOpenModalCreateWorkspace,
       setIsLoading,
+      dispatch,
     );
   }
 
@@ -780,7 +802,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
             >
               <S.AvatarImage>
                 <Image
-                  src={user?.avatar || icDefaultWorkspace}
+                  src={userInfo?.avatar || icDefaultWorkspace}
                   preview={false}
                   width={36}
                   height={36}
@@ -819,7 +841,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
           >
             <S.Profiles>
               <AvatarWithStatus
-                avatarSrc={user?.avatar || icDefaultAvatar}
+                avatarSrc={userInfo?.avatar || icDefaultAvatar}
                 flagSrc={flag}
                 isOnline={true}
               />

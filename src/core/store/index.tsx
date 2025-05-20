@@ -1,7 +1,7 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit';
 
-import auth from "@/modules/auth/store/features/auth";
-import historyRoute from "./features/historyRoute";
+import auth from '@/modules/auth/store/features/auth';
+import historyRoute from './features/historyRoute';
 
 export const store = configureStore({
   reducer: {
