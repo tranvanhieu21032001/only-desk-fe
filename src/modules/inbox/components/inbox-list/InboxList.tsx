@@ -1,18 +1,18 @@
 import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef } from 'react';
-import { conversationListQuery } from '@/relay/ConversationListQuery';
-import { ConversationListQuery } from '@/relay/__generated__/ConversationListQuery.graphql';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { fetchQuery } from 'relay-runtime';
-import relayEnvironment from '@/relay/RelayEnvironment';
-import { workspaceInfoQuery } from '@/relay/WorkspaceInfoQuery';
-import { WorkspaceInfoQuery } from '@/relay/__generated__/WorkspaceInfoQuery.graphql';
+import { useSelector } from 'react-redux';
 
 import AvatarWithStatus from '@/shared/components/common/Avatar';
 import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
 
-import { useRelayQuery } from '@/shared/hooks/useRelayQuery';
+import relayEnvironment from '@/relay/RelayEnvironment';
+import { conversationListQuery } from '@/relay/ConversationListQuery';
+import { ConversationListQuery } from '@/relay/__generated__/ConversationListQuery.graphql';
+import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import { getFormattedTime } from '../../helpers/inbox.logic';
 
 import { filterOptions, filtersDropdown } from '@/core/settings/options';
@@ -72,10 +72,11 @@ const NotificationList = () => {
   const [hasMore, setHasMore] = useState(true);
   const conversationListWrapperRef = useRef<HTMLDivElement>(null);
   const [lastCursor, setLastCursor] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const activeConversationId = searchParams.get('conversationId');
 
-  // Fetch workspaceId from workspaceInfoQuery
-  const workspaceData = useRelayQuery<WorkspaceInfoQuery>(workspaceInfoQuery);
-  const workspaceId = workspaceData.workspaces[0]?.id;
+  const workspaceId = useSelector(selectCurrentWorkspaceId);
 
   // Fetch initial conversation list
   useEffect(() => {
@@ -183,6 +184,10 @@ const NotificationList = () => {
 
   const handleChange = (value: string) => {
     setSelectedOption(value);
+  };
+
+  const handleConversationClick = (conversationId: string) => {
+    navigate(`?workspaceId=${workspaceId}&conversationId=${conversationId}`);
   };
 
   return (
@@ -298,72 +303,81 @@ const NotificationList = () => {
         {conversationEdges.length === 0 && !loadingMore && (
           <S.AllDataLoaded>{t('inboxList.noConversationYet')}</S.AllDataLoaded>
         )}
-        {conversationEdges.map((edge, index) => {
-          const c = edge.node;
-          return (
-            <S.NotificationItem key={c.id}>
-              <S.Avatar>
-                <AvatarWithStatus
-                  avatarSrc={avatarDefault}
-                  isOnline={true}
-                  flagSrc={flag}
-                />
-              </S.Avatar>
-              <S.Content>
-                <S.Title>{c.guestName || 'No Name'}</S.Title>
-                <S.Subtitle>
-                  {c.latestMessage?.content || <p>No message</p>}
-                </S.Subtitle>
-              </S.Content>
-              <S.RightSection ref={menuRef}>
-                <S.Time className="time">
-                  {getFormattedTime(c.lastActivityAt)}
-                </S.Time>
-                <S.BarIcon onClick={(e) => handleMenuClick(index, e)}>
-                  <Image src={barColumn} preview={false} />
-                </S.BarIcon>
-                {c.unreadAgentCount ? (
-                  <S.Badge>{c.unreadAgentCount}</S.Badge>
-                ) : (
-                  <S.Badge></S.Badge>
-                )}
-                {activeMenu === index && (
-                  <S.MenuDropdown isOpen={true}>
-                    <S.MenuItem
-                      onClick={(e) => handleMenuItemClick('resolve', e)}
-                    >
-                      <Image src={check} preview={false} />
-                      Mark as resolved
-                    </S.MenuItem>
-                    <S.MenuItem
-                      onClick={(e) => handleMenuItemClick('unread', e)}
-                    >
-                      <Image src={unreadIcon} preview={false} />
-                      Mark as unread
-                    </S.MenuItem>
-                    <S.MenuItem onClick={(e) => handleMenuItemClick('copy', e)}>
-                      <Image src={copyIcon} preview={false} />
-                      Copy link
-                    </S.MenuItem>
-                    <S.MenuItem
-                      onClick={(e) => handleMenuItemClick('block', e)}
-                    >
-                      <Image src={blockIcon} preview={false} />
-                      Block Admin 3
-                    </S.MenuItem>
-                    <S.MenuItem
-                      className="delete"
-                      onClick={(e) => handleMenuItemClick('delete', e)}
-                    >
-                      <Image src={deleteIcon} preview={false} />
-                      Delete conversation
-                    </S.MenuItem>
-                  </S.MenuDropdown>
-                )}
-              </S.RightSection>
-            </S.NotificationItem>
-          );
-        })}
+        {conversationEdges
+          .slice()
+          .reverse()
+          .map((edge, index) => {
+            const c = edge.node;
+            return (
+              <S.NotificationItem
+                key={c.id}
+                active={c.id === activeConversationId}
+                onClick={() => handleConversationClick(c.id)}
+              >
+                <S.Avatar>
+                  <AvatarWithStatus
+                    avatarSrc={avatarDefault}
+                    isOnline={true}
+                    flagSrc={flag}
+                  />
+                </S.Avatar>
+                <S.Content>
+                  <S.Title>{c.guestName || 'No Name'}</S.Title>
+                  <S.Subtitle>
+                    {c.latestMessage?.content || <p>No message</p>}
+                  </S.Subtitle>
+                </S.Content>
+                <S.RightSection ref={menuRef}>
+                  <S.Time className="time">
+                    {getFormattedTime(c.lastActivityAt)}
+                  </S.Time>
+                  <S.BarIcon onClick={(e) => handleMenuClick(index, e)}>
+                    <Image src={barColumn} preview={false} />
+                  </S.BarIcon>
+                  {c.unreadAgentCount ? (
+                    <S.Badge>{c.unreadAgentCount}</S.Badge>
+                  ) : (
+                    <></>
+                  )}
+                  {activeMenu === index && (
+                    <S.MenuDropdown isOpen={true}>
+                      <S.MenuItem
+                        onClick={(e) => handleMenuItemClick('resolve', e)}
+                      >
+                        <Image src={check} preview={false} />
+                        Mark as resolved
+                      </S.MenuItem>
+                      <S.MenuItem
+                        onClick={(e) => handleMenuItemClick('unread', e)}
+                      >
+                        <Image src={unreadIcon} preview={false} />
+                        Mark as unread
+                      </S.MenuItem>
+                      <S.MenuItem
+                        onClick={(e) => handleMenuItemClick('copy', e)}
+                      >
+                        <Image src={copyIcon} preview={false} />
+                        Copy link
+                      </S.MenuItem>
+                      <S.MenuItem
+                        onClick={(e) => handleMenuItemClick('block', e)}
+                      >
+                        <Image src={blockIcon} preview={false} />
+                        Block Admin 3
+                      </S.MenuItem>
+                      <S.MenuItem
+                        className="delete"
+                        onClick={(e) => handleMenuItemClick('delete', e)}
+                      >
+                        <Image src={deleteIcon} preview={false} />
+                        Delete conversation
+                      </S.MenuItem>
+                    </S.MenuDropdown>
+                  )}
+                </S.RightSection>
+              </S.NotificationItem>
+            );
+          })}
         {loadingMore && (
           <S.LoadingMore>{t('inboxList.loadMore')}</S.LoadingMore>
         )}

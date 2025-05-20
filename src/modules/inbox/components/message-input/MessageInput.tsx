@@ -6,7 +6,6 @@ import * as S from './MessageInput.styles';
 import file from '@/assets/icons/common/ic-file.svg';
 import smile from '@/assets/icons/common/ic-smile.svg';
 import send from '@/assets/icons/common/ic-send.svg';
-import sendWhite from '@/assets/icons/inbox/ic-send-white.svg';
 import bellWhite from '@/assets/icons/inbox/ic-bell-white.svg';
 import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
 import icPdf from '@/assets/icons/inbox/ic-pdf.svg';
@@ -14,7 +13,6 @@ import icCheck from '@/assets/icons/inbox/ic-check.svg';
 import icCloseImage from '@/assets/icons/inbox/ic-close-image.svg';
 import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
 import trash from '@/assets/icons/inbox/ic-trash.svg';
-import icInfoBlue from '@/assets/icons/inbox/ic-info-blue.svg';
 
 interface MessageInputProps {
   activeTab: string | null;
@@ -39,8 +37,6 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const [filePreviews, setFilePreviews] = useState<
     { type: 'image' | 'pdf'; src?: string; file: File }[]
   >([]);
-  const [showSendModal, setShowSendModal] = useState(false);
-  const [dontShowAgain, setDontShowAgain] = useState(false);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -160,6 +156,11 @@ const MessageInput: React.FC<MessageInputProps> = ({
           setInputValue(e.target.value);
           if (e.target.value === '') setActiveTab(null);
         }}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter' && inputValue.trim()) {
+            onSendMessage(inputValue);
+          }
+        }}
         placeholder="Messages..."
         style={{ flex: 1 }}
       />
@@ -169,46 +170,14 @@ const MessageInput: React.FC<MessageInputProps> = ({
         <Image
           src={send}
           preview={false}
-          onClick={() => setShowSendModal(true)}
+          onClick={() => {
+            if (inputValue.trim()) {
+              onSendMessage(inputValue);
+            }
+          }}
           style={{ cursor: 'pointer' }}
         />
       </S.InputIconsWrapper>
-
-      {showSendModal && (
-        <S.SendMessageModalOverlay>
-          <S.SendMessageModalWrapper>
-            <S.SendMessageModalHeader>
-              <S.SendMessageModalIcon src={icInfoBlue} alt="info" />
-              <S.SendMessageModalTitle>Send Message</S.SendMessageModalTitle>
-            </S.SendMessageModalHeader>
-            <S.SendMessageModalDesc>
-              This user is now offline, meaning that this message will be sent
-              via email once you confirm. It won't be editable.
-            </S.SendMessageModalDesc>
-            <S.FooterPaddingLine />
-            <S.SendMessageModalFooter>
-              <S.SendMessageModalCheckboxRow>
-                <S.SendMessageModalCheckbox
-                  type="checkbox"
-                  id="dont-show-again"
-                  checked={dontShowAgain}
-                  onChange={(e) => setDontShowAgain(e.target.checked)}
-                />
-                <S.SendMessageModalCheckboxLabel htmlFor="dont-show-again">
-                  Don't show it again
-                </S.SendMessageModalCheckboxLabel>
-              </S.SendMessageModalCheckboxRow>
-              <S.SendMessageModalButton onClick={() => {
-                onSendMessage(inputValue);
-                setShowSendModal(false);
-              }}>
-                <img src={sendWhite} />
-                Send Message
-              </S.SendMessageModalButton>
-            </S.SendMessageModalFooter>
-          </S.SendMessageModalWrapper>
-        </S.SendMessageModalOverlay>
-      )}
     </S.InputRow>
   );
 };

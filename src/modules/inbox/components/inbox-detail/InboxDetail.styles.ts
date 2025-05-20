@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { BellOutlined } from '@ant-design/icons';
 
 interface IconProps {
   isActive?: boolean;
@@ -95,7 +96,9 @@ export const MessageBubbleLeft = styled.div`
   padding: 8px 12px;
   border-radius: 12px;
   margin: 0 8px 0 0;
-  max-width: 300px;
+  max-width: 70%;
+  word-break: break-word;
+  white-space: pre-wrap;
 `;
 
 export const MessageBubbleRight = styled(MessageBubbleLeft)`
@@ -386,4 +389,41 @@ export const RemoveTokenIcon = styled.span`
   font-weight: bold;
   cursor: pointer;
   color: #1d4ed8;
+`;
+
+export const EmptyState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  font-size: 16px;
+`;
+
+export const LoadingState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  font-size: 16px;
+`;
+
+export const NewMessageNotice = styled.div`
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 10;
+`;
+
+export const NewMessageIcon = styled(BellOutlined)`
+  font-size: 32px;
+  color: #1890ff;
+  background: #fff;
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 2px 8px #0001;
+  cursor: pointer;
 `;
