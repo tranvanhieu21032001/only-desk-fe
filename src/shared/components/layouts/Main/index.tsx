@@ -12,21 +12,23 @@ import {
   pluginsPaths,
   settingsPaths,
 } from '@/shared/helper/data/layout';
-import { MAIN_ROUTES } from '@/core/routes/constants';
-import { MAX_COUNT } from '@/shared/helper/data/contacts';
-import themeColors from '@/shared/styles/themes/default/colors';
+import constants, {
+  DEFAULT_EMAIL,
+  DEFAULT_FULL_NAME,
+} from '@/core/settings/constants';
 import {
   actionLogout,
   actionUpdateWorkSpaceCurrent,
   fetchGetUserInfo,
   fetchWorkspace,
 } from '@/modules/auth/store/features/auth';
+import { MAIN_ROUTES } from '@/core/routes/constants';
+import { MAX_COUNT } from '@/shared/helper/data/contacts';
+import webLocalStorage from '@/shared/utils/webLocalStorage';
+import { WorkspaceInterface } from '@/modules/auth/models/user';
+import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { useAppDispatch, useAppSelector, useModal } from '@/shared/hooks';
-import constants, {
-  DEFAULT_EMAIL,
-  DEFAULT_FULL_NAME,
-} from '@/core/settings/constants';
 import { handleCreateWorkspaceApi } from '@/modules/workspace/api/workspace';
 import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
 import CreateWorkspaceModal from '@/modules/workspace/pages/modal-create-workspace/CreateWorkspace';
@@ -84,8 +86,6 @@ import icVector from '@/assets/icons/layout/ic-vector.svg';
 import icUserEdit from '@/assets/icons/layout/ic-user-edit.svg';
 import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
-import { WorkSpaceInterface } from '@/modules/auth/models/user';
-import webLocalStorage from '@/shared/utils/webLocalStorage';
 
 interface Props {
   children: React.ReactNode;
@@ -96,8 +96,11 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { userInfo, workSpaceList, currentWorkSpace } = useAppSelector(
+  const { userInfo, workSpaceList, currentWorkspace } = useAppSelector(
     (state) => state.auth,
+  );
+  const getCurrentWorkSpaceFromLocal = webLocalStorage.get(
+    constants?.CURRENT_WORKSPACE,
   );
 
   const {
@@ -130,9 +133,6 @@ const MainLayout: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (workSpaceList && workSpaceList[0]) {
-      const getCurrentWorkSpaceFromLocal = webLocalStorage.get(
-        constants.WORK_SPACE_CURRENT,
-      );
       dispatch(
         actionUpdateWorkSpaceCurrent(
           getCurrentWorkSpaceFromLocal || workSpaceList[0],
@@ -495,7 +495,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     dispatch(actionLogout());
   }
 
-  function handleSelectWorkSpaceCurrent(workSpace: WorkSpaceInterface) {
+  function handleSelectWorkSpaceCurrent(workSpace: WorkspaceInterface) {
     dispatch(actionUpdateWorkSpaceCurrent(workSpace));
   }
 
@@ -509,7 +509,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         {(workSpaceList || []).map((ws) => (
           <S.WorkSpacesCard
             key={ws.id}
-            $isActive={ws.id === currentWorkSpace?.id}
+            $isActive={ws.id === currentWorkspace?.id}
             onClick={() => handleSelectWorkSpaceCurrent(ws)}
           >
             <S.AvatarImage>
