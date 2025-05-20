@@ -11,7 +11,7 @@ export interface UserInforInterface {
   phoneNumber?: string;
 }
 
-export interface WorkSpaceInterface {
+export interface WorkspaceInterface {
   id: string;
   logo: string;
   name: string;

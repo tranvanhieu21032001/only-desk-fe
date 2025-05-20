@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import {
   UserInforInterface,
-  WorkSpaceInterface,
+  WorkspaceInterface,
 } from '@/modules/auth/models/user';
 import { meQuery } from '@/relay/MeQuery';
 import { fetchQuery } from 'react-relay';
@@ -25,8 +25,8 @@ export interface AuthInterface {
   userInfo: UserInforInterface | null;
   permissionList: Record<string, boolean>;
   isLoading?: boolean;
-  workSpaceList?: WorkSpaceInterface[] | [];
-  currentWorkSpace?: WorkSpaceInterface | null;
+  workSpaceList?: WorkspaceInterface[] | [];
+  currentWorkspace?: WorkspaceInterface | null;
 }
 
 const initialState: AuthInterface = {
@@ -35,7 +35,7 @@ const initialState: AuthInterface = {
   permissionList: {},
   isLoading: false,
   workSpaceList: [],
-  currentWorkSpace: null,
+  currentWorkspace: null,
 };
 
 const fetchWorkspace = createAsyncThunk('user-profile/work-space', async () => {
@@ -58,6 +58,7 @@ const fetchGetUserInfo = createAsyncThunk(
       {},
       { fetchPolicy: 'store-or-network' },
     ).toPromise();
+    console.log(userData);
 
     return userData?.me;
   },
@@ -110,14 +111,14 @@ const slice = createSlice({
     },
     actionUpdateWorkSpaceCurrent: (
       state,
-      action: { payload: WorkSpaceInterface },
+      action: { payload: WorkspaceInterface },
     ) => {
-      state.currentWorkSpace = action.payload;
-      webLocalStorage.set(constants.WORK_SPACE_CURRENT, action?.payload);
+      state.currentWorkspace = action.payload;
+      webLocalStorage.set(constants.CURRENT_WORKSPACE, action?.payload);
     },
     actionUpdateWorkSpaces: (
       state,
-      action: { payload: WorkSpaceInterface },
+      action: { payload: WorkspaceInterface },
     ) => {
       state.workSpaceList = [
         ...(state.workSpaceList || []),
