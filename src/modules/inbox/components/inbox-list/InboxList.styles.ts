@@ -124,7 +124,7 @@ export const ButtonModalDropdown = styled.button`
   }
 `;
 
-export const NotificationItem = styled.div`
+export const NotificationItem = styled.div<{ active?: boolean }>`
   display: flex;
   align-items: center;
   padding: 12px;
@@ -135,6 +135,12 @@ export const NotificationItem = styled.div`
   &:hover {
     background-color: ${(props) => props?.theme?.colors?.newtralLighter};
   }
+
+  ${({ active }) =>
+    active &&
+    `
+      background-color: #EDF1F8 !important;
+    `}
 `;
 
 export const Avatar = styled.div`

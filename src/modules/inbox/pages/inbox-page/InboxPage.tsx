@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { Splitter } from "antd";
+import React, { useState } from 'react';
+import { Splitter } from 'antd';
 
-import NotificationList from "../../components/inbox-list/InboxList";
-import InboxDetail from "../../components/inbox-detail/InboxDetail";
-import InboxSidebar from "../../components/inbox-sidebar/InboxSidebar";
+import NotificationList from '../../components/inbox-list/InboxList';
+import InboxDetail from '../../components/inbox-detail/InboxDetail';
+import InboxSidebar from '../../components/inbox-sidebar/InboxSidebar';
 
-import { DEFAULT_RESIZER_CONFIG } from "@/core/settings/constants";
+import { DEFAULT_RESIZER_CONFIG } from '@/core/settings/constants';
 
-import * as S from "./InboxPage.styles";
+import * as S from './InboxPage.styles';
 
 const MainInbox: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -19,7 +19,7 @@ const MainInbox: React.FC = () => {
   return (
     <S.InboxWrapper>
       <S.CustomSplitter>
-        <Splitter style={{ height: "100%", width: "100%" }}>
+        <Splitter style={{ height: '100%', width: '100%' }}>
           <Splitter.Panel
             min={DEFAULT_RESIZER_CONFIG.MIN_WIDTH}
             max={DEFAULT_RESIZER_CONFIG.MAX_WIDTH}
@@ -43,8 +43,6 @@ const MainInbox: React.FC = () => {
       {isSidebarOpen && <InboxSidebar />}
     </S.InboxWrapper>
   );
-
 };
 
 export default MainInbox;
-

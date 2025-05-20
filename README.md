@@ -36,6 +36,7 @@ Create a `.env` for run local:
 ```env
 VITE_API_SERVER=https://api.sombes.com/api
 VITE_GRAPHQL_ENDPOINT=https://api.sombes.com/graphql
+VITE_SOCKET_API_URL=https://api.sombes.com/chat
 ```
 
 You can duplicate `.env.dev` if available.
