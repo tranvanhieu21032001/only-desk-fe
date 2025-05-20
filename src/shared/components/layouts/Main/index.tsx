@@ -24,7 +24,6 @@ import {
 } from '@/modules/auth/store/features/auth';
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import { MAX_COUNT } from '@/shared/helper/data/contacts';
-import webLocalStorage from '@/shared/utils/webLocalStorage';
 import { WorkspaceInterface } from '@/modules/auth/models/user';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
@@ -96,11 +95,8 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { userInfo, workSpaceList, currentWorkspace } = useAppSelector(
+  const { userInfo, workspaces, currentWorkspace } = useAppSelector(
     (state) => state.auth,
-  );
-  const getCurrentWorkSpaceFromLocal = webLocalStorage.get(
-    constants?.CURRENT_WORKSPACE,
   );
 
   const {
@@ -130,16 +126,6 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     dispatch(fetchGetUserInfo());
     dispatch(fetchWorkspace());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (workSpaceList && workSpaceList[0]) {
-      dispatch(
-        actionUpdateWorkSpaceCurrent(
-          getCurrentWorkSpaceFromLocal || workSpaceList[0],
-        ),
-      );
-    }
-  }, [workSpaceList]);
 
   const menus = [
     {
@@ -506,7 +492,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       </Typography>
       <S.Line />
       <S.PopoverLabel>
-        {(workSpaceList || []).map((ws) => (
+        {(workspaces || []).map((ws) => (
           <S.WorkSpacesCard
             key={ws.id}
             $isActive={ws.id === currentWorkspace?.id}

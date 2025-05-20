@@ -14,27 +14,21 @@ import { MeQuery } from '@/relay/__generated__/MeQuery.graphql';
 import { workspaceInfoQuery } from '@/relay/WorkspaceInfoQuery';
 import { WorkspaceInfoQuery } from '@/relay/__generated__/WorkspaceInfoQuery.graphql';
 
-const isAuthFromStorage: boolean =
-  webStorageClient.get(constants.IS_AUTH) || false;
-const userInfoFromStorage: UserInforInterface = webStorageClient.get(
-  constants.USER_INFO,
-);
-
 export interface AuthInterface {
   isAuth: boolean;
   userInfo: UserInforInterface | null;
   permissionList: Record<string, boolean>;
   isLoading?: boolean;
-  workSpaceList?: WorkspaceInterface[] | [];
+  workspaces?: WorkspaceInterface[] | [];
   currentWorkspace?: WorkspaceInterface | null;
 }
 
 const initialState: AuthInterface = {
-  isAuth: isAuthFromStorage,
-  userInfo: userInfoFromStorage,
+  isAuth: false,
+  userInfo: null,
   permissionList: {},
   isLoading: false,
-  workSpaceList: [],
+  workspaces: [],
   currentWorkspace: null,
 };
 
@@ -63,6 +57,14 @@ const fetchGetUserInfo = createAsyncThunk(
     return userData?.me;
   },
 );
+
+const setCurrentWorkspace = (
+  state: AuthInterface,
+  payload: WorkspaceInterface,
+) => {
+  state.currentWorkspace = payload;
+  webLocalStorage.set(constants.CURRENT_WORKSPACE, payload);
+};
 
 const slice = createSlice({
   name: 'user-profile',
@@ -113,15 +115,14 @@ const slice = createSlice({
       state,
       action: { payload: WorkspaceInterface },
     ) => {
-      state.currentWorkspace = action.payload;
-      webLocalStorage.set(constants.CURRENT_WORKSPACE, action?.payload);
+      setCurrentWorkspace(state, action?.payload);
     },
     actionUpdateWorkSpaces: (
       state,
       action: { payload: WorkspaceInterface },
     ) => {
-      state.workSpaceList = [
-        ...(state.workSpaceList || []),
+      state.workspaces = [
+        ...(state.workspaces || []),
         {
           id: action.payload?.id,
           logo: action.payload?.logo,
@@ -155,7 +156,15 @@ const slice = createSlice({
     });
     builder.addCase(fetchWorkspace.fulfilled, (state, action: any) => {
       state.isLoading = false;
-      state.workSpaceList = action.payload;
+      state.workspaces = action.payload;
+
+      if (
+        (!state.currentWorkspace ||
+          Object.keys(state.currentWorkspace).length == 0) &&
+        (state.workspaces ?? []).length > 0
+      ) {
+        setCurrentWorkspace(state, (state.workspaces ?? [])[0]);
+      }
     });
     builder.addCase(fetchWorkspace.rejected, (state) => {
       state.isLoading = false;
