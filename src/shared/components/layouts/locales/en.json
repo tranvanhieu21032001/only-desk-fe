@@ -9,6 +9,7 @@
   "charts": "Charts",
   "campaigns": "Campaigns",
   "global": " Global",
+  "aleartDisconnect": "OnlyChat is disconnect. Reconnecting...",
 
   "ai-knowledge": {
     "ai-automation": "AI Automation",

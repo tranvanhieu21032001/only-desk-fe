@@ -56,6 +56,8 @@ import icPlusCircle from '@/assets/icons/layout/ic-plus-circle.svg';
 import icAiAutomation from '@/assets/icons/layout/ic-ai-automation.svg';
 import icDefaultAvatar from '@/assets/images/avatar-default.png';
 import icDefaultWorkspace from '@/assets/images/workspace-default.png';
+import icInfoAleartRed from '@/assets/icons/common/ic-info-aleart-red.svg';
+import icCloseAleart from '@/assets/icons/common/ic-close-aleart.svg';
 
 //AI Automation
 import icAiChatBox from '@/assets/icons/layout/ic-ai-chatbox.svg';
@@ -90,7 +92,7 @@ import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
 
 import { eventBus } from '@/core/event-bus';
-import { connectSocket } from '@/core/services/socket/socket';
+import { connectSocket, disconnectSocket } from '@/core/services/socket/socket';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 
 interface Props {
@@ -509,6 +511,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   }
 
   function handleLogout() {
+    disconnectSocket();
     dispatch(actionLogout());
   }
 
@@ -869,25 +872,18 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       <S.LayoutWrap>
         {renderHeader && <Header />}
         {showDisconnectBanner && (
-          <Alert
-            message="OnlyChat is disconnect. Reconnecting..."
-            type="error"
-            showIcon
-            closable
-            style={{
-              marginBottom: 0,
-              borderRadius: 0,
-              fontWeight: 500,
-              fontSize: 16,
-              background: '#ffeeee',
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              zIndex: 2000,
-            }}
-            onClose={() => setShowDisconnectBanner(false)}
-          />
+          <S.AleartWrapper>
+            <S.AleartWrapperLeft>
+              <img src={icInfoAleartRed} alt="" />
+              {t('aleartDisconnect')}
+            </S.AleartWrapperLeft>
+
+            <S.AleartWrapperRight
+              onClick={() => setShowDisconnectBanner(false)}
+            >
+              <img src={icCloseAleart} alt="" />
+            </S.AleartWrapperRight>
+          </S.AleartWrapper>
         )}
         <S.Body>{children}</S.Body>
       </S.LayoutWrap>
