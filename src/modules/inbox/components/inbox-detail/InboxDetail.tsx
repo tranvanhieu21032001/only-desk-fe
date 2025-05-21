@@ -1,23 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Image, Modal } from 'antd';
+import { Image } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { fetchQuery } from 'relay-runtime';
 import { useTranslation } from 'react-i18next';
 import relayEnvironment from '@/relay/RelayEnvironment';
 import { messageQuery } from '@/relay/MessageQuery';
 import { v4 as uuidv4 } from 'uuid';
-import { useSelector } from 'react-redux';
-import Cookies from 'js-cookie';
 
 import AvatarWithStatus from '../../../../shared/components/common/Avatar';
 import MessageInput from '../message-input/MessageInput';
 
+import { eventBus } from '@/core/event-bus';
 import { useUser } from '@/core/context/UserContext';
-import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import {
-  connectInboxSocket,
-  sendAgentMessage,
-} from '../../../../core/services/socket/socket';
+import { sendAgentMessage } from '../../../../core/services/socket/socket';
 
 import * as S from './InboxDetail.styles';
 
@@ -40,7 +35,7 @@ import ringBlue from '@/assets/icons/inbox/ic-ring-blue.svg';
 import noteBlue from '@/assets/icons/inbox/ic-note-blue.svg';
 import editBlue from '@/assets/icons/inbox/ic-edit-blue.svg';
 import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
-import { eventBus } from '@/core/eventBus';
+import { EVENTBUS_INBOX_MESSAGE } from '@/core/settings/constants';
 
 interface InboxDetailProps {
   isSidebarOpen: boolean;
@@ -61,7 +56,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [endCursor, setEndCursor] = useState<string | null>(null);
-  const [isOffline, setIsOffline] = useState(false);
   const [showNewMessageNotice, setShowNewMessageNotice] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [selectedReminder, setSelectedReminder] = useState<string | null>(null);
@@ -73,16 +67,14 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
 
   const messageEndRef = useRef<HTMLDivElement>(null);
 
-  const WORKSPACE_ID = useSelector(selectCurrentWorkspaceId);
-  const USER_TOKEN = Cookies.get('_access_token');
-
   // Check if user is at bottom
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const handleScroll = () => {
     const container = messageContainerRef.current;
     if (!container) return;
     const isAtBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight < 10;
+      container.scrollHeight - container.scrollTop - container.clientHeight <
+      10;
     if (isAtBottom) {
       setShowNewMessageNotice(false);
     }
@@ -111,21 +103,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     setShowNewMessageNotice(false);
   };
-
-  // Initialize socket connection and message listener using connectInboxSocket
-  useEffect(() => {
-    const handler = (data: any) => {
-      setMessages((prev) => [data, ...prev]);
-      const container = messageContainerRef.current;
-      const isAtBottom = container &&
-        container.scrollHeight - container.scrollTop - container.clientHeight < 10;
-      if (!isAtBottom) {
-        setShowNewMessageNotice(true);
-      }
-    };
-    eventBus.on('inbox-message', handler);
-    return () => eventBus.off('inbox-message', handler);
-  }, []);
 
   // Auto-load more messages if not enough to scroll
   useEffect(() => {
@@ -238,6 +215,22 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId]);
+
+  useEffect(() => {
+    const handler = (data: any) => {
+      setMessages((prev) => [data, ...prev]);
+      const container = messageContainerRef.current;
+      const isAtBottom =
+        container &&
+        container.scrollHeight - container.scrollTop - container.clientHeight <
+          10;
+      if (!isAtBottom) {
+        setShowNewMessageNotice(true);
+      }
+    };
+    eventBus.on(EVENTBUS_INBOX_MESSAGE, handler);
+    return () => eventBus.off(EVENTBUS_INBOX_MESSAGE, handler);
+  }, []);
 
   const handleTabClick = (tab: string) => {
     setActiveTab(activeTab === tab ? null : tab);
@@ -405,19 +398,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
 
   return (
     <S.Container>
-      {isOffline && (
-        <Modal
-          title="Connection Lost"
-          open={isOffline}
-          footer={null}
-          closable={false}
-        >
-          <p>
-            You are currently offline. Please check your internet connection.
-          </p>
-        </Modal>
-      )}
-
       <S.Header>
         <S.HeaderLeft>
           <AvatarWithStatus

@@ -32,4 +32,20 @@ export type ResizerConfig = {
 export const DEFAULT_FULL_NAME = 'No name';
 export const DEFAULT_EMAIL = 'default@gmail.com';
 
+export const SOCKET_EVENT_CONNECT = 'connect';
+export const SOCKET_EVENT_DISCONNECT = 'disconnect';
+export const SOCKET_EVENT_MESSAGE = 'message';
+export const SOCKET_EVENT_RECONNECT_ATTEMPT = 'reconnect_attempt';
+export const SOCKET_EVENT_RECONNECT_ERROR = 'reconnect_error';
+export const SOCKET_EVENT_RECONNECT_FAILED = 'reconnect_failed';
+export const SOCKET_EVENT_SEND_AGENT_MESSAGE = 'send_agent_message';
+export const EVENTBUS_SOCKET_CONNECT = 'socket-connect';
+export const EVENTBUS_SOCKET_DISCONNECT = 'socket-disconnect';
+export const EVENTBUS_INBOX_MESSAGE = 'inbox-message';
+export const EVENTBUS_SOCKET_RECONNECT_ATTEMPT = 'socket-reconnect-attempt';
+export const EVENTBUS_SOCKET_RECONNECT_ERROR = 'socket-reconnect-error';
+export const EVENTBUS_SOCKET_RECONNECT_FAILED = 'socket-reconnect-failed';
+
+export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
+
 export default constants;
