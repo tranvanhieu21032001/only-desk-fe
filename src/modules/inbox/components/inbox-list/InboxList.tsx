@@ -334,8 +334,8 @@ const NotificationList = () => {
                   <S.BarIcon onClick={(e) => handleMenuClick(index, e)}>
                     <Image src={barColumn} preview={false} />
                   </S.BarIcon>
-                  {c.unreadAgentCount ? (
-                    <S.Badge>{c.unreadAgentCount}</S.Badge>
+                  {c.unreadGuestCount ? (
+                    <S.Badge>{c.unreadGuestCount}</S.Badge>
                   ) : (
                     <></>
                   )}

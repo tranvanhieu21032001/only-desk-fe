@@ -39,6 +39,8 @@ import tagBlue from '@/assets/icons/inbox/ic-tag-blue.svg';
 import ringBlue from '@/assets/icons/inbox/ic-ring-blue.svg';
 import noteBlue from '@/assets/icons/inbox/ic-note-blue.svg';
 import editBlue from '@/assets/icons/inbox/ic-edit-blue.svg';
+import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
+import { eventBus } from '@/core/eventBus';
 
 interface InboxDetailProps {
   isSidebarOpen: boolean;
@@ -53,7 +55,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   const [searchParams] = useSearchParams();
   const conversationId = searchParams.get('conversationId');
   const [messages, setMessages] = useState<any[]>([]);
-  const [pendingMessages, setPendingMessages] = useState<any[]>([]);
   const [messagesCache, setMessagesCache] = useState<{ [id: string]: any[] }>(
     {},
   );
@@ -81,9 +82,10 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     const container = messageContainerRef.current;
     if (!container) return;
     const isAtBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight <
-      10;
-    if (isAtBottom) setShowNewMessageNotice(false);
+      container.scrollHeight - container.scrollTop - container.clientHeight < 10;
+    if (isAtBottom) {
+      setShowNewMessageNotice(false);
+    }
   };
 
   useEffect(() => {
@@ -112,37 +114,18 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
 
   // Initialize socket connection and message listener using connectInboxSocket
   useEffect(() => {
-    if (!USER_TOKEN || !WORKSPACE_ID) return;
-    const handleMessage = (data: any) => {
+    const handler = (data: any) => {
+      setMessages((prev) => [data, ...prev]);
       const container = messageContainerRef.current;
-      const isAtTop = container && container.scrollTop === 0;
-      if (isAtTop) {
-        setMessages((prev) => [data, ...prev]);
-        setTimeout(scrollToBottom, 100);
-      } else {
-        setPendingMessages((prev) => [data, ...prev]);
+      const isAtBottom = container &&
+        container.scrollHeight - container.scrollTop - container.clientHeight < 10;
+      if (!isAtBottom) {
         setShowNewMessageNotice(true);
       }
-      if (conversationId) {
-        setMessagesCache((prev) => ({
-          ...prev,
-          [conversationId]: [...(prev[conversationId] || []), data],
-        }));
-      }
     };
-
-    const cleanup = connectInboxSocket(
-      { token: USER_TOKEN, workspaceId: WORKSPACE_ID },
-      handleMessage,
-      () => {
-        setIsOffline(false);
-      },
-      () => {
-        setIsOffline(true);
-      },
-    );
-    return cleanup;
-  }, [conversationId, USER_TOKEN, WORKSPACE_ID]);
+    eventBus.on('inbox-message', handler);
+    return () => eventBus.off('inbox-message', handler);
+  }, []);
 
   // Auto-load more messages if not enough to scroll
   useEffect(() => {
@@ -331,8 +314,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   };
 
   const handleShowNewMessages = () => {
-    setMessages((prev) => [...pendingMessages, ...prev]);
-    setPendingMessages([]);
     setShowNewMessageNotice(false);
     setTimeout(scrollToBottom, 100);
   };
@@ -465,7 +446,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
           ref={messageContainerRef}
         >
           {messages.length === 0 ? (
-            <S.EmptyState>No message</S.EmptyState>
+            <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
           ) : (
             messages
               .slice()
@@ -517,10 +498,11 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
               })
           )}
           <div ref={messageEndRef} />
-          {showNewMessageNotice && pendingMessages.length > 0 && (
-            <S.NewMessageNotice>
-              <S.NewMessageIcon onClick={handleShowNewMessages} />
-            </S.NewMessageNotice>
+          {showNewMessageNotice && (
+            <S.NewMessageNoticeButton onClick={handleShowNewMessages}>
+              <p>{t('inboxDetail.haveNewMessage')}</p>
+              <img src={icArrowDown} alt="arrow down" className="arrow-icon" />
+            </S.NewMessageNoticeButton>
           )}
         </S.MessageContainer>
       </S.MainContent>

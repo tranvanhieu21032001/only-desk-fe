@@ -9,6 +9,7 @@ interface MessageContainerProps {
 }
 
 export const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -96,13 +97,14 @@ export const MessageBubbleLeft = styled.div`
   padding: 8px 12px;
   border-radius: 12px;
   margin: 0 8px 0 0;
-  max-width: 70%;
+  /* max-width: 70%; */
   word-break: break-word;
   white-space: pre-wrap;
 `;
 
 export const MessageBubbleRight = styled(MessageBubbleLeft)`
   background: #eef2f8;
+  max-width: 70%;
 `;
 
 export const MessageTime = styled.div`
@@ -426,4 +428,33 @@ export const NewMessageIcon = styled(BellOutlined)`
   padding: 8px;
   box-shadow: 0 2px 8px #0001;
   cursor: pointer;
+`;
+
+export const NewMessageNoticeButton = styled.button`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 124px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #233e93;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px #0001;
+  cursor: pointer;
+  z-index: 10;
+  gap: 8px;
+  max-width: 90vw;
+  .arrow-icon {
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    width: 18px;
+    height: 18px;
+  }
 `;

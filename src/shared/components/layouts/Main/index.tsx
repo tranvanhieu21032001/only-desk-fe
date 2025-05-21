@@ -1,10 +1,11 @@
 import { isEmpty } from 'lodash';
-import { Image, Popover, Tooltip } from 'antd';
+import { Image, Popover, Tooltip, Modal, Alert } from 'antd';
 import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import Cookies from 'js-cookie';
 
 import {
   chatsPaths,
@@ -86,6 +87,10 @@ import icUserEdit from '@/assets/icons/layout/ic-user-edit.svg';
 import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
 
+import { eventBus } from '@/core/eventBus';
+import { connectInboxSocket } from '@/core/services/socket/socket';
+import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
+
 interface Props {
   children: React.ReactNode;
 }
@@ -111,8 +116,13 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const [isChatsPopoverOpen, setIsChatsPopoverOpen] = useState(false);
   const [isNewSubInboxModalOpen, setIsNewSubInboxModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isOffline, setIsOffline] = useState(false);
+  const [showDisconnectBanner, setShowDisconnectBanner] = useState(false);
 
   const routePath = window?.location?.pathname;
+
+  const WORKSPACE_ID = useAppSelector(selectCurrentWorkspaceId);
+  const USER_TOKEN = Cookies.get('_access_token');
 
   function handleClickChildrenMenu(key: string) {
     if (key) {
@@ -126,6 +136,45 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     dispatch(fetchGetUserInfo());
     dispatch(fetchWorkspace());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!USER_TOKEN || !WORKSPACE_ID) return;
+    const cleanup = connectInboxSocket(
+      { token: USER_TOKEN, workspaceId: WORKSPACE_ID },
+      (message) => {
+        eventBus.emit('inbox-message', message);
+      },
+      () => {
+        eventBus.emit('socket-connect');
+      },
+      () => {
+        eventBus.emit('socket-disconnect');
+      },
+    );
+    return cleanup;
+  }, [USER_TOKEN, WORKSPACE_ID]);
+
+  useEffect(() => {
+    const handleDisconnect = () => setIsOffline(true);
+    const handleConnect = () => setIsOffline(false);
+    eventBus.on('socket-disconnect', handleDisconnect);
+    eventBus.on('socket-connect', handleConnect);
+    return () => {
+      eventBus.off('socket-disconnect', handleDisconnect);
+      eventBus.off('socket-connect', handleConnect);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleDisconnect = () => setShowDisconnectBanner(true);
+    const handleConnect = () => setShowDisconnectBanner(false);
+    eventBus.on('socket-disconnect', handleDisconnect);
+    eventBus.on('socket-connect', handleConnect);
+    return () => {
+      eventBus.off('socket-disconnect', handleDisconnect);
+      eventBus.off('socket-connect', handleConnect);
+    };
+  }, []);
 
   const menus = [
     {
@@ -778,6 +827,27 @@ const MainLayout: React.FC<Props> = ({ children }) => {
 
   return (
     <S.LayoutWrapper>
+      {showDisconnectBanner && (
+        <Alert
+          message="OnlyChat is disconnect. Reconnecting..."
+          type="error"
+          showIcon
+          closable
+          style={{
+            marginBottom: 0,
+            borderRadius: 0,
+            fontWeight: 500,
+            fontSize: 16,
+            background: '#ffeeee',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            zIndex: 2000,
+          }}
+          onClose={() => setShowDisconnectBanner(false)}
+        />
+      )}
       <S.SiderWrap>
         <S.SiderTop>
           <S.WorkSpaces>
@@ -858,6 +928,18 @@ const MainLayout: React.FC<Props> = ({ children }) => {
           open={isModalWarningCreateWorkspace}
           onCancel={handleOpenModalWarningCreateWorkspace}
         />
+      )}
+      {isOffline && (
+        <Modal
+          title="Connection Lost"
+          open={isOffline}
+          footer={null}
+          closable={false}
+        >
+          <p>
+            You are currently offline. Please check your internet connection.
+          </p>
+        </Modal>
       )}
     </S.LayoutWrapper>
   );

@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
-export const socket = io(SOCKET_API_URL, { autoConnect: false });
+export const socket = io(SOCKET_API_URL, { autoConnect: true });
 
 export const connectSocket = (
   auth: any,
@@ -27,7 +27,14 @@ export const connectInboxSocket = (
   socket.auth = auth;
   socket.connect();
   if (onConnect) socket.on('connect', onConnect);
-  if (onDisconnect) socket.on('disconnect', onDisconnect);
+  socket.on('reconnect_attempt', () => console.log('SOCKET RECONNECT ATTEMPT'));
+  socket.on('reconnect_error', () => console.log('SOCKET RECONNECT ERROR'));
+  socket.on('reconnect_failed', () => console.log('SOCKET RECONNECT FAILED'));
+  if (onDisconnect)
+    socket.on('disconnect', () => {
+      console.log('SOCKET DISCONNECTED');
+      onDisconnect();
+    });
   socket.on('message', onMessage);
 
   return () => {
@@ -35,6 +42,9 @@ export const connectInboxSocket = (
     if (onDisconnect) socket.off('disconnect', onDisconnect);
     socket.off('message', onMessage);
     socket.disconnect();
+    socket.off('reconnect_attempt');
+    socket.off('reconnect_error');
+    socket.off('reconnect_failed');
   };
 };
 

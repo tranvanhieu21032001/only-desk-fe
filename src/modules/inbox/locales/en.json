@@ -94,7 +94,9 @@
     "knowledgeBase": "Knowledge Base",
     "articleTitle1": "Article title 1",
     "articleTitle2": "Article title 2",
-    "selectConversation": "Select a conversation"
+    "selectConversation": "Select a conversation",
+    "haveNewMessage": "Have a new message",
+    "noMessage": "No message"
   },
 
   "inboxSidebar": {
