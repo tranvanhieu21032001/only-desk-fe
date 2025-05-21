@@ -90,7 +90,7 @@ import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
 
 import { eventBus } from '@/core/event-bus';
-import { connectInboxSocket } from '@/core/services/socket/socket';
+import { connectSocket } from '@/core/services/socket/socket';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 
 interface Props {
@@ -140,7 +140,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (!USER_TOKEN || !WORKSPACE_ID) return;
-    const cleanup = connectInboxSocket({
+    const cleanup = connectSocket({
       token: USER_TOKEN,
       workspaceId: WORKSPACE_ID,
     });

@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import AvatarWithStatus from '../../../../shared/components/common/Avatar';
 import MessageInput from '../message-input/MessageInput';
 
+import { EVENTBUS_INBOX_MESSAGE } from '@/core/settings/constants';
 import { eventBus } from '@/core/event-bus';
 import { useUser } from '@/core/context/UserContext';
 import { sendAgentMessage } from '../../../../core/services/socket/socket';
@@ -35,7 +36,6 @@ import ringBlue from '@/assets/icons/inbox/ic-ring-blue.svg';
 import noteBlue from '@/assets/icons/inbox/ic-note-blue.svg';
 import editBlue from '@/assets/icons/inbox/ic-edit-blue.svg';
 import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
-import { EVENTBUS_INBOX_MESSAGE } from '@/core/settings/constants';
 
 interface InboxDetailProps {
   isSidebarOpen: boolean;
