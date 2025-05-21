@@ -1,10 +1,11 @@
 import { isEmpty } from 'lodash';
-import { Image, Popover, Tooltip } from 'antd';
+import { Image, Popover, Tooltip, Alert } from 'antd';
 import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import Cookies from 'js-cookie';
 
 import {
   chatsPaths,
@@ -12,9 +13,11 @@ import {
   pluginsPaths,
   settingsPaths,
 } from '@/shared/helper/data/layout';
-import constants, {
+import {
   DEFAULT_EMAIL,
   DEFAULT_FULL_NAME,
+  EVENTBUS_SOCKET_CONNECT,
+  EVENTBUS_SOCKET_DISCONNECT,
 } from '@/core/settings/constants';
 import {
   actionLogout,
@@ -53,6 +56,8 @@ import icPlusCircle from '@/assets/icons/layout/ic-plus-circle.svg';
 import icAiAutomation from '@/assets/icons/layout/ic-ai-automation.svg';
 import icDefaultAvatar from '@/assets/images/avatar-default.png';
 import icDefaultWorkspace from '@/assets/images/workspace-default.png';
+import icInfoAleartRed from '@/assets/icons/common/ic-info-aleart-red.svg';
+import icCloseAleart from '@/assets/icons/common/ic-close-aleart.svg';
 
 //AI Automation
 import icAiChatBox from '@/assets/icons/layout/ic-ai-chatbox.svg';
@@ -86,6 +91,10 @@ import icUserEdit from '@/assets/icons/layout/ic-user-edit.svg';
 import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
 import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
 
+import { eventBus } from '@/core/event-bus';
+import { connectSocket, disconnectSocket } from '@/core/services/socket/socket';
+import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
+
 interface Props {
   children: React.ReactNode;
 }
@@ -111,8 +120,12 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const [isChatsPopoverOpen, setIsChatsPopoverOpen] = useState(false);
   const [isNewSubInboxModalOpen, setIsNewSubInboxModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showDisconnectBanner, setShowDisconnectBanner] = useState(false);
 
   const routePath = window?.location?.pathname;
+
+  const WORKSPACE_ID = useAppSelector(selectCurrentWorkspaceId);
+  const USER_TOKEN = Cookies.get('_access_token');
 
   function handleClickChildrenMenu(key: string) {
     if (key) {
@@ -126,6 +139,26 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     dispatch(fetchGetUserInfo());
     dispatch(fetchWorkspace());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!USER_TOKEN || !WORKSPACE_ID) return;
+    const cleanup = connectSocket({
+      token: USER_TOKEN,
+      workspaceId: WORKSPACE_ID,
+    });
+    return cleanup;
+  }, [USER_TOKEN, WORKSPACE_ID]);
+
+  useEffect(() => {
+    const handleDisconnect = () => setShowDisconnectBanner(true);
+    const handleConnect = () => setShowDisconnectBanner(false);
+    eventBus.on(EVENTBUS_SOCKET_DISCONNECT, handleDisconnect);
+    eventBus.on(EVENTBUS_SOCKET_CONNECT, handleConnect);
+    return () => {
+      eventBus.off(EVENTBUS_SOCKET_DISCONNECT, handleDisconnect);
+      eventBus.off(EVENTBUS_SOCKET_CONNECT, handleConnect);
+    };
+  }, []);
 
   const menus = [
     {
@@ -478,6 +511,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   }
 
   function handleLogout() {
+    disconnectSocket();
     dispatch(actionLogout());
   }
 
@@ -837,6 +871,20 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       </S.SiderWrap>
       <S.LayoutWrap>
         {renderHeader && <Header />}
+        {showDisconnectBanner && (
+          <S.AleartWrapper>
+            <S.AleartWrapperLeft>
+              <img src={icInfoAleartRed} alt="" />
+              {t('aleartDisconnect')}
+            </S.AleartWrapperLeft>
+
+            <S.AleartWrapperRight
+              onClick={() => setShowDisconnectBanner(false)}
+            >
+              <img src={icCloseAleart} alt="" />
+            </S.AleartWrapperRight>
+          </S.AleartWrapper>
+        )}
         <S.Body>{children}</S.Body>
       </S.LayoutWrap>
       {isNewSubInboxModalOpen && (

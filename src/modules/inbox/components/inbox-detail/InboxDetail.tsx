@@ -1,23 +1,19 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Image, Modal } from 'antd';
+import { Image } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { fetchQuery } from 'relay-runtime';
 import { useTranslation } from 'react-i18next';
 import relayEnvironment from '@/relay/RelayEnvironment';
 import { messageQuery } from '@/relay/MessageQuery';
 import { v4 as uuidv4 } from 'uuid';
-import { useSelector } from 'react-redux';
-import Cookies from 'js-cookie';
 
 import AvatarWithStatus from '../../../../shared/components/common/Avatar';
 import MessageInput from '../message-input/MessageInput';
 
+import { EVENTBUS_INBOX_MESSAGE } from '@/core/settings/constants';
+import { eventBus } from '@/core/event-bus';
 import { useUser } from '@/core/context/UserContext';
-import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import {
-  connectInboxSocket,
-  sendAgentMessage,
-} from '../../../../core/services/socket/socket';
+import { sendAgentMessage } from '../../../../core/services/socket/socket';
 
 import * as S from './InboxDetail.styles';
 
@@ -39,6 +35,7 @@ import tagBlue from '@/assets/icons/inbox/ic-tag-blue.svg';
 import ringBlue from '@/assets/icons/inbox/ic-ring-blue.svg';
 import noteBlue from '@/assets/icons/inbox/ic-note-blue.svg';
 import editBlue from '@/assets/icons/inbox/ic-edit-blue.svg';
+import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
 
 interface InboxDetailProps {
   isSidebarOpen: boolean;
@@ -53,14 +50,12 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   const [searchParams] = useSearchParams();
   const conversationId = searchParams.get('conversationId');
   const [messages, setMessages] = useState<any[]>([]);
-  const [pendingMessages, setPendingMessages] = useState<any[]>([]);
   const [messagesCache, setMessagesCache] = useState<{ [id: string]: any[] }>(
     {},
   );
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [endCursor, setEndCursor] = useState<string | null>(null);
-  const [isOffline, setIsOffline] = useState(false);
   const [showNewMessageNotice, setShowNewMessageNotice] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [selectedReminder, setSelectedReminder] = useState<string | null>(null);
@@ -72,9 +67,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
 
   const messageEndRef = useRef<HTMLDivElement>(null);
 
-  const WORKSPACE_ID = useSelector(selectCurrentWorkspaceId);
-  const USER_TOKEN = Cookies.get('_access_token');
-
   // Check if user is at bottom
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const handleScroll = () => {
@@ -83,7 +75,9 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     const isAtBottom =
       container.scrollHeight - container.scrollTop - container.clientHeight <
       10;
-    if (isAtBottom) setShowNewMessageNotice(false);
+    if (isAtBottom) {
+      setShowNewMessageNotice(false);
+    }
   };
 
   useEffect(() => {
@@ -109,40 +103,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     setShowNewMessageNotice(false);
   };
-
-  // Initialize socket connection and message listener using connectInboxSocket
-  useEffect(() => {
-    if (!USER_TOKEN || !WORKSPACE_ID) return;
-    const handleMessage = (data: any) => {
-      const container = messageContainerRef.current;
-      const isAtTop = container && container.scrollTop === 0;
-      if (isAtTop) {
-        setMessages((prev) => [data, ...prev]);
-        setTimeout(scrollToBottom, 100);
-      } else {
-        setPendingMessages((prev) => [data, ...prev]);
-        setShowNewMessageNotice(true);
-      }
-      if (conversationId) {
-        setMessagesCache((prev) => ({
-          ...prev,
-          [conversationId]: [...(prev[conversationId] || []), data],
-        }));
-      }
-    };
-
-    const cleanup = connectInboxSocket(
-      { token: USER_TOKEN, workspaceId: WORKSPACE_ID },
-      handleMessage,
-      () => {
-        setIsOffline(false);
-      },
-      () => {
-        setIsOffline(true);
-      },
-    );
-    return cleanup;
-  }, [conversationId, USER_TOKEN, WORKSPACE_ID]);
 
   // Auto-load more messages if not enough to scroll
   useEffect(() => {
@@ -256,6 +216,22 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId]);
 
+  useEffect(() => {
+    const handler = (data: any) => {
+      setMessages((prev) => [data, ...prev]);
+      const container = messageContainerRef.current;
+      const isAtBottom =
+        container &&
+        container.scrollHeight - container.scrollTop - container.clientHeight <
+          10;
+      if (!isAtBottom) {
+        setShowNewMessageNotice(true);
+      }
+    };
+    eventBus.on(EVENTBUS_INBOX_MESSAGE, handler);
+    return () => eventBus.off(EVENTBUS_INBOX_MESSAGE, handler);
+  }, []);
+
   const handleTabClick = (tab: string) => {
     setActiveTab(activeTab === tab ? null : tab);
     if (tab === 'Edit') setInputValue('Hello');
@@ -331,8 +307,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   };
 
   const handleShowNewMessages = () => {
-    setMessages((prev) => [...pendingMessages, ...prev]);
-    setPendingMessages([]);
     setShowNewMessageNotice(false);
     setTimeout(scrollToBottom, 100);
   };
@@ -424,19 +398,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
 
   return (
     <S.Container>
-      {isOffline && (
-        <Modal
-          title="Connection Lost"
-          open={isOffline}
-          footer={null}
-          closable={false}
-        >
-          <p>
-            You are currently offline. Please check your internet connection.
-          </p>
-        </Modal>
-      )}
-
       <S.Header>
         <S.HeaderLeft>
           <AvatarWithStatus
@@ -465,7 +426,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
           ref={messageContainerRef}
         >
           {messages.length === 0 ? (
-            <S.EmptyState>No message</S.EmptyState>
+            <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
           ) : (
             messages
               .slice()
@@ -517,10 +478,11 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
               })
           )}
           <div ref={messageEndRef} />
-          {showNewMessageNotice && pendingMessages.length > 0 && (
-            <S.NewMessageNotice>
-              <S.NewMessageIcon onClick={handleShowNewMessages} />
-            </S.NewMessageNotice>
+          {showNewMessageNotice && (
+            <S.NewMessageNoticeButton onClick={handleShowNewMessages}>
+              <p>{t('inboxDetail.haveNewMessage')}</p>
+              <img src={icArrowDown} alt="arrow down" className="arrow-icon" />
+            </S.NewMessageNoticeButton>
           )}
         </S.MessageContainer>
       </S.MainContent>

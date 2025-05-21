@@ -1,39 +1,36 @@
 import { io } from 'socket.io-client';
+import { eventBus } from '@/core/event-bus';
+import {
+  SOCKET_API_URL,
+  EVENTBUS_SOCKET_CONNECT,
+  EVENTBUS_SOCKET_DISCONNECT,
+  EVENTBUS_INBOX_MESSAGE,
+  SOCKET_EVENT_SEND_AGENT_MESSAGE,
+  SOCKET_EVENT_MESSAGE,
+} from '@/core/settings/constants';
 
-const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
 export const socket = io(SOCKET_API_URL, { autoConnect: false });
 
-export const connectSocket = (
-  auth: any,
-  onConnect?: () => void,
-  onDisconnect?: () => void,
-) => {
+export const connectSocket = (auth: any) => {
   socket.auth = auth;
   socket.connect();
-  if (onConnect) socket.on('connect', onConnect);
-  if (onDisconnect) socket.on('disconnect', onDisconnect);
-  return () => {
-    if (onConnect) socket.off('connect', onConnect);
-    if (onDisconnect) socket.off('disconnect', onDisconnect);
-  };
-};
 
-export const connectInboxSocket = (
-  auth: any,
-  onMessage: (data: any) => void,
-  onConnect?: () => void,
-  onDisconnect?: () => void,
-) => {
-  socket.auth = auth;
-  socket.connect();
-  if (onConnect) socket.on('connect', onConnect);
-  if (onDisconnect) socket.on('disconnect', onDisconnect);
-  socket.on('message', onMessage);
+  socket.on('connect', () => eventBus.emit(EVENTBUS_SOCKET_CONNECT));
+  socket.on('disconnect', () => eventBus.emit(EVENTBUS_SOCKET_DISCONNECT));
+  socket.on(SOCKET_EVENT_MESSAGE, (data) =>
+    eventBus.emit(EVENTBUS_INBOX_MESSAGE, data),
+  );
+  socket.on('reconnect_error', () => eventBus.emit(EVENTBUS_SOCKET_DISCONNECT));
+  socket.on('reconnect_failed', () =>
+    eventBus.emit(EVENTBUS_SOCKET_DISCONNECT),
+  );
 
   return () => {
-    if (onConnect) socket.off('connect', onConnect);
-    if (onDisconnect) socket.off('disconnect', onDisconnect);
-    socket.off('message', onMessage);
+    socket.off('connect');
+    socket.off('disconnect');
+    socket.off(SOCKET_EVENT_MESSAGE);
+    socket.off('reconnect_error');
+    socket.off('reconnect_failed');
     socket.disconnect();
   };
 };
@@ -43,10 +40,5 @@ export const disconnectSocket = () => {
 };
 
 export const sendAgentMessage = (data: any, callback?: any) => {
-  socket.emit('send_agent_message', data, callback);
-};
-
-export const onMessage = (handler: (data: any) => void) => {
-  socket.on('message', handler);
-  return () => socket.off('message', handler);
+  socket.emit(SOCKET_EVENT_SEND_AGENT_MESSAGE, data, callback);
 };

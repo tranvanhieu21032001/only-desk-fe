@@ -409,6 +409,27 @@ export const ProfilesName = styled.div`
   }
 `;
 
+export const AleartWrapper = styled.div`
+  width: 100%;
+  padding: 0 20px;
+  height: 48px;
+  background-color: #fde9e7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const AleartWrapperLeft = styled.div`
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const AleartWrapperRight = styled.div`
+  cursor: pointer;
+`;
+
 export const ProfileDetail = styled(Image)`
   cursor: pointer;
 `;
