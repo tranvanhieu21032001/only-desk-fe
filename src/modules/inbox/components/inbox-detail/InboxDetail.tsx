@@ -13,7 +13,11 @@ import MessageInput from '../message-input/MessageInput';
 import { EVENTBUS_INBOX_MESSAGE } from '@/core/settings/constants';
 import { eventBus } from '@/core/event-bus';
 import { useUser } from '@/core/context/UserContext';
-import { sendAgentMessage } from '../../../../core/services/socket/socket';
+import {
+  sendAgentMessage,
+  closeConversation,
+  openConversation,
+} from '../../../../core/services/socket/socket';
 
 import * as S from './InboxDetail.styles';
 
@@ -179,6 +183,37 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     return () => container.removeEventListener('scroll', handleLoadMore);
   }, [hasMore, endCursor, loading, conversationId]);
 
+  const prevConversationId = useRef<string | null>(null);
+  const isFirstMount = useRef(true);
+
+  useEffect(() => {
+    if (isFirstMount.current) {
+      if (conversationId) {
+        openConversation(conversationId);
+        prevConversationId.current = conversationId;
+      }
+      isFirstMount.current = false;
+      return;
+    }
+
+    if (
+      prevConversationId.current &&
+      prevConversationId.current !== conversationId
+    ) {
+      closeConversation(prevConversationId.current);
+    }
+    if (conversationId && prevConversationId.current !== conversationId) {
+      openConversation(conversationId);
+    }
+    prevConversationId.current = conversationId;
+
+    return () => {
+      if (prevConversationId.current) {
+        closeConversation(prevConversationId.current);
+      }
+    };
+  }, [conversationId]);
+
   useEffect(() => {
     if (!conversationId) return;
 
@@ -213,7 +248,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       .finally(() => {
         setLoading(false);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId]);
 
   useEffect(() => {

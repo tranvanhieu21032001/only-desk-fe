@@ -14,6 +14,7 @@ import { conversationListQuery } from '@/relay/ConversationListQuery';
 import { ConversationListQuery } from '@/relay/__generated__/ConversationListQuery.graphql';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import { getFormattedTime } from '../../helpers/inbox.logic';
+import { openConversation } from '@/core/services/socket/socket';
 
 import { filterOptions, filtersDropdown } from '@/core/settings/options';
 
@@ -205,6 +206,7 @@ const ConversationList = () => {
 
   const handleConversationClick = (conversationId: string) => {
     navigate(`?workspaceId=${workspaceId}&conversationId=${conversationId}`);
+    openConversation(conversationId);
   };
 
   return (
