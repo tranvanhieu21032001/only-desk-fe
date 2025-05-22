@@ -37,6 +37,7 @@ import add from '@/assets/icons/inbox/ic-add-circle.svg';
 import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
 import avatarDefault from '@/assets/images/avatar-default.png';
+import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 
 const NotificationList = () => {
   const { t } = useTranslation('inbox');
@@ -322,7 +323,7 @@ const NotificationList = () => {
                   />
                 </S.Avatar>
                 <S.Content>
-                  <S.Title>{c.contact?.name || 'No Name'}</S.Title>
+                  <S.Title>{c.contact?.name || DEFAULT_FULL_NAME}</S.Title>
                   <S.Subtitle>
                     {c.latestMessage?.content || <p>No message</p>}
                   </S.Subtitle>
