@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fb6a083d7613ecb367071e4ca212a752>>
+ * @generated SignedSource<<ecd2bebb41c82f934cf10b3035cf931c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,7 +24,7 @@ export type ContactsQuery$data = {
       readonly node: {
         readonly address: string | null | undefined;
         readonly companyInfo: any;
-        readonly email: string;
+        readonly email: string | null | undefined;
         readonly id: string;
         readonly lastActivityAt: any | null | undefined;
         readonly name: string;

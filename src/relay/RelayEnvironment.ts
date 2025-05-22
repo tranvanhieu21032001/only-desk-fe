@@ -20,9 +20,16 @@ const fetchQuery = async (operation: any, variables: any) => {
   return await response.json();
 };
 
-const environment = new Environment({
+let environment = new Environment({
   network: Network.create(fetchQuery),
   store: new Store(new RecordSource()),
 });
+
+export const updateRelayEnvironment = () => {
+  environment = new Environment({
+    network: Network.create(fetchQuery),
+    store: new Store(new RecordSource()),
+  });
+};
 
 export default environment;

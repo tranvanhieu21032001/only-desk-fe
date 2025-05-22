@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<96ccb20893c3ecff04446490cdd78daf>>
+ * @generated SignedSource<<cfe3c588150207e1794c67df2d873c5f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -43,8 +43,7 @@ export type ConversationListQuery$data = {
         readonly metadata: any | null | undefined;
         readonly status: ConversationStatus;
         readonly subject: string | null | undefined;
-        readonly unreadAgentCount: number | null | undefined;
-        readonly unreadGuestCount: number | null | undefined;
+        readonly unreadCount: number | null | undefined;
         readonly updatedAt: any | null | undefined;
       };
     }>;
@@ -166,17 +165,10 @@ v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "unreadGuestCount",
+  "name": "unreadCount",
   "storageKey": null
 },
 v16 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "unreadAgentCount",
-  "storageKey": null
-},
-v17 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -188,7 +180,7 @@ v17 = {
   ],
   "storageKey": null
 },
-v18 = {
+v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -254,7 +246,6 @@ return {
                   (v14/*: any*/),
                   (v15/*: any*/),
                   (v16/*: any*/),
-                  (v17/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -263,7 +254,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v18/*: any*/)
+                      (v17/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -339,7 +330,6 @@ return {
                   (v14/*: any*/),
                   (v15/*: any*/),
                   (v16/*: any*/),
-                  (v17/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -348,7 +338,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v18/*: any*/),
+                      (v17/*: any*/),
                       (v4/*: any*/)
                     ],
                     "storageKey": null
@@ -365,16 +355,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "fd2e42fa8fe772d0765800338090fc6a",
+    "cacheID": "36df0d991026c85ac681eb3ef8e2e1ec",
     "id": null,
     "metadata": {},
     "name": "ConversationListQuery",
     "operationKind": "query",
-    "text": "query ConversationListQuery(\n  $workspaceId: ID!\n  $args: ConnectionArgs!\n) {\n  conversations(workspaceId: $workspaceId, args: $args) {\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n        }\n        status\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadGuestCount\n        unreadAgentCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListQuery(\n  $workspaceId: ID!\n  $args: ConnectionArgs!\n) {\n  conversations(workspaceId: $workspaceId, args: $args) {\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n        }\n        status\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "032c462e283cb7e41bb85020cc2e0529";
+(node as any).hash = "5751e1a361293f8b95cbbcf4bb082603";
 
 export default node;

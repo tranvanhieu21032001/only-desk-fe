@@ -101,6 +101,7 @@ import {
   selectIsLoading,
 } from '@/modules/auth/store/selectors';
 import webStorageClient from '@/shared/utils/webStorageClient';
+import { updateRelayEnvironment } from '@/relay/RelayEnvironment';
 
 interface Props {
   children: React.ReactNode;
@@ -534,6 +535,9 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         token: newToken,
         workspaceId: workSpace.id,
       });
+
+      // Update Relay environment with new token
+      updateRelayEnvironment();
     });
   }
 
