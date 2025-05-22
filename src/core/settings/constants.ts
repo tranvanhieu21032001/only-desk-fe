@@ -33,7 +33,7 @@ export const DEFAULT_FULL_NAME = 'No name';
 export const DEFAULT_EMAIL = 'default@gmail.com';
 
 export const SOCKET_EVENT_MESSAGE = 'message';
-export const SOCKET_EVENT_SEND_AGENT_MESSAGE = 'send_agent_message';
+export const SOCKET_EVENT_SEND_MESSAGE = 'send_message';
 
 export const EVENTBUS_SOCKET_CONNECT = 'socket-connect';
 export const EVENTBUS_SOCKET_DISCONNECT = 'socket-disconnect';

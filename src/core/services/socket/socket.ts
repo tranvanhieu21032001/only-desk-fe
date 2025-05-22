@@ -5,8 +5,8 @@ import {
   EVENTBUS_SOCKET_CONNECT,
   EVENTBUS_SOCKET_DISCONNECT,
   EVENTBUS_INBOX_MESSAGE,
-  SOCKET_EVENT_SEND_AGENT_MESSAGE,
   SOCKET_EVENT_MESSAGE,
+  SOCKET_EVENT_SEND_MESSAGE,
 } from '@/core/settings/constants';
 
 export const socket = io(SOCKET_API_URL, { autoConnect: false });
@@ -40,5 +40,5 @@ export const disconnectSocket = () => {
 };
 
 export const sendAgentMessage = (data: any, callback?: any) => {
-  socket.emit(SOCKET_EVENT_SEND_AGENT_MESSAGE, data, callback);
+  socket.emit(SOCKET_EVENT_SEND_MESSAGE, data, callback);
 };

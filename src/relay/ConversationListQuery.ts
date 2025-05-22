@@ -7,8 +7,11 @@ export const conversationListQuery = graphql`
         cursor
         node {
           id
-          guestName
-          guestIdentifier
+          contact {
+            avatar
+            name
+            isOnline
+          }
           status
           subject
           metadata
