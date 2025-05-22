@@ -38,6 +38,8 @@ import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
 import avatarDefault from '@/assets/images/avatar-default.png';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
+import { eventBus } from '@/core/event-bus';
+import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 
 const NotificationList = () => {
   const { t } = useTranslation('inbox');
@@ -80,20 +82,36 @@ const NotificationList = () => {
   const workspaceId = useSelector(selectCurrentWorkspaceId);
 
   // Fetch initial conversation list
+  const fetchInitial = async () => {
+    setLoadingMore(true);
+    const res = (await fetchQuery(relayEnvironment, conversationListQuery, {
+      workspaceId: workspaceId || '',
+      args: { first: 10 },
+    }).toPromise()) as ConversationListQuery['response'];
+    const edges = res?.conversations?.edges || [];
+    setConversationEdges([...edges]);
+    setLastCursor(edges.length > 0 ? edges[edges.length - 1].cursor : null);
+    setHasMore(edges.length === 10);
+    setLoadingMore(false);
+  };
+
   useEffect(() => {
-    const fetchInitial = async () => {
-      setLoadingMore(true);
-      const res = (await fetchQuery(relayEnvironment, conversationListQuery, {
-        workspaceId: workspaceId || '',
-        args: { first: 10 },
-      }).toPromise()) as ConversationListQuery['response'];
-      const edges = res?.conversations?.edges || [];
-      setConversationEdges([...edges]);
-      setLastCursor(edges.length > 0 ? edges[edges.length - 1].cursor : null);
-      setHasMore(edges.length === 10);
-      setLoadingMore(false);
-    };
     fetchInitial();
+  }, [workspaceId]);
+
+  // Listen for workspace changes
+  useEffect(() => {
+    const handleWorkspaceChange = () => {
+      setConversationEdges([]);
+      setLastCursor(null);
+      setHasMore(true);
+      fetchInitial();
+    };
+
+    eventBus.on(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
+    return () => {
+      eventBus.off(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
+    };
   }, [workspaceId]);
 
   // Load more conversations
