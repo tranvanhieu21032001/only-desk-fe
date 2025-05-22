@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { useTranslation } from 'react-i18next';
 
 import {
   UserInforInterface,
@@ -13,6 +14,7 @@ import webStorageClient from '@/shared/utils/webStorageClient';
 import { MeQuery } from '@/relay/__generated__/MeQuery.graphql';
 import { workspaceInfoQuery } from '@/relay/WorkspaceInfoQuery';
 import { WorkspaceInfoQuery } from '@/relay/__generated__/WorkspaceInfoQuery.graphql';
+import { handleSwitchWorkspaceApi } from '@/modules/workspace/api/workspace';
 
 export interface AuthInterface {
   isAuth: boolean;
@@ -131,6 +133,9 @@ const slice = createSlice({
         },
       ];
     },
+    actionSetGlobalLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
   },
 
   extraReducers: (builder) => {
@@ -162,7 +167,18 @@ const slice = createSlice({
           Object.keys(state.currentWorkspace).length == 0) &&
         (state.workspaces ?? []).length > 0
       ) {
-        setCurrentWorkspace(state, (state.workspaces ?? [])[0]);
+        const firstWorkspace = (state.workspaces ?? [])[0];
+        setCurrentWorkspace(state, firstWorkspace);
+
+        const { t } = useTranslation();
+        handleSwitchWorkspaceApi(
+          firstWorkspace.id,
+          t,
+          () => {},
+          (newToken) => {
+            webStorageClient.setToken(newToken);
+          },
+        );
       }
     });
     builder.addCase(fetchWorkspace.rejected, (state) => {
@@ -178,6 +194,7 @@ export const {
   actionSignUp,
   actionUpdateWorkSpaces,
   actionUpdateWorkSpaceCurrent,
+  actionSetGlobalLoading,
 } = slice.actions;
 
 export { fetchGetUserInfo, fetchWorkspace };

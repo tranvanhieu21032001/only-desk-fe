@@ -37,6 +37,7 @@ export const SOCKET_EVENT_SEND_MESSAGE = 'send_message';
 
 export const EVENTBUS_SOCKET_CONNECT = 'socket-connect';
 export const EVENTBUS_SOCKET_DISCONNECT = 'socket-disconnect';
+export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
 export const EVENTBUS_INBOX_MESSAGE = 'inbox-message';
 
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;

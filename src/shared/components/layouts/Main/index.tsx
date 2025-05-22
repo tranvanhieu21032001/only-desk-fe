@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { Image, Popover, Tooltip, Alert } from 'antd';
+import { Image, Popover, Tooltip, Spin } from 'antd';
 import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +31,10 @@ import { WorkspaceInterface } from '@/modules/auth/models/user';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { useAppDispatch, useAppSelector, useModal } from '@/shared/hooks';
-import { handleCreateWorkspaceApi } from '@/modules/workspace/api/workspace';
+import {
+  handleCreateWorkspaceApi,
+  handleSwitchWorkspaceApi,
+} from '@/modules/workspace/api/workspace';
 import NewSubInboxPage from '@/modules/inbox/pages/new-sub-inbox-page/NewSubInboxPage';
 import CreateWorkspaceModal from '@/modules/workspace/pages/modal-create-workspace/CreateWorkspace';
 import ModalConfirmCreateWorkspace from '@/modules/workspace/pages/modal-confirm-create-workspace/ModalConfirmCreateWorkspace';
@@ -93,7 +96,12 @@ import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
 
 import { eventBus } from '@/core/event-bus';
 import { connectSocket, disconnectSocket } from '@/core/services/socket/socket';
-import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
+import {
+  selectCurrentWorkspaceId,
+  selectIsLoading,
+} from '@/modules/auth/store/selectors';
+import webStorageClient from '@/shared/utils/webStorageClient';
+import { updateRelayEnvironment } from '@/relay/RelayEnvironment';
 
 interface Props {
   children: React.ReactNode;
@@ -126,6 +134,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
 
   const WORKSPACE_ID = useAppSelector(selectCurrentWorkspaceId);
   const USER_TOKEN = Cookies.get('_access_token');
+  const isLoadingAuth = useAppSelector(selectIsLoading);
 
   function handleClickChildrenMenu(key: string) {
     if (key) {
@@ -516,7 +525,20 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   }
 
   function handleSelectWorkSpaceCurrent(workSpace: WorkspaceInterface) {
-    dispatch(actionUpdateWorkSpaceCurrent(workSpace));
+    if (workSpace.id === currentWorkspace?.id) return;
+
+    handleSwitchWorkspaceApi(workSpace.id, t, setIsLoading, (newToken) => {
+      webStorageClient.setToken(newToken);
+      dispatch(actionUpdateWorkSpaceCurrent(workSpace));
+      disconnectSocket();
+      connectSocket({
+        token: newToken,
+        workspaceId: workSpace.id,
+      });
+
+      // Update Relay environment with new token
+      updateRelayEnvironment();
+    });
   }
 
   const renderWorkSpaces = (
@@ -812,6 +834,13 @@ const MainLayout: React.FC<Props> = ({ children }) => {
 
   return (
     <S.LayoutWrapper>
+      <>
+        {isLoadingAuth && (
+          <S.LoadingOverlay>
+            <Spin size="large" />
+          </S.LoadingOverlay>
+        )}
+      </>
       <S.SiderWrap>
         <S.SiderTop>
           <S.WorkSpaces>

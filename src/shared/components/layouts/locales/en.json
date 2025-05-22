@@ -53,6 +53,7 @@
   },
 
   "create-workspace": {
-    "create-workspace-success": "Create workspace successfully"
+    "create-workspace-success": "Create workspace successfully",
+    "switch-success": "Successfully switched workspace"
   }
 }

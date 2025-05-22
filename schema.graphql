@@ -122,7 +122,7 @@ type Contact implements Node {
   guestId: String
   avatar: String
   name: String!
-  email: String!
+  email: String
   phoneNumber: String
   address: String
   gender: ContactGender
@@ -162,6 +162,7 @@ type Conversation implements Node {
   id: ID!
   contact: Contact
   assignedTo: User
+  participants: [User!]
   status: ConversationStatus!
   subject: String
   metadata: JSON
@@ -169,8 +170,7 @@ type Conversation implements Node {
   updatedAt: DateTime
   lastActivityAt: DateTime
   closedAt: DateTime
-  unreadGuestCount: Int
-  unreadAgentCount: Int
+  unreadCount: Int
   latestMessage: Message
 }
 
@@ -191,46 +191,6 @@ type ConversationTypeEdge {
 type ConversationConnection {
   edges: [ConversationTypeEdge!]!
   pageInfo: PageInfo!
-}
-
-type Contact implements Node {
-  id: ID!
-  guestIdentifier: String
-  name: String!
-  email: String!
-  phoneNumber: String
-  address: String
-  type: ContactGender
-  notification: Boolean!
-  companyInfo: JSON!
-  segments: [String!]!
-  metadata: JSON!
-  trackingInfo: JSON!
-  notes: String
-  isOnline: Boolean!
-  lastActivityAt: DateTime
-  workspace: Workspace
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-"""
-The gender of the contact
-"""
-enum ContactGender {
-  MALE
-  FEMALE
-}
-
-type ContactTypeEdge {
-  cursor: String!
-  node: Contact!
-}
-
-type ContactPagination {
-  edges: [ContactTypeEdge!]!
-  pageInfo: PageInfo!
-  totalCount: Int!
 }
 
 type Query {

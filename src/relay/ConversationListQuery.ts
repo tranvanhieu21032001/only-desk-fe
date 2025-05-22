@@ -19,8 +19,7 @@ export const conversationListQuery = graphql`
           updatedAt
           lastActivityAt
           closedAt
-          unreadGuestCount
-          unreadAgentCount
+          unreadCount
           assignedTo {
             id
           }

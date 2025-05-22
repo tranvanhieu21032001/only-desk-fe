@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Splitter } from 'antd';
 
-import NotificationList from '../../components/inbox-list/InboxList';
+import ConversationList from '../../components/inbox-list/InboxList';
 import InboxDetail from '../../components/inbox-detail/InboxDetail';
 import InboxSidebar from '../../components/inbox-sidebar/InboxSidebar';
 
@@ -26,7 +26,7 @@ const MainInbox: React.FC = () => {
             defaultSize={DEFAULT_RESIZER_CONFIG.DEFAULT_WIDTH}
           >
             <S.InboxList>
-              <NotificationList />
+              <ConversationList />
             </S.InboxList>
           </Splitter.Panel>
 
