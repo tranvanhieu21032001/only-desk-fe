@@ -41,7 +41,7 @@ import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { eventBus } from '@/core/event-bus';
 import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 
-const NotificationList = () => {
+const ConversationList = () => {
   const { t } = useTranslation('inbox');
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [isAllDropdownOpen, setIsAllDropdownOpen] = useState(false);
@@ -95,12 +95,10 @@ const NotificationList = () => {
     setLoadingMore(false);
   };
 
-  useEffect(() => {
-    fetchInitial();
-  }, [workspaceId]);
-
   // Listen for workspace changes
   useEffect(() => {
+    fetchInitial();
+
     const handleWorkspaceChange = () => {
       setConversationEdges([]);
       setLastCursor(null);
@@ -729,4 +727,4 @@ const NotificationList = () => {
   );
 };
 
-export default NotificationList;
+export default ConversationList;
