@@ -11,8 +11,10 @@ type User implements Node {
   avatar: String
   role: String!
   isVerified: Boolean!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+  isOnline: Boolean!
+  lastActivityAt: DateTime
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 interface Node {
@@ -50,8 +52,6 @@ Type of member
 enum WorkspaceMemberRole {
   ADMIN
   DEVELOPER
-  SUPPORTER
-  VIEWER
 }
 
 """
@@ -94,6 +94,7 @@ enum MessageTypeEnum {
   FILE
   IMAGE
   SYSTEM
+  NOTE
 }
 
 """
@@ -116,17 +117,57 @@ type MessageConnection {
   pageInfo: PageInfo!
 }
 
+type Contact implements Node {
+  id: ID!
+  guestId: String
+  avatar: String
+  name: String!
+  email: String!
+  phoneNumber: String
+  address: String
+  gender: ContactGender
+  notification: Boolean!
+  companyInfo: JSON!
+  segments: [String!]!
+  metadata: JSON!
+  trackingInfo: JSON!
+  notes: String
+  isOnline: Boolean!
+  lastActivityAt: DateTime
+  workspace: Workspace
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+The gender of the contact
+"""
+enum ContactGender {
+  MALE
+  FEMALE
+}
+
+type ContactTypeEdge {
+  cursor: String!
+  node: Contact!
+}
+
+type ContactPagination {
+  edges: [ContactTypeEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 type Conversation implements Node {
   id: ID!
-  guestIdentifier: String!
-  guestName: String
+  contact: Contact
   assignedTo: User
   status: ConversationStatus!
   subject: String
   metadata: JSON
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  lastActivityAt: DateTime!
+  createdAt: DateTime
+  updatedAt: DateTime
+  lastActivityAt: DateTime
   closedAt: DateTime
   unreadGuestCount: Int
   unreadAgentCount: Int
@@ -155,11 +196,14 @@ type ConversationConnection {
 type Query {
   me: User
   workspaces: [Workspace!]!
+  conversation(id: String!): Conversation
   conversations(
     workspaceId: ID!
     args: ConnectionArgs!
   ): ConversationConnection!
   messages(conversationId: ID!, args: ConnectionArgs!): MessageConnection!
+  contact(id: String!): Contact
+  contacts(workspaceId: ID!, args: PaginationArgs!): ContactPagination!
 }
 
 input ConnectionArgs {
@@ -167,4 +211,10 @@ input ConnectionArgs {
   after: String
   last: Int
   before: String
+}
+
+input PaginationArgs {
+  first: Int = 10
+  offset: Int = 0
+  last: Int
 }

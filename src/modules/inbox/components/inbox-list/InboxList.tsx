@@ -316,13 +316,13 @@ const NotificationList = () => {
               >
                 <S.Avatar>
                   <AvatarWithStatus
-                    avatarSrc={avatarDefault}
-                    isOnline={true}
+                    avatarSrc={c.contact?.avatar || avatarDefault}
+                    isOnline={c.contact?.isOnline || false}
                     flagSrc={flag}
                   />
                 </S.Avatar>
                 <S.Content>
-                  <S.Title>{c.guestName || 'No Name'}</S.Title>
+                  <S.Title>{c.contact?.name || 'No Name'}</S.Title>
                   <S.Subtitle>
                     {c.latestMessage?.content || <p>No message</p>}
                   </S.Subtitle>
