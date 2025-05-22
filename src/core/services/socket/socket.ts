@@ -42,3 +42,11 @@ export const disconnectSocket = () => {
 export const sendAgentMessage = (data: any, callback?: any) => {
   socket.emit(SOCKET_EVENT_SEND_MESSAGE, data, callback);
 };
+
+export const openConversation = (conversationId: string) => {
+  socket.emit('open_conversation', { conversationId });
+};
+
+export const closeConversation = (conversationId: string) => {
+  socket.emit('close_conversation', { conversationId });
+};
