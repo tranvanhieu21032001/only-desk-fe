@@ -27,6 +27,7 @@ const initialState: ContactsInitialStateInterface = {
   },
   contactDetails: null,
   isDetails: true,
+  metadata: [],
 };
 
 const createContact = createAsyncThunk(

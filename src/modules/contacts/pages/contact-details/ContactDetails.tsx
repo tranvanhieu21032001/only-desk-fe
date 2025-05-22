@@ -63,13 +63,42 @@ function ContactDetails() {
   }, [id, dispatch, form]);
 
   useEffect(() => {
-    form.setFieldsValue(contactDetails);
+    let convertMetadata: { key: string; value: string }[] = [];
+
+    if (Array.isArray(contactDetails?.metadata)) {
+      convertMetadata = contactDetails.metadata.map((item) => ({
+        key: String(item.key),
+        value: String(item.value),
+      }));
+    } else {
+      convertMetadata = Object.entries(contactDetails?.metadata || {}).map(
+        ([key, value]) => ({
+          key: String(key),
+          value: String(value),
+        }),
+      );
+    }
+
+    const defaultValuesForm = {
+      ...contactDetails,
+      'company-name': contactDetails?.companyInfo?.name,
+      'company-position': contactDetails?.companyInfo?.position,
+      'company-department': contactDetails?.companyInfo?.department,
+      metadata: convertMetadata,
+    };
+
+    form.setFieldsValue(defaultValuesForm);
     dispatch(
       actionUpdateIsDetails(locationPath.includes('edit') ? false : true),
     );
-  }, [contactDetails, dispatch, form, locationPath]);
-
-  console.log(contactDetails);
+  }, [
+    contactDetails,
+    contactDetails?.companyInfo,
+    contactDetails?.metadata,
+    dispatch,
+    form,
+    locationPath,
+  ]);
 
   function handleFilterContact() {}
 
@@ -292,11 +321,11 @@ function ContactDetails() {
             <Company />
           </Col>
           <Col xs={24} lg={14} xl={12}>
-            <Data isLoading={isLoading} />
+            <Data form={form} />
             <Conversation isLoading={isLoading} />
             <PageVisitedRecently isLoading={isLoading} />
             <Campaign isLoading={isLoading} />
-            <PrivateNotepad isLoading={isLoading} />
+            <PrivateNotepad />
           </Col>
           <Col xs={24} xl={6}>
             <LastReportedLocation isLoading={isLoading} />

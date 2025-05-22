@@ -37,7 +37,8 @@
     "add-contact": "Add contact",
     "please-enter-name-of-the-contact": "Please enter name of the contact",
     "please-enter-email-of-the-contact": "Please enter email of the contact",
-    "email-invalid": "Email is invalid"
+    "email-invalid": "Email is invalid",
+    "start-by-entering": "Start by entering some basic details to create a new contact."
   },
 
   "add-filter": {
@@ -161,7 +162,17 @@
     "select-key": "Select key",
     "enter-value": "Enter value",
 
-    "edit-contact-profile-success": "Edit contact profile successfully"
+    "edit-contact-profile-success": "Edit contact profile successfully",
+    "enter-company-position": "Enter company position",
+    "department": "Department",
+    "enter-department": "Enter department",
+    "position": "Position",
+    "enter-position": "Enter position",
+    "enter-key": "Enter key",
+
+    "please-enter-key": "Please enter key",
+    "please-enter-value": "Please enter value",
+    "enter-notes": "Enter notes"
   },
 
   "remove-contact-success": "Contact removed successfully",

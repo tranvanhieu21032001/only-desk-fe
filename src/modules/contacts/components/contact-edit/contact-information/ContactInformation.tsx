@@ -1,12 +1,15 @@
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { Form, Image, Skeleton, Switch, Tooltip } from 'antd';
 
 import { websiteRegex } from '@/shared/regex';
 import { useAppSelector } from '@/shared/hooks';
+
 import {
   contactInformationMockup,
   genderOptions,
 } from '@/modules/contacts/helpers/contact.data';
+import { DATE_TIME_FORMAT } from '@/core/settings/dataTime';
 import { FormTypeEnums } from '@/shared/helper/enums/common';
 import themeColors from '@/shared/styles/themes/default/colors';
 import { FormFieldKeyEnums } from '@/modules/contacts/helpers/contact.enums';
@@ -80,18 +83,16 @@ function ContactInformation() {
             <Switch />
           </Form.Item>
         );
-      default:
+      case FormTypeEnums?.CREATE_DATE:
         return (
           <Typography>
-            {/* {field?.key === FormTypeEnums?.CREATE_DATE &&
-            contactDetails?.[field?.key]
-              ? dayjs(contactDetails?.[field?.key]).format(
-                  DATE_TIME_FORMAT?.EURO_DATE_TIME_FORMAT,
-                )
-              :  */}
-            {contactDetails?.[field?.key]}
+            {dayjs(contactDetails?.[field?.key]).format(
+              DATE_TIME_FORMAT?.EURO_DATE_TIME_FORMAT,
+            )}
           </Typography>
         );
+      default:
+        return <Typography>{contactDetails?.[field?.key]}</Typography>;
     }
   };
 
@@ -115,6 +116,7 @@ function ContactInformation() {
                   style={{
                     height: '39px',
                     width: '100%',
+                    marginTop: '8px',
                   }}
                 />
               </S.ContentWrap>
@@ -141,7 +143,13 @@ function ContactInformation() {
                 <S.ContentWrap key={item?.key}>
                   <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
                   <Tooltip title={contactDetails?.[item?.key]}>
-                    <Typography>{contactDetails?.[item?.key]}</Typography>
+                    <Typography>
+                      {item?.type === FormTypeEnums?.CREATE_DATE
+                        ? dayjs(contactDetails?.[item?.key]).format(
+                            DATE_TIME_FORMAT?.EURO_DATE_TIME_FORMAT,
+                          )
+                        : contactDetails?.[item?.key]}
+                    </Typography>
                   </Tooltip>
                 </S.ContentWrap>
               );

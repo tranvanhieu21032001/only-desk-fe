@@ -45,7 +45,7 @@ function ContactInformation() {
             ]}
           >
             <Input
-              placeholder={`contact-profile.${field?.placeholder}`}
+              placeholder={t(`contact-profile.${field?.placeholder}`)}
               disabled={field?.disable}
             />
           </Form.Item>
@@ -65,6 +65,19 @@ function ContactInformation() {
     }
   };
 
+  const renderInfoCompany = (field: any) => {
+    switch (field?.key) {
+      case 'company-name':
+        return contactDetails?.companyInfo?.name;
+      case 'company-position':
+        return contactDetails?.companyInfo?.position;
+      case 'company-department':
+        return contactDetails?.companyInfo?.department;
+      default:
+        break;
+    }
+  };
+
   return (
     <>
       {isLoading ? (
@@ -79,12 +92,15 @@ function ContactInformation() {
           <S.Body>
             {companyMockup?.map((item) => (
               <S.ContentWrap key={item?.key}>
+                <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
+
                 <Skeleton.Input
                   active
                   style={{
-                    height: '23px',
+                    height: '39px',
                     width: '100%',
-                    minWidth: '200px',
+                    marginTop: '8px',
+                    minHeight: '39px',
                   }}
                 />
               </S.ContentWrap>
@@ -110,9 +126,7 @@ function ContactInformation() {
               ) : (
                 <S.ContentWrap key={item?.key}>
                   <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
-                  <Typography>
-                    {contactDetails?.companyInfo?.[item?.key]}
-                  </Typography>
+                  <Typography>{renderInfoCompany(item)}</Typography>
                 </S.ContentWrap>
               );
             })}

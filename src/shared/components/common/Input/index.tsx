@@ -20,6 +20,7 @@ interface InputProps extends InputPropsFromAntd {
   prefix?: boolean | string;
   suffix?: string;
   isHeight?: string;
+  placeholder?: string;
 }
 
 export default function Input({
@@ -30,6 +31,7 @@ export default function Input({
   prefix,
   suffix,
   isHeight,
+  placeholder,
   ...rest
 }: InputProps) {
   const [isShowPassWord, setIsShowPassWord] = useState<boolean>(true);
@@ -66,6 +68,7 @@ export default function Input({
             )
           }
           $isHeight={isHeight}
+          placeholder={placeholder}
         />
       ) : (
         <S.Input
@@ -80,6 +83,7 @@ export default function Input({
           }
           $isHeight={isHeight}
           suffix={suffix && <ReactSVG src={suffix} />}
+          placeholder={placeholder}
         />
       )}
     </S.WrapInput>
