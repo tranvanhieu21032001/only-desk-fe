@@ -1,9 +1,14 @@
-import { ImportProgressEnums, StatusProceedEnums } from './contact.enums';
+import {
+  GenderOptions,
+  ImportProgressEnums,
+  StatusProceedEnums,
+} from './contact.enums';
 
 import icProceed from '@/assets/icons/contact/ic-proceed.svg';
 import icConfigure from '@/assets/icons/contact/ic-configure.svg';
 import icSelectFile from '@/assets/icons/contact/ic-select-file.svg';
 import { FormTypeEnums } from '@/shared/helper/enums/common';
+import { LabeledValue } from 'antd/es/select';
 
 const progressImport = [
   {
@@ -83,10 +88,10 @@ const contactInformationMockup = [
     placeholder: 'Enter email',
   },
   {
-    key: 'phone',
+    key: 'phoneNumber',
     label: 'phone',
     value: '+1 234 567 890',
-    type: FormTypeEnums?.INPUT,
+    type: FormTypeEnums?.PHONE_NUMBER,
     placeholder: 'Enter phone number',
   },
   {
@@ -104,19 +109,19 @@ const contactInformationMockup = [
     placeholder: 'Enter website',
   },
   {
-    key: 'creation-date',
+    key: 'createdAt',
     label: 'creation-date',
     value: 'Yesterday',
-    type: FormTypeEnums?.TEXT,
+    type: FormTypeEnums?.CREATE_DATE,
   },
   {
-    key: 'last-update',
+    key: 'updatedAt',
     label: 'last-update',
     value: '6 hour ago',
-    type: FormTypeEnums?.TEXT,
+    type: FormTypeEnums?.CREATE_DATE,
   },
   {
-    key: 'gender',
+    key: 'type',
     label: 'gender',
     value: 'Female',
     type: FormTypeEnums?.SELECT,
@@ -132,51 +137,69 @@ const contactInformationMockup = [
 
 const companyMockup = [
   {
-    key: 'company',
+    key: 'company-name',
     label: 'company',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-company-name',
   },
   {
-    key: 'job-title',
+    key: 'company-position',
     label: 'job-title',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-job-title',
   },
   {
-    key: 'job-role',
+    key: 'company-department',
     label: 'job-role',
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-job-role',
   },
   {
-    key: 'website',
+    key: 'company-website',
     label: 'website',
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-website',
   },
   {
-    key: 'city-label',
+    key: 'company-city-label',
     label: 'city-label',
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-city',
   },
   {
-    key: 'country',
+    key: 'company-country',
     label: 'country',
     value: 'Female',
     type: FormTypeEnums?.SELECT,
     placeholder: 'select-country',
   },
   {
-    key: 'employees',
+    key: 'company-employees',
     label: 'employees',
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-employees',
+  },
+];
+
+const genderOptions: LabeledValue[] = [
+  {
+    key: GenderOptions?.MALE,
+    value: GenderOptions?.MALE,
+    label: 'male',
+  },
+  {
+    key: GenderOptions?.FEMALE,
+    value: GenderOptions?.FEMALE,
+    label: 'female',
+  },
+  {
+    key: GenderOptions?.OTHER,
+    value: GenderOptions?.OTHER,
+    label: 'other',
   },
 ];
 
@@ -186,4 +209,5 @@ export {
   contactInformationMockup,
   companyMockup,
   lastReportedLocation,
+  genderOptions,
 };

@@ -51,10 +51,15 @@ export const ContactInfoWrap = styled.div`
 `;
 
 export const ContactInfo = styled.div`
-  p {
-    white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  h3 {
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
+    max-width: 300px;
   }
 `;
 

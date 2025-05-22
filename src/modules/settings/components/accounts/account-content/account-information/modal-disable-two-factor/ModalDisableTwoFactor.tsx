@@ -47,8 +47,6 @@ function ModalDisableTwoFactor({
   const [activeSensitiveAction, setActiveSensitiveAction] =
     useState<string>('');
 
-  console.log(stepDisableTwoFactor);
-
   function handleDisableTwoFactor() {
     switch (stepDisableTwoFactor) {
       case DisableTwoFactorStepEnums?.DISABLE_TWO_FACTOR:

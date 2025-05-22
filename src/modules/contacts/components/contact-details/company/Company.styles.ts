@@ -21,8 +21,11 @@ export const Header = styled.div`
 
 export const Body = styled.div`
   display: flex;
-  gap: 8px;
   flex-direction: column;
+
+  .ant-skeleton {
+    width: 100%;
+  }
 `;
 
 export const ContentWrap = styled.div`
@@ -31,10 +34,35 @@ export const ContentWrap = styled.div`
   align-items: center;
 
   p {
-    padding: 10px 8px;
+    padding: 10px 8px 10px 0px;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  p:first-of-type {
+    min-width: 120px;
+  }
+
+  .ant-form-item {
+    width: 100%;
+    margin-bottom: 8px;
+
+    display: flex;
+    align-items: center;
+
+    .ant-row {
+      width: 100%;
+    }
+
+    .ant-select-selector {
+      min-height: 39px;
+      height: 39px;
+    }
+
+    .ant-select-arrow {
+      margin-top: -10px;
+    }
   }
 `;

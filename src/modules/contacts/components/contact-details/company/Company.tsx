@@ -1,21 +1,69 @@
-import { Image, Skeleton } from 'antd';
+import { Form, Image, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
 
+import { websiteRegex } from '@/shared/regex';
+import { useAppSelector } from '@/shared/hooks';
+import { FormTypeEnums } from '@/shared/helper/enums/common';
 import themeColors from '@/shared/styles/themes/default/colors';
-import { contactInformationMockup } from '@/modules/contacts/helpers/contact.data';
+import { companyMockup } from '@/modules/contacts/helpers/contact.data';
+import { FormFieldKeyEnums } from '@/modules/contacts/helpers/contact.enums';
 
+import Input from '@/shared/components/common/Input';
 import Typography from '@/shared/components/common/Typography';
 
 import * as S from './Company.styles';
 
 import icInfo from '@/assets/icons/contact/ic-info-circle.svg';
 
-interface ContactInformationProps {
-  isLoading?: boolean;
-}
-
-function ContactInformation({ isLoading }: ContactInformationProps) {
+function ContactInformation() {
   const { t } = useTranslation('contacts');
+  const { isLoading, contactDetails, isDetails } = useAppSelector(
+    (state) => state.contacts,
+  );
+
+  const renderForm = (field: any) => {
+    switch (field?.type) {
+      case FormTypeEnums?.INPUT:
+        return (
+          <Form.Item
+            name={field?.key}
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (
+                    FormFieldKeyEnums?.WEBSITE === field?.key &&
+                    !websiteRegex.test(value) &&
+                    value
+                  ) {
+                    return Promise.reject(
+                      new Error(t('website-domain-invalid')),
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <Input
+              placeholder={`contact-profile.${field?.placeholder}`}
+              disabled={field?.disable}
+            />
+          </Form.Item>
+        );
+      case FormTypeEnums?.PHONE_NUMBER:
+        return (
+          <Form.Item name={field?.key}>
+            <Input
+              placeholder={field?.placeholder}
+              disabled={field?.disable}
+              type="number"
+            />
+          </Form.Item>
+        );
+      default:
+        return <Typography>{contactDetails?.[field?.key]}</Typography>;
+    }
+  };
 
   return (
     <>
@@ -29,7 +77,7 @@ function ContactInformation({ isLoading }: ContactInformationProps) {
           </S.Header>
 
           <S.Body>
-            {contactInformationMockup?.map((item) => (
+            {companyMockup?.map((item) => (
               <S.ContentWrap key={item?.key}>
                 <Skeleton.Input
                   active
@@ -53,12 +101,21 @@ function ContactInformation({ isLoading }: ContactInformationProps) {
           </S.Header>
 
           <S.Body>
-            {contactInformationMockup?.map((item) => (
-              <S.ContentWrap key={item?.key}>
-                <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
-                <Typography>{t(item?.value)}</Typography>
-              </S.ContentWrap>
-            ))}
+            {companyMockup?.map((item) => {
+              return !isDetails ? (
+                <S.ContentWrap key={item?.key}>
+                  <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
+                  {renderForm(item)}
+                </S.ContentWrap>
+              ) : (
+                <S.ContentWrap key={item?.key}>
+                  <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
+                  <Typography>
+                    {contactDetails?.companyInfo?.[item?.key]}
+                  </Typography>
+                </S.ContentWrap>
+              );
+            })}
           </S.Body>
         </S.Container>
       )}

@@ -2,11 +2,12 @@ import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import React, { useState, useRef, useEffect } from 'react';
 
-import Search from '../search/Main';
 import Button from '../../Button';
-import { useModal } from '@/shared/hooks';
+import Search from '../search/Main';
 import AvatarWithStatus from '../../Avatar';
 import CreateConversationModal from '../../Modal';
+import { useAppDispatch, useAppSelector, useModal } from '@/shared/hooks';
+import ModalAddContact from '@/modules/contacts/components/modal-add-contact/ModalAddContact';
 
 import {
   conversationOptions,
@@ -30,11 +31,15 @@ import icAddContact from '@/assets/icons/common/ic-add-contact.svg';
 import closeCircle from '@/assets/icons/common/ic-close-circle.svg';
 import conversation from '@/assets/icons/common/ic-conversation.svg';
 import bellBlue from '@/assets/icons/common/ic-notification-blue.svg';
-import ModalAddContact from '@/modules/contacts/components/modal-add-contact/ModalAddContact';
+import { createContact } from '@/modules/contacts/store/features/contacts';
 
 const Header: React.FC = () => {
   const { t } = useTranslation('inbox');
+
   const { title } = useTitle();
+  const dispatch = useAppDispatch();
+  const { currentWorkspace } = useAppSelector((state) => state.auth);
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selected, setSelected] = useState('');
@@ -84,8 +89,18 @@ const Header: React.FC = () => {
     };
   }, []);
 
-  function handleAddContact() {
-    //TODO handle later
+  function handleAddContact(values: { name: string; email: string }) {
+    if (currentWorkspace?.id) {
+      dispatch(
+        createContact({
+          ...values,
+          workspaceId: currentWorkspace?.id as string,
+          t,
+        }),
+      );
+
+      handleOpenModalAddContact();
+    }
   }
 
   return (
@@ -156,7 +171,9 @@ const Header: React.FC = () => {
         <Button
           type="primary"
           width="122px"
-          icon={<Image src={addHeader} preview={false} />}
+          icon={
+            <Image src={addHeader} preview={false} width={20} height={20} />
+          }
           iconPosition="left"
           onClick={() => {
             toggleDropdown();

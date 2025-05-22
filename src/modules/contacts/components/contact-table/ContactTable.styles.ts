@@ -14,6 +14,13 @@ export const TooltipColumn = styled(Tooltip)`
   }
 `;
 
+export const RemoveActionColumn = styled.div`
+  svg {
+    cursor: pointer;
+    color: ${(props) => props?.theme?.colors?.newtralLight};
+  }
+`;
+
 export const FullNameColumn = styled.div`
   display: flex;
   align-items: center;
@@ -21,7 +28,23 @@ export const FullNameColumn = styled.div`
 
   img {
     object-fit: cover;
+    border-radius: 100px;
+    min-width: 40px;
   }
+
+  p {
+    display: inline !important;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+`;
+
+export const LocationColumn = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
 `;
 
 export const ScoreColumn = styled.div`
@@ -30,7 +53,10 @@ export const ScoreColumn = styled.div`
   }
 `;
 
-export const FilterActionWrap = styled.div``;
+export const FilterActionWrap = styled.div`
+  width: fit-content;
+  height: fit-content;
+`;
 
 export const FilterAction = styled.div<{ $isRemove?: boolean }>`
   padding: 8px;
@@ -51,6 +77,10 @@ export const FilterAction = styled.div<{ $isRemove?: boolean }>`
 
   &:hover {
     background-color: ${(props) => props?.theme?.colors?.secondaryLight};
+  }
+
+  div {
+    height: 24px;
   }
 `;
 

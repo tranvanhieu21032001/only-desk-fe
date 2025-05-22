@@ -193,6 +193,46 @@ type ConversationConnection {
   pageInfo: PageInfo!
 }
 
+type Contact implements Node {
+  id: ID!
+  guestIdentifier: String
+  name: String!
+  email: String!
+  phoneNumber: String
+  address: String
+  type: ContactGender
+  notification: Boolean!
+  companyInfo: JSON!
+  segments: [String!]!
+  metadata: JSON!
+  trackingInfo: JSON!
+  notes: String
+  isOnline: Boolean!
+  lastActivityAt: DateTime
+  workspace: Workspace
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+The gender of the contact
+"""
+enum ContactGender {
+  MALE
+  FEMALE
+}
+
+type ContactTypeEdge {
+  cursor: String!
+  node: Contact!
+}
+
+type ContactPagination {
+  edges: [ContactTypeEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 type Query {
   me: User
   workspaces: [Workspace!]!
