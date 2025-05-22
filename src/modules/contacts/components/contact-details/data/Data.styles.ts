@@ -57,12 +57,23 @@ export const Body = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
+
+  height: 100%;
+  max-height: 180px;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
 `;
 
 export const ContentWrap = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
 
   p {
     padding: 10px 8px;
@@ -74,5 +85,40 @@ export const ContentWrap = styled.div`
 
   p:first-of-type {
     min-width: 120px;
+  }
+
+  div:nth-of-type(2) {
+    width: 100%;
+  }
+`;
+
+export const DataWrapContainer = styled.div`
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const DataWrap = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .ant-select {
+    height: 39px !important;
+
+    .ant-select-selector {
+      height: 39px !important;
+      min-height: 39px !important;
+    }
+  }
+
+  .ant-form-item {
+    margin-bottom: 0;
+  }
+
+  img {
+    cursor: pointer;
   }
 `;

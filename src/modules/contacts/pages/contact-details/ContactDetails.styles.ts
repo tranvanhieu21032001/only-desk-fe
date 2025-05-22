@@ -1,5 +1,7 @@
-import Button from '@/shared/components/common/Button';
 import { Row } from 'antd';
+
+import Button from '@/shared/components/common/Button';
+
 import { css, styled } from 'styled-components';
 
 export const ContactsContainer = styled.section`
@@ -47,6 +49,11 @@ export const ContactInfoWrap = styled.div`
 
   img {
     border-radius: 100px;
+    min-width: 90px;
+  }
+
+  @media ${(props) => props?.theme?.breakpoints?.xlMax} {
+    width: 100%;
   }
 `;
 
@@ -60,6 +67,13 @@ export const ContactInfo = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     max-width: 300px;
+  }
+
+  @media ${(props) => props?.theme?.breakpoints?.xlMax} {
+    h3 {
+      max-width: 100%;
+      white-space: pre-wrap;
+    }
   }
 `;
 

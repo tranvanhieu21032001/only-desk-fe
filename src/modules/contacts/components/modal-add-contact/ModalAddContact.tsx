@@ -44,7 +44,7 @@ function ModalAddContact({
             </Typography>
             <S.ModalDescription>
               <Typography color={themeColors?.newtralLight}>
-                {t('modal-add-contact.please-insert-modal-description-here')}
+                {t('modal-add-contact.start-by-entering')}
               </Typography>
             </S.ModalDescription>
           </S.ModalHeaderContent>

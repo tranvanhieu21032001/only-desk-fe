@@ -144,16 +144,16 @@ const companyMockup = [
   },
   {
     key: 'company-position',
-    label: 'job-title',
+    label: 'position',
     type: FormTypeEnums?.INPUT,
-    placeholder: 'enter-job-title',
+    placeholder: 'enter-position',
   },
   {
     key: 'company-department',
-    label: 'job-role',
+    label: 'department',
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
-    placeholder: 'enter-job-role',
+    placeholder: 'enter-department',
   },
   {
     key: 'company-website',
@@ -173,8 +173,8 @@ const companyMockup = [
     key: 'company-country',
     label: 'country',
     value: 'Female',
-    type: FormTypeEnums?.SELECT,
-    placeholder: 'select-country',
+    type: FormTypeEnums?.INPUT,
+    placeholder: 'enter-country',
   },
   {
     key: 'company-employees',
@@ -203,6 +203,17 @@ const genderOptions: LabeledValue[] = [
   },
 ];
 
+const omitKeys: string[] = [
+  'company-name',
+  'company-position',
+  'company-department',
+  'company-website',
+  'company-city-label',
+  'company-country',
+  'company-employees',
+  'dataForm',
+];
+
 export {
   progressImport,
   proceedMockup,
@@ -210,4 +221,5 @@ export {
   companyMockup,
   lastReportedLocation,
   genderOptions,
+  omitKeys,
 };

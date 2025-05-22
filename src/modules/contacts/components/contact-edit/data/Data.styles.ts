@@ -60,9 +60,6 @@ export const Body = styled.div`
 
   max-height: 180px;
   overflow-y: scroll;
-
-  width: 4px;
-  height: 9px;
 `;
 
 export const ContentWrap = styled.div`

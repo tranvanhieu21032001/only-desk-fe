@@ -10,6 +10,10 @@ export interface ContactsInitialStateInterface {
   };
   contactDetails: ContactInterface | null;
   isDetails: boolean;
+  metadata: {
+    key: string;
+    value: string;
+  }[];
 }
 
 export interface ContactInterface {

@@ -3,6 +3,8 @@ import {
   actionUpdateIsLoading,
   actionUpdateContactDetails,
 } from '../store/features/contacts';
+import { omit } from 'lodash';
+import { omitKeys } from '../helpers/contact.data';
 
 const prefixContact: string = '';
 
@@ -18,12 +20,35 @@ const handleEditProfile = async (
   messageSuccess: string,
   dispatch: any,
 ) => {
+  const metadataConvert = values?.metadata?.reduce(
+    (acc: any, cur: any) => {
+      if (cur?.key) {
+        acc[cur?.key] = cur?.value;
+      }
+      return acc;
+    },
+    {} as Record<string, any>,
+  );
+
+  const updatePayload = omit(
+    {
+      ...values,
+      companyInfo: {
+        name: values?.['company-name'],
+        position: values?.['company-position'],
+        department: values?.['company-department'],
+      },
+      metadata: metadataConvert,
+    },
+    omitKeys,
+  );
+
   await updateRequest(endpointContact.UPDATE_CONTACT.replace(':id', id), {
-    data: values,
+    data: updatePayload,
     messageSuccess: messageSuccess,
   })
     .then(() => {
-      dispatch(actionUpdateContactDetails(values));
+      dispatch(actionUpdateContactDetails(updatePayload));
     })
     .finally(() => dispatch(actionUpdateIsLoading(false)));
 };

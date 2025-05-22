@@ -65,6 +65,10 @@ export const HeaderActionWrap = styled.div`
 
 export const Body = styled.div`
   margin-top: 8px;
+
+  .ant-skeleton {
+    width: 100%;
+  }
 `;
 
 export const ContentWrap = styled.div`
