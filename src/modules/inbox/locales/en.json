@@ -135,5 +135,9 @@
     "addAnotherConditions": "Add Another Conditions",
     "loadMore": "Load more",
     "noConversationYet": "No conversation yet"
+  },
+
+  "create-contact": {
+    "create-contact-success": "Contact created successfully"
   }
 }

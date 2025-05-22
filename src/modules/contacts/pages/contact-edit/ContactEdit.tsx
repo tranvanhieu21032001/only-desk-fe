@@ -1,11 +1,16 @@
 import { ReactSVG } from 'react-svg';
-import { Col, Form, Image } from 'antd';
-import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import React, { useState, useEffect } from 'react';
+import { Col, Form, Image, Skeleton } from 'antd';
+import { Link, useParams } from 'react-router-dom';
 
 import { MAIN_ROUTES } from '@/core/routes/constants';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks';
+import {
+  actionUpdateIsDetails,
+  fetchDetailsContact,
+} from '../../store/features/contacts';
 
 import Button from '@/shared/components/common/Button';
 import Map from '../../components/contact-edit/map/Map';
@@ -30,22 +35,25 @@ import * as S from './ContactEdit.styles';
 import icUser from '@/assets/icons/contact/ic-user.svg';
 import icLeft from '@/assets/icons/contact/ic-arrow-left.svg';
 import icContact from '@/assets/icons/contact/ic-contact.svg';
+import icAvatarDefault from '@/assets/images/avatar-default.png';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
-import icAvatarMockup from '@/assets/icons/layout/ic-avatar-mock.svg';
 
 function ContactEdit() {
   const { t } = useTranslation('contacts');
+  const { id } = useParams();
   const [form] = Form.useForm();
+  const dispatch = useAppDispatch();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { isLoading, contactDetails } = useAppSelector(
+    (state) => state.contacts,
+  );
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading((prev) => !prev);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    if (id) {
+      dispatch(fetchDetailsContact({ idContact: id as string }));
+      dispatch(actionUpdateIsDetails(false));
+    }
+  }, [dispatch, id]);
 
   const breadcrumbContactDetails = [
     {
@@ -87,23 +95,54 @@ function ContactEdit() {
       </S.BreadcrumbContainer>
       <Form form={form} onFinish={handleEditContact}>
         <S.ContactContainer>
-          <S.ContactInfoWrap>
-            <Image
-              src={icAvatarMockup}
-              preview={false}
-              alt="Avatar"
-              width={90}
-              height={90}
-            />
-            <S.ContactInfo>
-              <Typography variant="h3" fontWeight={fontWeight?.semiBold}>
-                Sophia Williams
-              </Typography>
-              <Typography margin="2px 0 0 0">
-                Last active: 5 hour ago
-              </Typography>
-            </S.ContactInfo>
-          </S.ContactInfoWrap>
+          {isLoading ? (
+            <S.ContactInfoWrap>
+              <Skeleton.Avatar
+                active
+                style={{
+                  height: 90,
+                  width: 90,
+                }}
+              />
+
+              <S.ContactInfo>
+                <Skeleton.Input
+                  active
+                  style={{
+                    height: '28px',
+                    width: '100%',
+                  }}
+                />
+                <Skeleton.Input
+                  active
+                  style={{
+                    height: '23px',
+                    width: '100px',
+                    minWidth: '100px',
+                  }}
+                />
+              </S.ContactInfo>
+            </S.ContactInfoWrap>
+          ) : (
+            <S.ContactInfoWrap>
+              <Image
+                src={contactDetails?.avatar || icAvatarDefault}
+                preview={false}
+                alt="Avatar"
+                width={90}
+                height={90}
+                onError={(e) => (e.currentTarget.src = icAvatarDefault)}
+              />
+              <S.ContactInfo>
+                <Typography variant="h3" fontWeight={fontWeight?.semiBold}>
+                  {contactDetails?.name}
+                </Typography>
+                <Typography margin="2px 0 0 0">
+                  {contactDetails?.lastActivityAt}
+                </Typography>
+              </S.ContactInfo>
+            </S.ContactInfoWrap>
+          )}
 
           <S.FilterPopoverWrap>
             <Button type="primary" onClick={form.submit}>
@@ -115,7 +154,7 @@ function ContactEdit() {
         <S.ContactContainerWrap gutter={[10, 10]} justify="space-between">
           <Col xs={24} lg={10} xl={6}>
             <Map />
-            <ContactInformation isLoading={isLoading} />
+            <ContactInformation />
             <Segments isLoading={isLoading} />
             <Company isLoading={isLoading} />
           </Col>

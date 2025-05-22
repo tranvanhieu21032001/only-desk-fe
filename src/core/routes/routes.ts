@@ -30,9 +30,9 @@ const Contacts = React.lazy(
 const ContactDetails = React.lazy(
   () => import('@/modules/contacts/pages/contact-details/ContactDetails'),
 );
-const ContactEdit = React.lazy(
-  () => import('@/modules/contacts/pages/contact-edit/ContactEdit'),
-);
+// const ContactEdit = React.lazy(
+//   () => import('@/modules/contacts/pages/contact-edit/ContactEdit'),
+// );
 
 //Settings
 const Account = React.lazy(
@@ -127,7 +127,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'contact-edit',
     path: MAIN_ROUTES.CONTACT_EDIT,
-    component: ContactEdit,
+    component: ContactDetails,
     name: 'contact-edit',
   },
 

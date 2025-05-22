@@ -10,6 +10,8 @@ enum FormTypeEnums {
   SELECT = 'select',
   SWITCH = 'switch',
   TEXT = 'text',
+  PHONE_NUMBER = 'phone-number',
+  CREATE_DATE = 'create-date',
 }
 
 export { ToastMessageType, FormTypeEnums };

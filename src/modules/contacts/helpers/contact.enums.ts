@@ -12,4 +12,19 @@ enum StatusProceedEnums {
   REMAINING = 'REMAINING',
 }
 
-export { ImportProgressEnums, StatusProceedEnums };
+enum GenderOptions {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHER = 'OTHER',
+}
+
+enum FormFieldKeyEnums {
+  WEBSITE = 'website',
+}
+
+export {
+  ImportProgressEnums,
+  StatusProceedEnums,
+  GenderOptions,
+  FormFieldKeyEnums,
+};

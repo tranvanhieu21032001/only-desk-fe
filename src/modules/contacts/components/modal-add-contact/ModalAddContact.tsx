@@ -14,7 +14,7 @@ import * as S from './ModalAddContact.styles';
 interface ModalAddContactProps {
   open: boolean;
   onCancel: () => void;
-  onOk?: () => void;
+  onOk?: ({ name, email }: { name: string; email: string }) => void;
   isLoading?: boolean;
 }
 

@@ -1,20 +1,21 @@
-import { Image, Skeleton } from 'antd';
+import { Form, Image, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
 
+import { useAppSelector } from '@/shared/hooks';
 import themeColors from '@/shared/styles/themes/default/colors';
 
+import Select from '@/shared/components/common/Select';
 import Typography from '@/shared/components/common/Typography';
 
 import * as S from './Segments.styles';
 
 import icTag from '@/assets/icons/contact/ic-tag.svg';
 
-interface ContactInformationProps {
-  isLoading?: boolean;
-}
-
-function Segments({ isLoading }: ContactInformationProps) {
+function Segments() {
   const { t } = useTranslation('contacts');
+  const { isLoading, contactDetails, isDetails } = useAppSelector(
+    (state) => state.contacts,
+  );
 
   return (
     <>
@@ -54,13 +55,22 @@ function Segments({ isLoading }: ContactInformationProps) {
           </S.Header>
 
           <S.Body>
-            {Array(8)
-              ?.fill(0)
-              ?.map((_, index) => (
+            {isDetails ? (
+              contactDetails?.segments?.map((item: string, index: number) => (
                 <S.ContentWrap key={index}>
-                  <Typography>Tag</Typography>
+                  <Typography>{item}</Typography>
                 </S.ContentWrap>
-              ))}
+              ))
+            ) : (
+              <Form.Item name="segments">
+                <Select
+                  mode="tags"
+                  allowClear
+                  placeholder={t('contact-profile.select-segments')}
+                  tokenSeparators={[',']}
+                />
+              </Form.Item>
+            )}
           </S.Body>
         </S.Container>
       )}

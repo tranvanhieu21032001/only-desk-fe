@@ -1,40 +1,99 @@
-import { Form, Image, Skeleton, Switch } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useCallback } from 'react';
+import { Form, Image, Skeleton, Switch, Tooltip } from 'antd';
 
+import { websiteRegex } from '@/shared/regex';
+import { useAppSelector } from '@/shared/hooks';
+import {
+  contactInformationMockup,
+  genderOptions,
+} from '@/modules/contacts/helpers/contact.data';
 import { FormTypeEnums } from '@/shared/helper/enums/common';
 import themeColors from '@/shared/styles/themes/default/colors';
-import { contactInformationMockup } from '@/modules/contacts/helpers/contact.data';
+import { FormFieldKeyEnums } from '@/modules/contacts/helpers/contact.enums';
 
+import Input from '@/shared/components/common/Input';
+import Select from '@/shared/components/common/Select';
 import Typography from '@/shared/components/common/Typography';
 
 import * as S from './ContactInformation.styles';
 
 import icInfo from '@/assets/icons/contact/ic-info-circle.svg';
-import Input from '@/shared/components/common/Input';
-import Select from '@/shared/components/common/Select';
 
-interface ContactInformationProps {
-  isLoading?: boolean;
-}
-
-function ContactInformation({ isLoading }: ContactInformationProps) {
+function ContactInformation() {
   const { t } = useTranslation('contacts');
 
-  const renderForm = useCallback((field: any) => {
+  const { isLoading, contactDetails, isDetails } = useAppSelector(
+    (state) => state.contacts,
+  );
+
+  const renderForm = (field: any) => {
     switch (field?.type) {
       case FormTypeEnums?.INPUT:
         return (
-          <Input placeholder={field?.placeholder} disabled={field?.disable} />
+          <Form.Item
+            name={field?.key}
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (
+                    FormFieldKeyEnums?.WEBSITE === field?.key &&
+                    !websiteRegex.test(value) &&
+                    value
+                  ) {
+                    return Promise.reject(
+                      new Error(t('website-domain-invalid')),
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <Input placeholder={field?.placeholder} disabled={field?.disable} />
+          </Form.Item>
+        );
+      case FormTypeEnums?.PHONE_NUMBER:
+        return (
+          <Form.Item name={field?.key}>
+            <Input
+              placeholder={field?.placeholder}
+              disabled={field?.disable}
+              type="number"
+            />
+          </Form.Item>
         );
       case FormTypeEnums?.SELECT:
-        return <Select placeholder={field?.placeholder} />;
+        return (
+          <Form.Item name={field?.key}>
+            <Select
+              placeholder={field?.placeholder}
+              options={genderOptions?.map((option) => ({
+                ...option,
+                label: t(`gender-options.${option?.label}`),
+              }))}
+            />
+          </Form.Item>
+        );
       case FormTypeEnums?.SWITCH:
-        return <Switch />;
+        return (
+          <Form.Item name={field?.key}>
+            <Switch />
+          </Form.Item>
+        );
       default:
-        return <Typography>{t(field?.value)}</Typography>;
+        return (
+          <Typography>
+            {/* {field?.key === FormTypeEnums?.CREATE_DATE &&
+            contactDetails?.[field?.key]
+              ? dayjs(contactDetails?.[field?.key]).format(
+                  DATE_TIME_FORMAT?.EURO_DATE_TIME_FORMAT,
+                )
+              :  */}
+            {contactDetails?.[field?.key]}
+          </Typography>
+        );
     }
-  }, []);
+  };
 
   return (
     <>
@@ -54,7 +113,7 @@ function ContactInformation({ isLoading }: ContactInformationProps) {
                 <Skeleton.Input
                   active
                   style={{
-                    height: '23px',
+                    height: '39px',
                     width: '100%',
                   }}
                 />
@@ -72,12 +131,21 @@ function ContactInformation({ isLoading }: ContactInformationProps) {
           </S.Header>
 
           <S.Body>
-            {contactInformationMockup?.map((item) => (
-              <S.ContentWrap key={item?.key}>
-                <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
-                <Form.Item name={item?.key}>{renderForm(item)}</Form.Item>
-              </S.ContentWrap>
-            ))}
+            {contactInformationMockup?.map((item) => {
+              return !isDetails ? (
+                <S.ContentWrap key={item?.key}>
+                  <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
+                  {renderForm(item)}
+                </S.ContentWrap>
+              ) : (
+                <S.ContentWrap key={item?.key}>
+                  <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
+                  <Tooltip title={contactDetails?.[item?.key]}>
+                    <Typography>{contactDetails?.[item?.key]}</Typography>
+                  </Tooltip>
+                </S.ContentWrap>
+              );
+            })}
           </S.Body>
         </S.Container>
       )}

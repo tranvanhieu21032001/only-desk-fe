@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import auth from '@/modules/auth/store/features/auth';
 import historyRoute from './features/historyRoute';
 import webLocalStorage from '@/shared/utils/webLocalStorage';
 import constants from '../settings/constants';
@@ -9,6 +8,8 @@ import {
   WorkspaceInterface,
 } from '@/modules/auth/models/user';
 import webStorageClient from '@/shared/utils/webStorageClient';
+import auth from '@/modules/auth/store/features/auth';
+import contacts from '@/modules/contacts/store/features/contacts';
 
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
@@ -31,8 +32,10 @@ export const loadState = () => {
 
 export const store = configureStore({
   reducer: {
-    auth: auth,
     historyRoute: historyRoute,
+
+    auth: auth,
+    contacts: contacts,
   },
   preloadedState: loadState(),
 });

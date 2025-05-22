@@ -22,7 +22,10 @@ export const Header = styled.div`
 export const Body = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+
+  .ant-skeleton {
+    width: 100%;
+  }
 `;
 
 export const ContentWrap = styled.div`
@@ -44,8 +47,7 @@ export const ContentWrap = styled.div`
 
   .ant-form-item {
     width: 100%;
-    height: 39px;
-    margin-bottom: 0px;
+    margin-bottom: 8px;
 
     display: flex;
     align-items: center;

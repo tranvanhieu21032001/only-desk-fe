@@ -134,7 +134,7 @@ function Table({
         <S.PaginationWrap>
           <S.PagePercentPageSize>
             <Typography>
-              Page {Math.ceil((metaData?.page - 1) * metaData?.pageSize + 1)} of{' '}
+              Page {metaData?.page} of{' '}
               {Math.ceil(totalDocs / metaData?.pageSize)}
             </Typography>
           </S.PagePercentPageSize>

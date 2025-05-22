@@ -52,7 +52,6 @@ const fetchGetUserInfo = createAsyncThunk(
       {},
       { fetchPolicy: 'store-or-network' },
     ).toPromise();
-    console.log(userData);
 
     return userData?.me;
   },

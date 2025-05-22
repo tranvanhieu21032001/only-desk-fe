@@ -92,8 +92,16 @@ const select = css`
     }
   }
 
+  .ant-select-selection-item {
+    color: ${(props) => props?.theme?.colors?.primary} !important;
+  }
+
   .ant-select-selection-item-content {
     color: #141414;
+  }
+
+  .ant-select-selection-search-input {
+    color: ${(props) => props?.theme?.colors?.primary} !important;
   }
 `;
 

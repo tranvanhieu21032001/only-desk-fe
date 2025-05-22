@@ -26,6 +26,11 @@ export const Body = styled.div`
   gap: 8px;
 
   padding: 8px 12px;
+
+  .ant-form-item {
+    margin-bottom: 0px;
+    width: 100%;
+  }
 `;
 
 export const ContentWrap = styled.div`
