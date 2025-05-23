@@ -75,7 +75,6 @@ const contactInformationMockup = [
     key: 'name',
     label: 'name',
     value: 'Sophia Williams',
-    disable: true,
     type: FormTypeEnums?.INPUT,
     placeholder: 'Enter name',
   },
@@ -102,7 +101,7 @@ const contactInformationMockup = [
     placeholder: 'Enter address',
   },
   {
-    key: 'websitePath',
+    key: 'website',
     label: 'website',
     value: 'www.sophiawilliams.com',
     type: FormTypeEnums?.WEBSITE,

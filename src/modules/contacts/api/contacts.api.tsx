@@ -30,19 +30,17 @@ const handleEditProfile = async (
     {} as Record<string, any>,
   );
 
-  console.log(values);
-
   const updatePayload = omit(
     {
       ...values,
       companyInfo: {
-        nameCompany: values?.nameCompany,
-        positionCompany: values?.positionCompany,
-        departmentCompany: values?.departmentCompany,
-        websiteCompany: values?.websiteCompany,
-        cityCompany: values?.cityCompany,
-        countryCompany: values?.countryCompany,
-        employeesCompany: values?.employeesCompany,
+        name: values?.nameCompany,
+        position: values?.positionCompany,
+        department: values?.departmentCompany,
+        website: values?.websiteCompany,
+        city: values?.cityCompany,
+        country: values?.countryCompany,
+        employees: values?.employeesCompany,
       },
       metadata: metadataConvert,
     },
