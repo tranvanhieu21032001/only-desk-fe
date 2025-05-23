@@ -102,10 +102,10 @@ const contactInformationMockup = [
     placeholder: 'Enter address',
   },
   {
-    key: 'website',
+    key: 'websitePath',
     label: 'website',
     value: 'www.sophiawilliams.com',
-    type: FormTypeEnums?.INPUT,
+    type: FormTypeEnums?.WEBSITE,
     placeholder: 'Enter website',
   },
   {
@@ -121,7 +121,7 @@ const contactInformationMockup = [
     type: FormTypeEnums?.CREATE_DATE,
   },
   {
-    key: 'type',
+    key: 'sexInfo',
     label: 'gender',
     value: 'Female',
     type: FormTypeEnums?.SELECT,
@@ -137,47 +137,47 @@ const contactInformationMockup = [
 
 const companyMockup = [
   {
-    key: 'company-name',
+    key: 'nameCompany',
     label: 'company',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-company-name',
   },
   {
-    key: 'company-position',
+    key: 'positionCompany',
     label: 'position',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-position',
   },
   {
-    key: 'company-department',
+    key: 'departmentCompany',
     label: 'department',
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-department',
   },
   {
-    key: 'company-website',
+    key: 'websiteCompany',
     label: 'website',
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-website',
   },
   {
-    key: 'company-city-label',
+    key: 'cityCompany',
     label: 'city-label',
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-city',
   },
   {
-    key: 'company-country',
+    key: 'countryCompany',
     label: 'country',
     value: 'Female',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-country',
   },
   {
-    key: 'company-employees',
+    key: 'employeesCompany',
     label: 'employees',
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
@@ -204,13 +204,14 @@ const genderOptions: LabeledValue[] = [
 ];
 
 const omitKeys: string[] = [
-  'company-name',
-  'company-position',
-  'company-department',
-  'company-website',
-  'company-city-label',
-  'company-country',
-  'company-employees',
+  'nameCompany',
+  'positionCompany',
+  'departmentCompany',
+  'websiteCompany',
+  'cityCompany',
+  'countryCompany',
+  'employeesCompany',
+  'positionCompany',
   'dataForm',
 ];
 

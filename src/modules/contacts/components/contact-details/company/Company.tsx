@@ -65,19 +65,6 @@ function ContactInformation() {
     }
   };
 
-  const renderInfoCompany = (field: any) => {
-    switch (field?.key) {
-      case 'company-name':
-        return contactDetails?.companyInfo?.name;
-      case 'company-position':
-        return contactDetails?.companyInfo?.position;
-      case 'company-department':
-        return contactDetails?.companyInfo?.department;
-      default:
-        break;
-    }
-  };
-
   return (
     <>
       {isLoading ? (
@@ -126,7 +113,9 @@ function ContactInformation() {
               ) : (
                 <S.ContentWrap key={item?.key}>
                   <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
-                  <Typography>{renderInfoCompany(item)}</Typography>
+                  <Typography>
+                    {contactDetails?.companyInfo?.[item?.key]}
+                  </Typography>
                 </S.ContentWrap>
               );
             })}

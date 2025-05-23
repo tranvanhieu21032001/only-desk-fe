@@ -18,6 +18,7 @@ export const contactDetailsQuery = graphql`
       lastActivityAt
       createdAt
       updatedAt
+      gender
     }
   }
 `;
