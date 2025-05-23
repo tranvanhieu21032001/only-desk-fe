@@ -12,7 +12,6 @@ import {
 import { DATE_TIME_FORMAT } from '@/core/settings/dataTime';
 import { FormTypeEnums } from '@/shared/helper/enums/common';
 import themeColors from '@/shared/styles/themes/default/colors';
-import { FormFieldKeyEnums } from '@/modules/contacts/helpers/contact.enums';
 
 import Input from '@/shared/components/common/Input';
 import Select from '@/shared/components/common/Select';
@@ -33,16 +32,18 @@ function ContactInformation() {
     switch (field?.type) {
       case FormTypeEnums?.INPUT:
         return (
+          <Form.Item name={field?.key}>
+            <Input placeholder={field?.placeholder} disabled={field?.disable} />
+          </Form.Item>
+        );
+      case FormTypeEnums?.WEBSITE:
+        return (
           <Form.Item
             name={field?.key}
             rules={[
               {
                 validator: (_, value) => {
-                  if (
-                    FormFieldKeyEnums?.WEBSITE === field?.key &&
-                    !websiteRegex.test(value) &&
-                    value
-                  ) {
+                  if (!websiteRegex.test(value) && value) {
                     return Promise.reject(
                       new Error(t('website-domain-invalid')),
                     );
@@ -96,6 +97,22 @@ function ContactInformation() {
     }
   };
 
+  const renderDetails = (field: any) => {
+    switch (field?.type) {
+      case FormTypeEnums?.CREATE_DATE:
+        return dayjs(contactDetails?.[field?.key]).format(
+          DATE_TIME_FORMAT?.EURO_DATE_TIME_FORMAT,
+        );
+      case FormTypeEnums?.SWITCH:
+        return contactDetails?.[field?.key]
+          ? t('contact-profile.active')
+          : t('contact-profile.inactive');
+
+      default:
+        return contactDetails?.[field?.key];
+    }
+  };
+
   return (
     <>
       {isLoading ? (
@@ -143,13 +160,7 @@ function ContactInformation() {
                 <S.ContentWrap key={item?.key}>
                   <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
                   <Tooltip title={contactDetails?.[item?.key]}>
-                    <Typography>
-                      {item?.type === FormTypeEnums?.CREATE_DATE
-                        ? dayjs(contactDetails?.[item?.key]).format(
-                            DATE_TIME_FORMAT?.EURO_DATE_TIME_FORMAT,
-                          )
-                        : contactDetails?.[item?.key]}
-                    </Typography>
+                    <Typography>{renderDetails(item)}</Typography>
                   </Tooltip>
                 </S.ContentWrap>
               );

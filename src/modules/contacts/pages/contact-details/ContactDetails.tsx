@@ -81,9 +81,13 @@ function ContactDetails() {
 
     const defaultValuesForm = {
       ...contactDetails,
-      'company-name': contactDetails?.companyInfo?.name,
-      'company-position': contactDetails?.companyInfo?.position,
-      'company-department': contactDetails?.companyInfo?.department,
+      nameCompany: contactDetails?.companyInfo?.nameCompany,
+      positionCompany: contactDetails?.companyInfo?.positionCompany,
+      departmentCompany: contactDetails?.companyInfo?.departmentCompany,
+      websiteCompany: contactDetails?.companyInfo?.websiteCompany,
+      cityCompany: contactDetails?.companyInfo?.cityCompany,
+      countryCompany: contactDetails?.companyInfo?.countryCompany,
+      employeesCompany: contactDetails?.companyInfo?.employeesCompany,
       metadata: convertMetadata,
     };
 
@@ -207,8 +211,9 @@ function ContactDetails() {
                 <Skeleton.Input
                   active
                   style={{
-                    height: '28px',
+                    height: '32px',
                     width: '100%',
+                    minWidth: '300px',
                   }}
                 />
                 <Skeleton.Input

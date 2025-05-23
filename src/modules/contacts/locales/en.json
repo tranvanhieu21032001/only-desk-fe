@@ -172,7 +172,10 @@
 
     "please-enter-key": "Please enter key",
     "please-enter-value": "Please enter value",
-    "enter-notes": "Enter notes"
+    "enter-notes": "Enter notes",
+
+    "active": "Active",
+    "inactive": "Inactive"
   },
 
   "remove-contact-success": "Contact removed successfully",
