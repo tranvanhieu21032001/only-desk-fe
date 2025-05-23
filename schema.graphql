@@ -46,9 +46,7 @@ type Workspace implements Node {
   metadata: JSON
 }
 
-"""
-Type of member
-"""
+"""Type of member"""
 enum WorkspaceMemberRole {
   ADMIN
   DEVELOPER
@@ -77,18 +75,14 @@ type Message implements Node {
   updatedAt: DateTime!
 }
 
-"""
-Type of message sender
-"""
+"""Type of message sender"""
 enum MessageSender {
   GUEST
   AGENT
   SYSTEM
 }
 
-"""
-Type of message content
-"""
+"""Type of message content"""
 enum MessageTypeEnum {
   TEXT
   FILE
@@ -97,9 +91,7 @@ enum MessageTypeEnum {
   NOTE
 }
 
-"""
-Status of a message
-"""
+"""Status of a message"""
 enum MessageStatus {
   SENT
   DELIVERED
@@ -125,6 +117,7 @@ type Contact implements Node {
   email: String
   phoneNumber: String
   address: String
+  website: String
   gender: ContactGender
   notification: Boolean!
   companyInfo: JSON!
@@ -139,9 +132,7 @@ type Contact implements Node {
   updatedAt: DateTime
 }
 
-"""
-The gender of the contact
-"""
+"""The gender of the contact"""
 enum ContactGender {
   MALE
   FEMALE
@@ -174,9 +165,7 @@ type Conversation implements Node {
   latestMessage: Message
 }
 
-"""
-Status of a conversation
-"""
+"""Status of a conversation"""
 enum ConversationStatus {
   ACTIVE
   CLOSED
@@ -197,10 +186,7 @@ type Query {
   me: User
   workspaces: [Workspace!]!
   conversation(id: String!): Conversation
-  conversations(
-    workspaceId: ID!
-    args: ConnectionArgs!
-  ): ConversationConnection!
+  conversations(workspaceId: ID!, args: ConnectionArgs!): ConversationConnection!
   messages(conversationId: ID!, args: ConnectionArgs!): MessageConnection!
   contact(id: String!): Contact
   contacts(workspaceId: ID!, args: PaginationArgs!): ContactPagination!

@@ -1,5 +1,5 @@
+import { isEmpty } from 'lodash';
 import { ReactSVG } from 'react-svg';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Image, Rate } from 'antd';
@@ -7,7 +7,7 @@ import { ConfigProvider, Image, Rate } from 'antd';
 import { RootState } from '@/core/store';
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import {
-  fetchContacts,
+  actionUpdateContactDetails,
   handleRemoveContactAction,
 } from '../../store/features/contacts';
 import { ContactInterface } from '../../models/contacts.model';
@@ -22,34 +22,20 @@ import * as S from './ContactTable.styles';
 
 import icRemove from '@/assets/icons/contact/ic-remove.svg';
 import imgDefault from '@/assets/images/common/img-default.jpeg';
+import icAvatarDefault from '@/assets/images/avatar-default.png';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
-import imgAvatarDefault from '@/assets/images/settings/ic-avatar-default.png';
 
 function ContactTable() {
   const { t } = useTranslation('contacts');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  //TODO
-  // const { currentObjHistory }: any = useAppSelector(
-  //   (state) => state.historyRoute,
-  // );
   const { currentWorkspace } = useAppSelector(
     (state: RootState) => state?.auth,
   );
-  const { isLoading, contacts, totalDocs, pageInfo } = useAppSelector(
+  const { isLoading, contacts, totalDocs } = useAppSelector(
     (state: RootState) => state.contacts,
   );
-
-  useEffect(() => {
-    if (currentWorkspace) {
-      dispatch(
-        fetchContacts({
-          workspaceId: currentWorkspace?.id,
-        }),
-      );
-    }
-  }, [pageInfo?.hasNextPage, currentWorkspace]);
 
   function handleRemoveContact(idContact: string) {
     dispatch(
@@ -74,10 +60,10 @@ function ContactTable() {
             preview={false}
             width={40}
             height={40}
-            src={record?.avatar || imgAvatarDefault}
-            onError={(e) => (e.currentTarget.src = imgAvatarDefault)}
+            src={record?.avatar || icAvatarDefault}
+            onError={(e) => (e.currentTarget.src = icAvatarDefault)}
           />
-          <Typography>{record?.name || '--/--'}</Typography>
+          <Typography>{record?.name || '-'}</Typography>
         </S.FullNameColumn>
       ),
     },
@@ -88,7 +74,7 @@ function ContactTable() {
       minWidth: 150,
       width: 150,
       render: (text: string) => (
-        <S.TooltipColumn title={text}>{text}</S.TooltipColumn>
+        <S.TooltipColumn title={text}>{text || '-'}</S.TooltipColumn>
       ),
     },
     {
@@ -106,7 +92,7 @@ function ContactTable() {
             onError={(e) => (e.currentTarget.src = imgDefault)}
           />
           <S.TooltipColumn title={record?.address}>
-            {record?.address}
+            {record?.address || '-'}
           </S.TooltipColumn>
         </S.LocationColumn>
       ),
@@ -114,26 +100,33 @@ function ContactTable() {
     {
       title: t('table.company'),
       key: 'company',
-      minWidth: 280,
-      width: 280,
+      minWidth: 200,
+      width: 200,
       render: (record: ContactInterface) => (
         <S.TooltipColumn title={record?.companyInfo?.name}>
-          {record?.companyInfo?.name}
+          {record?.companyInfo?.name || '-'}
         </S.TooltipColumn>
       ),
     },
     {
       title: t('table.segments'),
       key: 'segments',
-      minWidth: 130,
-      width: 130,
+      minWidth: 280,
+      width: 280,
       render: (record: ContactInterface) => (
         <S.SegmentColumn>
-          {record?.segments?.map((segment: string, index: number) => (
-            <S.Segment key={index}>
-              <Typography>{segment}</Typography>
-            </S.Segment>
-          ))}
+          {!isEmpty(record?.segments) ? (
+            record?.segments
+              ?.slice(0, 2)
+              ?.map((segment: string, index: number) => (
+                <S.Segment key={index}>
+                  <Typography>{segment}</Typography>
+                </S.Segment>
+              ))
+          ) : (
+            <Typography>-</Typography>
+          )}
+          {record?.segments?.length > 2 && <Typography>...</Typography>}
         </S.SegmentColumn>
       ),
     },
@@ -143,6 +136,9 @@ function ContactTable() {
       key: 'lastActive',
       minWidth: 150,
       width: 150,
+      render: (text: string) => (
+        <S.TooltipColumn title={text}>{text || '-'}</S.TooltipColumn>
+      ),
     },
     {
       title: t('table.score'),
@@ -212,6 +208,7 @@ function ContactTable() {
   };
 
   function handleViewContactProfile(record: any) {
+    dispatch(actionUpdateContactDetails(record));
     navigate(MAIN_ROUTES?.CONTACT_DETAILS?.replace(':id', record?.id));
   }
 

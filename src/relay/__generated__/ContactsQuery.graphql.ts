@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ecd2bebb41c82f934cf10b3035cf931c>>
+ * @generated SignedSource<<575a79d7d3b2e1f01a7181027d0bc266>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
+export type ContactGender = "FEMALE" | "MALE" | "%future added value";
 export type PaginationArgs = {
   first?: number | null | undefined;
   last?: number | null | undefined;
@@ -23,12 +24,18 @@ export type ContactsQuery$data = {
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly address: string | null | undefined;
+        readonly avatar: string | null | undefined;
         readonly companyInfo: any;
         readonly email: string | null | undefined;
+        readonly gender: ContactGender | null | undefined;
         readonly id: string;
         readonly lastActivityAt: any | null | undefined;
+        readonly metadata: any;
         readonly name: string;
+        readonly notes: string | null | undefined;
+        readonly phoneNumber: string | null | undefined;
         readonly segments: ReadonlyArray<string>;
+        readonly website: string | null | undefined;
       };
     }>;
     readonly pageInfo: {
@@ -140,6 +147,48 @@ v2 = [
                 "kind": "ScalarField",
                 "name": "companyInfo",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "avatar",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "metadata",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "gender",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "website",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phoneNumber",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "notes",
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -221,16 +270,16 @@ return {
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "ef93ec1a37f6814e8ce19ba64e772dc8",
+    "cacheID": "8a0c83eef62182315378da332e569a2a",
     "id": null,
     "metadata": {},
     "name": "ContactsQuery",
     "operationKind": "query",
-    "text": "query ContactsQuery(\n  $workspaceId: ID!\n  $args: PaginationArgs!\n) {\n  contacts(workspaceId: $workspaceId, args: $args) {\n    edges {\n      node {\n        name\n        id\n        email\n        address\n        segments\n        lastActivityAt\n        companyInfo\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
+    "text": "query ContactsQuery(\n  $workspaceId: ID!\n  $args: PaginationArgs!\n) {\n  contacts(workspaceId: $workspaceId, args: $args) {\n    edges {\n      node {\n        name\n        id\n        email\n        address\n        segments\n        lastActivityAt\n        companyInfo\n        avatar\n        metadata\n        gender\n        website\n        phoneNumber\n        notes\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "30d8b0befec8df75b63b81d6822a8a6f";
+(node as any).hash = "2ce84f06e3b17e90534c030bb43f198d";
 
 export default node;

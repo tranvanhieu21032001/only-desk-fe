@@ -6,7 +6,7 @@ import {
   ContactInterface,
   ContactsInitialStateInterface,
 } from '../../models/contacts.model';
-import { PAGE_SIZE } from '@/shared/constant/common';
+import { PAGE, PAGE_SIZE } from '@/shared/constant/common';
 import { contactsQuery } from '@/relay/ContactsQuery';
 import relayEnvironment from '@/relay/RelayEnvironment';
 import { endpointContact } from '../../api/contacts.api';
@@ -54,15 +54,15 @@ const createContact = createAsyncThunk(
 
 const fetchContacts = createAsyncThunk(
   'contacts/get-contacts',
-  async (values: { workspaceId: string; before?: string }) => {
-    const { workspaceId } = values;
+  async (values: { workspaceId: string; offset?: number }) => {
+    const { workspaceId, offset } = values;
 
     const results: any = await fetchQuery<ContactsQuery>(
       relayEnvironment,
       contactsQuery,
       {
         workspaceId: workspaceId,
-        args: { first: PAGE_SIZE },
+        args: { first: PAGE_SIZE, offset: offset || PAGE },
       },
       { fetchPolicy: 'network-only' },
     ).toPromise();
@@ -164,7 +164,9 @@ const slice = createSlice({
       state.isLoading = false;
       state.contacts = [
         action.payload,
-        ...(state?.contacts || [])?.slice(0, -1),
+        ...((state?.contacts?.length || 0) + 1 < PAGE_SIZE
+          ? state?.contacts || []
+          : (state?.contacts || [])?.slice(0, -1)),
       ];
       state.totalDocs = (state.totalDocs || 0) + 1;
     });

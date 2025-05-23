@@ -82,7 +82,6 @@ const contactInformationMockup = [
     key: 'email',
     label: 'email',
     value: 'admin@gmail.com',
-    disable: true,
     type: FormTypeEnums?.INPUT,
     placeholder: 'Enter email',
   },
@@ -120,7 +119,7 @@ const contactInformationMockup = [
     type: FormTypeEnums?.CREATE_DATE,
   },
   {
-    key: 'sexInfo',
+    key: 'gender',
     label: 'gender',
     value: 'Female',
     type: FormTypeEnums?.SELECT,
@@ -140,12 +139,14 @@ const companyMockup = [
     label: 'company',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-company-name',
+    fieldName: 'name',
   },
   {
     key: 'positionCompany',
     label: 'position',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-position',
+    fieldName: 'position',
   },
   {
     key: 'departmentCompany',
@@ -153,6 +154,7 @@ const companyMockup = [
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-department',
+    fieldName: 'department',
   },
   {
     key: 'websiteCompany',
@@ -160,6 +162,7 @@ const companyMockup = [
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-website',
+    fieldName: 'website',
   },
   {
     key: 'cityCompany',
@@ -167,6 +170,7 @@ const companyMockup = [
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-city',
+    fieldName: 'city',
   },
   {
     key: 'countryCompany',
@@ -174,6 +178,7 @@ const companyMockup = [
     value: 'Female',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-country',
+    fieldName: 'country',
   },
   {
     key: 'employeesCompany',
@@ -181,6 +186,7 @@ const companyMockup = [
     value: 'Sophia Williams',
     type: FormTypeEnums?.INPUT,
     placeholder: 'enter-employees',
+    fieldName: 'employees',
   },
 ];
 
@@ -194,11 +200,6 @@ const genderOptions: LabeledValue[] = [
     key: GenderOptions?.FEMALE,
     value: GenderOptions?.FEMALE,
     label: 'female',
-  },
-  {
-    key: GenderOptions?.OTHER,
-    value: GenderOptions?.OTHER,
-    label: 'other',
   },
 ];
 

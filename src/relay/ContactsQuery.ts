@@ -12,6 +12,12 @@ export const contactsQuery = graphql`
           segments
           lastActivityAt
           companyInfo
+          avatar
+          metadata
+          gender
+          website
+          phoneNumber
+          notes
         }
       }
       totalCount

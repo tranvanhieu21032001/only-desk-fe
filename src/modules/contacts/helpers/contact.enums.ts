@@ -13,9 +13,8 @@ enum StatusProceedEnums {
 }
 
 enum GenderOptions {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-  OTHER = 'OTHER',
+  MALE = 'male',
+  FEMALE = 'female',
 }
 
 enum FormFieldKeyEnums {
