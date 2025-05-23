@@ -57,6 +57,17 @@ export const ContactInfoWrap = styled.div`
   }
 `;
 
+export const Avatar = styled.div`
+  .ant-form-item {
+    margin-bottom: 0px;
+
+    img {
+      object-fit: cover;
+      cursor: pointer;
+    }
+  }
+`;
+
 export const ContactInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -156,5 +167,43 @@ export const ContactContainerWrap = styled(Row)`
 
   @media ${(props) => props?.theme?.breakpoints?.smMax} {
     height: calc(100vh - 330px);
+  }
+`;
+
+export const ImageUpload = styled.div<{ $isLoading?: boolean }>`
+  position: relative;
+  width: fit-content;
+
+  ${({ $isLoading }) =>
+    $isLoading &&
+    css`
+      .ant-image-img {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    `};
+
+  .ant-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    opacity: 1;
+    z-index: 2;
+
+    svg {
+      color: ${(props) => props.theme.colors?.successDark};
+    }
+  }
+
+  p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    opacity: 1;
+    z-index: 2;
   }
 `;

@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
-import { Col, Form, Image, Skeleton } from 'antd';
+import { Col, Form, Image, Skeleton, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
@@ -22,6 +22,7 @@ import Data from '../../components/contact-details/data/Data';
 import PopoverAction from '@/shared/components/common/Popover';
 import Typography from '@/shared/components/common/Typography';
 import Breadcrumb from '@/shared/components/common/Breadcrumb';
+import UploadImage from '@/shared/components/common/Upload/main';
 import Company from '../../components/contact-details/company/Company';
 import Segments from '../../components/contact-details/segments/Segments';
 import Campaign from '../../components/contact-details/campaign/Campaign';
@@ -44,6 +45,8 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import icSendMessage from '@/assets/icons/contact/ic-send-message.svg';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 import icConversation from '@/assets/icons/contact/ic-new-conversation.svg';
+import { LoadingOutlined } from '@ant-design/icons';
+import themeColors from '@/shared/styles/themes/default/colors';
 
 function ContactDetails() {
   const { t } = useTranslation('contacts');
@@ -55,6 +58,17 @@ function ContactDetails() {
   const { isLoading, contactDetails, isDetails } = useAppSelector(
     (state) => state.contacts,
   );
+  const [params, setParams] = useState<{
+    isLoading: boolean;
+    countUpload: number;
+    progressPercent: number;
+    isLoadingDifferentField?: boolean;
+  }>({
+    isLoading: false,
+    countUpload: 0,
+    progressPercent: 0,
+    isLoadingDifferentField: false,
+  });
 
   const locationPath = window.location.pathname;
 
@@ -81,13 +95,13 @@ function ContactDetails() {
 
     const defaultValuesForm = {
       ...contactDetails,
-      nameCompany: contactDetails?.companyInfo?.nameCompany,
-      positionCompany: contactDetails?.companyInfo?.positionCompany,
-      departmentCompany: contactDetails?.companyInfo?.departmentCompany,
-      websiteCompany: contactDetails?.companyInfo?.websiteCompany,
-      cityCompany: contactDetails?.companyInfo?.cityCompany,
-      countryCompany: contactDetails?.companyInfo?.countryCompany,
-      employeesCompany: contactDetails?.companyInfo?.employeesCompany,
+      nameCompany: contactDetails?.companyInfo?.name,
+      positionCompany: contactDetails?.companyInfo?.position,
+      departmentCompany: contactDetails?.companyInfo?.department,
+      websiteCompany: contactDetails?.companyInfo?.website,
+      cityCompany: contactDetails?.companyInfo?.city,
+      countryCompany: contactDetails?.companyInfo?.country,
+      employeesCompany: contactDetails?.companyInfo?.employees,
       metadata: convertMetadata,
     };
 
@@ -190,6 +204,15 @@ function ContactDetails() {
     }
   }
 
+  /**
+   * @param {string} avatarPath - The path to the avatar image when was uploaded successfully.
+   */
+  const handleUpdateAvatarInformation = (avatarPath: string) => {
+    form.setFieldsValue({
+      avatar: avatarPath,
+    });
+  };
+
   return (
     <S.ContactsContainer>
       <S.BreadcrumbContainer>
@@ -228,14 +251,52 @@ function ContactDetails() {
             </S.ContactInfoWrap>
           ) : (
             <S.ContactInfoWrap>
-              <Image
-                src={contactDetails?.avatar || icAvatarDefault}
-                preview={false}
-                alt="Avatar"
-                width={90}
-                height={90}
-                onError={(e) => (e.currentTarget.src = icAvatarDefault)}
-              />
+              <S.Avatar>
+                <UploadImage
+                  onParams={setParams}
+                  currentForm={form}
+                  fieldName="avatar"
+                  maxCount={1}
+                  handleUpdateAvatarInformation={handleUpdateAvatarInformation}
+                  content={
+                    <S.ImageUpload $isLoading={params?.isLoading || false}>
+                      <Form.Item name="avatar">
+                        <Image
+                          src={
+                            form?.getFieldValue('avatar') ||
+                            contactDetails?.avatar ||
+                            icAvatarDefault
+                          }
+                          preview={false}
+                          alt="Avatar"
+                          width={90}
+                          height={90}
+                          onError={(e) =>
+                            (e.currentTarget.src = icAvatarDefault)
+                          }
+                        />
+                      </Form.Item>
+
+                      {params?.isLoading && (
+                        <>
+                          <Spin
+                            indicator={
+                              <LoadingOutlined style={{ fontSize: 48 }} spin />
+                            }
+                          />
+                          <Typography
+                            fontWeight={fontWeight?.semiBold}
+                            color={themeColors?.successDark}
+                          >
+                            {params?.progressPercent}%
+                          </Typography>
+                        </>
+                      )}
+                    </S.ImageUpload>
+                  }
+                />
+              </S.Avatar>
+
               <S.ContactInfo>
                 <Typography variant="h3" fontWeight={fontWeight?.semiBold}>
                   {contactDetails?.name}
