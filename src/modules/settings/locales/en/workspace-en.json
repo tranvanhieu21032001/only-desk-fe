@@ -16,6 +16,7 @@
     "domain": "Domain",
     "enter-domain": "Enter your domain",
     "domain-required": "Please enter your domain",
+    "website-domain-invalid": "Website domain is invalid",
     "name": "Name",
     "enter-name": "Enter your name",
     "name-required": "Please enter your name",
@@ -31,6 +32,7 @@
     "instagram": "Instagram",
     "enter-instagram": "Enter your Instagram username",
     "automatically-saved": "Automatically saved",
+    "update-workspace-information-success": "Update workspace information successfully",
 
     "account-information": "Account Information",
     "personal-details": "Personal Details",
@@ -54,7 +56,9 @@
     "file-smaller-than-2mb": "File smaller than 10MB and at least 400px by 400px",
     "looking-to-remove": "Looking to remove your account?",
     "delete-account": "Delete account",
-    "disable-two-factor-authentication": "Disable Two Factor Authentication"
+    "disable-two-factor-authentication": "Disable Two Factor Authentication",
+
+    "update-image-workspace-success": "Update image workspace successfully"
   },
 
   "setup-integrations": {

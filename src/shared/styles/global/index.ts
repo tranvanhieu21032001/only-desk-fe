@@ -516,6 +516,10 @@ const popOver = css`
       }
     }
   }
+
+  .ant-spin-dot-holder {
+    color: ${(props) => props.theme.colors?.successDark} !important;
+  }
 `;
 
 const GlobalStyle = createGlobalStyle`

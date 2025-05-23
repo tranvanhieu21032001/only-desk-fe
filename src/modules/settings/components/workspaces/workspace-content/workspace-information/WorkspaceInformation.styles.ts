@@ -73,6 +73,9 @@ export const Automatically = styled.div`
 `;
 
 export const AccountInformationLabel = styled.div`
+  display: flex;
+  gap: 14px;
+
   p {
     font-size: 20px;
   }
@@ -162,5 +165,54 @@ export const ColumnAvatar = styled(Col)`
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+`;
+
+export const ImageUpload = styled.div<{ $isLoading?: boolean }>`
+  position: relative;
+  width: fit-content;
+
+  ${({ $isLoading }) =>
+    $isLoading &&
+    css`
+      .ant-image-img {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    `};
+
+  .ant-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    opacity: 1;
+    z-index: 2;
+
+    svg {
+      color: ${(props) => props.theme.colors?.successDark};
+    }
+  }
+
+  p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    opacity: 1;
+    z-index: 2;
+  }
+`;
+
+export const Avatar = styled.div`
+  .ant-form-item {
+    margin-bottom: 0px;
+
+    img {
+      object-fit: cover;
+      cursor: pointer;
+    }
   }
 `;

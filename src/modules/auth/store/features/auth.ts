@@ -111,6 +111,8 @@ const slice = createSlice({
       state.userInfo = null;
       webStorageClient.removeAll();
       localStorage.clear();
+      state.workspaces = [];
+      state.currentWorkspace = null;
     },
     actionUpdateWorkSpaceCurrent: (
       state,
@@ -118,10 +120,7 @@ const slice = createSlice({
     ) => {
       setCurrentWorkspace(state, action?.payload);
     },
-    actionUpdateWorkSpaces: (
-      state,
-      action: { payload: WorkspaceInterface },
-    ) => {
+    actionCreateWorkspace: (state, action: { payload: WorkspaceInterface }) => {
       state.workspaces = [
         ...(state.workspaces || []),
         {
@@ -135,6 +134,27 @@ const slice = createSlice({
     },
     actionSetGlobalLoading: (state, action) => {
       state.isLoading = action.payload;
+    },
+    actionUpdateCurrentWorkspace: (state, action: { payload: any }) => {
+      state.currentWorkspace = {
+        ...state.currentWorkspace,
+        ...action.payload,
+      } as WorkspaceInterface;
+
+      webLocalStorage.set(constants.CURRENT_WORKSPACE, {
+        ...state.currentWorkspace,
+        ...action.payload,
+      });
+
+      state.workspaces = state.workspaces?.map((workspace) => {
+        if (workspace.id === action.payload.id) {
+          return {
+            ...workspace,
+            ...action.payload,
+          };
+        }
+        return workspace;
+      });
     },
   },
 
@@ -192,9 +212,10 @@ export const {
   actionLogout,
   actionUpdateUserInfo,
   actionSignUp,
-  actionUpdateWorkSpaces,
+  actionCreateWorkspace,
   actionUpdateWorkSpaceCurrent,
   actionSetGlobalLoading,
+  actionUpdateCurrentWorkspace,
 } = slice.actions;
 
 export { fetchGetUserInfo, fetchWorkspace };

@@ -3,8 +3,8 @@ import { TFunction } from 'i18next';
 import { postRequest } from '@/core/services/requests';
 import { patchRequest } from '@/core/services/requests/patchRequest';
 import {
-  actionUpdateWorkSpaces,
   actionSetGlobalLoading,
+  actionCreateWorkspace,
 } from '@/modules/auth/store/features/auth';
 import { eventBus } from '@/core/event-bus';
 import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
@@ -30,7 +30,7 @@ const handleCreateWorkspaceApi = async (
   })
     .then((res) => {
       handleOpenModalCreateWorkspace();
-      dispatch(actionUpdateWorkSpaces(res));
+      dispatch(actionCreateWorkspace(res));
     })
     .catch((err) => err)
     .finally(() => setIsLoading((prev) => !prev));

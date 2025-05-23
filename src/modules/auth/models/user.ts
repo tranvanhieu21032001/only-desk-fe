@@ -17,4 +17,7 @@ export interface WorkspaceInterface {
   name: string;
   websiteID: string;
   websiteUrl: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  metadata?: [{ [key: string]: string }];
 }

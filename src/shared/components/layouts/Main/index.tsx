@@ -541,52 +541,60 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     });
   }
 
-  const renderWorkSpaces = (
-    <S.PopoverContent>
-      <Typography fontWeight={fontWeight?.semiBold} variant="body-text-larger">
-        {t('work-spaces')}
-      </Typography>
-      <S.Line />
-      <S.PopoverLabel>
-        {(workspaces || []).map((ws) => (
-          <S.WorkSpacesCard
-            key={ws.id}
-            $isActive={ws.id === currentWorkspace?.id}
-            onClick={() => handleSelectWorkSpaceCurrent(ws)}
-          >
-            <S.AvatarImage>
-              <Image
-                src={ws?.logo || icDefaultWorkspace}
-                preview={false}
-                width={40}
-                height={40}
-              />
-            </S.AvatarImage>
-            <S.WorkSpacesLabel>
-              <Tooltip title={ws?.name || ''}>
-                <Typography fontWeight={fontWeight?.semiBold}>
-                  {ws?.name}
-                </Typography>
-              </Tooltip>
-              <Tooltip title={ws?.websiteUrl || ''}>
-                <Typography>{ws.websiteUrl}</Typography>
-              </Tooltip>
-            </S.WorkSpacesLabel>
-          </S.WorkSpacesCard>
-        ))}
-      </S.PopoverLabel>
-
-      <S.PopoverAction onClick={handleOpenModalCreateWorkspace} type="primary">
-        <PlusCircleOutlined />
+  const renderWorkSpaces = useMemo(() => {
+    return (
+      <S.PopoverContent>
         <Typography
-          color={themeColors?.newtralLightest}
           fontWeight={fontWeight?.semiBold}
+          variant="body-text-larger"
         >
-          {t('create-work-space')}
+          {t('work-spaces')}
         </Typography>
-      </S.PopoverAction>
-    </S.PopoverContent>
-  );
+        <S.Line />
+        <S.PopoverLabel>
+          {(workspaces || []).map((ws) => (
+            <S.WorkSpacesCard
+              key={ws.id}
+              $isActive={ws.id === currentWorkspace?.id}
+              onClick={() => handleSelectWorkSpaceCurrent(ws)}
+            >
+              <S.AvatarImage>
+                <Image
+                  src={ws?.logo || icDefaultWorkspace}
+                  preview={false}
+                  width={40}
+                  height={40}
+                />
+              </S.AvatarImage>
+              <S.WorkSpacesLabel>
+                <Tooltip title={ws?.name || ''}>
+                  <Typography fontWeight={fontWeight?.semiBold}>
+                    {ws?.name}
+                  </Typography>
+                </Tooltip>
+                <Tooltip title={ws?.websiteUrl || ''}>
+                  <Typography>{ws.websiteUrl}</Typography>
+                </Tooltip>
+              </S.WorkSpacesLabel>
+            </S.WorkSpacesCard>
+          ))}
+        </S.PopoverLabel>
+
+        <S.PopoverAction
+          onClick={handleOpenModalCreateWorkspace}
+          type="primary"
+        >
+          <PlusCircleOutlined />
+          <Typography
+            color={themeColors?.newtralLightest}
+            fontWeight={fontWeight?.semiBold}
+          >
+            {t('create-work-space')}
+          </Typography>
+        </S.PopoverAction>
+      </S.PopoverContent>
+    );
+  }, [workspaces]);
 
   const renderSettings = (
     <S.PopoverContent>
