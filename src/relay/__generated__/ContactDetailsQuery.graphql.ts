@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c6bf4434708892a873ea8b0ad35edc61>>
+ * @generated SignedSource<<9178367d5c11d10dae90dbf968be69e8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type ContactDetailsQuery$variables = {
 export type ContactDetailsQuery$data = {
   readonly contact: {
     readonly address: string | null | undefined;
+    readonly avatar: string | null | undefined;
     readonly companyInfo: any;
     readonly createdAt: any | null | undefined;
     readonly email: string | null | undefined;
@@ -31,6 +32,7 @@ export type ContactDetailsQuery$data = {
     readonly segments: ReadonlyArray<string>;
     readonly trackingInfo: any;
     readonly updatedAt: any | null | undefined;
+    readonly website: string | null | undefined;
   } | null | undefined;
 };
 export type ContactDetailsQuery = {
@@ -172,6 +174,20 @@ v1 = [
         "kind": "ScalarField",
         "name": "gender",
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "avatar",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "website",
+        "storageKey": null
       }
     ],
     "storageKey": null
@@ -195,16 +211,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "f92f750c8f883b1179a6912c58eacd6c",
+    "cacheID": "c9589bb1c9d16c09dd3d24adfdc36439",
     "id": null,
     "metadata": {},
     "name": "ContactDetailsQuery",
     "operationKind": "query",
-    "text": "query ContactDetailsQuery(\n  $id: String!\n) {\n  contact(id: $id) {\n    id\n    name\n    email\n    phoneNumber\n    address\n    notification\n    companyInfo\n    segments\n    metadata\n    trackingInfo\n    notes\n    isOnline\n    lastActivityAt\n    createdAt\n    updatedAt\n    gender\n  }\n}\n"
+    "text": "query ContactDetailsQuery(\n  $id: String!\n) {\n  contact(id: $id) {\n    id\n    name\n    email\n    phoneNumber\n    address\n    notification\n    companyInfo\n    segments\n    metadata\n    trackingInfo\n    notes\n    isOnline\n    lastActivityAt\n    createdAt\n    updatedAt\n    gender\n    avatar\n    website\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "876040208a7d1f2f7ec78e07b937cbf4";
+(node as any).hash = "c7ad77f649909eb2f3c903ed696cdb3e";
 
 export default node;

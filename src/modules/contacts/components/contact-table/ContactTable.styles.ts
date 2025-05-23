@@ -95,4 +95,12 @@ export const Segment = styled.div`
   padding: 2px 8px;
   border-radius: 6px;
   background-color: ${(props) => props?.theme?.colors?.newtralLighter};
+  width: fit-content;
+
+  p {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+  }
 `;

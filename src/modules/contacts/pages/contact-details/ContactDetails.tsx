@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { isEmpty } from 'lodash';
 import { ReactSVG } from 'react-svg';
-import { Col, Form, Image, Skeleton, Spin } from 'antd';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Col, Form, Image, Skeleton, Spin } from 'antd';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import {
@@ -12,6 +14,7 @@ import {
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import { handleEditProfile } from '../../api/contacts.api';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
+import themeColors from '@/shared/styles/themes/default/colors';
 import { actionsProfileDetailsOptions } from '@/shared/helper/data/contacts';
 import { ActionProfileDetailsOptionsInterface } from '@/shared/model/contacts';
 import { ActionProfileDetailsTypeEnums } from '@/shared/helper/enums/contacts';
@@ -45,8 +48,6 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import icSendMessage from '@/assets/icons/contact/ic-send-message.svg';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 import icConversation from '@/assets/icons/contact/ic-new-conversation.svg';
-import { LoadingOutlined } from '@ant-design/icons';
-import themeColors from '@/shared/styles/themes/default/colors';
 
 function ContactDetails() {
   const { t } = useTranslation('contacts');
@@ -73,7 +74,9 @@ function ContactDetails() {
   const locationPath = window.location.pathname;
 
   useEffect(() => {
-    dispatch(fetchDetailsContact({ idContact: id as string }));
+    if (id && isEmpty(contactDetails)) {
+      dispatch(fetchDetailsContact({ idContact: id as string }));
+    }
   }, [id, dispatch, form]);
 
   useEffect(() => {

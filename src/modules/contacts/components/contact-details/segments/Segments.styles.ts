@@ -37,9 +37,14 @@ export const ContentWrap = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
+  width: fit-content;
 
   p {
     padding: 0 8px;
     background-color: ${(props) => props?.theme?.colors?.newtralLighter};
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block;
   }
 `;

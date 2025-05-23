@@ -20,6 +20,7 @@ import Typography from '@/shared/components/common/Typography';
 import * as S from './ContactInformation.styles';
 
 import icInfo from '@/assets/icons/contact/ic-info-circle.svg';
+import { isEmpty } from 'lodash';
 
 function ContactInformation() {
   const { t } = useTranslation('contacts');
@@ -33,7 +34,14 @@ function ContactInformation() {
       case FormTypeEnums?.INPUT:
         return (
           <Form.Item name={field?.key}>
-            <Input placeholder={field?.placeholder} disabled={field?.disable} />
+            <Input
+              placeholder={field?.placeholder}
+              disabled={
+                field?.key === 'email'
+                  ? !isEmpty(contactDetails?.email)
+                  : field?.disable
+              }
+            />
           </Form.Item>
         );
       case FormTypeEnums?.WEBSITE:

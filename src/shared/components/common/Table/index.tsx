@@ -142,7 +142,12 @@ function Table({
             <S.JumpToPage
               disabled={Number(metaData?.page) === 1}
               onClick={() =>
-                handleChangePage(Math.max(1, Number(metaData?.page) - 3))
+                handleChangePage(
+                  Math.min(
+                    Math.ceil(totalDocs / metaData.pageSize),
+                    Math.max(1, Number(metaData?.page) - 3),
+                  ),
+                )
               }
             >
               <Image
@@ -187,7 +192,12 @@ function Table({
                 Math.ceil(totalDocs / metaData?.pageSize)
               }
               onClick={() =>
-                handleChangePage(Math.max(1, Number(metaData?.page) + 3))
+                handleChangePage(
+                  Math.min(
+                    Math.ceil(totalDocs / metaData.pageSize),
+                    Math.max(1, Number(metaData?.page) + 3),
+                  ),
+                )
               }
             >
               <Image preview={false} width={26} height={26} src={icJumpNext} />

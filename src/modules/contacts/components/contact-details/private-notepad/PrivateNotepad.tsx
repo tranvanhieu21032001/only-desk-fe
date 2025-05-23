@@ -19,7 +19,7 @@ function PrivateNotepad() {
   );
 
   const renderNotes = useMemo(() => {
-    if (!contactDetails?.notes) {
+    if (isDetails && !contactDetails?.notes) {
       return (
         <Typography color={themeColors?.primary} margin="8px 0 0 0">
           {t('contact-profile.this-is-content')}

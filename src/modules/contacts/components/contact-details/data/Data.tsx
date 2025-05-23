@@ -121,12 +121,14 @@ function Data({ form }: DataProps) {
                 {t('contact-profile.data')}
               </Typography>
             </S.HeaderWrap>
-            <S.HeaderActionWrap>
-              <PlusOutlined />
-              <Typography variant="h5" color={themeColors?.secondaryDarker}>
-                {t('contact-profile.add-data')}
-              </Typography>
-            </S.HeaderActionWrap>
+            {!isDetails && (
+              <S.HeaderActionWrap>
+                <PlusOutlined />
+                <Typography variant="h5" color={themeColors?.secondaryDarker}>
+                  {t('contact-profile.add-data')}
+                </Typography>
+              </S.HeaderActionWrap>
+            )}
           </S.Header>
 
           <S.Body>
@@ -166,28 +168,44 @@ function Data({ form }: DataProps) {
                 {t('contact-profile.data')}
               </Typography>
             </S.HeaderWrap>
-            <S.HeaderActionWrap onClick={handleAddData}>
-              <PlusOutlined />
-              <Typography variant="h5" color={themeColors?.secondaryDarker}>
-                {t('contact-profile.add-data')}
-              </Typography>
-            </S.HeaderActionWrap>
+            {!isDetails && (
+              <S.HeaderActionWrap onClick={handleAddData}>
+                <PlusOutlined />
+                <Typography variant="h5" color={themeColors?.secondaryDarker}>
+                  {t('contact-profile.add-data')}
+                </Typography>
+              </S.HeaderActionWrap>
+            )}
           </S.Header>
 
           <S.Body>
             {isDetails ? (
               <>
-                {Object.keys(contactDetails?.metadata || {})
-                  ?.map((item) => ({
-                    key: item,
-                    value: contactDetails?.metadata?.[item],
-                  }))
-                  ?.map((meta) => (
-                    <S.ContentWrap>
-                      <Input value={meta?.key} disabled />
-                      <Input value={meta?.value} disabled />
-                    </S.ContentWrap>
-                  ))}
+                {isEmptyForm ? (
+                  <>
+                    <Image
+                      src={empty}
+                      width={120}
+                      height={120}
+                      preview={false}
+                    />
+                    <Typography color={themeColors?.primary} margin="8px 0 0 0">
+                      {t('contact-profile.no-data-added')}
+                    </Typography>
+                  </>
+                ) : (
+                  Object.keys(contactDetails?.metadata || {})
+                    ?.map((item) => ({
+                      key: item,
+                      value: contactDetails?.metadata?.[item],
+                    }))
+                    ?.map((meta) => (
+                      <S.ContentWrap>
+                        <Input value={meta?.key} disabled />
+                        <Input value={meta?.value} disabled />
+                      </S.ContentWrap>
+                    ))
+                )}
               </>
             ) : (
               renderData

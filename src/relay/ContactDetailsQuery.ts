@@ -19,6 +19,8 @@ export const contactDetailsQuery = graphql`
       createdAt
       updatedAt
       gender
+      avatar
+      website
     }
   }
 `;

@@ -72,7 +72,7 @@ function ContactInformation() {
           <S.Header>
             <Image src={icInfo} width={24} height={24} />
             <Typography variant="h5" color={themeColors?.secondaryDarker}>
-              {t('contact-profile.company')}
+              {t('contact-profile.company-information')}
             </Typography>
           </S.Header>
 
@@ -99,7 +99,7 @@ function ContactInformation() {
           <S.Header>
             <Image src={icInfo} width={24} height={24} />
             <Typography variant="h5" color={themeColors?.secondaryDarker}>
-              {t('contact-profile.contact-information')}
+              {t('contact-profile.company-information')}
             </Typography>
           </S.Header>
 
@@ -114,7 +114,7 @@ function ContactInformation() {
                 <S.ContentWrap key={item?.key}>
                   <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
                   <Typography>
-                    {contactDetails?.companyInfo?.[item?.key]}
+                    {contactDetails?.companyInfo?.[item?.fieldName]}
                   </Typography>
                 </S.ContentWrap>
               );
