@@ -8,6 +8,9 @@ export const workspaceInfoQuery = graphql`
       websiteID
       websiteUrl
       logo
+      contactEmail
+      contactPhone
+      metadata
     }
   }
 `;

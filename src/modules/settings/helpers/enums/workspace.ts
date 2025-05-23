@@ -9,4 +9,12 @@ enum WorkspaceMenusEnums {
   DANGER_ZONE = 'danger-zone',
 }
 
-export { WorkspaceMenusEnums };
+enum WorkspaceFieldsEditEnums {
+  MESSAGE = 'message',
+  TELEGRAM = 'telegram',
+  TWITTER = 'twitter',
+  WHATSAPP = 'whatsapp',
+  INSTAGRAM = 'instagram',
+}
+
+export { WorkspaceMenusEnums, WorkspaceFieldsEditEnums };

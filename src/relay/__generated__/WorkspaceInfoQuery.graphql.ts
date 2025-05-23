@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2f3f106a5c1012a09528851edb85d85a>>
+ * @generated SignedSource<<f185bdfd6c7f7935748a529c93c8f4e9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,8 +12,11 @@ import { ConcreteRequest } from 'relay-runtime';
 export type WorkspaceInfoQuery$variables = Record<PropertyKey, never>;
 export type WorkspaceInfoQuery$data = {
   readonly workspaces: ReadonlyArray<{
+    readonly contactEmail: string | null | undefined;
+    readonly contactPhone: string | null | undefined;
     readonly id: string;
     readonly logo: string | null | undefined;
+    readonly metadata: any | null | undefined;
     readonly name: string;
     readonly websiteID: string;
     readonly websiteUrl: string;
@@ -68,6 +71,27 @@ var v0 = [
         "kind": "ScalarField",
         "name": "logo",
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "contactEmail",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "contactPhone",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "metadata",
+        "storageKey": null
       }
     ],
     "storageKey": null
@@ -91,16 +115,16 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "927328982470f3e181a51c62254122e3",
+    "cacheID": "35b32769c28784963887e2b5d13741fc",
     "id": null,
     "metadata": {},
     "name": "WorkspaceInfoQuery",
     "operationKind": "query",
-    "text": "query WorkspaceInfoQuery {\n  workspaces {\n    id\n    name\n    websiteID\n    websiteUrl\n    logo\n  }\n}\n"
+    "text": "query WorkspaceInfoQuery {\n  workspaces {\n    id\n    name\n    websiteID\n    websiteUrl\n    logo\n    contactEmail\n    contactPhone\n    metadata\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b2b09d0b9f2c33789bf3eb74b5678e03";
+(node as any).hash = "4218a01e7c88085dd535127e895cee03";
 
 export default node;
