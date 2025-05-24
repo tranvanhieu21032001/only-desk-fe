@@ -458,3 +458,10 @@ export const NewMessageNoticeButton = styled.button`
     height: 18px;
   }
 `;
+
+export const TypingIndicator = styled.div`
+  background-color: #fff;
+  color: #233e93;
+  margin-bottom: 4px;
+  margin-left: 15px;
+`;

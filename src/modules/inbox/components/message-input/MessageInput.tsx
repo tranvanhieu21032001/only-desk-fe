@@ -1,5 +1,8 @@
 import React, { useRef, useEffect, useState, ChangeEvent } from 'react';
 import { Image } from 'antd';
+import { debounce } from 'lodash';
+import { emitTypingStart, emitTypingStop } from '@/core/services/socket/socket';
+import { useSearchParams } from 'react-router-dom';
 
 import * as S from './MessageInput.styles';
 
@@ -32,17 +35,42 @@ const MessageInput: React.FC<MessageInputProps> = ({
   setActiveTab,
   onSendMessage,
 }) => {
+  const [searchParams] = useSearchParams();
+  const conversationId = searchParams.get('conversationId');
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [filePreviews, setFilePreviews] = useState<
     { type: 'image' | 'pdf'; src?: string; file: File }[]
   >([]);
 
+  // Debounced typing emit
+  const debouncedTypingStart = useRef(
+    debounce(() => {
+      if (conversationId) {
+        emitTypingStart(conversationId);
+      }
+    }, 400),
+  ).current;
+  const debouncedTypingStop = useRef(
+    debounce(() => {
+      if (conversationId) {
+        emitTypingStop(conversationId);
+      }
+    }, 1000),
+  ).current;
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, [activeTab, selectedReminder]);
+
+  useEffect(() => {
+    return () => {
+      debouncedTypingStart.cancel();
+      debouncedTypingStop.cancel();
+    };
+  }, [debouncedTypingStart, debouncedTypingStop]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -154,11 +182,18 @@ const MessageInput: React.FC<MessageInputProps> = ({
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);
-          if (e.target.value === '') setActiveTab(null);
+          if (e.target.value === '') {
+            setActiveTab(null);
+            debouncedTypingStop();
+          } else {
+            debouncedTypingStart();
+            debouncedTypingStop();
+          }
         }}
         onKeyPress={(e) => {
           if (e.key === 'Enter' && inputValue.trim()) {
             onSendMessage(inputValue);
+            debouncedTypingStop();
           }
         }}
         placeholder="Messages..."
