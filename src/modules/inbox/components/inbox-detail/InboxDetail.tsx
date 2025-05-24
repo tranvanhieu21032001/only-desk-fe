@@ -17,6 +17,8 @@ import {
   sendAgentMessage,
   closeConversation,
   openConversation,
+  listenUserTyping,
+  offUserTyping,
 } from '../../../../core/services/socket/socket';
 
 import * as S from './InboxDetail.styles';
@@ -65,6 +67,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   const [selectedReminder, setSelectedReminder] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
+  const [guestTyping, setGuestTyping] = useState(false);
 
   const user = useUser();
   const currentUserId = user?.id;
@@ -264,6 +267,28 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     };
     eventBus.on(EVENTBUS_INBOX_MESSAGE, handler);
     return () => eventBus.off(EVENTBUS_INBOX_MESSAGE, handler);
+  }, []);
+
+  useEffect(() => {
+    const handleUserTyping = (data: any) => {
+      console.log('[SOCKET][user_typing] event:', data);
+      setGuestTyping(!!data.isTyping);
+      if (data.isTyping) {
+        if ((window as any).guestTypingTimeout)
+          clearTimeout((window as any).guestTypingTimeout);
+        (window as any).guestTypingTimeout = setTimeout(
+          () => setGuestTyping(false),
+          2000,
+        );
+      }
+    };
+    listenUserTyping(handleUserTyping);
+    return () => {
+      offUserTyping(handleUserTyping);
+      setGuestTyping(false);
+      if ((window as any).guestTypingTimeout)
+        clearTimeout((window as any).guestTypingTimeout);
+    };
   }, []);
 
   const handleTabClick = (tab: string) => {
@@ -522,6 +547,11 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       </S.MainContent>
 
       {renderTabContent()}
+
+      {/* Guest is typing indicator */}
+      {guestTyping && (
+        <S.TypingIndicator>{t('inboxDetail.guestIsTyping')}</S.TypingIndicator>
+      )}
 
       <S.Footer>
         <S.ActionIcons>

@@ -7,6 +7,7 @@ import {
   EVENTBUS_INBOX_MESSAGE,
   SOCKET_EVENT_MESSAGE,
   SOCKET_EVENT_SEND_MESSAGE,
+  EVENTBUS_USER_TYPING,
 } from '@/core/settings/constants';
 
 export const socket = io(SOCKET_API_URL, { autoConnect: false });
@@ -24,6 +25,11 @@ export const connectSocket = (auth: any) => {
   socket.on('reconnect_failed', () =>
     eventBus.emit(EVENTBUS_SOCKET_DISCONNECT),
   );
+  socket.on('user_typing', (data) => {
+    console.log('[SOCKET][on] user_typing', data);
+    console.log('EVENTBUS[emit] EVENTBUS_USER_TYPING', data);
+    eventBus.emit(EVENTBUS_USER_TYPING, data);
+  });
 
   return () => {
     socket.off('connect');
@@ -31,6 +37,7 @@ export const connectSocket = (auth: any) => {
     socket.off(SOCKET_EVENT_MESSAGE);
     socket.off('reconnect_error');
     socket.off('reconnect_failed');
+    socket.off('user_typing');
     socket.disconnect();
   };
 };
@@ -49,4 +56,22 @@ export const openConversation = (conversationId: string) => {
 
 export const closeConversation = (conversationId: string) => {
   socket.emit('close_conversation', { conversationId });
+};
+
+export const emitTypingStart = (conversationId: string) => {
+  console.log('[SOCKET][emit] typing_start', { conversationId });
+  socket.emit('typing_start', { conversationId });
+};
+
+export const emitTypingStop = (conversationId: string) => {
+  console.log('[SOCKET][emit] typing_stop', { conversationId });
+  socket.emit('typing_stop', { conversationId });
+};
+
+export const listenUserTyping = (callback: (data: any) => void) => {
+  eventBus.on(EVENTBUS_USER_TYPING, callback);
+};
+
+export const offUserTyping = (callback: (data: any) => void) => {
+  eventBus.off(EVENTBUS_USER_TYPING, callback);
 };
