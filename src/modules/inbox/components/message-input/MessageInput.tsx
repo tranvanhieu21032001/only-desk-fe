@@ -1,8 +1,12 @@
 import React, { useRef, useEffect, useState, ChangeEvent } from 'react';
 import { Image } from 'antd';
 import { debounce } from 'lodash';
-import { emitTypingStart, emitTypingStop } from '@/core/services/socket/socket';
 import { useSearchParams } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+
+import { emitTypingStart, emitTypingStop } from '@/core/services/socket/socket';
+
+import { uploadFile } from '../../helpers/inbox.logic';
 
 import * as S from './MessageInput.styles';
 
@@ -11,11 +15,11 @@ import smile from '@/assets/icons/common/ic-smile.svg';
 import send from '@/assets/icons/common/ic-send.svg';
 import bellWhite from '@/assets/icons/inbox/ic-bell-white.svg';
 import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
-import icPdf from '@/assets/icons/inbox/ic-pdf.svg';
-import icCheck from '@/assets/icons/inbox/ic-check.svg';
+// import icPdf from '@/assets/icons/inbox/ic-pdf.svg';
+// import icCheck from '@/assets/icons/inbox/ic-check.svg';
 import icCloseImage from '@/assets/icons/inbox/ic-close-image.svg';
 import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
-import trash from '@/assets/icons/inbox/ic-trash.svg';
+// import trash from '@/assets/icons/inbox/ic-trash.svg';
 
 interface MessageInputProps {
   activeTab: string | null;
@@ -24,7 +28,17 @@ interface MessageInputProps {
   setInputValue: (val: string) => void;
   setActiveTab: (val: string | null) => void;
   setSelectedReminder: (val: string | null) => void;
-  onSendMessage: (val: string) => void;
+  onSendMessage: (val: string, type?: string, metadata?: any) => void;
+}
+
+interface FilePreview {
+  id: string;
+  type: 'image';
+  fileUrl: string;
+  localUrl: string;
+  fileName: string;
+  uploading: boolean;
+  originFile?: File;
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({
@@ -39,9 +53,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const conversationId = searchParams.get('conversationId');
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [filePreviews, setFilePreviews] = useState<
-    { type: 'image' | 'pdf'; src?: string; file: File }[]
-  >([]);
+  const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
 
   // Debounced typing emit
   const debouncedTypingStart = useRef(
@@ -74,28 +86,90 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
-      const fileArray = Array.from(files);
-      fileArray.forEach((file) => {
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            setFilePreviews((prev) => [
-              ...prev,
-              { type: 'image', src: reader.result as string, file },
-            ]);
-          };
-          reader.readAsDataURL(file);
-        } else if (file.type === 'application/pdf') {
-          setFilePreviews((prev) => [...prev, { type: 'pdf', file }]);
+    if (!files || files.length === 0) return;
+
+    const imageFiles = Array.from(files).filter((f) =>
+      f.type.startsWith('image/'),
+    );
+
+    const previews: FilePreview[] = imageFiles.map((file) => {
+      const id = uuidv4();
+      return {
+        id,
+        type: 'image',
+        fileName: file.name,
+        fileUrl: '',
+        localUrl: URL.createObjectURL(file),
+        uploading: true,
+        originFile: file,
+      };
+    });
+
+    setFilePreviews((prev) => [...prev, ...previews]);
+
+    // Start uploading each photo, always update by id
+    previews.forEach(async (previewItem) => {
+      try {
+        if (!previewItem.originFile) return;
+        const res = await uploadFile(previewItem.originFile);
+        if (res?.fileUrl) {
+          setFilePreviews((prev) => {
+            const updated = prev.map((item) =>
+              item.id === previewItem.id
+                ? { ...item, fileUrl: res.fileUrl, uploading: false }
+                : item,
+            );
+            return updated;
+          });
+        } else {
+          setFilePreviews((prev) => {
+            const updated = prev.map((item) =>
+              item.id === previewItem.id ? { ...item, uploading: false } : item,
+            );
+            return updated;
+          });
         }
-      });
-    }
+      } catch (err) {
+        setFilePreviews((prev) => {
+          const updated = prev.map((item) =>
+            item.id === previewItem.id ? { ...item, uploading: false } : item,
+          );
+          return updated;
+        });
+      }
+    });
+
+    // Reset input
     e.target.value = '';
   };
 
-  const removeFile = (index: number) => {
-    setFilePreviews((prev) => prev.filter((_, i) => i !== index));
+  const removeFile = (id: string) => {
+    setFilePreviews((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleSend = async () => {
+    if (filePreviews.length > 0) {
+      const uploadingFiles = filePreviews.filter((file) => file.uploading);
+      if (uploadingFiles.length > 0) {
+        return;
+      }
+
+      for (const item of filePreviews) {
+        if (item.fileUrl) {
+          onSendMessage('text image', 'image', { fileUrl: item.fileUrl });
+        } else {
+          // Handle error
+        }
+      }
+
+      setFilePreviews([]);
+      return;
+    }
+
+    if (inputValue.trim()) {
+      console.log('Sending text:', inputValue);
+      onSendMessage(inputValue);
+    }
   };
 
   return (
@@ -113,46 +187,23 @@ const MessageInput: React.FC<MessageInputProps> = ({
         />
       </S.FileInputLabel>
 
-      {/* Display File Previews before the Input Field */}
       {filePreviews.length > 0 && (
         <S.FilePreviewWrapper>
-          {filePreviews.map((item, index) =>
-            item.type === 'image' ? (
-              <S.ImagePreviewBox key={index}>
-                <S.ImagePreview src={item.src} alt={`preview-${index}`} />
-                <S.RemoveImageButton
-                  onClick={() => removeFile(index)}
-                  title="Remove"
-                >
-                  <img
-                    src={icCloseImage}
-                    alt="remove"
-                    style={{ width: 14, height: 14 }}
-                  />
-                </S.RemoveImageButton>
-              </S.ImagePreviewBox>
-            ) : (
-              <S.PdfPreviewBox key={index}>
-                <S.PdfIcon src={icPdf} alt="pdf" />
-                <S.PdfInfo>
-                  <S.PdfInfoTop>
-                    <S.PdfFileName>{item.file.name}</S.PdfFileName>
-                    <S.RemovePdfButton
-                      onClick={() => removeFile(index)}
-                      title="Remove"
-                    >
-                      <img src={trash} alt="" />
-                    </S.RemovePdfButton>
-                  </S.PdfInfoTop>
-                  <S.PdfStatus>
-                    0 KB of {(item.file.size / 1024).toFixed(0)} KB &nbsp;
-                    <S.PdfCheckIcon src={icCheck} alt="completed" />
-                    <S.PdfCompleted>Completed</S.PdfCompleted>
-                  </S.PdfStatus>
-                </S.PdfInfo>
-              </S.PdfPreviewBox>
-            ),
-          )}
+          {filePreviews.map((item) => (
+            <S.ImagePreviewBox key={item.id}>
+              <S.ImagePreview
+                src={item.localUrl}
+                alt={item.fileName}
+                style={{ opacity: item.uploading ? 0.5 : 1 }}
+              />
+              <S.RemoveImageButton
+                onClick={() => removeFile(item.id)}
+                title="Remove"
+              >
+                <img src={icCloseImage} alt="remove" />
+              </S.RemoveImageButton>
+            </S.ImagePreviewBox>
+          ))}
         </S.FilePreviewWrapper>
       )}
 
@@ -190,9 +241,9 @@ const MessageInput: React.FC<MessageInputProps> = ({
             debouncedTypingStop();
           }
         }}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter' && inputValue.trim()) {
-            onSendMessage(inputValue);
+        onKeyPress={async (e) => {
+          if (e.key === 'Enter') {
+            await handleSend();
             debouncedTypingStop();
           }
         }}
@@ -205,11 +256,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
         <Image
           src={send}
           preview={false}
-          onClick={() => {
-            if (inputValue.trim()) {
-              onSendMessage(inputValue);
-            }
-          }}
+          onClick={handleSend}
           style={{ cursor: 'pointer' }}
         />
       </S.InputIconsWrapper>

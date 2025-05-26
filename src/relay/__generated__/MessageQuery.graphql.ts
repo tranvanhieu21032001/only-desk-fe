@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5397651cdb0456c7efcec0d57cc8c9dc>>
+ * @generated SignedSource<<cb0f5c3d3e901b09327cdbd0501d43d4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,6 +28,7 @@ export type MessageQuery$data = {
       readonly node: {
         readonly content: string;
         readonly createdAt: any;
+        readonly metadata: any | null | undefined;
         readonly sender: MessageSender;
         readonly status: MessageStatus;
         readonly type: MessageTypeEnum | null | undefined;
@@ -122,38 +123,45 @@ v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "firstName",
+  "name": "metadata",
   "storageKey": null
 },
 v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "lastName",
+  "name": "firstName",
   "storageKey": null
 },
 v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "avatar",
+  "name": "lastName",
   "storageKey": null
 },
 v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "type",
+  "name": "avatar",
   "storageKey": null
 },
 v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "status",
+  "name": "type",
   "storageKey": null
 },
 v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "status",
+  "storageKey": null
+},
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -198,6 +206,7 @@ return {
                   (v4/*: any*/),
                   (v5/*: any*/),
                   (v6/*: any*/),
+                  (v7/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -206,14 +215,14 @@ return {
                     "name": "user",
                     "plural": false,
                     "selections": [
-                      (v7/*: any*/),
                       (v8/*: any*/),
-                      (v9/*: any*/)
+                      (v9/*: any*/),
+                      (v10/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v10/*: any*/),
-                  (v11/*: any*/)
+                  (v11/*: any*/),
+                  (v12/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -264,6 +273,7 @@ return {
                   (v4/*: any*/),
                   (v5/*: any*/),
                   (v6/*: any*/),
+                  (v7/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -272,16 +282,16 @@ return {
                     "name": "user",
                     "plural": false,
                     "selections": [
-                      (v7/*: any*/),
                       (v8/*: any*/),
                       (v9/*: any*/),
-                      (v12/*: any*/)
+                      (v10/*: any*/),
+                      (v13/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v10/*: any*/),
                   (v11/*: any*/),
-                  (v12/*: any*/)
+                  (v12/*: any*/),
+                  (v13/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -294,16 +304,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b341add512d12b19d415de377345cd9c",
+    "cacheID": "73cb9ca3abc7f5d9b5806198ffd03eb2",
     "id": null,
     "metadata": {},
     "name": "MessageQuery",
     "operationKind": "query",
-    "text": "query MessageQuery(\n  $conversationId: ID!\n  $args: ConnectionArgs!\n) {\n  messages(conversationId: $conversationId, args: $args) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      node {\n        content\n        sender\n        createdAt\n        user {\n          firstName\n          lastName\n          avatar\n          id\n        }\n        type\n        status\n        id\n      }\n    }\n  }\n}\n"
+    "text": "query MessageQuery(\n  $conversationId: ID!\n  $args: ConnectionArgs!\n) {\n  messages(conversationId: $conversationId, args: $args) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      node {\n        content\n        sender\n        createdAt\n        metadata\n        user {\n          firstName\n          lastName\n          avatar\n          id\n        }\n        type\n        status\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "68f9f0b8c5922fe40de3711c8249ff6d";
+(node as any).hash = "1463308084605644cfed6ba306d139f6";
 
 export default node;
