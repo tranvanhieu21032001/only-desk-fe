@@ -297,8 +297,12 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     if (tab === 'Note') setInputValue('I want to go');
   };
 
-  const handleSendMessage = (content: string) => {
-    if (!content.trim() || !conversationId) return;
+  const handleSendMessage = (
+    content: string,
+    type: string = 'text',
+    metadata: any = {},
+  ) => {
+    if ((!content.trim() && type === 'text') || !conversationId) return;
 
     const now = new Date();
     const temp_id = uuidv4();
@@ -307,9 +311,10 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       content,
       sender: 'AGENT',
       user: { id: currentUserId, firstName: user?.firstName },
-      type: 'text',
+      type,
       status: 'sending',
       createdAt: now.toISOString(),
+      metadata,
     };
 
     setMessages((prev) => [newMessage, ...prev]);
@@ -328,8 +333,8 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
         conversationId,
         message: {
           content,
-          type: 'text',
-          metadata: {},
+          type,
+          metadata,
           temp_id,
         },
       },
@@ -503,9 +508,18 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                         <S.MessageTime>
                           {formatTime(msg.createdAt)}
                         </S.MessageTime>
-                        <S.MessageBubbleRight>
-                          {msg.content}
-                        </S.MessageBubbleRight>
+                        {msg.type?.toLowerCase() === 'image' &&
+                        msg.metadata?.fileUrl ? (
+                          <S.MessageImage
+                            src={msg.metadata.fileUrl}
+                            alt="image"
+                            style={{ marginLeft: 0, marginRight: 8 }}
+                          />
+                        ) : (
+                          <S.MessageBubbleRight>
+                            {msg.content}
+                          </S.MessageBubbleRight>
+                        )}
                         <S.MessageAvatar
                           src={avatarUser}
                           alt={msg.user?.firstName}
@@ -522,9 +536,17 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                             <S.MessageSenderName>
                               {msg.user?.firstName || 'Guest'}
                             </S.MessageSenderName>
-                            <S.MessageBubbleLeft>
-                              {msg.content}
-                            </S.MessageBubbleLeft>
+                            {msg.type?.toLowerCase() === 'image' &&
+                            msg.metadata?.fileUrl ? (
+                              <S.MessageImageLeft
+                                src={msg.metadata.fileUrl}
+                                alt="image"
+                              />
+                            ) : (
+                              <S.MessageBubbleLeft>
+                                {msg.content}
+                              </S.MessageBubbleLeft>
+                            )}
                           </S.MessageColumnView>
                         </S.MessageAvatarWrapper>
                         <S.MessageTime>

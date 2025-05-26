@@ -12,6 +12,7 @@ export const messageQuery = graphql`
           content
           sender
           createdAt
+          metadata
           user {
             firstName
             lastName

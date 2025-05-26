@@ -26,8 +26,6 @@ export const connectSocket = (auth: any) => {
     eventBus.emit(EVENTBUS_SOCKET_DISCONNECT),
   );
   socket.on('user_typing', (data) => {
-    console.log('[SOCKET][on] user_typing', data);
-    console.log('EVENTBUS[emit] EVENTBUS_USER_TYPING', data);
     eventBus.emit(EVENTBUS_USER_TYPING, data);
   });
 
@@ -59,12 +57,10 @@ export const closeConversation = (conversationId: string) => {
 };
 
 export const emitTypingStart = (conversationId: string) => {
-  console.log('[SOCKET][emit] typing_start', { conversationId });
   socket.emit('typing_start', { conversationId });
 };
 
 export const emitTypingStop = (conversationId: string) => {
-  console.log('[SOCKET][emit] typing_stop', { conversationId });
   socket.emit('typing_stop', { conversationId });
 };
 

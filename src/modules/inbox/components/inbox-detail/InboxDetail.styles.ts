@@ -465,3 +465,19 @@ export const TypingIndicator = styled.div`
   margin-bottom: 4px;
   margin-left: 15px;
 `;
+
+export const MessageImage = styled.img`
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 4px;
+  margin-left: 0;
+  margin-right: 8px;
+`;
+
+export const MessageImageLeft = styled(MessageImage)`
+  margin-bottom: 12px;
+  margin-left: 8px;
+  margin-right: 0;
+`;

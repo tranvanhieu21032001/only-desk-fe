@@ -1,3 +1,6 @@
+import { postRequest } from '@/core/services/requests';
+import { constants } from '@/core/settings';
+
 export const formatTimeAgo = (dateString: string): string => {
   const date = new Date(dateString);
   const now = new Date();
@@ -25,4 +28,17 @@ export const getFormattedTime = (lastActivityAt?: string) => {
   } catch {
     return lastActivityAt;
   }
+};
+
+export const uploadFile = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await postRequest(`${constants.API_SERVER}/file-upload/file`, {
+    data: formData,
+    isFormData: true,
+    enableFlashMessageSuccess: false,
+    enableFlashMessageError: true,
+  });
+  return res;
 };
