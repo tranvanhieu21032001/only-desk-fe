@@ -24,7 +24,6 @@ import {
 import * as S from './InboxDetail.styles';
 
 import avatarAdmin from '@/assets/images/avatar-default.png';
-import avatarUser from '@/assets/images/avatar-default.png';
 import check from '@/assets/icons/common/ic-check.svg';
 import barOpen from '@/assets/icons/common/ic-bar-open.svg';
 import barClose from '@/assets/icons/common/ic-bar.svg';
@@ -505,25 +504,54 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                   <React.Fragment key={msg.id || idx}>
                     {isAgent ? (
                       <S.MessageRowUser>
-                        <S.MessageTime>
-                          {formatTime(msg.createdAt)}
-                        </S.MessageTime>
                         {msg.type?.toLowerCase() === 'image' &&
                         msg.metadata?.fileUrl ? (
-                          <S.MessageImage
-                            src={msg.metadata.fileUrl}
-                            alt="image"
-                            style={{ marginLeft: 0, marginRight: 8 }}
-                          />
+                          <>
+                            <S.MessageTime>
+                              {formatTime(msg.createdAt)}
+                            </S.MessageTime>
+                            <S.MessageImage
+                              src={msg.metadata.fileUrl}
+                              alt="image"
+                              style={{ marginLeft: 0, marginRight: 8 }}
+                            />
+                          </>
+                        ) : msg.type?.toLowerCase() === 'note' ? (
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'flex-end',
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'flex-end',
+                              }}
+                            >
+                              <S.MessageTime>
+                                {formatTime(msg.createdAt)}
+                              </S.MessageTime>
+                              <S.NoteBubbleRight>
+                                {msg.content}
+                              </S.NoteBubbleRight>
+                            </div>
+                            <S.NoteMeta>
+                              Admin left this private note
+                            </S.NoteMeta>
+                          </div>
                         ) : (
-                          <S.MessageBubbleRight>
-                            {msg.content}
-                          </S.MessageBubbleRight>
+                          <>
+                            <S.MessageTime>
+                              {formatTime(msg.createdAt)}
+                            </S.MessageTime>
+                            <S.MessageBubbleRight>
+                              {msg.content}
+                            </S.MessageBubbleRight>
+                          </>
                         )}
-                        <S.MessageAvatar
-                          src={avatarUser}
-                          alt={msg.user?.firstName}
-                        />
                       </S.MessageRowUser>
                     ) : (
                       <S.MessageRow>

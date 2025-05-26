@@ -167,8 +167,11 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
 
     if (inputValue.trim()) {
-      console.log('Sending text:', inputValue);
-      onSendMessage(inputValue);
+      if (activeTab === 'Note') {
+        onSendMessage(inputValue, 'note');
+      } else {
+        onSendMessage(inputValue);
+      }
     }
   };
 

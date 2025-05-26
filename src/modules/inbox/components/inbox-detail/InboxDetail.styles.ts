@@ -195,7 +195,7 @@ export const MainContent = styled.div`
 
 export const MessageContainer = styled.div<MessageContainerProps>`
   flex: ${({ isSidebarOpen }) => (isSidebarOpen ? 2 : 1)};
-  padding: 16px;
+  padding: 16px 2px 16px 16px;
   overflow-y: auto;
   background: #fafafa;
   transition: flex 0.3s;
@@ -480,4 +480,26 @@ export const MessageImageLeft = styled(MessageImage)`
   margin-bottom: 12px;
   margin-left: 8px;
   margin-right: 0;
+`;
+
+export const NoteBubbleRight = styled.div`
+  background: #fef1d7;
+  color: #333;
+  padding: 10px 16px;
+  border-radius: 12px;
+  margin-left: auto;
+  margin-bottom: 2px;
+  max-width: 70%;
+  font-weight: 500;
+  font-size: 15px;
+  display: inline-block;
+`;
+
+export const NoteMeta = styled.div`
+  color: #faad14;
+  font-size: 12px;
+  text-align: right;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  font-style: italic;
 `;
