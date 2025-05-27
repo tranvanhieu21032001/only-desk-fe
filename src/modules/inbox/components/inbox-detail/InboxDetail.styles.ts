@@ -466,20 +466,38 @@ export const TypingIndicator = styled.div`
   margin-left: 15px;
 `;
 
-export const MessageImage = styled.img`
+export const MessageImage = styled.div`
   max-width: 200px;
-  max-height: 200px;
+  max-height: 100%;
   border-radius: 8px;
   display: block;
+  overflow: hidden;
   margin-bottom: 4px;
   margin-left: 0;
   margin-right: 8px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
-export const MessageImageLeft = styled(MessageImage)`
+export const MessageImageLeft = styled.div`
+  max-width: 200px;
+  max-height: 100%;
+  border-radius: 8px;
+  display: block;
+  overflow: hidden;
   margin-bottom: 12px;
   margin-left: 8px;
   margin-right: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 export const NoteBubbleRight = styled.div`

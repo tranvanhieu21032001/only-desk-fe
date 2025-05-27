@@ -1,4 +1,3 @@
-import { postRequest } from '@/core/services/requests';
 import { constants } from '@/core/settings';
 
 export const formatTimeAgo = (dateString: string): string => {
@@ -30,15 +29,31 @@ export const getFormattedTime = (lastActivityAt?: string) => {
   }
 };
 
-export const uploadFile = async (file: File) => {
+export const uploadFile = async (
+  file: File,
+  onProgress?: (percent: number) => void,
+) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await postRequest(`${constants.API_SERVER}/file-upload/file`, {
-    data: formData,
-    isFormData: true,
-    enableFlashMessageSuccess: false,
-    enableFlashMessageError: true,
+  return new Promise<{ fileUrl?: string }>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${constants.API_SERVER}/file-upload/file`);
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable && onProgress) {
+        onProgress(Math.round((event.loaded / event.total) * 100));
+      }
+    };
+    xhr.onload = () => {
+      try {
+        const res = JSON.parse(xhr.responseText);
+        resolve(res);
+      } catch (e) {
+        reject(e);
+      }
+    };
+    xhr.onerror = reject;
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.send(formData);
   });
-  return res;
 };

@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState, ChangeEvent } from 'react';
-import { Image } from 'antd';
+import { Image, Spin } from 'antd';
 import { debounce } from 'lodash';
 import { useSearchParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import { emitTypingStart, emitTypingStop } from '@/core/services/socket/socket';
 
@@ -38,6 +39,7 @@ interface FilePreview {
   localUrl: string;
   fileName: string;
   uploading: boolean;
+  progress: number;
   originFile?: File;
 }
 
@@ -101,6 +103,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
         fileUrl: '',
         localUrl: URL.createObjectURL(file),
         uploading: true,
+        progress: 0,
         originFile: file,
       };
     });
@@ -111,12 +114,25 @@ const MessageInput: React.FC<MessageInputProps> = ({
     previews.forEach(async (previewItem) => {
       try {
         if (!previewItem.originFile) return;
-        const res = await uploadFile(previewItem.originFile);
+        const res = await uploadFile(previewItem.originFile, (percent) => {
+          setFilePreviews((prev) =>
+            prev.map((item) =>
+              item.id === previewItem.id
+                ? { ...item, progress: percent }
+                : item,
+            ),
+          );
+        });
         if (res?.fileUrl) {
           setFilePreviews((prev) => {
             const updated = prev.map((item) =>
               item.id === previewItem.id
-                ? { ...item, fileUrl: res.fileUrl, uploading: false }
+                ? {
+                  ...item,
+                  fileUrl: res.fileUrl || '',
+                  uploading: false,
+                  progress: 100,
+                }
                 : item,
             );
             return updated;
@@ -194,17 +210,28 @@ const MessageInput: React.FC<MessageInputProps> = ({
         <S.FilePreviewWrapper>
           {filePreviews.map((item) => (
             <S.ImagePreviewBox key={item.id}>
-              <S.ImagePreview
-                src={item.localUrl}
-                alt={item.fileName}
-                style={{ opacity: item.uploading ? 0.5 : 1 }}
-              />
-              <S.RemoveImageButton
-                onClick={() => removeFile(item.id)}
-                title="Remove"
-              >
-                <img src={icCloseImage} alt="remove" />
-              </S.RemoveImageButton>
+              <S.ImagePreview>
+                <Image src={item.localUrl} alt={item.fileName} />
+              </S.ImagePreview>
+              {item.uploading ? (
+                <S.ProgressWrapper>
+                  <Spin
+                    indicator={
+                      <LoadingOutlined
+                        style={{ fontSize: 26, color: '#fff' }}
+                        spin
+                      />
+                    }
+                  />
+                </S.ProgressWrapper>
+              ) : (
+                <S.RemoveImageButton
+                  onClick={() => removeFile(item.id)}
+                  title="Remove"
+                >
+                  <img src={icCloseImage} alt="remove" />
+                </S.RemoveImageButton>
+              )}
             </S.ImagePreviewBox>
           ))}
         </S.FilePreviewWrapper>

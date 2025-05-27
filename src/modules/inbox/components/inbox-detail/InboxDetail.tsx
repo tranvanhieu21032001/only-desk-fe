@@ -67,6 +67,10 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
   const [guestTyping, setGuestTyping] = useState(false);
+  const isSelfSendingRef = useRef(false);
+  const [wasAtBottom, setWasAtBottom] = useState(true);
+  const [pendingImageScroll, setPendingImageScroll] = useState(false);
+  const [pendingImageLoads, setPendingImageLoads] = useState(0);
 
   const user = useUser();
   const currentUserId = user?.id;
@@ -93,22 +97,44 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     return () => container.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // When there is a new message, if the user is not at the end then show notice
-  useEffect(() => {
-    const container = messageContainerRef.current;
-    if (!container) return;
-    const isAtBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight <
-      10;
-    if (!isAtBottom && messages.length > 0) {
-      setShowNewMessageNotice(true);
-    }
-  }, [messages]);
-
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     setShowNewMessageNotice(false);
   };
+
+  // Handle new message from server
+  useEffect(() => {
+    const handler = (data: any) => {
+      const container = messageContainerRef.current;
+      if (!container) return;
+
+      // Save state before adding new message
+      const isAtBottom =
+        container.scrollHeight - container.scrollTop - container.clientHeight <
+        30;
+      const isImage =
+        data.type?.toLowerCase() === 'image' && data.metadata?.fileUrl;
+      setWasAtBottom(isAtBottom);
+      if (isAtBottom && isImage) {
+        setPendingImageScroll(true);
+      }
+      setMessages((prev) => [data, ...prev]);
+    };
+    eventBus.on(EVENTBUS_INBOX_MESSAGE, handler);
+    return () => eventBus.off(EVENTBUS_INBOX_MESSAGE, handler);
+  }, []);
+
+  // After messages change, handle scroll or show notice based on wasAtBottom
+  useEffect(() => {
+    if (wasAtBottom && !pendingImageScroll) {
+      setTimeout(() => {
+        scrollToBottom();
+      }, 0);
+      setShowNewMessageNotice(false);
+    } else if (!wasAtBottom) {
+      setShowNewMessageNotice(true);
+    }
+  }, [messages]);
 
   // Auto-load more messages if not enough to scroll
   useEffect(() => {
@@ -253,22 +279,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   }, [conversationId]);
 
   useEffect(() => {
-    const handler = (data: any) => {
-      setMessages((prev) => [data, ...prev]);
-      const container = messageContainerRef.current;
-      const isAtBottom =
-        container &&
-        container.scrollHeight - container.scrollTop - container.clientHeight <
-          10;
-      if (!isAtBottom) {
-        setShowNewMessageNotice(true);
-      }
-    };
-    eventBus.on(EVENTBUS_INBOX_MESSAGE, handler);
-    return () => eventBus.off(EVENTBUS_INBOX_MESSAGE, handler);
-  }, []);
-
-  useEffect(() => {
     const handleUserTyping = (data: any) => {
       console.log('[SOCKET][user_typing] event:', data);
       setGuestTyping(!!data.isTyping);
@@ -293,7 +303,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   const handleTabClick = (tab: string) => {
     setActiveTab(activeTab === tab ? null : tab);
     if (tab === 'Edit') setInputValue('Hello');
-    if (tab === 'Note') setInputValue('I want to go');
+    if (tab === 'Note') setInputValue(' ');
   };
 
   const handleSendMessage = (
@@ -316,6 +326,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       metadata,
     };
 
+    isSelfSendingRef.current = true;
     setMessages((prev) => [newMessage, ...prev]);
     setMessagesCache((prev) => ({
       ...prev,
@@ -325,7 +336,18 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       ],
     }));
 
-    setTimeout(scrollToBottom, 100);
+    // Luôn scroll xuống cuối khi gửi ảnh hoặc note (local preview)
+    if (type?.toLowerCase() === 'image' || type?.toLowerCase() === 'note') {
+      setTimeout(() => {
+        scrollToBottom();
+      }, 0);
+    }
+
+    // Nếu gửi ảnh, tăng số lượng ảnh đang chờ load
+    if (type?.toLowerCase() === 'image') {
+      setPendingImageLoads((prev) => prev + 1);
+      console.log(pendingImageLoads);
+    }
 
     sendAgentMessage(
       {
@@ -367,11 +389,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
 
     setInputValue('');
     setActiveTab(null);
-  };
-
-  const handleShowNewMessages = () => {
-    setShowNewMessageNotice(false);
-    setTimeout(scrollToBottom, 100);
   };
 
   const renderTabContent = () => {
@@ -510,11 +527,25 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                             <S.MessageTime>
                               {formatTime(msg.createdAt)}
                             </S.MessageTime>
-                            <S.MessageImage
-                              src={msg.metadata.fileUrl}
-                              alt="image"
-                              style={{ marginLeft: 0, marginRight: 8 }}
-                            />
+                            <S.MessageImage>
+                              <Image
+                                src={msg.metadata.fileUrl}
+                                alt="image"
+                                preview={true}
+                                onLoad={() => {
+                                  setPendingImageLoads((prev) => {
+                                    const next = Math.max(prev - 1, 0);
+                                    if (next === 0) {
+                                      scrollToBottom();
+                                    }
+                                    return next;
+                                  });
+                                  if (pendingImageScroll) {
+                                    setPendingImageScroll(false);
+                                  }
+                                }}
+                              />
+                            </S.MessageImage>
                           </>
                         ) : msg.type?.toLowerCase() === 'note' ? (
                           <div
@@ -566,10 +597,25 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                             </S.MessageSenderName>
                             {msg.type?.toLowerCase() === 'image' &&
                             msg.metadata?.fileUrl ? (
-                              <S.MessageImageLeft
-                                src={msg.metadata.fileUrl}
-                                alt="image"
-                              />
+                              <S.MessageImageLeft>
+                                <Image
+                                  src={msg.metadata.fileUrl}
+                                  alt="image"
+                                  onLoad={() => {
+                                    setPendingImageLoads((prev) => {
+                                      const next = Math.max(prev - 1, 0);
+                                      if (next === 0) {
+                                        scrollToBottom();
+                                      }
+                                      return next;
+                                    });
+                                    if (pendingImageScroll) {
+                                      setPendingImageScroll(false);
+                                    }
+                                  }}
+                                  preview={true}
+                                />
+                              </S.MessageImageLeft>
                             ) : (
                               <S.MessageBubbleLeft>
                                 {msg.content}
@@ -588,7 +634,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
           )}
           <div ref={messageEndRef} />
           {showNewMessageNotice && (
-            <S.NewMessageNoticeButton onClick={handleShowNewMessages}>
+            <S.NewMessageNoticeButton onClick={scrollToBottom}>
               <p>{t('inboxDetail.haveNewMessage')}</p>
               <img src={icArrowDown} alt="arrow down" className="arrow-icon" />
             </S.NewMessageNoticeButton>
