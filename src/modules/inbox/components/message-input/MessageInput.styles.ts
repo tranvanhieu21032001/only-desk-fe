@@ -398,34 +398,40 @@ export const FilePreviewWrapper = styled.div`
 
 export const ImagePreviewBox = styled.div`
   position: relative;
-  width: 63px;
-  height: 63px;
+  max-width: 70px;
+  max-height: 100%;
   border-radius: 8px;
   display: flex;
   align-items: center;
 `;
 
-export const ImagePreview = styled.img`
-  width: 63px;
-  height: 63px;
-  border-radius: 4px;
-  object-fit: cover;
+export const ImagePreview = styled.div`
+  max-width: 70px;
+  max-height: 100%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
 `;
 
 export const RemoveImageButton = styled.button`
   position: absolute;
-  top: -10px;
-  right: -10px;
-  width: 32px;
-  height: 32px;
+  top: -3px;
+  right: -3px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: none;
   background: none;
-  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 2;
 `;
 
 export const PdfPreviewBox = styled.div`
@@ -643,4 +649,29 @@ export const SendMessageModalOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+export const ProgressWrapper = styled.div`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ProgressCircle = styled.div`
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f0f4ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #233e93;
+  font-weight: 600;
 `;
