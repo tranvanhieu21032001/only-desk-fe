@@ -503,10 +503,10 @@ export const MessageImageLeft = styled.div`
 export const NoteBubbleRight = styled.div`
   background: #fef1d7;
   color: #333;
-  padding: 10px 16px;
+  padding: 8px 12px;
   border-radius: 12px;
   margin-left: auto;
-  margin-bottom: 2px;
+  margin-right: 8px;
   max-width: 70%;
   font-weight: 500;
   font-size: 15px;
@@ -520,4 +520,16 @@ export const NoteMeta = styled.div`
   margin-right: 8px;
   margin-bottom: 8px;
   font-style: italic;
+`;
+
+export const NoteContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+export const NoteRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
 `;

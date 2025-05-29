@@ -2,21 +2,22 @@ import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { fetchQuery } from 'relay-runtime';
 import { useSelector } from 'react-redux';
 
 import AvatarWithStatus from '@/shared/components/common/Avatar';
 import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
 
-import relayEnvironment from '@/relay/RelayEnvironment';
-import { conversationListQuery } from '@/relay/ConversationListQuery';
-import { ConversationListQuery } from '@/relay/__generated__/ConversationListQuery.graphql';
-import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
+import { eventBus } from '@/core/event-bus';
 import { getFormattedTime } from '../../helpers/inbox.logic';
+import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { openConversation } from '@/core/services/socket/socket';
-
+import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 import { filterOptions, filtersDropdown } from '@/core/settings/options';
+import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
+
+import { Conversation } from '../../interfaces/inbox';
+import { getConversationList } from '../../api/inbox.api';
 
 import * as S from './InboxList.styles';
 
@@ -38,9 +39,6 @@ import add from '@/assets/icons/inbox/ic-add-circle.svg';
 import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
 import avatarDefault from '@/assets/images/avatar-default.png';
-import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
-import { eventBus } from '@/core/event-bus';
-import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 
 const ConversationList = () => {
   const { t } = useTranslation('inbox');
@@ -71,7 +69,7 @@ const ConversationList = () => {
   const [conditionValues, setConditionValues] = useState<string[]>([]);
   const [isCustomFilterDropdownOpen, setIsCustomFilterDropdownOpen] =
     useState(false);
-  const [conversationEdges, setConversationEdges] = useState<any[]>([]);
+  const [conversationEdges, setConversationEdges] = useState<Conversation[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const conversationListWrapperRef = useRef<HTMLDivElement>(null);
@@ -84,16 +82,18 @@ const ConversationList = () => {
 
   // Fetch initial conversation list
   const fetchInitial = async () => {
+    console.log('fetch conversation list')
     setLoadingMore(true);
-    const res = (await fetchQuery(relayEnvironment, conversationListQuery, {
-      workspaceId: workspaceId || '',
-      args: { first: 10 },
-    }).toPromise()) as ConversationListQuery['response'];
-    const edges = res?.conversations?.edges || [];
-    setConversationEdges([...edges]);
-    setLastCursor(edges.length > 0 ? edges[edges.length - 1].cursor : null);
-    setHasMore(edges.length === 10);
-    setLoadingMore(false);
+    try {
+      const response = await getConversationList(workspaceId || '', 1, 10);
+      setConversationEdges(response.data);
+      setLastCursor(response.hasNextPage ? '2' : null);
+      setHasMore(response.hasNextPage);
+    } catch (error) {
+      console.error('Error fetching conversations:', error);
+    } finally {
+      setLoadingMore(false);
+    }
   };
 
   // Listen for workspace changes
@@ -117,17 +117,17 @@ const ConversationList = () => {
   const loadMore = async () => {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
-    const res = (await fetchQuery(relayEnvironment, conversationListQuery, {
-      workspaceId: workspaceId || '',
-      args: { first: 10, after: lastCursor },
-    }).toPromise()) as ConversationListQuery['response'];
-    const edges = res?.conversations?.edges || [];
-    setConversationEdges((prev) => [...prev, ...edges]);
-    setLastCursor(
-      edges.length > 0 ? edges[edges.length - 1].cursor : lastCursor,
-    );
-    setHasMore(edges.length === 10);
-    setLoadingMore(false);
+    try {
+      const currentPage = Math.ceil(conversationEdges.length / 10) + 1;
+      const response = await getConversationList(workspaceId || '', currentPage, 10);
+      setConversationEdges((prev) => [...prev, ...response.data]);
+      setLastCursor(response.hasNextPage ? String(currentPage + 1) : null);
+      setHasMore(response.hasNextPage);
+    } catch (error) {
+      console.error('Error loading more conversations:', error);
+    } finally {
+      setLoadingMore(false);
+    }
   };
 
   // Listen for scroll event
@@ -323,38 +323,35 @@ const ConversationList = () => {
           <S.AllDataLoaded>{t('inboxList.noConversationYet')}</S.AllDataLoaded>
         )}
         {conversationEdges
-          .slice()
-          .reverse()
-          .map((edge, index) => {
-            const c = edge.node;
+          .map((conversation, index) => {
             return (
               <S.NotificationItem
-                key={c.id}
-                active={c.id === activeConversationId}
-                onClick={() => handleConversationClick(c.id)}
+                key={conversation.id}
+                active={conversation.id === activeConversationId}
+                onClick={() => handleConversationClick(conversation.id)}
               >
                 <S.Avatar>
                   <AvatarWithStatus
-                    avatarSrc={c.contact?.avatar || avatarDefault}
-                    isOnline={c.contact?.isOnline || false}
+                    avatarSrc={conversation.contact?.avatar || avatarDefault}
+                    isOnline={conversation.contact?.isOnline || false}
                     flagSrc={flag}
                   />
                 </S.Avatar>
                 <S.Content>
-                  <S.Title>{c.contact?.name || DEFAULT_FULL_NAME}</S.Title>
+                  <S.Title>{conversation.contact?.name || DEFAULT_FULL_NAME}</S.Title>
                   <S.Subtitle>
-                    {c.latestMessage?.content || <p>No message</p>}
+                    {conversation.latestMessage?.content || <p>No message</p>}
                   </S.Subtitle>
                 </S.Content>
                 <S.RightSection ref={menuRef}>
                   <S.Time className="time">
-                    {getFormattedTime(c.lastActivityAt)}
+                    {getFormattedTime(conversation.lastActivityAt)}
                   </S.Time>
                   <S.BarIcon onClick={(e) => handleMenuClick(index, e)}>
                     <Image src={barColumn} preview={false} />
                   </S.BarIcon>
-                  {c.unreadGuestCount ? (
-                    <S.Badge>{c.unreadGuestCount}</S.Badge>
+                  {conversation.unreadGuestCount ? (
+                    <S.Badge>{conversation.unreadGuestCount}</S.Badge>
                   ) : (
                     <></>
                   )}

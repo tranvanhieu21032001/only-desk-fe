@@ -8,6 +8,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { emitTypingStart, emitTypingStop } from '@/core/services/socket/socket';
 
 import { uploadFile } from '../../helpers/inbox.logic';
+import { InboxMessageType } from '@/modules/settings/helpers/enums/inbox.enums';
 
 import * as S from './MessageInput.styles';
 
@@ -29,7 +30,7 @@ interface MessageInputProps {
   setInputValue: (val: string) => void;
   setActiveTab: (val: string | null) => void;
   setSelectedReminder: (val: string | null) => void;
-  onSendMessage: (val: string, type?: string, metadata?: any) => void;
+  onSendMessage: (val: string, type?: InboxMessageType, metadata?: any) => void;
 }
 
 interface FilePreview {
@@ -128,11 +129,11 @@ const MessageInput: React.FC<MessageInputProps> = ({
             const updated = prev.map((item) =>
               item.id === previewItem.id
                 ? {
-                  ...item,
-                  fileUrl: res.fileUrl || '',
-                  uploading: false,
-                  progress: 100,
-                }
+                    ...item,
+                    fileUrl: res.fileUrl || '',
+                    uploading: false,
+                    progress: 100,
+                  }
                 : item,
             );
             return updated;
@@ -172,7 +173,9 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
       for (const item of filePreviews) {
         if (item.fileUrl) {
-          onSendMessage('text image', 'image', { fileUrl: item.fileUrl });
+          onSendMessage('text image', InboxMessageType.Image, {
+            fileUrl: item.fileUrl,
+          });
         } else {
           // Handle error
         }
@@ -184,9 +187,9 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
     if (inputValue.trim()) {
       if (activeTab === 'Note') {
-        onSendMessage(inputValue, 'note');
+        onSendMessage(inputValue, InboxMessageType.Note);
       } else {
-        onSendMessage(inputValue);
+        onSendMessage(inputValue, InboxMessageType.Text);
       }
     }
   };
