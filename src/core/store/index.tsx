@@ -8,8 +8,9 @@ import {
   WorkspaceInterface,
 } from '@/modules/auth/models/user';
 import webStorageClient from '@/shared/utils/webStorageClient';
-import auth from '@/modules/auth/store/features/auth';
-import contacts from '@/modules/contacts/store/features/contacts';
+import authReducer from '@/modules/auth/store/features/auth';
+import contactsReducer from '@/modules/contacts/store/features/contacts';
+import inboxReducer from '@/modules/inbox/store/features/inbox';
 
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
@@ -26,6 +27,7 @@ export const loadState = () => {
       isAuth: isAuthFromStorage,
       userInfo: userInfoFromStorage,
       currentWorkspace: currentWorkspaceFromStorage,
+      permissionList: {} as Record<string, boolean>,
     },
   };
 };
@@ -34,8 +36,9 @@ export const store = configureStore({
   reducer: {
     historyRoute: historyRoute,
 
-    auth: auth,
-    contacts: contacts,
+    auth: authReducer,
+    contacts: contactsReducer,
+    inbox: inboxReducer,
   },
   preloadedState: loadState(),
 });

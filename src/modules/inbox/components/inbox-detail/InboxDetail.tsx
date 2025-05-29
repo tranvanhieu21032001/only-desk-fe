@@ -1,17 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Image } from 'antd';
+import { Image, Tooltip, Skeleton } from 'antd';
 import { useSearchParams } from 'react-router-dom';
-import { fetchQuery } from 'relay-runtime';
 import { useTranslation } from 'react-i18next';
-import relayEnvironment from '@/relay/RelayEnvironment';
-import { messageQuery } from '@/relay/MessageQuery';
 import { v4 as uuidv4 } from 'uuid';
+import { LoadingOutlined, CloseCircleTwoTone } from '@ant-design/icons';
 
 import AvatarWithStatus from '../../../../shared/components/common/Avatar';
 import MessageInput from '../message-input/MessageInput';
 
-import { EVENTBUS_INBOX_MESSAGE } from '@/core/settings/constants';
-import { eventBus } from '@/core/event-bus';
 import { useUser } from '@/core/context/UserContext';
 import {
   sendAgentMessage,
@@ -20,6 +16,15 @@ import {
   listenUserTyping,
   offUserTyping,
 } from '../../../../core/services/socket/socket';
+
+import { Message } from '../../interfaces/inbox';
+import { useMessageList } from '../../hooks/useMessageList';
+import { useScrollHandler } from '../../hooks/useScrollHandler';
+import {
+  InboxMessageStatus,
+  InboxMessageType,
+  InboxSender,
+} from '@/modules/settings/helpers/enums/inbox.enums';
 
 import * as S from './InboxDetail.styles';
 
@@ -54,162 +59,84 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   const { t } = useTranslation('inbox');
   const [searchParams] = useSearchParams();
   const conversationId = searchParams.get('conversationId');
-  const [messages, setMessages] = useState<any[]>([]);
-  const [messagesCache, setMessagesCache] = useState<{ [id: string]: any[] }>(
-    {},
-  );
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [endCursor, setEndCursor] = useState<string | null>(null);
-  const [showNewMessageNotice, setShowNewMessageNotice] = useState(false);
+  const {
+    messages,
+    loading,
+    loadingMore,
+    hasNextPage,
+    loadMore,
+    addMessage,
+    updateMessage,
+    removeMessage,
+  } = useMessageList({ conversationId });
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [selectedReminder, setSelectedReminder] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
   const [guestTyping, setGuestTyping] = useState(false);
   const isSelfSendingRef = useRef(false);
-  const [wasAtBottom, setWasAtBottom] = useState(true);
   const [pendingImageScroll, setPendingImageScroll] = useState(false);
   const [pendingImageLoads, setPendingImageLoads] = useState(0);
+  const [lastMessageId, setLastMessageId] = useState<string | null>(null);
 
   const user = useUser();
   const currentUserId = user?.id;
 
   const messageEndRef = useRef<HTMLDivElement>(null);
-
-  // Check if user is at bottom
   const messageContainerRef = useRef<HTMLDivElement>(null);
-  const handleScroll = () => {
-    const container = messageContainerRef.current;
-    if (!container) return;
-    const isAtBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight <
-      10;
-    if (isAtBottom) {
-      setShowNewMessageNotice(false);
-    }
-  };
 
+  // Use custom scroll hook
+  const {
+    wasAtBottom,
+    setWasAtBottom,
+    showNewMessageNotice,
+    setShowNewMessageNotice,
+    handleScroll,
+    handleLoadMore,
+    scrollToBottom,
+  } = useScrollHandler({
+    loadingMore,
+    hasNextPage,
+    loadMore,
+    pendingImageScroll,
+    messageContainerRef,
+    messageEndRef,
+  });
+
+  // Check if user is at bottom (gắn event listener)
   useEffect(() => {
     const container = messageContainerRef.current;
     if (!container) return;
     container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToBottom = () => {
-    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    setShowNewMessageNotice(false);
-  };
-
-  // Handle new message from server
-  useEffect(() => {
-    const handler = (data: any) => {
-      const container = messageContainerRef.current;
-      if (!container) return;
-
-      // Save state before adding new message
-      const isAtBottom =
-        container.scrollHeight - container.scrollTop - container.clientHeight <
-        30;
-      const isImage =
-        data.type?.toLowerCase() === 'image' && data.metadata?.fileUrl;
-      setWasAtBottom(isAtBottom);
-      if (isAtBottom && isImage) {
-        setPendingImageScroll(true);
-      }
-      setMessages((prev) => [data, ...prev]);
-    };
-    eventBus.on(EVENTBUS_INBOX_MESSAGE, handler);
-    return () => eventBus.off(EVENTBUS_INBOX_MESSAGE, handler);
-  }, []);
-
-  // After messages change, handle scroll or show notice based on wasAtBottom
-  useEffect(() => {
-    if (wasAtBottom && !pendingImageScroll) {
-      setTimeout(() => {
-        scrollToBottom();
-      }, 0);
-      setShowNewMessageNotice(false);
-    } else if (!wasAtBottom) {
-      setShowNewMessageNotice(true);
-    }
-  }, [messages]);
-
-  // Auto-load more messages if not enough to scroll
-  useEffect(() => {
-    const container = messageContainerRef.current;
-    if (!container) return;
-    if (
-      container.scrollHeight <= container.clientHeight &&
-      hasMore &&
-      !loading
-    ) {
-      (async () => {
-        setLoading(true);
-        const res: any = await fetchQuery(relayEnvironment, messageQuery, {
-          conversationId,
-          args: endCursor
-            ? { first: 20, after: String(endCursor) }
-            : { first: 20 },
-        }).toPromise();
-        const messageEdges = res?.messages?.edges || [];
-        const newMessages = messageEdges.map((edge: any) => edge.node);
-        setMessages((prev) => [...prev, ...newMessages]);
-        setMessagesCache((prev) => ({
-          ...prev,
-          [conversationId || '']: [
-            ...(prev[conversationId || ''] || []),
-            ...newMessages,
-          ],
-        }));
-        setHasMore(res?.messages?.pageInfo?.hasNextPage || false);
-        setEndCursor(res?.messages?.pageInfo?.endCursor || null);
-        setLoading(false);
-      })();
-    }
-  }, [messages, hasMore, loading, conversationId, endCursor]);
-
-  // Infinite scroll: load more messages when scroll to top
-  useEffect(() => {
-    const container = messageContainerRef.current;
-    if (!container) return;
-    const handleLoadMore = async () => {
-      if (container.scrollTop === 0 && hasMore && !loading) {
-        setLoading(true);
-        const res: any = await fetchQuery(relayEnvironment, messageQuery, {
-          conversationId,
-          args: endCursor
-            ? { first: 20, after: String(endCursor) }
-            : { first: 20 },
-        }).toPromise();
-        const messageEdges = res?.messages?.edges || [];
-        const newMessages = messageEdges.map((edge: any) => edge.node);
-
-        // Loại bỏ message đã có (theo id)
-        setMessages((prev) => {
-          const prevIds = new Set(prev.map((msg) => msg.id));
-          const uniqueNewMessages = newMessages.filter(
-            (msg: any) => !prevIds.has(msg.id),
-          );
-          return [...prev, ...uniqueNewMessages];
-        });
-
-        setMessagesCache((prev) => ({
-          ...prev,
-          [conversationId || '']: [
-            ...(prev[conversationId || ''] || []),
-            ...newMessages,
-          ],
-        }));
-        setHasMore(res?.messages?.pageInfo?.hasNextPage || false);
-        setEndCursor(res?.messages?.pageInfo?.endCursor || null);
-        setLoading(false);
-      }
-    };
     container.addEventListener('scroll', handleLoadMore);
-    return () => container.removeEventListener('scroll', handleLoadMore);
-  }, [hasMore, endCursor, loading, conversationId]);
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      container.removeEventListener('scroll', handleLoadMore);
+    };
+  }, [handleScroll, handleLoadMore]);
+
+  // Real-time: scroll or show notice based on wasAtBottom and new message
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const newestId = messages[0].id;
+    if (lastMessageId && newestId !== lastMessageId) {
+      if (wasAtBottom) {
+        setTimeout(() => {
+          scrollToBottom();
+        }, 0);
+        setShowNewMessageNotice(false);
+      } else {
+        setShowNewMessageNotice(true);
+      }
+    }
+    setLastMessageId(newestId);
+  }, [
+    messages,
+    wasAtBottom,
+    scrollToBottom,
+    setShowNewMessageNotice,
+    lastMessageId,
+  ]);
 
   const prevConversationId = useRef<string | null>(null);
   const isFirstMount = useRef(true);
@@ -243,44 +170,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   }, [conversationId]);
 
   useEffect(() => {
-    if (!conversationId) return;
-
-    if (messagesCache[conversationId]) {
-      setMessages(messagesCache[conversationId]);
-    } else {
-      setMessages([]);
-    }
-
-    setLoading(true);
-    fetchQuery(relayEnvironment, messageQuery, {
-      conversationId,
-      args: endCursor ? { first: 20, after: String(endCursor) } : { first: 20 },
-    })
-      .toPromise()
-      .then((res: any) => {
-        const messageEdges = res?.messages?.edges || [];
-        const newMessages = messageEdges.map((edge: any) => edge.node);
-        setMessages(newMessages);
-        setMessagesCache((prev) => ({
-          ...prev,
-          [conversationId || '']: newMessages,
-        }));
-        setHasMore(res?.messages?.pageInfo?.hasNextPage || false);
-        setEndCursor(res?.messages?.pageInfo?.endCursor || null);
-        // After loading messages, scroll down to the bottom
-        setTimeout(scrollToBottom, 100);
-      })
-      .catch((error) => {
-        console.error('Error fetching messages:', error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [conversationId]);
-
-  useEffect(() => {
     const handleUserTyping = (data: any) => {
-      console.log('[SOCKET][user_typing] event:', data);
       setGuestTyping(!!data.isTyping);
       if (data.isTyping) {
         if ((window as any).guestTypingTimeout)
@@ -308,45 +198,52 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
 
   const handleSendMessage = (
     content: string,
-    type: string = 'text',
+    type: InboxMessageType = InboxMessageType.Text,
     metadata: any = {},
   ) => {
-    if ((!content.trim() && type === 'text') || !conversationId) return;
+    if ((!content.trim() && type === InboxMessageType.Text) || !conversationId)
+      return;
 
     const now = new Date();
     const temp_id = uuidv4();
-    const newMessage = {
+    const newMessage: Message = {
       id: temp_id,
       content,
-      sender: 'AGENT',
-      user: { id: currentUserId, firstName: user?.firstName },
-      type,
-      status: 'sending',
+      sender: InboxSender.Agent,
+      user:
+        currentUserId && user?.firstName && user?.lastName && user?.avatar
+          ? {
+            id: currentUserId,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            avatar: user.avatar,
+          }
+          : null,
+      type:
+        type === InboxMessageType.Image
+          ? InboxMessageType.Image
+          : type === InboxMessageType.Note
+            ? InboxMessageType.Note
+            : InboxMessageType.Text,
+      status: InboxMessageStatus.Sending,
       createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
       metadata,
     };
 
     isSelfSendingRef.current = true;
-    setMessages((prev) => [newMessage, ...prev]);
-    setMessagesCache((prev) => ({
-      ...prev,
-      [conversationId || '']: [
-        newMessage,
-        ...(prev[conversationId || ''] || []),
-      ],
-    }));
+    addMessage(newMessage);
 
-    // Luôn scroll xuống cuối khi gửi ảnh hoặc note (local preview)
-    if (type?.toLowerCase() === 'image' || type?.toLowerCase() === 'note') {
+    // Always scroll to the bottom when sending photos or notes (local preview)
+    if (type === InboxMessageType.Image || type === InboxMessageType.Note) {
       setTimeout(() => {
         scrollToBottom();
       }, 0);
     }
 
-    // Nếu gửi ảnh, tăng số lượng ảnh đang chờ load
-    if (type?.toLowerCase() === 'image') {
+    // If sending an image, increase the number of images waiting to be loaded
+    if (type === InboxMessageType.Image) {
       setPendingImageLoads((prev) => prev + 1);
-      console.log(pendingImageLoads);
     }
 
     sendAgentMessage(
@@ -361,28 +258,12 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       },
       (res: any) => {
         if (res.success && res.messageId) {
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === temp_id
-                ? { ...msg, id: res.messageId, status: 'sent' }
-                : msg,
-            ),
-          );
-          setMessagesCache((prev) => ({
-            ...prev,
-            [conversationId || '']: (prev[conversationId || ''] || []).map(
-              (msg) =>
-                msg.id === temp_id
-                  ? { ...msg, id: res.messageId, status: 'sent' }
-                  : msg,
-            ),
-          }));
+          updateMessage(temp_id, {
+            id: res.messageId,
+            status: InboxMessageStatus.Sent,
+          });
         } else {
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === temp_id ? { ...msg, status: 'error' } : msg,
-            ),
-          );
+          updateMessage(temp_id, { status: InboxMessageStatus.Failed });
         }
       },
     );
@@ -468,6 +349,32 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     });
   };
 
+  const renderSkeleton = () => (
+    <>
+      {[...Array(12)].map((_, i) =>
+        i % 2 === 1 ? (
+          <S.MessageRowUser key={i}>
+            <S.MessageBubbleRight>
+              <Skeleton.Input active size="small" style={{ width: 180 }} />
+            </S.MessageBubbleRight>
+            <S.MessageAvatarWrapper style={{ marginLeft: 8 }}>
+              <Skeleton.Avatar active size={40} />
+            </S.MessageAvatarWrapper>
+          </S.MessageRowUser>
+        ) : (
+          <S.MessageRow key={i}>
+            <S.MessageAvatarWrapper>
+              <Skeleton.Avatar active size={40} />
+            </S.MessageAvatarWrapper>
+            <S.MessageBubbleLeft>
+              <Skeleton.Input active size="small" style={{ width: 150 }} />
+            </S.MessageBubbleLeft>
+          </S.MessageRow>
+        ),
+      )}
+    </>
+  );
+
   if (!conversationId) {
     return (
       <S.Container>
@@ -505,7 +412,9 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
           isSidebarOpen={isSidebarOpen}
           ref={messageContainerRef}
         >
-          {messages.length === 0 ? (
+          {loading ? (
+            renderSkeleton()
+          ) : messages.length === 0 ? (
             <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
           ) : (
             messages
@@ -514,18 +423,31 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
               .map((msg, idx) => {
                 const isAgent =
                   (msg.user?.id && msg.user?.id === currentUserId) ||
-                  (!msg.user &&
-                    (msg.sender === 'AGENT' || msg.sender === 'user'));
+                  (!msg.user && msg.sender === InboxSender.Agent);
 
                 return (
                   <React.Fragment key={msg.id || idx}>
                     {isAgent ? (
                       <S.MessageRowUser>
-                        {msg.type?.toLowerCase() === 'image' &&
-                        msg.metadata?.fileUrl ? (
+                        {msg.type === InboxMessageType.Image &&
+                          msg.metadata?.fileUrl ? (
                           <>
                             <S.MessageTime>
                               {formatTime(msg.createdAt)}
+                              {msg.status === InboxMessageStatus.Sending && (
+                                <LoadingOutlined
+                                  style={{ marginLeft: 6, fontSize: 12 }}
+                                  spin
+                                />
+                              )}
+                              {msg.status === InboxMessageStatus.Failed && (
+                                <Tooltip title="Send failed">
+                                  <CloseCircleTwoTone
+                                    twoToneColor="#ff4d4f"
+                                    style={{ marginLeft: 6, fontSize: 12 }}
+                                  />
+                                </Tooltip>
+                              )}
                             </S.MessageTime>
                             <S.MessageImage>
                               <Image
@@ -547,36 +469,52 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                               />
                             </S.MessageImage>
                           </>
-                        ) : msg.type?.toLowerCase() === 'note' ? (
-                          <div
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'flex-end',
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'flex-end',
-                              }}
-                            >
+                        ) : msg.type === InboxMessageType.Note ? (
+                          <S.NoteContainer>
+                            <S.NoteRow>
                               <S.MessageTime>
                                 {formatTime(msg.createdAt)}
+                                {msg.status === InboxMessageStatus.Sending && (
+                                  <LoadingOutlined
+                                    style={{ marginLeft: 6, fontSize: 12 }}
+                                    spin
+                                  />
+                                )}
+                                {msg.status === InboxMessageStatus.Failed && (
+                                  <Tooltip title="Send failed">
+                                    <CloseCircleTwoTone
+                                      twoToneColor="#ff4d4f"
+                                      style={{ marginLeft: 6, fontSize: 12 }}
+                                    />
+                                  </Tooltip>
+                                )}
                               </S.MessageTime>
                               <S.NoteBubbleRight>
                                 {msg.content}
                               </S.NoteBubbleRight>
-                            </div>
+                            </S.NoteRow>
                             <S.NoteMeta>
                               Admin left this private note
                             </S.NoteMeta>
-                          </div>
+                          </S.NoteContainer>
                         ) : (
                           <>
                             <S.MessageTime>
                               {formatTime(msg.createdAt)}
+                              {msg.status === InboxMessageStatus.Sending && (
+                                <LoadingOutlined
+                                  style={{ marginLeft: 6, fontSize: 12 }}
+                                  spin
+                                />
+                              )}
+                              {msg.status === InboxMessageStatus.Failed && (
+                                <Tooltip title="Send failed">
+                                  <CloseCircleTwoTone
+                                    twoToneColor="#ff4d4f"
+                                    style={{ marginLeft: 6, fontSize: 12 }}
+                                  />
+                                </Tooltip>
+                              )}
                             </S.MessageTime>
                             <S.MessageBubbleRight>
                               {msg.content}
@@ -595,8 +533,8 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                             <S.MessageSenderName>
                               {msg.user?.firstName || 'Guest'}
                             </S.MessageSenderName>
-                            {msg.type?.toLowerCase() === 'image' &&
-                            msg.metadata?.fileUrl ? (
+                            {msg.type === InboxMessageType.Image &&
+                              msg.metadata?.fileUrl ? (
                               <S.MessageImageLeft>
                                 <Image
                                   src={msg.metadata.fileUrl}
@@ -625,6 +563,20 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                         </S.MessageAvatarWrapper>
                         <S.MessageTime>
                           {formatTime(msg.createdAt)}
+                          {msg.status === InboxMessageStatus.Sending && (
+                            <LoadingOutlined
+                              style={{ marginLeft: 6, fontSize: 12 }}
+                              spin
+                            />
+                          )}
+                          {msg.status === InboxMessageStatus.Failed && (
+                            <Tooltip title="Send failed">
+                              <CloseCircleTwoTone
+                                twoToneColor="#ff4d4f"
+                                style={{ marginLeft: 6, fontSize: 12 }}
+                              />
+                            </Tooltip>
+                          )}
                         </S.MessageTime>
                       </S.MessageRow>
                     )}
