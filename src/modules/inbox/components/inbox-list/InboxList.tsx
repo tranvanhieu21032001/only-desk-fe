@@ -1,8 +1,9 @@
-import { Image } from 'antd';
+import { Image, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 
 import AvatarWithStatus from '@/shared/components/common/Avatar';
 import Modal from '@/shared/components/common/Modal';
@@ -15,6 +16,10 @@ import { openConversation } from '@/core/services/socket/socket';
 import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 import { filterOptions, filtersDropdown } from '@/core/settings/options';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
+import {
+  fetchConversations,
+  clearConversations,
+} from '../../store/features/inbox';
 
 import { Conversation } from '../../interfaces/inbox';
 import { getConversationList } from '../../api/inbox.api';
@@ -69,7 +74,9 @@ const ConversationList = () => {
   const [conditionValues, setConditionValues] = useState<string[]>([]);
   const [isCustomFilterDropdownOpen, setIsCustomFilterDropdownOpen] =
     useState(false);
-  const [conversationEdges, setConversationEdges] = useState<Conversation[]>([]);
+  const [conversationEdges, setConversationEdges] = useState<Conversation[]>(
+    [],
+  );
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const conversationListWrapperRef = useRef<HTMLDivElement>(null);
@@ -79,39 +86,32 @@ const ConversationList = () => {
   const activeConversationId = searchParams.get('conversationId');
 
   const workspaceId = useSelector(selectCurrentWorkspaceId);
+  const dispatch = useAppDispatch();
+  const { conversations, loading } = useAppSelector((state) => state.inbox);
+  const currentConversations = workspaceId
+    ? conversations[workspaceId] || []
+    : [];
 
-  // Fetch initial conversation list
-  const fetchInitial = async () => {
-    console.log('fetch conversation list')
-    setLoadingMore(true);
-    try {
-      const response = await getConversationList(workspaceId || '', 1, 10);
-      setConversationEdges(response.data);
-      setLastCursor(response.hasNextPage ? '2' : null);
-      setHasMore(response.hasNextPage);
-    } catch (error) {
-      console.error('Error fetching conversations:', error);
-    } finally {
-      setLoadingMore(false);
+  // Fetch initial conversation list (only when mounting or changing workspace)
+  useEffect(() => {
+    if (workspaceId && !conversations[workspaceId]) {
+      dispatch(fetchConversations(workspaceId));
     }
-  };
+  }, [workspaceId, dispatch, conversations]);
 
   // Listen for workspace changes
   useEffect(() => {
-    fetchInitial();
-
     const handleWorkspaceChange = () => {
-      setConversationEdges([]);
-      setLastCursor(null);
-      setHasMore(true);
-      fetchInitial();
+      if (workspaceId && !conversations[workspaceId]) {
+        dispatch(fetchConversations(workspaceId));
+      }
     };
 
     eventBus.on(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
     return () => {
       eventBus.off(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
     };
-  }, [workspaceId]);
+  }, [workspaceId, dispatch, conversations]);
 
   // Load more conversations
   const loadMore = async () => {
@@ -119,7 +119,11 @@ const ConversationList = () => {
     setLoadingMore(true);
     try {
       const currentPage = Math.ceil(conversationEdges.length / 10) + 1;
-      const response = await getConversationList(workspaceId || '', currentPage, 10);
+      const response = await getConversationList(
+        workspaceId || '',
+        currentPage,
+        10,
+      );
       setConversationEdges((prev) => [...prev, ...response.data]);
       setLastCursor(response.hasNextPage ? String(currentPage + 1) : null);
       setHasMore(response.hasNextPage);
@@ -208,6 +212,26 @@ const ConversationList = () => {
     navigate(`?workspaceId=${workspaceId}&conversationId=${conversationId}`);
     openConversation(conversationId);
   };
+
+  const renderSkeleton = () => (
+    <>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <S.NotificationItem key={i}>
+          <S.Avatar>
+            <Skeleton.Avatar active size={40} />
+          </S.Avatar>
+          <S.Content>
+            <Skeleton.Input active size="small" style={{ width: 100 }} />
+            <Skeleton.Input
+              active
+              size="small"
+              style={{ width: 200, marginTop: 8 }}
+            />
+          </S.Content>
+        </S.NotificationItem>
+      ))}
+    </>
+  );
 
   return (
     <S.Container>
@@ -319,12 +343,13 @@ const ConversationList = () => {
       </S.SearchFilterWrapper>
 
       <S.ConversationListWrapper ref={conversationListWrapperRef}>
-        {conversationEdges.length === 0 && !loadingMore && (
+        {loading && renderSkeleton()}
+        {!loading && currentConversations.length === 0 && (
           <S.AllDataLoaded>{t('inboxList.noConversationYet')}</S.AllDataLoaded>
         )}
-        {conversationEdges
-          .map((conversation, index) => {
-            return (
+        {!loading &&
+          currentConversations.map(
+            (conversation: Conversation, index: number) => (
               <S.NotificationItem
                 key={conversation.id}
                 active={conversation.id === activeConversationId}
@@ -338,7 +363,9 @@ const ConversationList = () => {
                   />
                 </S.Avatar>
                 <S.Content>
-                  <S.Title>{conversation.contact?.name || DEFAULT_FULL_NAME}</S.Title>
+                  <S.Title>
+                    {conversation.contact?.name || DEFAULT_FULL_NAME}
+                  </S.Title>
                   <S.Subtitle>
                     {conversation.latestMessage?.content || <p>No message</p>}
                   </S.Subtitle>
@@ -392,14 +419,9 @@ const ConversationList = () => {
                   )}
                 </S.RightSection>
               </S.NotificationItem>
-            );
-          })}
-        {loadingMore && (
-          <S.LoadingMore>{t('inboxList.loadMore')}</S.LoadingMore>
-        )}
-        {!hasMore && conversationEdges.length > 0 && (
-          <S.AllDataLoaded>All data loaded</S.AllDataLoaded>
-        )}
+            ),
+          )}
+        {/* {loading && <S.LoadingMore>{t('inboxList.loadMore')}</S.LoadingMore>} */}
       </S.ConversationListWrapper>
 
       <Modal

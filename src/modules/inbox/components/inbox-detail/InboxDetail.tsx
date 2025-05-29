@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Image, Tooltip } from 'antd';
+import { Image, Tooltip, Skeleton } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
@@ -213,11 +213,11 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       user:
         currentUserId && user?.firstName && user?.lastName && user?.avatar
           ? {
-              id: currentUserId,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              avatar: user.avatar,
-            }
+            id: currentUserId,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            avatar: user.avatar,
+          }
           : null,
       type:
         type === InboxMessageType.Image
@@ -349,6 +349,32 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     });
   };
 
+  const renderSkeleton = () => (
+    <>
+      {[...Array(12)].map((_, i) =>
+        i % 2 === 1 ? (
+          <S.MessageRowUser key={i}>
+            <S.MessageBubbleRight>
+              <Skeleton.Input active size="small" style={{ width: 180 }} />
+            </S.MessageBubbleRight>
+            <S.MessageAvatarWrapper style={{ marginLeft: 8 }}>
+              <Skeleton.Avatar active size={40} />
+            </S.MessageAvatarWrapper>
+          </S.MessageRowUser>
+        ) : (
+          <S.MessageRow key={i}>
+            <S.MessageAvatarWrapper>
+              <Skeleton.Avatar active size={40} />
+            </S.MessageAvatarWrapper>
+            <S.MessageBubbleLeft>
+              <Skeleton.Input active size="small" style={{ width: 150 }} />
+            </S.MessageBubbleLeft>
+          </S.MessageRow>
+        ),
+      )}
+    </>
+  );
+
   if (!conversationId) {
     return (
       <S.Container>
@@ -386,7 +412,9 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
           isSidebarOpen={isSidebarOpen}
           ref={messageContainerRef}
         >
-          {messages.length === 0 ? (
+          {loading ? (
+            renderSkeleton()
+          ) : messages.length === 0 ? (
             <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
           ) : (
             messages
@@ -402,7 +430,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                     {isAgent ? (
                       <S.MessageRowUser>
                         {msg.type === InboxMessageType.Image &&
-                        msg.metadata?.fileUrl ? (
+                          msg.metadata?.fileUrl ? (
                           <>
                             <S.MessageTime>
                               {formatTime(msg.createdAt)}
@@ -506,7 +534,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                               {msg.user?.firstName || 'Guest'}
                             </S.MessageSenderName>
                             {msg.type === InboxMessageType.Image &&
-                            msg.metadata?.fileUrl ? (
+                              msg.metadata?.fileUrl ? (
                               <S.MessageImageLeft>
                                 <Image
                                   src={msg.metadata.fileUrl}
