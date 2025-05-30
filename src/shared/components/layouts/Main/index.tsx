@@ -524,8 +524,6 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     dispatch(actionLogout());
   }
 
-  console.log(currentWorkspace);
-
   function handleSelectWorkSpaceCurrent(workSpace: WorkspaceInterface) {
     if (workSpace.id === currentWorkspace?.id) return;
 

@@ -12,14 +12,10 @@ import Button from '@/shared/components/common/Button';
 import { eventBus } from '@/core/event-bus';
 import { getFormattedTime } from '../../helpers/inbox.logic';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
-import { openConversation } from '@/core/services/socket/socket';
 import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 import { filterOptions, filtersDropdown } from '@/core/settings/options';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import {
-  fetchConversations,
-  clearConversations,
-} from '../../store/features/inbox';
+import { fetchConversations } from '../../store/features/inbox';
 
 import { Conversation } from '../../interfaces/inbox';
 import { getConversationList } from '../../api/inbox.api';
@@ -210,7 +206,6 @@ const ConversationList = () => {
 
   const handleConversationClick = (conversationId: string) => {
     navigate(`?workspaceId=${workspaceId}&conversationId=${conversationId}`);
-    openConversation(conversationId);
   };
 
   const renderSkeleton = () => (
