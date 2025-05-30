@@ -151,20 +151,28 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       return;
     }
 
-    if (
-      prevConversationId.current &&
-      prevConversationId.current !== conversationId
-    ) {
-      closeConversation(prevConversationId.current);
+    if (conversationId) {
+      if (
+        prevConversationId.current &&
+        prevConversationId.current !== conversationId
+      ) {
+        closeConversation(prevConversationId.current);
+      }
+      if (prevConversationId.current !== conversationId) {
+        openConversation(conversationId);
+        prevConversationId.current = conversationId;
+      }
+    } else {
+      if (prevConversationId.current) {
+        closeConversation(prevConversationId.current);
+        prevConversationId.current = null;
+      }
     }
-    if (conversationId && prevConversationId.current !== conversationId) {
-      openConversation(conversationId);
-    }
-    prevConversationId.current = conversationId;
 
     return () => {
       if (prevConversationId.current) {
         closeConversation(prevConversationId.current);
+        prevConversationId.current = null;
       }
     };
   }, [conversationId]);
@@ -213,11 +221,11 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
       user:
         currentUserId && user?.firstName && user?.lastName && user?.avatar
           ? {
-            id: currentUserId,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            avatar: user.avatar,
-          }
+              id: currentUserId,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              avatar: user.avatar,
+            }
           : null,
       type:
         type === InboxMessageType.Image
@@ -430,7 +438,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                     {isAgent ? (
                       <S.MessageRowUser>
                         {msg.type === InboxMessageType.Image &&
-                          msg.metadata?.fileUrl ? (
+                        msg.metadata?.fileUrl ? (
                           <>
                             <S.MessageTime>
                               {formatTime(msg.createdAt)}
@@ -534,7 +542,7 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
                               {msg.user?.firstName || 'Guest'}
                             </S.MessageSenderName>
                             {msg.type === InboxMessageType.Image &&
-                              msg.metadata?.fileUrl ? (
+                            msg.metadata?.fileUrl ? (
                               <S.MessageImageLeft>
                                 <Image
                                   src={msg.metadata.fileUrl}

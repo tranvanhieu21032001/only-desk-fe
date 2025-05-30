@@ -49,10 +49,12 @@ export const sendAgentMessage = (data: any, callback?: any) => {
 };
 
 export const openConversation = (conversationId: string) => {
+  console.log('[socket] emit open_conversation:', conversationId);
   socket.emit('open_conversation', { conversationId });
 };
 
 export const closeConversation = (conversationId: string) => {
+  console.log('[socket] emit close_conversation:', conversationId);
   socket.emit('close_conversation', { conversationId });
 };
 
