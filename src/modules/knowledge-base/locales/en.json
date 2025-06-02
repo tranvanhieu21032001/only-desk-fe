@@ -27,6 +27,31 @@
       "the-helpdesk": "The Helpdesk plugin is available in your Essential plan.",
       "install-helpdesk": "Install Helpdesk",
       "cancel": "Cancel"
+    },
+    
+    "getting-started-knowledge": {
+      "title": "Getting Started With Your Knowledge Base",
+      "description": "Please insert modal description here.",
+      "configure": "Configure",
+      "locale": "Locale",
+      "import": "Import",
+      "step-title": "Let’s configure your Knowledge Base",
+      "step-description": "You are few steps away from using your Knowledge Base.",
+      "name-label": "Knowledge Base name",
+      "name-placeholder": "Enter Knowledge Base name",
+      "subdomain-label": "Knowledge Base sub-domain",
+      "subdomain-placeholder": "Enter Knowledge Base sub-domain",
+      "subdomain-suffix": ".onlychat.help",
+      "download-sample": "Download This Sample CSV File",
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "locale-title":"Configure your Knowledge Base locale",
+      "locate-description":"OnlyChat Knowledge Base is fully multilingual. Get started by configuring your default Knowledge Base locale.",
+      "language":"Language",
+      "import-title":"You are almost done!",
+      "import-description":"Using another Knowledge Base provider? No problem! You can import all articles from your previous provider in a single click.",
+      "create-my-first-article":"Create my first Article",
+      "create":"Create"
     }
   }
 }
