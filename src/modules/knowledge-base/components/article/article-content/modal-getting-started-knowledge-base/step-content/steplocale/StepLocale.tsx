@@ -8,6 +8,8 @@ import { OptionsInterface } from '@/core/model/common';
 import { useTranslation } from 'react-i18next';
 import { Image } from 'antd';
 
+import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
+
 const StepLocale = () => {
   const { t } = useTranslation('knowledgeBase');
 
@@ -22,19 +24,29 @@ const StepLocale = () => {
           {t('article-menu.getting-started-knowledge.locate-description')}
         </Typography>
       </S.ModalDescription>
-      <S.ChangeLang
-        defaultValue={langOptions?.[0]?.value}
-        popupClassName="auth-lang"
-      >
-        {langOptions?.map((lang: OptionsInterface) => (
-          <S.LangOption key={lang?.key}>
-            <Image src={lang?.flag as string} preview={false} />
-            <Typography>
-              {t(`article-menu.language.${lang?.label}`)}
-            </Typography>
-          </S.LangOption>
-        ))}
-      </S.ChangeLang>
+      <S.FormField>
+        <Typography fontWeight={fontWeight.medium}>
+          <S.FormInput>
+            {t('article-menu.add-a-language.language')}
+            <Image src={icValid} height={23} width={7} />
+          </S.FormInput>
+        </Typography>
+
+        <S.ChangeLang
+          defaultValue={langOptions?.[0]?.value}
+          popupClassName="auth-lang"
+        >
+          {langOptions?.map((lang: OptionsInterface) => (
+            <S.LangOption key={lang?.key}>
+              <Image src={lang?.flag as string} preview={false} />
+              <Typography>
+                {t(`article-menu.language.${lang?.label}`)}
+              </Typography>
+            </S.LangOption>
+          ))}
+        </S.ChangeLang>
+
+      </S.FormField>
     </>
   );
 };

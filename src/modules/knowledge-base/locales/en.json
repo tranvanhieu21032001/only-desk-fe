@@ -59,6 +59,13 @@
       "create-your-first-article":"Create your first article. Write a first draft, preview it, and publish it.",
       "new-article":"New Articles",
       "import-articles":"Import Articles"
-    }
+    },
+    "add-a-language":{
+      "add-language-title":"Add A Language To Your Knowledge Base",
+      "add-language-description":"Your Knowledge Base can be multilingual, and requires at least one locale.",
+      "language":"Language",
+      "cancel": "Cancel",
+      "add-language": "Add language" 
+      }
   }
 }
