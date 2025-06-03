@@ -11,10 +11,12 @@ import themeColors from '@/shared/styles/themes/default/colors';
 import { ActionArticleFilterEnums } from '../../../../helpers/enums/article';
 import { actionFilterArticleOptions } from '@/modules/knowledge-base/helpers/data/article';
 import { ActionFilterArticleOptionsInterface } from '@/modules/knowledge-base/models/article.model';
-import ModalConfirmInstallHelpDesk from '../modal-confirm-install-helpdesk/ModalConfirmInstallHelpDesk';
 
 import Typography from '@/shared/components/common/Typography';
 import PopoverAction from '@/shared/components/common/Popover';
+
+import ModalConfirmInstallHelpDesk from '../modal-confirm-install-helpdesk/ModalConfirmInstallHelpDesk';
+import ModalGettingStartedKnowledgeBase from '../modal-getting-started-knowledge-base/ModalGettingStartedKnowledgeBase';
 
 import * as S from './ArticleContent.styles';
 
@@ -25,12 +27,17 @@ function ArticleContent() {
 
   const {
     visible: isModalInstallHelpdesk,
-    toggle: handleOpenModalInstallHelpdesk,
+    toggle: handleToggleModalInstallHelpdesk,
+  } = useModal();
+
+  const {
+    visible: isModalGettingStarted,
+    toggle: handleToggleModalGettingStarted,
   } = useModal();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      handleOpenModalInstallHelpdesk();
+      handleToggleModalInstallHelpdesk();
     }, 300);
 
     return () => clearTimeout(timer);
@@ -100,7 +107,8 @@ function ArticleContent() {
   }
 
   function handleInstallHelpdesk() {
-    handleOpenModalInstallHelpdesk();
+    handleToggleModalInstallHelpdesk();
+    handleToggleModalGettingStarted();
   }
 
   return (
@@ -151,8 +159,18 @@ function ArticleContent() {
       {isModalInstallHelpdesk && (
         <ModalConfirmInstallHelpDesk
           open={isModalInstallHelpdesk}
-          onCancel={handleOpenModalInstallHelpdesk}
+          onCancel={handleToggleModalInstallHelpdesk}
           onOK={handleInstallHelpdesk}
+        />
+      )}
+
+      {isModalGettingStarted && (
+        <ModalGettingStartedKnowledgeBase
+          open={isModalGettingStarted}
+          onCancel={handleToggleModalGettingStarted}
+          onStart={() => {
+            handleToggleModalGettingStarted();
+          }}
         />
       )}
     </S.ArticleContentContainer>
