@@ -4,7 +4,7 @@ import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import * as S from './StepImport.styles';
 import { useTranslation } from 'react-i18next';
-import { Image, Progress, Upload, message, Button } from 'antd';
+import { Image, Progress, Upload, message } from 'antd';
 import type { UploadProps } from 'antd';
 
 import icAdd from '@/assets/icons/knowledge-base/ic-add.svg';
