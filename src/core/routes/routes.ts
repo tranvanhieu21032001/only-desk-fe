@@ -47,6 +47,14 @@ const Articles = React.lazy(
   () => import('@/modules/knowledge-base/pages/articles/Articles'),
 );
 
+const ChatboxPage = React.lazy(
+  () => import('@/modules/inbox/pages/chatbox-page/ChatboxPage'),
+);
+
+const Chatbox = React.lazy(
+  () => import('@/modules/settings/pages/chatbox/Chatbox'),
+);
+
 const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
@@ -236,7 +244,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'chatbox',
     path: MAIN_ROUTES.CHATBOX,
-    component: PageNotFound,
+    component: Chatbox,
     name: 'chatbox',
   },
   {
