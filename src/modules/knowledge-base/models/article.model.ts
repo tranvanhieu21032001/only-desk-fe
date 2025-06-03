@@ -14,3 +14,15 @@ export interface ActionFilterArticleOptionsInterface {
   icon: string;
   actionType: ActionArticleFilterEnums;
 }
+
+
+export interface AllArticleInterface {
+  key: string;
+  title: string;
+  status: 'online' | 'draft' | 'hidden' | 'visible';
+  statistic: string;
+  created: string;
+  lastUpdate: string;
+  category: string;
+  isCategoryRow?: boolean;
+}
