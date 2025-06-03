@@ -22,6 +22,7 @@ import * as S from './ArticleContent.styles';
 
 import icArrowDown from '@/assets/icons/contact/ic-arrow-down.svg';
 import NoArticle from '../article-content-components/NoArticle';
+import AllArticle from '../article-content-components/allarticle/AllArticle';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -156,7 +157,8 @@ function ArticleContent() {
           />
         </S.FilterPopoverWrap>
       </S.FilterWrap>
-      <NoArticle />
+      {/* <NoArticle /> */}
+      <AllArticle/>
       {isModalInstallHelpdesk && (
         <ModalConfirmInstallHelpDesk
           open={isModalInstallHelpdesk}
