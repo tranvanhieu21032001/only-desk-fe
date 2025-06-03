@@ -54,7 +54,11 @@
       "create":"Create",
       "or":"Or",
       "import-from-a":"Import from a previous provider",
-      "browse-file":"Browse file"
+      "browse-file":"Browse file",
+      "no-articles":"There are no articles.",
+      "create-your-first-article":"Create your first article. Write a first draft, preview it, and publish it.",
+      "new-article":"New Articles",
+      "import-articles":"Import Articles"
     }
   }
 }

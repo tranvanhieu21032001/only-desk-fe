@@ -21,6 +21,7 @@ import ModalGettingStartedKnowledgeBase from '../modal-getting-started-knowledge
 import * as S from './ArticleContent.styles';
 
 import icArrowDown from '@/assets/icons/contact/ic-arrow-down.svg';
+import NoArticle from '../article-content-components/NoArticle';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -85,9 +86,9 @@ function ArticleContent() {
               key={option?.key}
               $isRemove={
                 option?.actionType ===
-                  ActionArticleFilterEnums?.REMOVE_SELECTED_ARTICLES ||
+                ActionArticleFilterEnums?.REMOVE_SELECTED_ARTICLES ||
                 option?.actionType ===
-                  ActionArticleFilterEnums?.DESTROY_CURRENT_LANGUAGE
+                ActionArticleFilterEnums?.DESTROY_CURRENT_LANGUAGE
               }
               onClick={() => handleActionFilterArticle(option?.actionType)}
             >
@@ -155,7 +156,7 @@ function ArticleContent() {
           />
         </S.FilterPopoverWrap>
       </S.FilterWrap>
-
+      <NoArticle />
       {isModalInstallHelpdesk && (
         <ModalConfirmInstallHelpDesk
           open={isModalInstallHelpdesk}
