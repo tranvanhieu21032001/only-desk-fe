@@ -38,3 +38,49 @@ export const OrDivider = styled.div`
     font-weight: ${(props) => props.theme.fontWeight.semiBold};
     text-transform:uppercase
 `;
+
+export const UploadStatusContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border: 1px solid ${themeColors?.newtral};
+    border-radius: 8px;
+    margin-top: 20px;
+`;
+
+export const FileInfoRow = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+
+export const FileDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 8px;
+`;
+
+export const UploadingInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const UploadingText = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+export const StatusInfo = styled.div`
+  font-weight: ${(props) => props.theme.fontWeight.light};
+  color:${themeColors?.primary};
+  font-size:12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+export const ProgressContainer = styled.div`
+  margin-top: 8px;
+`;
