@@ -110,7 +110,7 @@ function ModalGettingStartedKnowledgeBase({
 
         <S.ModalFooter>
           <div>
-            <Image src={icDownload} width={20} height={20} preview={false} />
+            <Image src={icDownload} preview={false} />
             <Typography fontWeight={fontWeight.semiBold} color={themeColors.secondaryDark}>
               {t('article-menu.getting-started-knowledge.download-sample')}
             </Typography>
@@ -123,8 +123,7 @@ function ModalGettingStartedKnowledgeBase({
               </Button>
               <Button onClick={handleContinue} type="primary">
                 {activeStep === steps.length - 1
-                  ? t('article-menu.getting-started-knowledge.finish') || 'Finish'
-                  : t('article-menu.getting-started-knowledge.continue')}
+                  ?"": t('article-menu.getting-started-knowledge.continue')}
                 <Image src={icArrowright} width={18} height={18} preview={false} />
               </Button>
             </div>

@@ -51,7 +51,10 @@
       "import-title":"You are almost done!",
       "import-description":"Using another Knowledge Base provider? No problem! You can import all articles from your previous provider in a single click.",
       "create-my-first-article":"Create my first Article",
-      "create":"Create"
+      "create":"Create",
+      "or":"Or",
+      "import-from-a":"Import from a previous provider",
+      "browse-file":"Browse file"
     }
   }
 }

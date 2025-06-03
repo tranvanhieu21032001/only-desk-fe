@@ -16,11 +16,12 @@ export const CreateContainer = styled.div`
     align-items: center;
     gap: 20px;
     border: 1px dashed ${themeColors?.newtral};
-    padding:32px 12px;
+    padding:12px;
     margin:24px 0;
 `;
 
 export const CreateButton = styled(Button)`
+    display:block;
   width: fit-content;
   min-width: 0;
   padding: 8px 16px;
@@ -32,3 +33,8 @@ export const CreateButton = styled(Button)`
   }
 `;
 
+export const OrDivider = styled.div`
+    text-align: center;
+    font-weight: ${(props) => props.theme.fontWeight.semiBold};
+    text-transform:uppercase
+`;
