@@ -17,6 +17,7 @@ import PopoverAction from '@/shared/components/common/Popover';
 
 import ModalConfirmInstallHelpDesk from '../modal-confirm-install-helpdesk/ModalConfirmInstallHelpDesk';
 import ModalGettingStartedKnowledgeBase from '../modal-getting-started-knowledge-base/ModalGettingStartedKnowledgeBase';
+import ModalAddALanguage from '../modal-add-a-language/ModalAddALanguage';
 
 import * as S from './ArticleContent.styles';
 
@@ -36,6 +37,13 @@ function ArticleContent() {
     visible: isModalGettingStarted,
     toggle: handleToggleModalGettingStarted,
   } = useModal();
+
+
+  const {
+    visible: isModalAddLanguage,
+    toggle: handleToggleModalAddLanguage,
+  } = useModal();
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -66,6 +74,7 @@ function ArticleContent() {
         return;
       case ActionArticleFilterEnums?.ADD_A_NEW_LANGUAGE:
         //TODO handle later
+        handleToggleModalAddLanguage();
         return;
       case ActionArticleFilterEnums?.REMOVE_SELECTED_ARTICLES:
         //TODO handle later
@@ -158,7 +167,8 @@ function ArticleContent() {
         </S.FilterPopoverWrap>
       </S.FilterWrap>
       {/* <NoArticle /> */}
-      <AllArticle/>
+      <AllArticle />
+
       {isModalInstallHelpdesk && (
         <ModalConfirmInstallHelpDesk
           open={isModalInstallHelpdesk}
@@ -176,6 +186,18 @@ function ArticleContent() {
           }}
         />
       )}
+
+      {isModalAddLanguage && (
+        <ModalAddALanguage
+          open={isModalAddLanguage}
+          onCancel={handleToggleModalAddLanguage}
+          onOK={() => {
+            handleToggleModalAddLanguage();
+          }}
+        />
+      )}
+
+
     </S.ArticleContentContainer>
   );
 }

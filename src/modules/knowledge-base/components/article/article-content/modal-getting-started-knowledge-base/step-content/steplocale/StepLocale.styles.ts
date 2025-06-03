@@ -51,3 +51,9 @@ export const LangOption = styled(Option)`
   align-items: center;
   gap: 4px;
 `;
+
+export const FormInput = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`

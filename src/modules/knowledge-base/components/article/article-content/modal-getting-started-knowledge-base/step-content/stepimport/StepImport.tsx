@@ -31,9 +31,11 @@ const StepImport = () => {
     };
 
     const handleCustomUpload: UploadProps['customRequest'] = ({ file, onSuccess, onError, onProgress }) => {
-        const fileSizeKB = Math.round(file.size / 1024);
+        const realFile = file as File;
+        const fileSizeKB = Math.round(realFile.size / 1024);
 
-        setFileName(file.name);
+        setFileName(realFile.name);
+
         setTotalKB(fileSizeKB);
         setUploadedKB(0);
 
@@ -126,17 +128,17 @@ const StepImport = () => {
                         </S.FileDetails>
                     </S.FileInfoRow>
 
-                   {uploadStatus === 'error' || uploadStatus === 'uploading'?  <S.ProgressContainer>
+                    {uploadStatus === 'error' || uploadStatus === 'uploading' ? <S.ProgressContainer>
                         {uploadStatus === 'uploading' && (
                             <Progress percent={uploadProgress} size="small" />
                         )}
 
                         {uploadStatus === 'error' && (
                             <Typography color="red" padding='0px 56px' fontWeight={fontWeight.semiBold} onClick={resetUpload}>
-                                Try Again 
+                                Try Again
                             </Typography>
                         )}
-                    </S.ProgressContainer>:""}
+                    </S.ProgressContainer> : ""}
                 </S.UploadStatusContainer>
             )}
 
