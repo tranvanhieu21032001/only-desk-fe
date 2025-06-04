@@ -24,6 +24,7 @@ import * as S from './ArticleContent.styles';
 import icArrowDown from '@/assets/icons/contact/ic-arrow-down.svg';
 import NoArticle from '../article-content-components/NoArticle';
 import AllArticle from '../article-content-components/allarticle/AllArticle';
+import ModalImportArticles from '../modal-import-articles/ModalImportArticles';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -43,6 +44,12 @@ function ArticleContent() {
     visible: isModalAddLanguage,
     toggle: handleToggleModalAddLanguage,
   } = useModal();
+
+  const {
+    visible: isModalImportArticles,
+    toggle: handleToggleModalImportArticles,
+  } = useModal();
+
 
 
   useEffect(() => {
@@ -65,6 +72,7 @@ function ArticleContent() {
     switch (actionType) {
       case ActionArticleFilterEnums?.IMPORT:
         //TODO handle later
+        handleToggleModalImportArticles()
         return;
       case ActionArticleFilterEnums?.EXPORT:
         //TODO handle later
@@ -195,6 +203,15 @@ function ArticleContent() {
             handleToggleModalAddLanguage();
           }}
         />
+      )}
+
+      {isModalImportArticles && (
+        <ModalImportArticles
+          open={isModalImportArticles}
+          onCancel={handleToggleModalImportArticles}
+          onStart={() => {
+            handleToggleModalImportArticles();
+          }} />
       )}
 
 

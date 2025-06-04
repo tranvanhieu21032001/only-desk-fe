@@ -66,6 +66,23 @@
       "language":"Language",
       "cancel": "Cancel",
       "add-language": "Add language" 
-      }
+    },
+    "import-articles":{
+      "import-articles-title":"Import Knowledge Base Articles",
+      "import-articles-description":"Please insert modal description here.",
+      "configure-import":"Configure import",
+      "onlychat-with-automatically":"OnlyChat with automatically configure and adjust articles from your previous Knowledge Base. Submit previous Knowledge Base URL and start the import.",
+      "previous-knowledge-base-url":"Previous Knowledge Base URL",
+      "enter-knowledge-base-url":"Enter Knowledge Base URL",
+      "import-title":"You are almost done!",
+      "import-description":"Using another Knowledge Base provider? No problem! You can import all articles from your previous provider in a single click.",
+      "import-from-a":"Import from a previous provider",
+      "browse-file":"Browse file",      
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "submit":"Submit",
+      "configure": "Configure",
+      "import": "Import"
+    }
   }
 }
