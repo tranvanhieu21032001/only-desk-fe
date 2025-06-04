@@ -27,6 +27,7 @@ import AllArticle from '../article-content-components/allarticle/AllArticle';
 import ModalImportArticles from '../modal-import-articles/ModalImportArticles';
 import ModalExportArticles from '../modal-export-articles/ModalExportArticles';
 import ModalRemoveLanguage from '../modal-remove-language/ModalRemoveLanguage';
+import ModalAddNewArticles from '../modal-add-new-articles/ModalAddNewArticles';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -60,6 +61,11 @@ function ArticleContent() {
   const {
     visible: isModalRemoveLanguage,
     toggle: handleToggleModalRemoveLanguage,
+  } = useModal();
+
+    const {
+    visible: isModalNewArticles,
+    toggle: handleToggleModalNewArticle,
   } = useModal();
 
 
@@ -159,6 +165,7 @@ function ArticleContent() {
             iconPosition="left"
             icon={<PlusOutlined />}
             type="primary"
+            onClick={()=>handleToggleModalNewArticle()}
           >
             <Typography color={themeColors?.newtralLightest}>
               {t('article-menu.new-article')}
@@ -242,6 +249,15 @@ function ArticleContent() {
           onCancel={handleToggleModalRemoveLanguage}
           onStart={() => {
             handleToggleModalRemoveLanguage();
+          }} />
+      )}
+
+      {isModalNewArticles && (
+        <ModalAddNewArticles
+          open={isModalNewArticles}
+          onCancel={handleToggleModalNewArticle}
+          onStart={() => {
+            handleToggleModalNewArticle();
           }} />
       )}
 

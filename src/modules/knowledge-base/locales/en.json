@@ -98,6 +98,17 @@
       "enter-language-name":"Enter language name",
       "cancel": "Cancel",
       "remove":"Remove"
+    },
+    "add-a-new-article":{
+      "title":"Add An Article To Your Knowledge Base",
+      "description":"Please insert modal description here.",
+      "language":"Language",
+      "category":"Category",
+      "getting-started":"Getting Started",
+      "article-content":"Article content",
+      "option":"Option",
+      "save-draft":"Save Draft",
+      "publish":"Publish"
     }
   }
 }
