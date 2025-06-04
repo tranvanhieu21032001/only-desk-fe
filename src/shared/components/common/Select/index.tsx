@@ -31,8 +31,8 @@ export default function Select({
       {label && (
         <Typography
           padding="0 0 8px 0"
-          variant="caption-small"
           color={colorLabel}
+          variant="body-text-small"
         >
           {label} {isRequired && <span style={{ color: 'red' }}>*</span>}
         </Typography>
