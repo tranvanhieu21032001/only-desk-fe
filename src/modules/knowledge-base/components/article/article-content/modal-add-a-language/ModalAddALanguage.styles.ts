@@ -53,7 +53,6 @@ export const ModalDescription = styled.div`
 
 export const ModalFooter = styled.div`
   padding: 12px 24px;
-
   display: flex;
   align-items: center;
   justify-content: flex-end;
