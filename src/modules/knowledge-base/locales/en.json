@@ -17,7 +17,7 @@
       "view-my-knowledge-base": "View my knowledge base",
       "add-a-new-language": "Add a new language",
       "import-articles": "Import articles",
-      "export-articles": "Export articles",
+      "export-articles": "Export all articles",
       "destroy-current-language": "Destroy current language",
       "remove-selected-articles": "Remove selected articles"
     },
@@ -83,6 +83,11 @@
       "submit":"Submit",
       "configure": "Configure",
       "import": "Import"
+    },
+    "export-articles":{
+      "title":"Export Knowledge Base Articles",
+      "description":"It will take a few minutes. You will get an email when the export is over.",
+      "cancel": "Cancel"
     }
   }
 }
