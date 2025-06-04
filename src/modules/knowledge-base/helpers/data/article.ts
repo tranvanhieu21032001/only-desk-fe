@@ -143,7 +143,7 @@ const actionFilterArticleOptions: ActionFilterArticleOptionsInterface[] = [
   },
   {
     key: 'export-articles',
-    label: 'import-articles',
+    label: 'export-articles',
     icon: icExport,
     actionType: ActionArticleFilterEnums?.EXPORT,
   },

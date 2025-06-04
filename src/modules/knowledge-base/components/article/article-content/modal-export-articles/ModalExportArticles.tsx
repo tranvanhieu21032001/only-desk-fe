@@ -1,0 +1,62 @@
+import { Image } from 'antd';
+import { useTranslation } from 'react-i18next';
+
+import themeColors from '@/shared/styles/themes/default/colors';
+import fontWeight from '@/shared/styles/themes/default/fontWeight';
+
+import Button from '@/shared/components/common/Button';
+import Typography from '@/shared/components/common/Typography';
+import ModalCommon from '@/shared/components/common/ModalBase';
+
+import * as S from './ModalExportArticles.styles';
+
+import icConfirm from '@/assets/icons/contact/ic-confirm.svg';
+import { PlusCircleOutlined } from '@ant-design/icons';
+
+interface ModalExportArticlesProps {
+  open: boolean;
+  onCancel: () => void;
+  onStart: () => void;
+}
+
+function ModalExportArticles({
+  open,
+  onCancel,
+  onStart,
+}: ModalExportArticlesProps) {
+  const { t } = useTranslation('knowledgeBase');
+
+  return (
+    <S.WrapModal>
+      <ModalCommon
+        open={open}
+        onCancel={onCancel}
+        showFooter={false}
+        width={440}
+        rootClassName="modal-confirm-export-database"
+      >
+        <S.ModalHeader>
+          <Image src={icConfirm} width={40} height={40} preview={false} />
+          <S.ModalHeaderContent>
+            <Typography fontWeight={fontWeight?.semiBold}>
+              {t('article-menu.export-articles.title')}
+            </Typography>
+            <S.ModalDescription>
+              <Typography color={themeColors?.newtralLight}>
+                {t('article-menu.export-articles.description')}
+              </Typography>
+            </S.ModalDescription>
+          </S.ModalHeaderContent>
+        </S.ModalHeader>
+
+        <S.ModalFooter>
+          <Button onClick={onCancel}>
+            {t('article-menu.export-articles.cancel')}
+          </Button>
+        </S.ModalFooter>
+      </ModalCommon>
+    </S.WrapModal>
+  );
+}
+
+export default ModalExportArticles;
