@@ -26,6 +26,7 @@ import NoArticle from '../article-content-components/NoArticle';
 import AllArticle from '../article-content-components/allarticle/AllArticle';
 import ModalImportArticles from '../modal-import-articles/ModalImportArticles';
 import ModalExportArticles from '../modal-export-articles/ModalExportArticles';
+import ModalRemoveLanguage from '../modal-remove-language/ModalRemoveLanguage';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -51,11 +52,15 @@ function ArticleContent() {
     toggle: handleToggleModalImportArticles,
   } = useModal();
 
-    const {
+  const {
     visible: isModalExportArticles,
     toggle: handleToggleModalExportArticles,
   } = useModal();
 
+  const {
+    visible: isModalRemoveLanguage,
+    toggle: handleToggleModalRemoveLanguage,
+  } = useModal();
 
 
   useEffect(() => {
@@ -96,6 +101,7 @@ function ArticleContent() {
         return;
       case ActionArticleFilterEnums?.DESTROY_CURRENT_LANGUAGE:
         //TODO handle later
+        handleToggleModalRemoveLanguage();
         return;
       default:
         break;
@@ -227,6 +233,15 @@ function ArticleContent() {
           onCancel={handleToggleModalExportArticles}
           onStart={() => {
             handleToggleModalExportArticles();
+          }} />
+      )}
+
+      {isModalRemoveLanguage && (
+        <ModalRemoveLanguage
+          open={isModalRemoveLanguage}
+          onCancel={handleToggleModalRemoveLanguage}
+          onStart={() => {
+            handleToggleModalRemoveLanguage();
           }} />
       )}
 

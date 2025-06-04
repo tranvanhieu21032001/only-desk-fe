@@ -88,6 +88,16 @@
       "title":"Export Knowledge Base Articles",
       "description":"It will take a few minutes. You will get an email when the export is over.",
       "cancel": "Cancel"
+    },
+    "remove-current-language":{
+      "title":"Remove English Current Language?",
+      "description":"Please read the following and then confirm to remove.",
+      "caution":"Caution",
+      "all-knowledge-base":"All Knowledge Base (articles, categories) for this language will be lost and non-recoverable. There is no coming back after you press remove.",
+      "confirm-language-removal":"Confirm language removal",
+      "enter-language-name":"Enter language name",
+      "cancel": "Cancel",
+      "remove":"Remove"
     }
   }
 }
