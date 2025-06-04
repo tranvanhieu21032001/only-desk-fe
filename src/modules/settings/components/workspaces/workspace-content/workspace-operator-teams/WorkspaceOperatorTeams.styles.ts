@@ -228,6 +228,48 @@ export const FooterSavedCheck = styled.div`
   }
 `;
 
+export const ModalEmpty = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+`;
+
+export const ModalEmptyColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  p {
+    font-size: 14px;
+    line-height: 23px;
+    font-weight: 600;
+  }
+
+  span {
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+`;
+
+export const ModalEmptyFooter = styled.div`
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+`;
+
+export const ModalAddOperatorSelect = styled.div`
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+`;
+
+export const ModalAddOperatorWrapper = styled.div`
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+`;
+
 export const AccessSwitchInput = styled.input.attrs({ type: 'checkbox' })`
   opacity: 0;
   width: 0;
@@ -303,4 +345,55 @@ export const AccessSwitchSlider = styled.span`
   input:disabled + &::after {
     background: ${(props) => props.theme.colors.newtral};
   }
+`;
+
+export const AuthBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 24px;
+  background: #fff;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  &:hover {
+    border-color: #3750b2;
+    background: #f5f7fa;
+  }
+`;
+
+export const AuthModalTitle = styled.div`
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 600;
+`;
+
+export const AuthModalDesc = styled.div`
+  color: #666;
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 400;
+`;
+
+export const AuthModalGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+`;
+
+export const AuthBoxTitle = styled.div`
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 600;
+`;
+
+export const AuthBoxDesc = styled.div`
+  color: #666;
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 400;
 `;

@@ -76,7 +76,7 @@ export const Select = styled(SelectAntd)<{
   &:not(.ant-select-disabled).ant-select-focused {
     .ant-select-selector {
       box-shadow: none !important;
-      border-color: ${({ theme }) => theme?.colors?.primary} !important;
+      border-color: ${({ theme }) => theme?.colors?.secondaryDark} !important;
     }
   }
 `;
