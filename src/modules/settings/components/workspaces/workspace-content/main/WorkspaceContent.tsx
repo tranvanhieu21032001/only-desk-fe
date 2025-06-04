@@ -5,6 +5,7 @@ import { useAppSelector } from '@/shared/hooks';
 import { WorkspaceMenusEnums } from '@/modules/settings/helpers/enums/workspace';
 import { workspaceMenuType } from '@/modules/settings/constants/workspace.constant';
 import WorkspaceSetupIntegrations from '../workspace-setup-integrations/WorkspaceSetupIntefrations';
+import WorkspaceOperatorTeams from '../workspace-operator-teams/WorkspaceOperatorTeams';
 
 import WorkspaceInformation from '../workspace-information/WorkspaceInformation';
 
@@ -28,6 +29,8 @@ function Account() {
         return <WorkspaceInformation />;
       case WorkspaceMenusEnums?.SETUP_INTEGRATIONS:
         return <WorkspaceSetupIntegrations />;
+      case WorkspaceMenusEnums?.OPERATOR_TEAMS:
+        return <WorkspaceOperatorTeams />;
       default:
         break;
     }

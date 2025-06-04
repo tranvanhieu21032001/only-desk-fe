@@ -160,9 +160,7 @@ const NewSubInboxPage = ({
         <S.StepContent>
           <div>
             <S.Label>{t('newSubInbox.pickIconAndName')}</S.Label>
-            <S.LabelP>
-              {t('newSubInbox.pickIconAndNameDesc')}
-            </S.LabelP>
+            <S.LabelP>{t('newSubInbox.pickIconAndNameDesc')}</S.LabelP>
             <S.IconNameRow>
               <S.LabelColumn>
                 <S.LabelText>{t('newSubInbox.icon')}</S.LabelText>
@@ -180,7 +178,9 @@ const NewSubInboxPage = ({
                   {t('newSubInbox.nameOfSubInbox')}
                   <S.LabelRequiredStar>*</S.LabelRequiredStar>
                 </S.LabelText>
-                <S.NameInput placeholder={t('newSubInbox.enterNameOfSubInbox')} />
+                <S.NameInput
+                  placeholder={t('newSubInbox.enterNameOfSubInbox')}
+                />
               </S.LabelInput>
             </S.IconNameRow>
           </div>
@@ -195,15 +195,11 @@ const NewSubInboxPage = ({
               <S.AccessIcon src={check} alt="" />
               <div>
                 <S.AccessTitle>{t('newSubInbox.publicAccess')}</S.AccessTitle>
-                <S.AccessDesc>
-                  {t('newSubInbox.publicAccessDesc')}
-                </S.AccessDesc>
+                <S.AccessDesc>{t('newSubInbox.publicAccessDesc')}</S.AccessDesc>
               </div>
             </S.AccessBox>
             <S.AccessRadioRow>
-              <S.AccessRadioLabel>
-                {t('newSubInbox.public')}
-              </S.AccessRadioLabel>
+              <S.AccessRadioLabel>{t('newSubInbox.public')}</S.AccessRadioLabel>
               <S.AccessSwitchWrapper>
                 <S.AccessSwitchInput
                   checked={isPublic}
@@ -256,7 +252,11 @@ const NewSubInboxPage = ({
                           setIsMainFilterDropdownOpen((prev) => !prev)
                         }
                       >
-                        {selectedModalFilter || t('newSubInbox.selectCriterion', 'Select a criterion')} {' '}
+                        {selectedModalFilter ||
+                          t(
+                            'newSubInbox.selectCriterion',
+                            'Select a criterion',
+                          )}{' '}
                         <Image
                           src={arrowDown}
                           alt="Arrow down icon"
@@ -346,7 +346,8 @@ const NewSubInboxPage = ({
                               setIsConditionDropdownOpen((prev) => !prev)
                             }
                           >
-                            {selectedCondition || t('newSubInbox.select', 'Select...')} {' '}
+                            {selectedCondition ||
+                              t('newSubInbox.select', 'Select...')}{' '}
                             <Image
                               src={arrowDown}
                               alt="Arrow down icon"
