@@ -365,6 +365,27 @@ export const AuthBox = styled.div`
   }
 `;
 
+export const AuthPassword = styled.div`
+  h2 {
+    font-size: 14px;
+    line-height: 23px;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+
+  span {
+    font-size: 14px;
+    line-height: 23px;
+    font-weight: 400;
+  }
+`;
+
 export const AuthModalTitle = styled.div`
   font-size: 14px;
   line-height: 23px;
@@ -396,4 +417,113 @@ export const AuthBoxDesc = styled.div`
   font-size: 12px;
   line-height: 20px;
   font-weight: 400;
+`;
+
+export const SignInWrapper = styled.div`
+  width: 100%;
+  margin-top: 24px;
+`;
+
+export const SignInTitle = styled.div`
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 600;
+`;
+
+export const SignInDesc = styled.div`
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 400;
+  margin-bottom: 20px;
+`;
+
+export const SignInButton = styled.button`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e5e6eb;
+  border-radius: 12px;
+  background: #fff;
+  padding: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #222;
+  cursor: pointer;
+  justify-content: center;
+`;
+
+export const TwoFAWrapper = styled.div`
+  width: 100%;
+  margin-top: 24px;
+`;
+
+export const TwoFATitle = styled.div`
+  font-size: 14px;
+  line-height: 23px;
+  font-weight: 600;
+`;
+
+export const TwoFADesc = styled.div`
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 400;
+  margin-bottom: 20px;
+`;
+
+export const TwoFAInputGroup = styled.div`
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+`;
+
+export const TwoFAInputBox = styled.input`
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  font-size: 32px;
+  font-weight: 600;
+  color: #222;
+  text-align: center;
+  outline: none;
+  transition: border 0.2s;
+  box-shadow: none;
+  &:focus {
+    border: 1.5px solid #3750b2;
+  }
+`;
+
+export const PasswordInput = styled.input`
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  flex: 1;
+
+  &::placeholder {
+    font-size: 14px;
+    color: #bfbfbf;
+  }
+`;
+
+export const FlexBetween = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const PasswordInputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  border: 1px solid #E5E6EB;
+  border-radius: 8px;
+  padding: 8px;
+  gap: 8px;
+`;
+
+export const RequiredAsterisk = styled.span`
+  color: red;
 `;

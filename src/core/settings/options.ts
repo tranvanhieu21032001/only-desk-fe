@@ -95,6 +95,33 @@ export const filterOptions = [
   'Mentions',
 ];
 
+export const mockOperators = [
+  {
+    avatar: avatarDefault,
+    name: 'ChauLB',
+    email: 'misa.le.dn@gmail.com',
+    role: 'Owner',
+    status: 'Active',
+    isYou: true,
+  },
+  {
+    avatar: avatarDefault,
+    name: 'MisaLe',
+    email: 'misa.le.dn@gmail.com',
+    role: 'Member',
+    status: 'Active',
+    isYou: false,
+  },
+  {
+    avatar: avatarDefault,
+    name: 'LeBaoChau',
+    email: 'misa.le.dn@gmail.com',
+    role: 'Member',
+    status: 'Invited',
+    isYou: false,
+  },
+];
+
 export const filtersDropdown = [
   'User email',
   'User phone',
