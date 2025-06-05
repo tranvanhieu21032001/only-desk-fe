@@ -17,17 +17,14 @@ import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import icImage from '@/assets/icons/knowledge-base/ic-image.svg';
 
-interface ModalAddALanguageProps {
+interface ModalAddNewCategoryProps {
     open: boolean;
     onCancel: () => void;
     onOK: () => void;
+    onAddCategory?: () => void;
 }
 
-function ModalAddNewCategory({
-    open,
-    onCancel,
-    onOK,
-}: ModalAddALanguageProps) {
+function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNewCategoryProps) {
     const { t } = useTranslation('knowledgeBase');
 
     return (
@@ -51,9 +48,10 @@ function ModalAddNewCategory({
                         </S.ModalDescription>
                     </S.ModalHeaderContent>
                 </S.ModalHeader>
+
                 <S.ModalBody>
                     <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding='0 0 8px 0'>
+                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
                             <S.FormInput>
                                 {t('article-menu.add-a-category.language')}
                                 <Image src={icValid} height={23} width={7} />
@@ -73,11 +71,10 @@ function ModalAddNewCategory({
                                 </S.LangOption>
                             ))}
                         </S.ChangeLang>
-
                     </S.FormField>
 
                     <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding='0 0 8px 0'>
+                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
                             {t('article-menu.add-a-category.name-of-the-category')}
                         </Typography>
                         <Input
@@ -85,17 +82,17 @@ function ModalAddNewCategory({
                             size="large"
                         />
                     </S.FormField>
+
                     <S.GroupInput>
                         <S.FormField>
-                            <Typography fontWeight={fontWeight.medium} padding='0 0 8px 0'>
+                            <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
                                 {t('article-menu.add-a-category.category-color')}
                             </Typography>
-                            <Input type='color'
-                                size="large"
-                            />
+                            <Input type="color" size="large" />
                         </S.FormField>
+
                         <S.FormField>
-                            <Typography fontWeight={fontWeight.medium} padding='0 0 8px 0'>
+                            <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
                                 {t('article-menu.add-a-category.category-order-index')}
                             </Typography>
                             <Input
@@ -104,6 +101,7 @@ function ModalAddNewCategory({
                             />
                         </S.FormField>
                     </S.GroupInput>
+
                     <S.FormField>
                         <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
                             {t('article-menu.add-a-category.category-image')}
@@ -131,13 +129,20 @@ function ModalAddNewCategory({
                             </S.SelectFile>
                         </label>
                     </S.FormField>
-
                 </S.ModalBody>
+
                 <S.ModalFooter>
                     <Button onClick={onCancel}>
                         {t('article-menu.add-a-category.cancel')}
                     </Button>
-                    <Button onClick={onOK} type="primary" icon={<PlusOutlined />}>
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => {
+                            onOK(); 
+                            onAddCategory?.();
+                        }}
+                    >
                         {t('article-menu.add-a-category.add-category')}
                     </Button>
                 </S.ModalFooter>

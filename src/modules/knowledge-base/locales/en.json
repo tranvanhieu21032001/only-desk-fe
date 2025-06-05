@@ -143,6 +143,15 @@
       "select-or-drag-file":"Select or drag file",
       "cancel":"Cancel",
       "add-category":"Add Category"
+    },
+    "add-a-section":{
+      "title":"Add A Section To The Category",
+      "description":"Please insert modal description here.",
+      "category":"Category",
+      "name-of-the-section":"Name of the section",
+      "enter-a-name":"Enter a name of the section",
+      "cancel":"Cancel",
+      "add-section":"Add Section"
     }
   }
 }
