@@ -13,11 +13,11 @@ import icAdd from '@/assets/icons/knowledge-base/ic-add2.svg';
 
 import { AllCategoriesInterface } from '@/modules/knowledge-base/models/article.model';
 
-// ✅ Dữ liệu mẫu
 const rawCategoryArticles: AllCategoriesInterface[] = [
   {
     key: '1',
     title: 'Welcome guide',
+    description: 'Introductory guide for new users',
     statistic: '100',
     created: '2024-06-01',
     lastUpdate: '2024-06-02',
@@ -26,6 +26,7 @@ const rawCategoryArticles: AllCategoriesInterface[] = [
   {
     key: '2',
     title: 'First Steps',
+    description: 'Step-by-step guide to set up your workspace',
     statistic: '25',
     created: '2024-06-02',
     lastUpdate: '2024-06-02',
@@ -34,6 +35,7 @@ const rawCategoryArticles: AllCategoriesInterface[] = [
   {
     key: '3',
     title: 'Advanced search',
+    description: 'How to use advanced search filters',
     statistic: '75',
     created: '2024-05-20',
     lastUpdate: '2024-05-25',
@@ -42,6 +44,7 @@ const rawCategoryArticles: AllCategoriesInterface[] = [
   {
     key: '4',
     title: 'API Access',
+    description: 'Enable and manage API usage',
     statistic: '15',
     created: '2024-05-15',
     lastUpdate: '2024-05-20',
@@ -49,7 +52,6 @@ const rawCategoryArticles: AllCategoriesInterface[] = [
   },
 ];
 
-// ✅ Group theo category (có dòng header cho mỗi category)
 const categoryTableData: AllCategoriesInterface[] = rawCategoryArticles.reduce(
   (acc: AllCategoriesInterface[], article) => {
     const categoryKey = `category-${article.category}`;
@@ -60,7 +62,8 @@ const categoryTableData: AllCategoriesInterface[] = rawCategoryArticles.reduce(
         key: categoryKey,
         category: article.category,
         isCategoryRow: true,
-        title: '',
+        title: `Category: ${article.category}`,
+        description: `Description for ${article.category}`, // Mô tả giả lập
         statistic: '',
         created: '',
         lastUpdate: '',
@@ -73,7 +76,6 @@ const categoryTableData: AllCategoriesInterface[] = rawCategoryArticles.reduce(
   [],
 );
 
-// ✅ Menu dropdown action
 const getDropdownMenu = (rowData: AllCategoriesInterface, t: any) => {
   if (rowData.isCategoryRow) {
     return {
@@ -81,13 +83,13 @@ const getDropdownMenu = (rowData: AllCategoriesInterface, t: any) => {
         {
           key: 'add-category',
           icon: <Image src={icAdd} width={24} height={24} preview={false} />,
-          label: <Typography padding="0 0 0 2px">{t('article-menu.getting-started-knowledge.add')}</Typography>,
+          label: <Typography padding="0 0 0 2px">{t('article-menu.actions.add-section')}</Typography>,
           onClick: () => console.log('Add Article to Category:', rowData.category),
         },
         {
           key: 'edit-category',
           icon: <Image src={icEdit} width={24} height={24} preview={false} />,
-          label: <Typography padding="0 0 0 2px">{t('article-menu.getting-started-knowledge.edit')}</Typography>,
+          label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
           onClick: () => console.log('Edit Category:', rowData.category),
         },
         {
@@ -95,7 +97,7 @@ const getDropdownMenu = (rowData: AllCategoriesInterface, t: any) => {
           icon: <Image src={icTrash} width={24} height={24} preview={false} />,
           label: (
             <Typography padding="0 0 0 2px" color="red">
-              {t('article-menu.getting-started-knowledge.remove')}
+              {t('article-menu.actions.remove')}
             </Typography>
           ),
           onClick: () => console.log('Remove Category:', rowData.category),
@@ -109,7 +111,7 @@ const getDropdownMenu = (rowData: AllCategoriesInterface, t: any) => {
       {
         key: 'edit-article',
         icon: <Image src={icEdit} width={24} height={24} preview={false} />,
-        label: <Typography padding="0 0 0 2px">{t('article-menu.article.edit')}</Typography>,
+        label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
         onClick: () => console.log('Edit Article:', rowData),
       },
       {
@@ -117,7 +119,7 @@ const getDropdownMenu = (rowData: AllCategoriesInterface, t: any) => {
         icon: <Image src={icTrash} width={24} height={24} preview={false} />,
         label: (
           <Typography padding="0 0 0 2px" color="red">
-            {t('article-menu.article.remove')}
+            {t('article-menu.actions.remove')}
           </Typography>
         ),
         onClick: () => console.log('Remove Article:', rowData),
@@ -131,7 +133,7 @@ const AllCategories = () => {
 
   const columns: ColumnsType<AllCategoriesInterface> = [
     {
-      title: 'Title',
+      title: t('article-menu.actions.title'),
       dataIndex: 'title',
       key: 'title',
       render: (_, rowData) =>
@@ -140,27 +142,37 @@ const AllCategories = () => {
             <span style={{ fontWeight: 600 }}>Category:</span>{' '}
             <Tag color="green" style={{ color: '#1677ff' }}>
               {rowData.category}
-            </Tag>{' '}
-            <span>6 articles</span>
+            </Tag>
           </>
         ) : (
           <span>{rowData.title}</span>
         ),
     },
     {
-      title: 'Statistic',
+      title: t('article-menu.actions.description'),
+      dataIndex: 'description',
+      key: 'description',
+      render: (_, rowData) =>
+        rowData.description ? (
+          <span style={rowData.isCategoryRow ? { fontStyle: 'italic', color: '#888' } : {}}>
+            {rowData.description}
+          </span>
+        ) : null,
+    },
+    {
+      title: t('article-menu.actions.statistic'),
       dataIndex: 'statistic',
       key: 'statistic',
       render: (_, rowData) => (rowData.isCategoryRow ? null : rowData.statistic),
     },
     {
-      title: 'Created',
+      title: t('article-menu.actions.created'),
       dataIndex: 'created',
       key: 'created',
       render: (_, rowData) => (rowData.isCategoryRow ? null : rowData.created),
     },
     {
-      title: 'Last Update',
+      title: t('article-menu.actions.last-update'),
       dataIndex: 'lastUpdate',
       key: 'lastUpdate',
       render: (_, rowData) => (rowData.isCategoryRow ? null : rowData.lastUpdate),
