@@ -28,9 +28,16 @@ import ModalImportArticles from '../modal-import-articles/ModalImportArticles';
 import ModalExportArticles from '../modal-export-articles/ModalExportArticles';
 import ModalRemoveLanguage from '../modal-remove-language/ModalRemoveLanguage';
 import ModalAddNewArticles from '../modal-add-new-articles/ModalAddNewArticles';
+import { useLocation } from 'react-router-dom';
+import AllCategories from '../../../categories/categories-content/main/AllCategories';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const isCategoriesPage = currentPath === '/categories';
+  // console.log("isCategoriesPage", isCategoriesPage);
+
 
   const {
     visible: isModalInstallHelpdesk,
@@ -63,18 +70,19 @@ function ArticleContent() {
     toggle: handleToggleModalRemoveLanguage,
   } = useModal();
 
-    const {
+  const {
     visible: isModalNewArticles,
     toggle: handleToggleModalNewArticle,
   } = useModal();
 
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      handleToggleModalInstallHelpdesk();
-    }, 300);
-
-    return () => clearTimeout(timer);
+    if (!isCategoriesPage) {
+      const timer = setTimeout(() => {
+        handleToggleModalInstallHelpdesk();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const handleSearchArticle = debounce(
@@ -165,7 +173,7 @@ function ArticleContent() {
             iconPosition="left"
             icon={<PlusOutlined />}
             type="primary"
-            onClick={()=>handleToggleModalNewArticle()}
+            onClick={() => handleToggleModalNewArticle()}
           >
             <Typography color={themeColors?.newtralLightest}>
               {t('article-menu.new-article')}
@@ -195,7 +203,7 @@ function ArticleContent() {
         </S.FilterPopoverWrap>
       </S.FilterWrap>
       {/* <NoArticle /> */}
-      <AllArticle />
+      {!isCategoriesPage ? <AllArticle /> : <AllCategories/>}
 
       {isModalInstallHelpdesk && (
         <ModalConfirmInstallHelpDesk
@@ -260,8 +268,6 @@ function ArticleContent() {
             handleToggleModalNewArticle();
           }} />
       )}
-
-
     </S.ArticleContentContainer>
   );
 }

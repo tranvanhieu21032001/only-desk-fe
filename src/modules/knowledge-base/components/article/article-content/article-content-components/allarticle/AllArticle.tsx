@@ -112,7 +112,7 @@ const statusIcons: Record<string, string> = {
 
 const columns: ColumnsType<AllArticleInterface> = [
   {
-    title: 'AllArticleInterface Title',
+    title: 'Article Title',
     dataIndex: 'title',
     key: 'title',
     render: (_, record) =>

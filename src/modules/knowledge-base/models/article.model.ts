@@ -26,3 +26,13 @@ export interface AllArticleInterface {
   category: string;
   isCategoryRow?: boolean;
 }
+
+export interface AllCategoriesInterface {
+  key: string;
+  title: string;
+  description:string;
+  statistic: string;
+  created: string;
+  lastUpdate: string;
+}
+

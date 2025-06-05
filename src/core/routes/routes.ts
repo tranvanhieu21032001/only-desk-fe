@@ -196,7 +196,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'categories',
     path: MAIN_ROUTES.CATEGORIES,
-    component: PageNotFound,
+    component: Articles,
     name: 'categories',
   },
 
