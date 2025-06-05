@@ -129,6 +129,20 @@
       "title":"There are no category.",
       "description":"Create your first category. Give it a color and an image, and test it li",
       "new-category":"New Category"
+    },
+    "add-a-category":{
+      "title":"Add A Category To Your Knowledge Base",
+      "description":"Please insert modal description here.",
+      "language":"Language",
+      "name-of-the-category":"Name of the category",
+      "enter-a-name":"Enter a name of the category",
+      "category-color":"Category color",
+      "category-order-index":"Category order index",
+      "enter-category-order-index":"Enter category order index",
+      "category-image":"Category image",
+      "select-or-drag-file":"Select or drag file",
+      "cancel":"Cancel",
+      "add-category":"Add Category"
     }
   }
 }

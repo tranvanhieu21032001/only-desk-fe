@@ -133,17 +133,23 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
             />
           )}
 
-          {/* Editor shows only when ready */}
-          <div style={{ display: editorReady ? 'block' : 'none' }}>
+          <div
+            style={{
+              display: editorReady ? 'block' : 'none',
+              height: '50vh',
+              maxHeight: '627px',
+              width: '100%',
+            }}
+          >
             <Editor
-              apiKey="10lpxjmyvyly4rdb88xil2fxm3y11ava3j2s5rn9tl5btib8"
+              apiKey="10lpxjmyvyly4rdb88xil2fxm3j11ava3j2s5rn9tl5btib8"
               onInit={(evt, editor) => {
                 editorRef.current = editor;
                 setEditorReady(true);
               }}
               initialValue=""
               init={{
-                height: 627,
+                height: '100%',
                 menubar: false,
                 branding: false,
                 plugins: [
@@ -187,6 +193,7 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
               }}
             />
           </div>
+
         </S.ModalBody>
 
         <S.ModalFooter>
