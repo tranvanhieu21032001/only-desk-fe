@@ -29,7 +29,8 @@ import ModalExportArticles from '../modal-export-articles/ModalExportArticles';
 import ModalRemoveLanguage from '../modal-remove-language/ModalRemoveLanguage';
 import ModalAddNewArticles from '../modal-add-new-articles/ModalAddNewArticles';
 import { useLocation } from 'react-router-dom';
-import AllCategories from '../../../categories/categories-content/main/AllCategories';
+import AllCategories from '../../../categories/categories-content/main/allcatgories/AllCategories';
+import NoCategories from '../../../categories/categories-content/main/nocategories/NoCategories';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -203,7 +204,7 @@ function ArticleContent() {
         </S.FilterPopoverWrap>
       </S.FilterWrap>
       {/* <NoArticle /> */}
-      {!isCategoriesPage ? <AllArticle /> : <AllCategories/>}
+      {!isCategoriesPage ? <AllArticle /> : <NoCategories/>}
 
       {isModalInstallHelpdesk && (
         <ModalConfirmInstallHelpDesk

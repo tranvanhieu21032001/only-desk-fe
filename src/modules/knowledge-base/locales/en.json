@@ -124,6 +124,11 @@
       "option":"Option",
       "save-draft":"Save Draft",
       "publish":"Publish"
+    },
+    "no-category":{
+      "title":"There are no category.",
+      "description":"Create your first category. Give it a color and an image, and test it li",
+      "new-category":"New Category"
     }
   }
 }
