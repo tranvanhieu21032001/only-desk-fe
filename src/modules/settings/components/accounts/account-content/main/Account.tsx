@@ -6,6 +6,7 @@ import { AccountMenusEnums } from '@/modules/settings/helpers/enums/account';
 import { accountMenuType } from '@/modules/settings/constants/account.constant';
 
 import AccountInformation from '../account-information/main/AccountInformation';
+import NotificationSettings from '../notifications/main/Notifications';
 
 import * as S from './Account.styles';
 
@@ -25,6 +26,8 @@ function Account() {
     switch (typeAccount) {
       case AccountMenusEnums?.ACCOUNT_INFORMATION:
         return <AccountInformation />;
+        case AccountMenusEnums?.NOTIFICATIONS:
+      return <NotificationSettings />;
       default:
         return null;
     }
