@@ -1,0 +1,13 @@
+{
+    "billing-menu":{
+        "plan-subcriptions":"Plans & Subcriptions",
+        "card":"Card",
+        "invoices":"Invoices",
+        "warning-content":"You do not have any payment method. Add one to subscribe to paid features",
+        "go-to-billing-settings":"Go to billing settings",
+        "manage-all-workspace-plans":"Manage all workspace plans",
+        "exp-date":"Exp.Date",
+        "billing-owner":"Billing owner",
+        "change-plan":"Change Plan"
+    }
+}
