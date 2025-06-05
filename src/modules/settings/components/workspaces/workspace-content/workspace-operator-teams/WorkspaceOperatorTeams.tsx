@@ -6,10 +6,11 @@ import Modal from '@/shared/components/common/Modal';
 import Input from '@/shared/components/common/Input';
 import Select from '@/shared/components/common/Select';
 
+import { mockOperators } from '@/core/settings/options';
+
 import * as S from './WorkspaceOperatorTeams.styles';
 
 import addHeader from '@/assets/icons/common/ic-add-header.svg';
-import avatarDefault from '@/assets/images/avatar-default.png';
 import iconCheck from '@/assets/icons/setting/ic-check-operator.svg';
 import iconInvited from '@/assets/icons/setting/ic-invited.svg';
 import iconEdit from '@/assets/icons/setting/ic-edit.svg';
@@ -21,33 +22,7 @@ import iconPassword from '@/assets/icons/setting/ic-password.svg';
 import icon2FA from '@/assets/icons/setting/ic-2fa.svg';
 import iconGoogle from '@/assets/icons/setting/ic-google.svg';
 import iconApple from '@/assets/icons/setting/ic-apple-operator.svg';
-
-const mockOperators = [
-  {
-    avatar: avatarDefault,
-    name: 'ChauLB',
-    email: 'misa.le.dn@gmail.com',
-    role: 'Owner',
-    status: 'Active',
-    isYou: true,
-  },
-  {
-    avatar: avatarDefault,
-    name: 'MisaLe',
-    email: 'misa.le.dn@gmail.com',
-    role: 'Member',
-    status: 'Active',
-    isYou: false,
-  },
-  {
-    avatar: avatarDefault,
-    name: 'LeBaoChau',
-    email: 'misa.le.dn@gmail.com',
-    role: 'Member',
-    status: 'Invited',
-    isYou: false,
-  },
-];
+import iconCheckDefault from '@/assets/icons/setting/ic-tick-white.svg';
 
 const WorkspaceOperatorTeams = () => {
   const [isPublic, setIsPublic] = useState(true);
@@ -58,6 +33,11 @@ const WorkspaceOperatorTeams = () => {
   const [isOpenEditOperator, setIsOpenEditOperator] = useState(false);
   const [isOpenLeaveWorkspace, setIsOpenLeaveWorkspace] = useState(false);
   const [isOpenRemoveOperator, setIsOpenRemoveOperator] = useState(false);
+  const [authStep, setAuthStep] = useState<
+    'select' | 'password' | 'google' | 'apple' | '2fa'
+  >('select');
+  const [password, setPassword] = useState('');
+  const [twoFA, setTwoFA] = useState(['', '', '', '', '', '']);
 
   return (
     <S.AccountInformationContainer>
@@ -79,13 +59,7 @@ const WorkspaceOperatorTeams = () => {
           </S.BoxRowOptions>
 
           <S.BoxCol>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
+            <S.FlexBetween>
               <span>
                 Prevent non-owner operators to remove data (conversations &
                 contacts)
@@ -97,14 +71,8 @@ const WorkspaceOperatorTeams = () => {
                 />
                 <S.AccessSwitchSlider />
               </S.AccessSwitchWrapper>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
+            </S.FlexBetween>
+            <S.FlexBetween>
               <span>
                 Force operators to have Two Factor Authentication enabled
               </span>
@@ -115,7 +83,7 @@ const WorkspaceOperatorTeams = () => {
                 />
                 <S.AccessSwitchSlider />
               </S.AccessSwitchWrapper>
-            </div>
+            </S.FlexBetween>
           </S.BoxCol>
         </S.Box>
         <S.Box>
@@ -295,19 +263,27 @@ const WorkspaceOperatorTeams = () => {
         isOpen={isOpenAddOperatorStep}
         title="Add Operator"
         description="Please insert modal description here."
-        onClose={() => setIsOpenAddOperatorStep(false)}
+        onClose={() => {
+          setIsOpenAddOperatorStep(false);
+          setAuthStep('select');
+          setPassword('');
+        }}
         footer={
           <S.ModalEmptyFooter>
             <Button
               type="default"
-              onClick={() => setIsOpenAddOperatorStep(false)}
+              onClick={() => {
+                setIsOpenAddOperatorStep(false);
+                setAuthStep('select');
+                setPassword('');
+              }}
             >
               Cancel
             </Button>
             <Button
               type="primary"
               width="180px"
-              onClick={() => setIsOpenAddOperatorStep(false)}
+              onClick={() => {}}
               icon={
                 <Image
                   src={iconArrowRight}
@@ -324,45 +300,175 @@ const WorkspaceOperatorTeams = () => {
         }
       >
         <S.ModalAddOperatorWrapper>
-          <S.AuthModalTitle>This is a sensitive action!</S.AuthModalTitle>
-          <S.AuthModalDesc>
-            Please verify you OnlyChat credentials with one of the following
-            methods
-          </S.AuthModalDesc>
-          <S.AuthModalGrid>
-            <S.AuthBox>
-              <img
-                src={iconPassword}
-                alt=""
-                style={{ width: 32, height: 32 }}
-              />
-              <div>
-                <S.AuthBoxTitle>Password</S.AuthBoxTitle>
-                <S.AuthBoxDesc>Your OnlyChat account password</S.AuthBoxDesc>
+          {authStep === 'select' ? (
+            <>
+              <div style={{ fontWeight: 600, fontSize: 20, marginBottom: 8 }}>
+                This is a sensitive action!
               </div>
-            </S.AuthBox>
-            <S.AuthBox>
-              <img src={icon2FA} alt="" style={{ width: 32, height: 32 }} />
-              <div>
-                <S.AuthBoxTitle>Two-Factor</S.AuthBoxTitle>
-                <S.AuthBoxDesc>Provide a 6 digits 2FA code</S.AuthBoxDesc>
+              <div style={{ color: '#888', fontSize: 16, marginBottom: 24 }}>
+                Please verify you OnlyChat credentials with one of the following
+                methods
               </div>
-            </S.AuthBox>
-            <S.AuthBox>
-              <img src={iconGoogle} alt="" style={{ width: 32, height: 32 }} />
-              <div>
-                <S.AuthBoxTitle>Google Sign-in</S.AuthBoxTitle>
-                <S.AuthBoxDesc>With your Google account</S.AuthBoxDesc>
-              </div>
-            </S.AuthBox>
-            <S.AuthBox>
-              <img src={iconApple} alt="" style={{ width: 32, height: 32 }} />
-              <div>
-                <S.AuthBoxTitle>Apple Sign-in</S.AuthBoxTitle>
-                <S.AuthBoxDesc>With your Apple account</S.AuthBoxDesc>
-              </div>
-            </S.AuthBox>
-          </S.AuthModalGrid>
+              <S.AuthModalGrid>
+                <S.AuthBox
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setAuthStep('password')}
+                >
+                  <img
+                    src={iconPassword}
+                    alt=""
+                    style={{ width: 32, height: 32 }}
+                  />
+                  <div>
+                    <S.AuthBoxTitle>Password</S.AuthBoxTitle>
+                    <S.AuthBoxDesc>
+                      Your OnlyChat account password
+                    </S.AuthBoxDesc>
+                  </div>
+                </S.AuthBox>
+                <S.AuthBox
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setAuthStep('2fa')}
+                >
+                  <img src={icon2FA} alt="" style={{ width: 32, height: 32 }} />
+                  <div>
+                    <S.AuthBoxTitle>Two-Factor</S.AuthBoxTitle>
+                    <S.AuthBoxDesc>Provide a 6 digits 2FA code</S.AuthBoxDesc>
+                  </div>
+                </S.AuthBox>
+                <S.AuthBox
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setAuthStep('google')}
+                >
+                  <img
+                    src={iconGoogle}
+                    alt=""
+                    style={{ width: 32, height: 32 }}
+                  />
+                  <div>
+                    <S.AuthBoxTitle>Google Sign-in</S.AuthBoxTitle>
+                    <S.AuthBoxDesc>With your Google account</S.AuthBoxDesc>
+                  </div>
+                </S.AuthBox>
+                <S.AuthBox
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setAuthStep('apple')}
+                >
+                  <img
+                    src={iconApple}
+                    alt=""
+                    style={{ width: 32, height: 32 }}
+                  />
+                  <div>
+                    <S.AuthBoxTitle>Apple Sign-in</S.AuthBoxTitle>
+                    <S.AuthBoxDesc>With your Apple account</S.AuthBoxDesc>
+                  </div>
+                </S.AuthBox>
+              </S.AuthModalGrid>
+            </>
+          ) : authStep === 'password' ? (
+            <S.AuthPassword>
+              <h2>This is a sensitive action!</h2>
+              <p>
+                Now, generate OnlyChat account password to verify your identity.
+              </p>
+
+              <span>
+                Verify your password <S.RequiredAsterisk>*</S.RequiredAsterisk>
+              </span>
+              <S.PasswordInputWrapper>
+                <S.PasswordInput
+                  type="password"
+                  placeholder="Enter your OnlyChat account password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button
+                  type="default"
+                  width="100px"
+                  icon={
+                    <>
+                      <img src={iconCheckDefault} alt="" />
+                    </>
+                  }
+                  iconPosition="right"
+                >
+                  Submit
+                </Button>
+              </S.PasswordInputWrapper>
+            </S.AuthPassword>
+          ) : authStep === 'google' ? (
+            <S.SignInWrapper>
+              <S.SignInTitle>This is a sensitive action!</S.SignInTitle>
+              <S.SignInDesc>
+                Now, authentic with Google to verify your identity.
+              </S.SignInDesc>
+              <S.SignInButton>
+                <img
+                  src={iconGoogle}
+                  alt=""
+                  style={{ width: 32, height: 32 }}
+                />
+                Google Sign-in
+              </S.SignInButton>
+            </S.SignInWrapper>
+          ) : authStep === 'apple' ? (
+            <S.SignInWrapper>
+              <S.SignInTitle>This is a sensitive action!</S.SignInTitle>
+              <S.SignInDesc>
+                Now, authentic with Apple to verify your identity.
+              </S.SignInDesc>
+              <S.SignInButton>
+                <img src={iconApple} alt="" style={{ width: 32, height: 32 }} />
+                Apple Sign-in
+              </S.SignInButton>
+            </S.SignInWrapper>
+          ) : authStep === '2fa' ? (
+            <S.TwoFAWrapper>
+              <S.TwoFATitle>This is a sensitive action!</S.TwoFATitle>
+              <S.TwoFADesc>
+                Now, generate a Two-Factor 6 digits token to verify your
+                identity.
+              </S.TwoFADesc>
+              <S.TwoFAInputGroup>
+                {twoFA.map((val, idx) => (
+                  <S.TwoFAInputBox
+                    key={idx}
+                    maxLength={1}
+                    value={val}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/[^0-9]/g, '');
+                      if (!v) return;
+                      const newArr = [...twoFA];
+                      newArr[idx] = v;
+                      setTwoFA(newArr);
+                      const next = document.getElementById(
+                        `twofa-input-${idx + 1}`,
+                      );
+                      if (next) next.focus();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Backspace') {
+                        if (twoFA[idx]) {
+                          const newArr = [...twoFA];
+                          newArr[idx] = '';
+                          setTwoFA(newArr);
+                          e.preventDefault();
+                        } else if (idx > 0) {
+                          const prev = document.getElementById(
+                            `twofa-input-${idx - 1}`,
+                          );
+                          if (prev) prev.focus();
+                        }
+                      }
+                    }}
+                    id={`twofa-input-${idx}`}
+                    autoFocus={idx === 0}
+                  />
+                ))}
+              </S.TwoFAInputGroup>
+            </S.TwoFAWrapper>
+          ) : null}
         </S.ModalAddOperatorWrapper>
       </Modal>
 
