@@ -69,16 +69,36 @@ export const ChangeLang = styled(Select)`
   width: 100%;
   margin-bottom: 12px;
 
+  .ant-select-selector {
+    display: flex !important;
+    align-items: center;
+    height: 39px !important;
+    padding: 0 20px 0 12px !important;
+    border-radius: 8px;
+  }
+
   .ant-select-selection-item {
     display: flex !important;
     align-items: center;
     gap: 8px;
+    line-height: 1;
+  }
+
+  .ant-select-arrow {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    top: 0 !important;
+    right: 8px !important;
+    transform: none !important;
   }
 
   @media ${(props) => props?.theme?.breakpoints?.lgMax} {
     margin-bottom: 0;
   }
 `;
+
+
 
 export const LangOption = styled(Option)`
   display: flex;
@@ -88,7 +108,6 @@ export const LangOption = styled(Option)`
 
 export const FormField = styled.div`
   display: flex;
-  flex: 0 0 auto;
   flex-direction: column;
   gap: 4px;
   width: 50%;
@@ -98,8 +117,7 @@ export const FormField = styled.div`
   }
 
   .ant-select-selector {
-    height: 39px !important;
-    min-height: 39px !important;
+    padding:12px;
   }
 `;
 

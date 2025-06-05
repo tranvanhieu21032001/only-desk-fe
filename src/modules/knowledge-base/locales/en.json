@@ -22,6 +22,21 @@
       "remove-selected-articles": "Remove selected articles"
     },
 
+    "actions":{
+      "title":"Title",
+      "status":"Status",
+      "description":"Descrition",
+      "statistic":"Statistic",
+      "created":"Created",
+      "last-update":"Last update",
+      "category":"Category",
+      "articles":"articles",
+      "add-section":"Add section",
+      "edit":"Edit",
+      "remove":"Remove",
+      "view":"View"
+    },
+
     "install-helpdesk": {
       "helpdesk-is-available": "Helpdesk Is Available In Your OnlyChat Essential",
       "the-helpdesk": "The Helpdesk plugin is available in your Essential plan.",

@@ -1,3 +1,4 @@
+import { StringNullableChain } from 'lodash';
 import {
   AccountMenusEnums,
   ActionArticleFilterEnums,
@@ -30,9 +31,12 @@ export interface AllArticleInterface {
 export interface AllCategoriesInterface {
   key: string;
   title: string;
-  description:string;
+  description: string;
   statistic: string;
   created: string;
   lastUpdate: string;
+  category: string;
+  isCategoryRow?: boolean;
 }
+
 
