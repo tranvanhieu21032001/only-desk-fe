@@ -10,11 +10,21 @@ import icAdd from '@/assets/icons/knowledge-base/ic-add3.svg';
 
 import * as S from './NoCategories.styles';
 import { useModal } from "@/shared/hooks";
+
 import ModalAddNewCategory from "../modal-add-category/ModalAddNewCategory";
+import ModalAddASection from "../modal-add-a-section/ModalAddASection";
 
 const NoCategories = () => {
     const { t } = useTranslation('knowledgeBase');
-    const { visible: isModalAddCategory, toggle: toggleModalAddCategory } = useModal();
+    const {
+        visible: isModalAddCategoryVisible,
+        toggle: toggleModalAddCategory,
+    } = useModal();
+
+    const {
+        visible: isModalAddSectionVisible,
+        toggle: toggleModalAddSection,
+    } = useModal();
 
     return (
         <>
@@ -36,11 +46,22 @@ const NoCategories = () => {
                     </Button>
                 </S.ButtonGroup>
             </S.Container>
-            {isModalAddCategory && (
+            {isModalAddCategoryVisible && (
                 <ModalAddNewCategory
-                    open={isModalAddCategory}
+                    open={isModalAddCategoryVisible}
                     onCancel={toggleModalAddCategory}
-                    onOK={toggleModalAddCategory}
+                    onOK={() => {
+                        toggleModalAddCategory();
+                        toggleModalAddSection();
+                    }}
+                />
+            )}
+
+            {isModalAddSectionVisible && (
+                <ModalAddASection
+                    open={isModalAddSectionVisible}
+                    onCancel={toggleModalAddSection}
+                    onOK={toggleModalAddSection}
                 />
             )}
         </>
