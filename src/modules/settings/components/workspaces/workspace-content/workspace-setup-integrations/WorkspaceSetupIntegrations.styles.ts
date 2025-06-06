@@ -100,6 +100,91 @@ export const BodyBlock = styled.div`
   padding: 8px 8px 12px;
 `;
 
+export const ChatBoxModal = styled.div`
+  display: flex;
+  padding: 0 20px;
+  gap: 10px;
+  flex-direction: column;
+`;
+
+export const CopyBox = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+
+  p {
+    font-size: 14px;
+    color: #3750b2;
+    line-height: 23px;
+    font-weight: 600;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+  }
+`;
+
+export const SendEmailBox = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  padding: 15px 0;
+  border-radius: 8px;
+`;
+
+export const TextBoxModal = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+
+  span {
+    font-size: 14px;
+    line-height: 23px;
+    font-weight: 400;
+  }
+`;
+
+export const TextBoxLabel = styled.label`
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+
+  span {
+    color: red;
+  }
+`;
+
+export const TextBoxFlex = styled.label`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+
+  input {
+   border: 1px solid #ccc;
+   padding: 12px;
+   border-radius: 5px;
+   outline none;
+  }
+`;
+
+export const CopyCodeBox = styled.div`
+  position: relative;
+  padding: 20px;
+  margin-top: 15px;
+  border-radius: 8px;
+  background-color: #edf1f8;
+
+  img,
+  svg {
+    position: absolute;
+    cursor: pointer;
+    top: 10px;
+    right: 10px;
+  }
+`;
+
 export const CardIntegrationWrap = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
