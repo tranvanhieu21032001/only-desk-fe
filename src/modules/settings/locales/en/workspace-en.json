@@ -67,6 +67,7 @@
     "chat-box": "Chatbox",
     "copy": "Copy",
     "copy-success": "Copy ID successfully",
+    "copy-script-success": "Copy Script successfully",
     "chatbox": "Chatbox",
     "chatbox-setup-instructions": "Chatbox setup instructions",
     "see-all-integrations": "See all integrations"
