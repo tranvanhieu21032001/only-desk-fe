@@ -55,6 +55,7 @@ const MAIN_ROUTES = {
   // Settings
   ACCOUNT: `${preRouterMain}/setting-account`,
   BILLING: `${preRouterMain}/billing`,
+  CHANGEPLAN: `${preRouterMain}/billing/change-plan`,
   WORKSPACE: `${preRouterMain}/setting-workspace`,
   CHATBOX: `${preRouterMain}/chatbox`,
   EMAIL: `${preRouterMain}/email`,
