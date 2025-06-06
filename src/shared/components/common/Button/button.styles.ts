@@ -117,7 +117,7 @@ export const DangerButton = styled(ButtonCommon)<{
   background: ${(props) => props.theme.colors.danger};
   color: #fff;
   border-radius: 8px;
-  min-width: ${(props) => props?.$width || '180px'};
+  width: ${(props) => props?.$width || '100%'};
   font-size: ${(props) => props.theme.fontSize.base};
   font-weight: ${(props) => props.theme.fontWeight.semiBold};
   box-shadow: 0px 4px 4px 0px #1b1c1d12;

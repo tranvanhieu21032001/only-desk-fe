@@ -2,11 +2,13 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useAppSelector } from '@/shared/hooks';
+
 import { WorkspaceMenusEnums } from '@/modules/settings/helpers/enums/workspace';
 import { workspaceMenuType } from '@/modules/settings/constants/workspace.constant';
+
 import WorkspaceSetupIntegrations from '../workspace-setup-integrations/WorkspaceSetupIntefrations';
 import WorkspaceOperatorTeams from '../workspace-operator-teams/WorkspaceOperatorTeams';
-
+import WorkspaceDangerZone from '../workspace-danger-zone/WorkspaceDangerZone';
 import WorkspaceInformation from '../workspace-information/WorkspaceInformation';
 
 import * as S from './WorkspaceContent.styles';
@@ -31,6 +33,8 @@ function Account() {
         return <WorkspaceSetupIntegrations />;
       case WorkspaceMenusEnums?.OPERATOR_TEAMS:
         return <WorkspaceOperatorTeams />;
+      case WorkspaceMenusEnums?.DANGER_ZONE:
+        return <WorkspaceDangerZone />;
       default:
         break;
     }
