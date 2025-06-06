@@ -15,8 +15,8 @@ import icTick from '@/assets/icons/billing/ic-tick.svg';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import Typography from '@/shared/components/common/Typography';
-import ChoisePlan from './Content/Choise-plan/ChoisePlan';
-import PaymentMethod from './Content/Payment/PaymentMethod';
+import ChoisePlan from './Content/choise-plan/ChoisePlan';
+import PaymentComponent from './Content/Payment/PaymentComponent';
 
 const ChangePlan = () => {
   const navigate = useNavigate();
@@ -76,7 +76,7 @@ const ChangePlan = () => {
           ))}
         </S.StepsContainer>
         {activeStep === 0 && <ChoisePlan setActiveStep={setActiveStep} />}
-        {activeStep === 1 && <PaymentMethod />}
+        {activeStep === 1 && <PaymentComponent />}
 
       </S.ChangePlanInformation>
     </S.ChangePlanInformationContainer>
