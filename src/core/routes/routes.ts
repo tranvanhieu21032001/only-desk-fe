@@ -45,6 +45,10 @@ const Billing = React.lazy(
   () => import('@/modules/settings/pages/billing/Billing'),
 );
 
+const ChangePlan = React.lazy(
+  () => import('@/modules/settings/pages/billing/change-plan/ChangePlan'),
+);
+
 //Knowledge Base
 const Articles = React.lazy(
   () => import('@/modules/knowledge-base/pages/articles/Articles'),
@@ -237,6 +241,12 @@ const routes_main: RouterElementInterface[] = [
     path: MAIN_ROUTES.BILLING,
     component: Billing,
     name: 'billing',
+  },
+    {
+    key: 'change-plan',
+    path: MAIN_ROUTES.CHANGEPLAN,
+    component: ChangePlan,
+    name: 'change-plan',
   },
   {
     key: 'setting-workspace',

@@ -1,4 +1,6 @@
 import themeColors from '@/shared/styles/themes/default/colors';
+import fontSize from '@/shared/styles/themes/default/fontSize';
+import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { css, styled } from 'styled-components';
 
 export const BillingInformationContainer = styled.section`
@@ -67,7 +69,17 @@ export const PlansWarning = styled.div`
 export const WraperSection = styled.div`
   display: flex;
   align-items: center;
-  gap:5px;
+  gap:12px;
+  .ant-tag {
+  margin-right:0px
+  }
+
+`
+
+export const Name = styled.div`
+font-weight:${fontWeight?.semiBold};
+font-size:20px;
+
 `
 
 export const WraperPlanProfile = styled.div`
@@ -110,3 +122,4 @@ export const UserDetail = styled.div`
   flex-direction: column;
   gap: 4px;
 `;
+

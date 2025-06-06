@@ -6,9 +6,15 @@ import { useTranslation } from 'react-i18next';
 import { Image, Tag } from 'antd';
 import icWarning from '@/assets/icons/billing/ic-warning.svg';
 import Button from '@/shared/components/common/Button';
+import { useNavigate } from 'react-router-dom';
+
 
 const BillingPlanSubscriptions = () => {
     const { t } = useTranslation('billing');
+     const navigate = useNavigate();
+    const handleChangePlan = () => {
+        navigate('/billing/change-plan');
+    };
 
     return (
         <S.BillingInformationContainer>
@@ -55,18 +61,19 @@ const BillingPlanSubscriptions = () => {
                             </S.Avatar>
 
                             <S.UserDetail>
-                                <S.WraperSection> <Typography fontWeight={fontWeight?.semiBold}>Van Hieu</Typography>
+                                <S.WraperSection>
+                                    <S.Name>Van Hieu</S.Name>
                                     <Tag color="red">Free</Tag>
                                     <Tag color="green">• Active</Tag></S.WraperSection>
-                                <Typography fontWeight={fontWeight.light} color={themeColors.newtralDark}>{t('billing-menu.exp-date')} 15/05/2025</Typography>
-                                <Typography fontWeight={fontWeight.light} color={themeColors.newtralDark}>{t('billing-menu.billing-owner')}: None</Typography>
+                                <Typography fontWeight={fontWeight.light} color={themeColors.newtralDark}><span style={{ width: '100px', display: 'inline-block' }}>{t('billing-menu.exp-date')}</span> 15/05/2025</Typography>
+                                <Typography fontWeight={fontWeight.light} color={themeColors.newtralDark}><span style={{ width: '100px', display: 'inline-block' }}>{t('billing-menu.billing-owner')}</span>: None</Typography>
                             </S.UserDetail>
                         </S.WraperPlanProfile>
 
-                        <Button type="primary" style={{ width: 'unset' }}>{t('billing-menu.change-plan')}</Button>
+                        <Button type="primary" style={{ width: 'unset' }} onClick={handleChangePlan}>{t('billing-menu.change-plan')}</Button>
                     </S.PlanProfile>
 
-                      <S.PlanProfile>
+                    <S.PlanProfile>
                         <S.WraperPlanProfile>
                             <S.Avatar>
                                 <img
@@ -77,15 +84,16 @@ const BillingPlanSubscriptions = () => {
                             </S.Avatar>
 
                             <S.UserDetail>
-                                <S.WraperSection> <Typography fontWeight={fontWeight?.semiBold}>Van Hieu</Typography>
+                                <S.WraperSection>
+                                    <S.Name>Van Hieu</S.Name>
                                     <Tag color="red">Free</Tag>
                                     <Tag color="green">• Active</Tag></S.WraperSection>
-                                <Typography fontWeight={fontWeight.light} color={themeColors.newtralDark}>{t('billing-menu.exp-date')} 15/05/2025</Typography>
-                                <Typography fontWeight={fontWeight.light} color={themeColors.newtralDark}>{t('billing-menu.billing-owner')}: None</Typography>
+                                <Typography fontWeight={fontWeight.light} color={themeColors.newtralDark}><span style={{ width: '100px', display: 'inline-block' }}>{t('billing-menu.exp-date')}</span> 15/05/2025</Typography>
+                                <Typography fontWeight={fontWeight.light} color={themeColors.newtralDark}><span style={{ width: '100px', display: 'inline-block' }}>{t('billing-menu.billing-owner')}</span>: None</Typography>
                             </S.UserDetail>
                         </S.WraperPlanProfile>
 
-                        <Button type="primary" style={{ width: 'unset' }}>{t('billing-menu.change-plan')}</Button>
+                        <Button type="primary" style={{ width: 'unset' }} onClick={handleChangePlan}>{t('billing-menu.change-plan')}</Button>
                     </S.PlanProfile>
 
                 </S.PlansBody>
