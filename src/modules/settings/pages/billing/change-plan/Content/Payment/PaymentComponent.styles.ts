@@ -8,24 +8,39 @@ export const Container = styled.div`
 
 export const GroupMethod = styled.div`
   display: flex;
-  gap: 16px;
-  margin-bottom: 32px;
-    padding: 24px;
-  border: 1px solid ${(props) => props?.theme?.colors?.newtral};
-  border-radius: ${(props) => props?.theme?.radius?.normalRadius};
+    gap: 16px;
 `;
 
-export const PaymentMethod = styled.div`
-  flex:50%;
-  display: flex;
+export const Wrapper= styled.div`
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  margin-bottom: 32px;
+    padding: 24px;
   border: 1px solid ${(props) => props?.theme?.colors?.newtral};
   border-radius: ${(props) => props?.theme?.radius?.normalRadius};
   cursor: pointer;
 `;
 
+
+export const PaymentMethod = styled.div<{ isActive?: boolean }>`
+  flex: 50%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+   border: 1px solid ${(props) => props?.theme?.colors?.newtral};
+  background-color: ${(props) =>
+    props.isActive ? props?.theme?.colors?.secondaryDark : '#fff'};
+   color: ${(props) =>
+    props.isActive ? props?.theme?.colors?.newtral : ''};
+  border-radius: ${(props) => props?.theme?.radius?.normalRadius};
+  cursor: pointer;
+  transition: all 0.2s ease;
+`;
+
+
+
+export const PaymentContent = styled.div`
+`;
 export const OrderSummary = styled.div`
   padding: 24px;
   border-radius: 12px;
