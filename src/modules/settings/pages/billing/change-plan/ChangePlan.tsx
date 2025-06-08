@@ -28,20 +28,19 @@ const ChangePlan = () => {
   };
 
   const steps = [
-    { icon: icChoise, activeIcon: icChoiseActive, label: 'Choise' },
-    { icon: icCard, activeIcon: icCardActive, label: 'Payment' },
+    { icon: icChoise, activeIcon: icChoiseActive, label: t('billing-menu.step-choice') },
+    { icon: icCard, activeIcon: icCardActive, label: t('billing-menu.step-payment') },
   ];
-
 
   return (
     <S.ChangePlanInformationContainer>
       <S.ChangePlanInformation>
         <S.BackToPlan onClick={handleBack}>
           <Image preview={false} src={icArrow} />
-          Back to Plan & Subscriptions
+          {t('billing-menu.plan-subcriptions')}
         </S.BackToPlan>
 
-        <S.Title>Build Incredible Experiences For Your Customers</S.Title>
+        <S.Title>{t('billing-menu.build-experiences-title')}</S.Title>
 
         <S.StepsContainer>
           {steps.map((step, index) => (
@@ -75,9 +74,9 @@ const ChangePlan = () => {
             </S.StepItem>
           ))}
         </S.StepsContainer>
+
         {activeStep === 0 && <ChoisePlan setActiveStep={setActiveStep} />}
         {activeStep === 1 && <PaymentComponent />}
-
       </S.ChangePlanInformation>
     </S.ChangePlanInformationContainer>
   );
