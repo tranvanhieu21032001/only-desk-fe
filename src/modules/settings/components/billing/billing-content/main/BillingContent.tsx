@@ -11,7 +11,7 @@ import { BiillingMenusEnums } from '@/modules/settings/helpers/enums/billing';
 import * as S from './BillingContent.styles';
 import { billingMenuType } from '@/modules/settings/constants/billiing.constant';
 import BillingPlanSubscriptions from '../billing-plan-subscriptions/BillingPlanSubscriptions';
-import Invoices from '@/modules/settings/pages/billing/invoices/Invoices';
+import Invoices from './invoices/Invoices';
 
 const BillingContent = () => {
   const [search] = useSearchParams();

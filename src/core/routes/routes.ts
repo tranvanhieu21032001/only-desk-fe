@@ -46,7 +46,7 @@ const Billing = React.lazy(
 );
 
 const ChangePlan = React.lazy(
-  () => import('@/modules/settings/pages/billing/change-plan/ChangePlan'),
+  () => import('@/modules/settings/components/billing/billing-content/main/change-plan/ChangePlan'),
 );
 
 //Knowledge Base

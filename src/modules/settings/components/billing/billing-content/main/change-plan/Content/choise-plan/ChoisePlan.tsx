@@ -20,9 +20,9 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
   const { t } = useTranslation('billing');
 
   const labels = [
-    { icon: icCheck, label: t('choise-plan.label-trial') },
-    { icon: icFlat, label: t('choise-plan.label-flat') },
-    { icon: icTime, label: t('choise-plan.label-cancel') },
+    { icon: icCheck, label: t('choice-plan.label-trial') },
+    { icon: icFlat, label: t('choice-plan.label-flat') },
+    { icon: icTime, label: t('choice-plan.label-cancel') },
   ];
 
   const handleBuyNow = () => {
@@ -31,55 +31,55 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
 
   const plans = [
     {
-      title: t('choise-plan.plan-free-title'),
-      desc: t('choise-plan.plan-free-desc'),
+      title: t('choice-plan.plan-free-title'),
+      desc: t('choice-plan.plan-free-desc'),
       price: '0',
       sections: [
-        t('choise-plan.feature-chat-widget'),
-        t('choise-plan.feature-shared-inbox'),
-        t('choise-plan.feature-contact-form'),
-        t('choise-plan.feature-mobile-apps'),
-        t('choise-plan.feature-unlimited-conversations'),
-        t('choise-plan.feature-ecommerce'),
+        t('choice-plan.feature-chat-widget'),
+        t('choice-plan.feature-shared-inbox'),
+        t('choice-plan.feature-contact-form'),
+        t('choice-plan.feature-mobile-apps'),
+        t('choice-plan.feature-unlimited-conversations'),
+        t('choice-plan.feature-ecommerce'),
       ],
     },
     {
-      title: t('choise-plan.plan-mini-title'),
-      desc: t('choise-plan.plan-mini-desc'),
+      title: t('choice-plan.plan-mini-title'),
+      desc: t('choice-plan.plan-mini-desc'),
       price: '45',
       sections: [
-        t('choise-plan.feature-chat-widget'),
-        t('choise-plan.feature-shared-inbox'),
-        t('choise-plan.feature-contact-form'),
-        t('choise-plan.feature-mobile-apps'),
-        t('choise-plan.feature-unlimited-conversations'),
-        t('choise-plan.feature-ecommerce'),
+        t('choice-plan.feature-chat-widget'),
+        t('choice-plan.feature-shared-inbox'),
+        t('choice-plan.feature-contact-form'),
+        t('choice-plan.feature-mobile-apps'),
+        t('choice-plan.feature-unlimited-conversations'),
+        t('choice-plan.feature-ecommerce'),
       ],
     },
     {
-      title: t('choise-plan.plan-essentials-title'),
-      desc: t('choise-plan.plan-essentials-desc'),
+      title: t('choice-plan.plan-essentials-title'),
+      desc: t('choice-plan.plan-essentials-desc'),
       price: '95',
       sections: [
-        t('choise-plan.feature-chat-widget'),
-        t('choise-plan.feature-shared-inbox'),
-        t('choise-plan.feature-contact-form'),
-        t('choise-plan.feature-mobile-apps'),
-        t('choise-plan.feature-unlimited-conversations'),
-        t('choise-plan.feature-ecommerce'),
+        t('choice-plan.feature-chat-widget'),
+        t('choice-plan.feature-shared-inbox'),
+        t('choice-plan.feature-contact-form'),
+        t('choice-plan.feature-mobile-apps'),
+        t('choice-plan.feature-unlimited-conversations'),
+        t('choice-plan.feature-ecommerce'),
       ],
     },
     {
-      title: t('choise-plan.plan-plus-title'),
-      desc: t('choise-plan.plan-plus-desc'),
+      title: t('choice-plan.plan-plus-title'),
+      desc: t('choice-plan.plan-plus-desc'),
       price: '295',
       sections: [
-        t('choise-plan.feature-chat-widget'),
-        t('choise-plan.feature-shared-inbox'),
-        t('choise-plan.feature-contact-form'),
-        t('choise-plan.feature-mobile-apps'),
-        t('choise-plan.feature-unlimited-conversations'),
-        t('choise-plan.feature-ecommerce'),
+        t('choice-plan.feature-chat-widget'),
+        t('choice-plan.feature-shared-inbox'),
+        t('choice-plan.feature-contact-form'),
+        t('choice-plan.feature-mobile-apps'),
+        t('choice-plan.feature-unlimited-conversations'),
+        t('choice-plan.feature-ecommerce'),
       ],
     },
   ];
@@ -105,7 +105,7 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
                 <S.PlanPrice isDark={index === plans.length - 1}>
                   ${plan.price}
                 </S.PlanPrice>
-                <span>{t('choise-plan.month')}</span>
+                <span>{t('choice-plan.month')}</span>
               </S.PlanPriceGroup>
 
               {index !== 0 ? (
@@ -117,7 +117,7 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
                       iconPosition="right"
                       icon={<Image preview={false} src={icTransferDark} />}
                     >
-                      {t('choise-plan.buy-now')}
+                      {t('choice-plan.buy-now')}
                     </Button>
                   ) : (
                     <Button
@@ -126,7 +126,7 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
                       iconPosition="right"
                       icon={<Image preview={false} src={icTransfer} />}
                     >
-                      {t('choise-plan.buy-now')}
+                      {t('choice-plan.buy-now')}
                     </Button>
                   )}
                 </S.GroupButton>
@@ -143,7 +143,7 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
                     preview={false}
                     src={index !== plans.length - 1 ? icMinitor : icMinitorDark}
                   />
-                  {t('choise-plan.seats-included')}
+                  {t('choice-plan.seats-included')}
                   <Image
                     preview={false}
                     src={index !== plans.length - 1 ? icInfor : icInforDark}
@@ -154,7 +154,7 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
                     preview={false}
                     src={index !== plans.length - 1 ? icUser : icUserDark}
                   />
-                  {t('choise-plan.profiles-included')}
+                  {t('choice-plan.profiles-included')}
                   <Image
                     preview={false}
                     src={index !== plans.length - 1 ? icInfor : icInforDark}
