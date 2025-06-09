@@ -21,9 +21,9 @@ const Invoices = () => {
 
   const renderContent = () => {
     if (invoices === null || invoices.length === 0) {
-      return <NoInVoices />;
-    } else {
       return <AllInvoices/>;
+    } else {
+      return <NoInVoices />;
     }
   };
 
