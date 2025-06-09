@@ -13,7 +13,7 @@
     "step-payment": "Payment",
     "build-experiences-title": "Build Incredible Experiences For Your Customers"
   },
-  "choise-plan": {
+  "choice-plan": {
     "label-trial": "14 days trial",
     "label-flat": "Flat pricing",
     "label-cancel": "Cancel anytime",
@@ -53,7 +53,6 @@
     "email-placeholder": "Enter your email",
     "phone": "Phone number",
     "phone-placeholder": "Enter your phone number",
-
     "payment-details": "Payment details",
     "card-number": "Card number",
     "card-number-placeholder": "Enter your card number",
@@ -63,6 +62,9 @@
     "name-placeholder": "Enter your name on card",
     "security-code": "Security code",
     "security-placeholder": "CVV"
+  },
+  "no-invoices": {
+    "title": "There are no invoices for this payment method.",
+    "description": "Looking for workspaces invoices? Go to the workspaces settings and check the billing section. The billing owner email address will be shown there.\nYou need login to this OnlyChat account in order to retrieve all your invoices."
   }
-
 }

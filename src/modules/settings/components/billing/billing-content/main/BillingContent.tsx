@@ -11,6 +11,7 @@ import { BiillingMenusEnums } from '@/modules/settings/helpers/enums/billing';
 import * as S from './BillingContent.styles';
 import { billingMenuType } from '@/modules/settings/constants/billiing.constant';
 import BillingPlanSubscriptions from '../billing-plan-subscriptions/BillingPlanSubscriptions';
+import Invoices from '@/modules/settings/pages/billing/invoices/Invoices';
 
 const BillingContent = () => {
   const [search] = useSearchParams();
@@ -28,7 +29,7 @@ const BillingContent = () => {
       case BiillingMenusEnums.BILLING_CARD:
         return <h2>Section2</h2>;
       case BiillingMenusEnums.BILLING_INVOICEs:
-        return <h3>Section3</h3>;
+        return <Invoices/>
     //     return <BillingPlans />;
     //   case BiillingMenusEnums.BILLING_CARD:
     //     return <BillingCard />;
