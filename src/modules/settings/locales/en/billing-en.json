@@ -66,5 +66,15 @@
   "no-invoices": {
     "title": "There are no invoices for this payment method.",
     "description": "Looking for workspaces invoices? Go to the workspaces settings and check the billing section. The billing owner email address will be shown there.\nYou need login to this OnlyChat account in order to retrieve all your invoices."
+  },
+  "invoice-detail": {
+    "amount-title": "Amount",
+    "amount-value-label": "Total Amount",
+    "payment-method-label": "Payment Method",
+    "transaction-id-label": "Transaction ID",
+    "date-time-label": "Date & Time",
+    "fee-label": "Fee",
+    "bank-desc-label": "Bank Description",
+    "status-label": "Status"
   }
 }
