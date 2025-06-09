@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import themeColors from '@/shared/styles/themes/default/colors';
+import { Menu } from 'antd';
 
 export const Container = styled.div`
   gap: 12px;
@@ -66,4 +67,52 @@ export const MenuBody = styled.div`
   padding-top: 40px;
   text-align: center;
   gap: 8px;
+`;
+
+
+export const WrapperSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+`;
+
+export const Avatar = styled.div`
+  overflow: hidden;
+  flex-shrink: 0;
+`;
+
+export const BodySection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+`;
+
+export const OneLineText = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  color:${themeColors?.newtralDarker}
+`
+
+export const ThreeDotWrapper = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const StyledMenu = styled(Menu)`
+  .ant-dropdown-menu-item {
+    gap:8px !important;
+  }
 `;
