@@ -62,6 +62,10 @@ const Chatbox = React.lazy(
   () => import('@/modules/settings/pages/chatbox/Chatbox'),
 );
 
+const Visitor = React.lazy(
+  () => import('@/modules/global/pages/visitor/Visitor'),
+);
+
 const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
@@ -122,7 +126,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'global',
     path: MAIN_ROUTES.GLOBAL,
-    component: PageNotFound,
+    component: Visitor,
     name: 'global',
   },
 
