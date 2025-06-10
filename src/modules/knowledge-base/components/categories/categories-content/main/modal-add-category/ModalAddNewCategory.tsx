@@ -75,32 +75,31 @@ function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNe
 
                     <S.FormField>
                         <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
-                            {t('article-menu.add-a-category.name-of-the-category')}
+                            <S.FormInput>
+                                {t('article-menu.add-a-category.name-of-the-category')}
+                                <Image src={icValid} height={23} width={7} />
+                            </S.FormInput>
                         </Typography>
+
                         <Input
                             placeholder={t('article-menu.add-a-category.enter-a-name')}
                             size="large"
                         />
                     </S.FormField>
 
-                    <S.GroupInput>
-                        <S.FormField>
-                            <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
-                                {t('article-menu.add-a-category.category-color')}
-                            </Typography>
-                            <Input type="color" size="large" />
-                        </S.FormField>
+                    <S.FormField>
+                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
+                            <S.FormInput>
+                                {t('article-menu.add-a-category.descriptions-field')}
+                                <Image src={icValid} height={23} width={7} />
+                            </S.FormInput>
+                        </Typography>
 
-                        <S.FormField>
-                            <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
-                                {t('article-menu.add-a-category.category-order-index')}
-                            </Typography>
-                            <Input
-                                placeholder={t('article-menu.add-a-category.enter-category-order-index')}
-                                size="large"
-                            />
-                        </S.FormField>
-                    </S.GroupInput>
+                        <Input
+                            placeholder={t('article-menu.add-a-category.enter-description')}
+                            size="large"
+                        />
+                    </S.FormField>
 
                     <S.FormField>
                         <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
@@ -139,7 +138,7 @@ function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNe
                         type="primary"
                         icon={<PlusOutlined />}
                         onClick={() => {
-                            onOK(); 
+                            onOK();
                             onAddCategory?.();
                         }}
                     >

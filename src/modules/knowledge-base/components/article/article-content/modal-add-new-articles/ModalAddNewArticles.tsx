@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { Image, Skeleton } from 'antd';
+import { Image, Input, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import themeColors from '@/shared/styles/themes/default/colors';
@@ -113,6 +113,19 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
               </S.ChangeLang>
             </S.FormField>
           </S.GroupInput>
+          <S.FormField>
+
+            <Typography fontWeight={fontWeight.medium}>
+              <S.FormInput>
+                {t('article-menu.add-a-new-article.article-title')}
+                <Image src={icValid} height={23} width={7} />
+              </S.FormInput>
+            </Typography>
+            <Input
+              placeholder={t('article-menu.add-a-new-article.enter-article-title')}
+              size="large"
+            />
+          </S.FormField>
 
           <S.FormField>
             <Typography fontWeight={fontWeight.medium}>
@@ -121,78 +134,78 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                 <Image src={icValid} height={23} width={7} />
               </S.FormInput>
             </Typography>
-          </S.FormField>
 
-          {/* Skeleton placeholder while editor is loading */}
-          {!editorReady && (
-            <Skeleton
-              active
-              paragraph={{ rows: 12 }}
-              title={false}
-              style={{ height: 627, marginBottom: 24 }}
-            />
-          )}
+            {/* Skeleton placeholder while editor is loading */}
+            {!editorReady && (
+              <Skeleton
+                active
+                paragraph={{ rows: 12 }}
+                title={false}
+                style={{ height: 627, marginBottom: 24 }}
+              />
+            )}
 
-          <div
-            style={{
-              display: editorReady ? 'block' : 'none',
-              height: '50vh',
-              maxHeight: '627px',
-              width: '100%',
-            }}
-          >
-            <Editor
-              apiKey="10lpxjmyvyly4rdb88xil2fxm3j11ava3j2s5rn9tl5btib8"
-              onInit={(evt, editor) => {
-                editorRef.current = editor;
-                setEditorReady(true);
+            <div
+              style={{
+                display: editorReady ? 'block' : 'none',
+                height: '50vh',
+                maxHeight: '627px',
+                width: '100%',
               }}
-              initialValue=""
-              init={{
-                height: '100%',
-                menubar: false,
-                branding: false,
-                plugins: [
-                  'advlist autolink lists link image charmap print preview anchor',
-                  'searchreplace visualblocks code fullscreen',
-                  'insertdatetime media table paste code help wordcount',
-                  'image',
-                  'media',
-                  'link',
-                ],
-                toolbar:
-                  'undo redo | formatselect fontsizeselect | bold italic underline | link image media | ' +
-                  'alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
-                file_picker_types: 'image media file',
-                file_picker_callback: (cb, value, meta) => {
-                  const input = document.createElement('input');
-                  input.setAttribute('type', 'file');
+            >
+              <Editor
+                apiKey="10lpxjmyvyly4rdb88xil2fxm3j11ava3j2s5rn9tl5btib8"
+                onInit={(evt, editor) => {
+                  editorRef.current = editor;
+                  setEditorReady(true);
+                }}
+                initialValue=""
+                init={{
+                  height: '100%',
+                  menubar: false,
+                  branding: false,
+                  plugins: [
+                    'advlist autolink lists link image charmap print preview anchor',
+                    'searchreplace visualblocks code fullscreen',
+                    'insertdatetime media table paste code help wordcount',
+                    'image',
+                    'media',
+                    'link',
+                  ],
+                  toolbar:
+                    'undo redo | formatselect fontsizeselect | bold italic underline | link image media | ' +
+                    'alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                  fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
+                  file_picker_types: 'image media file',
+                  file_picker_callback: (cb, value, meta) => {
+                    const input = document.createElement('input');
+                    input.setAttribute('type', 'file');
 
-                  if (meta.filetype === 'image') {
-                    input.setAttribute('accept', 'image/*');
-                  } else if (meta.filetype === 'media') {
-                    input.setAttribute('accept', 'video/*');
-                  } else if (meta.filetype === 'file') {
-                    input.setAttribute('accept', '*/*');
-                  }
+                    if (meta.filetype === 'image') {
+                      input.setAttribute('accept', 'image/*');
+                    } else if (meta.filetype === 'media') {
+                      input.setAttribute('accept', 'video/*');
+                    } else if (meta.filetype === 'file') {
+                      input.setAttribute('accept', '*/*');
+                    }
 
-                  input.onchange = () => {
-                    const file = input.files?.[0];
-                    const reader = new FileReader();
+                    input.onchange = () => {
+                      const file = input.files?.[0];
+                      const reader = new FileReader();
 
-                    reader.onload = () => {
-                      cb(reader.result?.toString() || '', { title: file?.name });
+                      reader.onload = () => {
+                        cb(reader.result?.toString() || '', { title: file?.name });
+                      };
+
+                      if (file) reader.readAsDataURL(file);
                     };
 
-                    if (file) reader.readAsDataURL(file);
-                  };
-
-                  input.click();
-                },
-              }}
-            />
-          </div>
+                    input.click();
+                  },
+                }}
+              />
+            </div>
+          </S.FormField>
 
         </S.ModalBody>
 
