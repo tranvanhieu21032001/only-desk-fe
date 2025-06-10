@@ -2,6 +2,12 @@ import React from 'react';
 import { Table, Tag, Dropdown, Menu } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import * as S from './WorkspaceTable.styles';
+import styled from 'styled-components';
+const CustomTable = styled(Table)`
+  .ant-table-cell {
+    padding: 12px !important;
+  }
+`;
 
 interface Workspace {
   key: string;
@@ -91,7 +97,7 @@ const WorkspaceTable: React.FC<Props> = ({ data, onRowSelectionChange }) => {
   };
 
   return (
-    <Table
+    <CustomTable
       dataSource={data}
       columns={columns}
       rowSelection={rowSelection}

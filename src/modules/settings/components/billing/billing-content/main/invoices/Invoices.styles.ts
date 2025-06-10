@@ -41,6 +41,7 @@ export const InvoicesInformation = styled.div`
 
 export const InvoicesInformationLabel = styled.div`
   display: flex;
+  padding:10px 0;
   gap: 14px;
 
   p {
