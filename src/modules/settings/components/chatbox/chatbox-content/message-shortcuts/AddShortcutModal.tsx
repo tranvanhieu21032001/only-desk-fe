@@ -4,6 +4,9 @@ import styled from 'styled-components';
 
 import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
+import { handleCreateShortcut } from '@/modules/settings/api/chatbox';
+import { useAppSelector } from '@/shared/hooks';
+import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 
 const { TextArea } = Input;
 
@@ -43,6 +46,12 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
   const [newTagValue, setNewTagValue] = useState('');
   const [addTagLoading, setAddTagLoading] = useState(false);
   const [selectOpen, setSelectOpen] = useState(false);
+  // New states for form
+  const [shortcut, setShortcut] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const workspaceId = useAppSelector(selectCurrentWorkspaceId);
 
   const handleAddTag = () => {
     if (!newTagValue.trim()) return;
@@ -62,6 +71,32 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
     setTimeout(() => setOpenAddTagModal(true), 0);
   };
 
+  // Add API call logic here
+  const handleSubmit = async () => {
+    if (!shortcut.trim() || !workspaceId) {
+      // Optionally show error
+      return;
+    }
+    setLoading(true);
+    try {
+      await handleCreateShortcut({
+        workspaceId,
+        shortcut: shortcut.trim(),
+        message: message.trim(),
+        tag: selectedTag || '',
+      });
+      onSubmit();
+      // Reset form
+      setShortcut('');
+      setMessage('');
+      setSelectedTag(undefined);
+    } catch (e) {
+      // Optionally handle error
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -72,10 +107,20 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
         width={600}
         footer={
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
-            <Button type="default" width="100px" onClick={onCancel}>
+            <Button
+              type="default"
+              width="100px"
+              onClick={onCancel}
+              disabled={loading}
+            >
               Cancel
             </Button>
-            <Button type="primary" width="180px" onClick={onSubmit}>
+            <Button
+              type="primary"
+              width="180px"
+              onClick={handleSubmit}
+              isLoading={loading}
+            >
               Add A New Shortcut
             </Button>
           </div>
@@ -86,7 +131,12 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
             <Label>
               Shortcut<Required>*</Required>
             </Label>
-            <Input placeholder="!bang" />
+            <Input
+              placeholder="!bang"
+              value={shortcut}
+              onChange={(e) => setShortcut(e.target.value)}
+              disabled={loading}
+            />
           </Col>
           <Col>
             <Label>In tag</Label>
@@ -112,6 +162,7 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
                   </div>
                 </>
               )}
+              disabled={loading}
             >
               {tags.map((tag) => (
                 <Select.Option key={tag} value={tag}>
@@ -126,6 +177,9 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
           <TextArea
             placeholder="Enter a message for this shortcut"
             autoSize={{ minRows: 3, maxRows: 3 }}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            disabled={loading}
           />
         </div>
       </Modal>
