@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { Table, Avatar, Dropdown, Menu, Button, Tag } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import * as S from './UserTable.styles';
+import styled from 'styled-components';
+const CustomTable = styled(Table)`
+  .ant-table-cell {
+    padding: 12px !important;
+  }
+`;
 
 const UserTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -86,7 +92,7 @@ const UserTable = () => {
   ];
 
   return (
-    <Table
+    <CustomTable
       rowSelection={rowSelection}
       columns={columns}
       dataSource={data}

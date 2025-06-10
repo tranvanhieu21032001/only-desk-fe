@@ -7,6 +7,13 @@ import icView from '@/assets/icons/billing/ic-export.svg';
 import icUpcoming from '@/assets/icons/billing/ic-upcoming.svg';
 import icTick from '@/assets/icons/billing/ic-tick.svg';
 import InvoiceDrawer from '../invoice-drawer/InvoiceDrawer';
+import styled from 'styled-components';
+const CustomTable = styled(Table)`
+  .ant-table-cell {
+    padding: 12px !important;
+  }
+`;
+
 
 interface Invoice {
   key: string;
@@ -103,7 +110,7 @@ const AllInvoices = () => {
 
   return (
     <>
-      <Table columns={columns} dataSource={data} pagination={false} />
+      <CustomTable columns={columns} dataSource={data} pagination={false} />
       <InvoiceDrawer open={isDrawerVisible} onClose={() => setDrawerVisible(false)} invoice={selectedInvoice} />
     </>
   );
