@@ -4,7 +4,7 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 export const PlanContainer = styled.div`
     background-color: ${(props) => props?.theme?.colors?.secondaryLight};
     border-radius:24px;
-    padding:0 12px;
+    padding:0 12px 12px 12px ;
 `;
 
 

@@ -52,6 +52,12 @@ const MAIN_ROUTES = {
   ALL_PLUGINS: `${preRouterMain}/all-plugins`,
   INSTALLED_PLUGINS: `${preRouterMain}/installed-plugins`,
 
+    // Admin
+  WORKSPACE_ADMIN: `${preRouterMain}/admin/workspace`,
+  USERS_ADMIN: `${preRouterMain}/admin/users`,
+  PLUGINS_ADMIN: `${preRouterMain}/admin/plugins`,
+
+
   // Settings
   ACCOUNT: `${preRouterMain}/setting-account`,
   BILLING: `${preRouterMain}/billing`,

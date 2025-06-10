@@ -66,6 +66,21 @@ const Visitor = React.lazy(
   () => import('@/modules/global/pages/visitor/Visitor'),
 );
 
+//Admin
+
+const WorkSpaceAdmin = React.lazy(
+  () => import('@/modules/admin/pages/workspaces/WorkspaceAdmin'),
+);
+
+const UsersAdmin = React.lazy(
+  () => import('@/modules/admin/pages/users/UserAdmin'),
+);
+
+const PluginsAdmin = React.lazy(
+  () => import('@/modules/admin/pages/plugins/PluginsAdmin'),
+);
+
+
 const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
@@ -232,6 +247,27 @@ const routes_main: RouterElementInterface[] = [
     component: PageNotFound,
     name: 'installed-plugins',
   },
+
+  //Admin
+    {
+    key: 'workspace-admin',
+    path: MAIN_ROUTES.WORKSPACE_ADMIN,
+    component: WorkSpaceAdmin,
+    name: 'workspace-admin',
+  },
+  {
+    key: 'user-admin',
+    path: MAIN_ROUTES.USERS_ADMIN,
+    component: UsersAdmin,
+    name: 'user-admin',
+  },
+  {
+    key: 'plugins-admin',
+    path: MAIN_ROUTES.PLUGINS_ADMIN,
+    component: PluginsAdmin,
+    name: 'plugins-admin',
+  },
+  
 
   //Settings
   {

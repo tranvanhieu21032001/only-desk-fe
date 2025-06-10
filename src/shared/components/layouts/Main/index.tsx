@@ -46,6 +46,7 @@ import AvatarWithStatus from '../../common/Avatar';
 import * as S from './main.styles';
 
 import icUser from '@/assets/icons/layout/ic-user.svg';
+import icUser2 from '@/assets/icons/layout/ic-user-edit.svg';
 import icPlus from '@/assets/icons/layout/ic-plus.svg';
 import icChats from '@/assets/icons/layout/ic-chats.svg';
 import icGlobal from '@/assets/icons/layout/ic-global.svg';
@@ -84,6 +85,7 @@ import icAccount from '@/assets/icons/layout/ic-account.svg';
 import icBilling from '@/assets/icons/layout/ic-billing.svg';
 import icWorkspace from '@/assets/icons/layout/ic-workspace.svg';
 import icSettings from '@/assets/icons/layout/ic-settings.svg';
+import icSettingsDark from '@/assets/icons/layout/ic-setting-dark.svg';
 
 //Profiles
 import flag from '@/assets/icons/common/ic-flag.svg';
@@ -507,6 +509,82 @@ const MainLayout: React.FC<Props> = ({ children }) => {
                   height={24}
                 />
                 <Typography>{t('plugins.installed-plugins')}</Typography>
+              </S.ChildrenMenuLabel>
+            </S.ChildrenMenuWrap>
+          </S.PopoverLabelWrapNoBorder>
+        </S.PopoverContent>
+      ),
+    },
+     {
+      key: 'admin',
+      icon: icUser,
+      children: (
+        <S.PopoverContent>
+          <Typography
+            fontWeight={fontWeight?.semiBold}
+            variant="body-text-larger"
+          >
+            Admin
+          </Typography>
+          <S.Line />
+          <S.PopoverLabelWrapNoBorder>
+            <S.ChildrenMenuWrap
+              onClick={() =>
+                handleClickChildrenMenu(MAIN_ROUTES?.WORKSPACE_ADMIN)
+              }
+              $isActive={routePath === MAIN_ROUTES?.WORKSPACE_ADMIN}
+            >
+              <S.ChildrenMenuLabel>
+                <Image
+                  src={icWorkspace}
+                  preview={false}
+                  width={24}
+                  height={24}
+                />
+                <Typography>Workspace</Typography>
+              </S.ChildrenMenuLabel>
+            </S.ChildrenMenuWrap>
+
+            <S.ChildrenMenuWrap
+              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.USERS_ADMIN)}
+              $isActive={routePath === MAIN_ROUTES?.USERS_ADMIN}
+            >
+              <S.ChildrenMenuLabel>
+                <Image
+                  src={icUser2}
+                  preview={false}
+                  width={24}
+                  height={24}
+                />
+                <Typography>User</Typography>
+              </S.ChildrenMenuLabel>
+            </S.ChildrenMenuWrap>
+            <S.ChildrenMenuWrap
+              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.PLUGINS_ADMIN)}
+              $isActive={routePath === MAIN_ROUTES?.PLUGINS_ADMIN}
+            >
+              <S.ChildrenMenuLabel>
+                <Image
+                  src={icAllPlugins}
+                  preview={false}
+                  width={24}
+                  height={24}
+                />
+                <Typography>Plugins</Typography>
+              </S.ChildrenMenuLabel>
+            </S.ChildrenMenuWrap>
+            <S.ChildrenMenuWrap
+              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.CATEGORIES)}
+              $isActive={routePath === MAIN_ROUTES?.CATEGORIES}
+            >
+              <S.ChildrenMenuLabel>
+                <Image
+                  src={icSettingsDark}
+                  preview={false}
+                  width={24}
+                  height={24}
+                />
+                <Typography>Setting</Typography>
               </S.ChildrenMenuLabel>
             </S.ChildrenMenuWrap>
           </S.PopoverLabelWrapNoBorder>
