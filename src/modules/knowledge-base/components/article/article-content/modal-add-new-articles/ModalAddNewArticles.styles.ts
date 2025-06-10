@@ -33,7 +33,6 @@ export const GroupInput = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom:24px;
 `;
 
 export const ModalFooter = styled.div`
@@ -110,7 +109,11 @@ export const FormField = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: 50%;
+  width: 100%;
+  margin-bottom:24px;
+   ${GroupInput} & {
+    width: 50%;
+  }
 
   label {
     font-weight: ${fontWeight.semiBold};
