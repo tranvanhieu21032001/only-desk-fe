@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 
 export const Container = styled.div`
   padding: 10px;
-  height: 100%;
+  height: auto;
   background: ${(props) => props.theme.colors.newtralLightest};
   border-radius: 8px;
 `;
@@ -104,4 +104,25 @@ export const DiffrentContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+export const CreateShortcutRow = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+`;
+
+export const CreateShortcutCol = styled.div`
+  flex: 1;
+`;
+
+export const CreateShortcutLabel = styled.p`
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #23272e;
+`;
+
+export const CreateShortcutRequired = styled.span`
+  color: #e53935;
+  margin-left: 2px;
 `;

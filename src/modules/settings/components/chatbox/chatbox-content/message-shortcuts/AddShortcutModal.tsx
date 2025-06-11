@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Input, Select, Divider } from 'antd';
-import styled from 'styled-components';
 
 import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
@@ -8,25 +7,9 @@ import { handleCreateShortcut } from '@/modules/settings/api/chatbox';
 import { useAppSelector } from '@/shared/hooks';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 
-const { TextArea } = Input;
+import * as S from './MessageShortcuts.styles';
 
-const Row = styled.div`
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
-`;
-const Col = styled.div`
-  flex: 1;
-`;
-const Label = styled.p`
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #23272e;
-`;
-const Required = styled.span`
-  color: #e53935;
-  margin-left: 2px;
-`;
+const { TextArea } = Input;
 
 interface AddShortcutModalProps {
   open: boolean;
@@ -39,14 +22,12 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
   onCancel,
   onSubmit,
 }) => {
-  // Tag state
-  const [tags, setTags] = useState<string[]>(['Tag 1', 'Tag 2']);
+  const [tags, setTags] = useState<string[]>(['tag', 'Tag 2']);
   const [selectedTag, setSelectedTag] = useState<string | undefined>(undefined);
   const [openAddTagModal, setOpenAddTagModal] = useState(false);
   const [newTagValue, setNewTagValue] = useState('');
   const [addTagLoading, setAddTagLoading] = useState(false);
   const [selectOpen, setSelectOpen] = useState(false);
-  // New states for form
   const [shortcut, setShortcut] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -71,7 +52,6 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
     setTimeout(() => setOpenAddTagModal(true), 0);
   };
 
-  // Add API call logic here
   const handleSubmit = async () => {
     if (!shortcut.trim() || !workspaceId) {
       // Optionally show error
@@ -80,13 +60,11 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
     setLoading(true);
     try {
       await handleCreateShortcut({
-        workspaceId,
         shortcut: shortcut.trim(),
         message: message.trim(),
         tag: selectedTag || '',
       });
       onSubmit();
-      // Reset form
       setShortcut('');
       setMessage('');
       setSelectedTag(undefined);
@@ -126,20 +104,20 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
           </div>
         }
       >
-        <Row>
-          <Col>
-            <Label>
-              Shortcut<Required>*</Required>
-            </Label>
+        <S.CreateShortcutRow>
+          <S.CreateShortcutCol>
+            <S.CreateShortcutLabel>
+              Shortcut<S.CreateShortcutRequired>*</S.CreateShortcutRequired>
+            </S.CreateShortcutLabel>
             <Input
               placeholder="!bang"
               value={shortcut}
               onChange={(e) => setShortcut(e.target.value)}
               disabled={loading}
             />
-          </Col>
-          <Col>
-            <Label>In tag</Label>
+          </S.CreateShortcutCol>
+          <S.CreateShortcutCol>
+            <S.CreateShortcutLabel>In tag</S.CreateShortcutLabel>
             <Select
               placeholder="Select tag"
               style={{ width: '100%' }}
@@ -170,10 +148,10 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
                 </Select.Option>
               ))}
             </Select>
-          </Col>
-        </Row>
+          </S.CreateShortcutCol>
+        </S.CreateShortcutRow>
         <div style={{ marginBottom: 24 }}>
-          <Label>Message</Label>
+          <S.CreateShortcutLabel>Message</S.CreateShortcutLabel>
           <TextArea
             placeholder="Enter a message for this shortcut"
             autoSize={{ minRows: 3, maxRows: 3 }}
@@ -212,9 +190,10 @@ const AddShortcutModal: React.FC<AddShortcutModalProps> = ({
         }
       >
         <div style={{ marginBottom: 24 }}>
-          <Label>
-            Value for the tag<Required>*</Required>
-          </Label>
+          <S.CreateShortcutLabel>
+            Value for the tag
+            <S.CreateShortcutRequired>*</S.CreateShortcutRequired>
+          </S.CreateShortcutLabel>
           <Input
             placeholder="Enter value for the tag"
             value={newTagValue}

@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Table, Dropdown, Menu } from 'antd';
+import { Image, Dropdown, Menu } from 'antd';
+import { useSearchParams } from 'react-router-dom';
+import { useAppSelector } from '@/shared/hooks';
 
-import { getShortcutsList } from '@/modules/settings/api/chatbox';
+import { getShortcutsList, handleDeleteShortcut } from '@/modules/settings/api/chatbox';
 
 import Button from '@/shared/components/common/Button';
 import AddShortcutModal from './AddShortcutModal';
+import EditShortcutModal from './EditShortcutModal';
+import CustomModal from '@/shared/components/common/Modal';
+import Table from '@/shared/components/common/Table';
 
 import * as S from './MessageShortcuts.styles';
 
@@ -13,47 +18,99 @@ import EmptyShortcut from '@/assets/images/settings/img-empty-shortcuts.png';
 import addHeader from '@/assets/icons/common/ic-add-header.svg';
 import iconBar from '@/assets/icons/setting/ic-bar.svg';
 
-import type { Shortcut } from '@/modules/settings/models/chatbox.model';
+import type { Shortcut, ShortcutsList } from '@/modules/settings/models/chatbox.model';
+import { KEY_PAGE } from '@/shared/constant/common';
 
 const MessageShortcuts: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [editingShortcut, setEditingShortcut] = useState<Shortcut | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deletingShortcut, setDeletingShortcut] = useState<Shortcut | null>(null);
+  const [totalDocs, setTotalDocs] = useState(0);
+  const [searchParams] = useSearchParams();
+  const { currentObjHistory } = useAppSelector((state) => state.historyRoute);
+  const page =
+    Number(
+      (currentObjHistory || []).find((item: { key: string; value: any }) => item.key === KEY_PAGE)?.value
+    ) ||
+    Number(searchParams.get(KEY_PAGE)) ||
+    1;
+
+  const fetchShortcuts = (page = 1) => {
+    getShortcutsList({ page, limit: 10 })
+      .then((res: ShortcutsList) => {
+        setShortcuts(res.data || []);
+        setTotalDocs(res.total || 0);
+      })
+      .catch(() => {
+        setShortcuts([]);
+        setTotalDocs(0);
+      });
+  };
 
   useEffect(() => {
-    getShortcutsList({})
-      .then((res: any) => {
-        setShortcuts(res.data || []);
-      })
-      .catch(() => setShortcuts([]));
-  }, []);
+    fetchShortcuts(page);
+  }, [page]);
+
+  const handleDelete = (record: Shortcut) => {
+    setDeletingShortcut(record);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deletingShortcut) {
+      await handleDeleteShortcut(deletingShortcut.id);
+      setDeleteModalOpen(false);
+      setDeletingShortcut(null);
+      fetchShortcuts(page);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteModalOpen(false);
+    setDeletingShortcut(null);
+  };
 
   const columns = [
     {
       title: 'Shortcut',
       dataIndex: 'shortcut',
       key: 'shortcut',
+      width: 180,
+      minWidth: 120,
     },
     {
       title: 'Message',
       dataIndex: 'message',
       key: 'message',
+      width: 300,
+      minWidth: 180,
     },
     {
       title: 'Tag',
       dataIndex: 'tag',
       key: 'tag',
+      width: 120,
+      minWidth: 80,
     },
     {
       title: '',
       key: 'actions',
-      render: (_: any, _record: Shortcut) => (
+      width: 60,
+      minWidth: 40,
+      render: (_: any, record: Shortcut) => (
         <Dropdown
           overlay={
             <Menu>
-              <Menu.Item key="edit" onClick={() => { /* handle edit */ }}>
+              <Menu.Item key="edit" onClick={() => {
+                setEditingShortcut(record);
+                setOpenEditModal(true);
+              }}>
                 Edit
               </Menu.Item>
-              <Menu.Item key="delete" onClick={() => { /* handle delete */ }}>
+              <Menu.Item key="delete" onClick={() => handleDelete(record)}>
                 Delete
               </Menu.Item>
             </Menu>
@@ -102,16 +159,50 @@ const MessageShortcuts: React.FC = () => {
             <Table
               columns={columns}
               dataSource={shortcuts}
+              totalDocs={totalDocs}
               rowKey="id"
-              pagination={false}
             />
           )}
         </S.ContentWrapper>
         <AddShortcutModal
           open={openModal}
           onCancel={() => setOpenModal(false)}
-          onSubmit={() => setOpenModal(false)}
+          onSubmit={() => {
+            setOpenModal(false);
+            fetchShortcuts(page);
+          }}
         />
+        
+        <EditShortcutModal
+          open={openEditModal}
+          onCancel={() => {
+            setOpenEditModal(false);
+            setEditingShortcut(null);
+          }}
+          onSubmit={() => {
+            setOpenEditModal(false);
+            setEditingShortcut(null);
+            fetchShortcuts(page);
+          }}
+          shortcutData={editingShortcut}
+        />
+        <CustomModal
+          isOpen={deleteModalOpen}
+          onClose={handleCancelDelete}
+          title="Delete Shortcut"
+          footer={
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <Button type="default" onClick={handleCancelDelete}>
+                Cancel
+              </Button>
+              <Button type="danger" onClick={handleConfirmDelete}>
+                Delete
+              </Button>
+            </div>
+          }
+        >
+          <div>Are you sure you want to delete shortcut "{deletingShortcut?.shortcut}"?</div>
+        </CustomModal>
       </S.Container>
 
       <S.DiffrentContainer>
