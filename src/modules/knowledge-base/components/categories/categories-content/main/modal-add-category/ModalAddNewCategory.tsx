@@ -1,5 +1,7 @@
-import { Image, Input } from 'antd';
+import { useState } from 'react';
+import { Image, Input, message } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { PlusOutlined } from '@ant-design/icons';
 
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
@@ -10,9 +12,9 @@ import ModalCommon from '@/shared/components/common/ModalBase';
 
 import * as S from './ModalAddNewCategory.styles';
 
-import { PlusOutlined } from '@ant-design/icons';
-import { OptionsInterface } from '@/core/model/common';
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
+import { OptionsInterface } from '@/core/model/common';
+import { createHelpdeskCategory } from '@/modules/knowledge-base/api/knowledgebase.api';
 
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import icImage from '@/assets/icons/knowledge-base/ic-image.svg';
@@ -24,8 +26,52 @@ interface ModalAddNewCategoryProps {
     onAddCategory?: () => void;
 }
 
-function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNewCategoryProps) {
+const ModalAddNewCategory = ({
+    open,
+    onCancel,
+    onOK,
+    onAddCategory,
+}: ModalAddNewCategoryProps) => {
     const { t } = useTranslation('knowledgeBase');
+
+    const [language, setLanguage] = useState(langOptions[0]?.value);
+    const [name, setName] = useState('');
+    const [desc, setDesc] = useState('');
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+
+    const handleAddCategory = async () => {
+        if (!name || !desc || !language) {
+            message.warning(t('article-menu.add-a-category.fill-all-fields'));
+            return;
+        }
+
+        const slug = name.trim().toLowerCase().replace(/\s+/g, '-');
+        const imageUrl = `https://storage.cloud.com/categories/${slug}.png`;
+
+        const payload = {
+            name,
+            desc,
+            slug,
+            image: imageUrl,
+            translations: {
+                [language]: {
+                    name,
+                    desc,
+                },
+            },
+            defaultLanguage: language,
+        };
+
+        try {
+            await createHelpdeskCategory(payload);
+            onAddCategory?.();
+            onOK();
+        } catch {
+            message.error(t('article-menu.add-a-category.error'));
+        }
+    };
 
     return (
         <S.WrapModal>
@@ -38,11 +84,11 @@ function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNe
             >
                 <S.ModalHeader>
                     <S.ModalHeaderContent>
-                        <Typography fontWeight={fontWeight?.semiBold}>
+                        <Typography fontWeight={fontWeight.semiBold}>
                             {t('article-menu.add-a-category.title')}
                         </Typography>
                         <S.ModalDescription>
-                            <Typography color={themeColors?.newtralLight}>
+                            <Typography color={themeColors.newtralLight}>
                                 {t('article-menu.add-a-category.description')}
                             </Typography>
                         </S.ModalDescription>
@@ -50,8 +96,9 @@ function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNe
                 </S.ModalHeader>
 
                 <S.ModalBody>
+                    {/* Language Select */}
                     <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
+                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
                             <S.FormInput>
                                 {t('article-menu.add-a-category.language')}
                                 <Image src={icValid} height={23} width={7} />
@@ -59,54 +106,64 @@ function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNe
                         </Typography>
 
                         <S.ChangeLang
-                            defaultValue={langOptions?.[0]?.value}
+                            defaultValue={language}
+                            onChange={setLanguage}
                             popupClassName="auth-lang"
                         >
-                            {langOptions?.map((lang: OptionsInterface) => (
-                                <S.LangOption key={lang?.key}>
-                                    <Image src={lang?.flag as string} preview={false} />
+                            {langOptions.map((lang: OptionsInterface) => (
+                                <S.LangOption key={lang.key} value={lang.value}>
+                                    <Image src={lang.flag as string} preview={false} />
                                     <Typography>
-                                        {t(`article-menu.language.${lang?.label}`)}
+                                        {t(`article-menu.language.${lang.label}`)}
                                     </Typography>
                                 </S.LangOption>
                             ))}
                         </S.ChangeLang>
                     </S.FormField>
 
+                    {/* Name Field */}
                     <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
+                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
                             <S.FormInput>
                                 {t('article-menu.add-a-category.name-of-the-category')}
                                 <Image src={icValid} height={23} width={7} />
                             </S.FormInput>
                         </Typography>
-
                         <Input
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             placeholder={t('article-menu.add-a-category.enter-a-name')}
                             size="large"
                         />
                     </S.FormField>
 
+                    {/* Description Field */}
                     <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
+                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
                             <S.FormInput>
                                 {t('article-menu.add-a-category.descriptions-field')}
                                 <Image src={icValid} height={23} width={7} />
                             </S.FormInput>
                         </Typography>
-
                         <Input
+                            value={desc}
+                            onChange={(e) => setDesc(e.target.value)}
                             placeholder={t('article-menu.add-a-category.enter-description')}
                             size="large"
                         />
                     </S.FormField>
 
+                    {/* Image Upload */}
                     <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
+                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
                             {t('article-menu.add-a-category.category-image')}
                         </Typography>
 
-                        <input
+                        {previewImage ? (
+                            <S.ImagePreview>
+                                <Image src={previewImage} width={120} height={80} preview />
+                            </S.ImagePreview>
+                        ) : <><input
                             id="upload-thumbnail"
                             type="file"
                             style={{ display: 'none' }}
@@ -114,22 +171,24 @@ function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNe
                             onChange={(e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
-                                    console.log('File selected:', file.name);
+                                    setImageFile(file);
+                                    setPreviewImage(URL.createObjectURL(file));
                                 }
                             }}
                         />
+                            <label htmlFor="upload-thumbnail">
+                                <S.SelectFile>
+                                    <Image src={icImage} preview={false} />
+                                    <Typography fontWeight={fontWeight.semiBold}>
+                                        {t('article-menu.add-a-category.select-or-drag-file')}
+                                    </Typography>
+                                </S.SelectFile>
+                            </label></>}
 
-                        <label htmlFor="upload-thumbnail">
-                            <S.SelectFile>
-                                <Image src={icImage} preview={false} />
-                                <Typography fontWeight={fontWeight?.semiBold}>
-                                    {t('article-menu.add-a-category.select-or-drag-file')}
-                                </Typography>
-                            </S.SelectFile>
-                        </label>
                     </S.FormField>
                 </S.ModalBody>
 
+                {/* Footer */}
                 <S.ModalFooter>
                     <Button onClick={onCancel}>
                         {t('article-menu.add-a-category.cancel')}
@@ -137,10 +196,7 @@ function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNe
                     <Button
                         type="primary"
                         icon={<PlusOutlined />}
-                        onClick={() => {
-                            onOK();
-                            onAddCategory?.();
-                        }}
+                        onClick={handleAddCategory}
                     >
                         {t('article-menu.add-a-category.add-category')}
                     </Button>
@@ -148,6 +204,6 @@ function ModalAddNewCategory({ open, onCancel, onOK, onAddCategory }: ModalAddNe
             </ModalCommon>
         </S.WrapModal>
     );
-}
+};
 
 export default ModalAddNewCategory;

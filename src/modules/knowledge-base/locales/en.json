@@ -146,7 +146,8 @@
       "category-image":"Category image",
       "select-or-drag-file":"Select or drag file",
       "cancel":"Cancel",
-      "add-category":"Add Category"
+      "add-category":"Add Category",
+      "fill-all-fields":"Please fill in all required fields."
     },
     "add-a-section":{
       "title":"Add A Section To The Category",
