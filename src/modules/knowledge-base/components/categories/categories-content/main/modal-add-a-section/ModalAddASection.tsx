@@ -9,20 +9,24 @@ import Typography from '@/shared/components/common/Typography';
 import ModalCommon from '@/shared/components/common/ModalBase';
 
 import * as S from './ModalAddASection.styles';
-
 import { PlusOutlined } from '@ant-design/icons';
-
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
+
 interface ModalAddASectionProps {
     open: boolean;
     onCancel: () => void;
     onOK: () => void;
+    category: {
+        id: string;
+        name: string;
+    };
 }
 
 function ModalAddASection({
     open,
     onCancel,
     onOK,
+    category,
 }: ModalAddASectionProps) {
     const { t } = useTranslation('knowledgeBase');
 
@@ -47,6 +51,7 @@ function ModalAddASection({
                         </S.ModalDescription>
                     </S.ModalHeaderContent>
                 </S.ModalHeader>
+
                 <S.ModalBody>
                     <S.FormField>
                         <Typography fontWeight={fontWeight.medium} padding='0 0 8px 0'>
@@ -56,11 +61,10 @@ function ModalAddASection({
                             </S.FormInput>
                         </Typography>
                         <Input
-                            value="Cosmetic"
+                            value={category?.name}
                             disabled
-                            color={themeColors?.primary}
-                            placeholder={t('article-menu.add-a-section.enter-a-name')}
                             size="large"
+                            placeholder={t('article-menu.add-a-section.enter-a-name')}
                         />
                     </S.FormField>
 
@@ -77,6 +81,7 @@ function ModalAddASection({
                         />
                     </S.FormField>
                 </S.ModalBody>
+
                 <S.ModalFooter>
                     <Button onClick={onCancel}>
                         {t('article-menu.add-a-section.cancel')}

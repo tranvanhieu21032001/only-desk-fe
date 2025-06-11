@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { Image, Input, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,8 @@ import icSetting from '@/assets/icons/knowledge-base/ic-setting.svg';
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
+import { createHelpdeskArticle, getAllHelpdeskCategories } from '@/modules/knowledge-base/api/knowledgebase.api';
+import { HelpdeskArticleCreatePayload, HelpdeskCategory } from '@/modules/knowledge-base/interface';
 
 interface ModalAddNewArticlesProps {
   open: boolean;
@@ -29,21 +31,55 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
 
   const [language, setLanguage] = useState(langOptions?.[0]?.value);
   const [category, setCategory] = useState('');
+  const [articleTitle, setArticleTitle] = useState('');
   const [editorReady, setEditorReady] = useState(false);
+  const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
 
-  const handleSubmit = () => {
-    const content = editorRef.current?.getContent() || '';
-    console.log('Language:', language);
-    console.log('Category:', category);
-    console.log('Content:', content);
-    onStart();
+
+const handleSubmit = async () => {
+  const content = editorRef.current?.getContent() || '';
+  const payload: HelpdeskArticleCreatePayload = {
+    title: articleTitle,
+    content: content,
+    categoryId: category,
+    translations: {
+      [language]: {
+        title: articleTitle,
+        content: content,
+      },
+    },
+    defaultLanguage: language,
+    slug: articleTitle.trim().toLowerCase().replace(/\s+/g, '-'),
+    status: 'published',
+    tags: ['workspace'],
   };
 
-  const categoryOptions = [
-    { key: 'getting-started', value: 'Getting Started', label: 'Getting Started' },
-    { key: 'automate', value: 'Automate', label: 'Automate' },
-    { key: 'api', value: 'API Access', label: 'API Access' },
-  ];
+  try {
+    const res = await createHelpdeskArticle(payload);
+    console.log("Created article:", res);
+    onStart();
+  } catch (error) {
+    console.error("Failed to create article:", error);
+  }
+};
+
+
+  useEffect(() => {
+    if (open) {
+      const fetchCategories = async () => {
+        try {
+          const res = await getAllHelpdeskCategories();
+          console.log("res", res);
+          setCategoryOptions(res)
+        } catch (error) {
+          console.error("Failed to fetch categories:", error);
+        }
+      };
+
+      fetchCategories();
+    }
+  }, [open]);
+
 
   return (
     <S.WrapModal>
@@ -106,8 +142,8 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                 placeholder={t('article-menu.add-a-new-article.getting-started')}
               >
                 {categoryOptions.map((cat) => (
-                  <S.LangOption key={cat.key} value={cat.value}>
-                    <Typography>{cat.label}</Typography>
+                  <S.LangOption key={cat.id} value={cat.id}>
+                    <Typography>{cat.name}</Typography>
                   </S.LangOption>
                 ))}
               </S.ChangeLang>
@@ -122,9 +158,12 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
               </S.FormInput>
             </Typography>
             <Input
+              value={articleTitle}
+              onChange={(e) => setArticleTitle(e.target.value)}
               placeholder={t('article-menu.add-a-new-article.enter-article-title')}
               size="large"
             />
+
           </S.FormField>
 
           <S.FormField>
@@ -154,7 +193,7 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
               }}
             >
               <Editor
-                apiKey="10lpxjmyvyly4rdb88xil2fxm3j11ava3j2s5rn9tl5btib8"
+                apiKey="10lpxjmyvyly4rdb88xil2fxm3y11ava3j2s5rn9tl5btib8"
                 onInit={(evt, editor) => {
                   editorRef.current = editor;
                   setEditorReady(true);
