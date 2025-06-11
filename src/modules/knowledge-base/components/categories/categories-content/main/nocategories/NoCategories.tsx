@@ -4,18 +4,18 @@ import themeColors from "@/shared/styles/themes/default/colors";
 import { useTranslation } from "react-i18next";
 import fontWeight from "@/shared/styles/themes/default/fontWeight";
 import Button from "@/shared/components/common/Button";
-
 import icNoCategory from '@/assets/icons/knowledge-base/ic-nocategories.svg';
 import icAdd from '@/assets/icons/knowledge-base/ic-add3.svg';
 
 import * as S from './NoCategories.styles';
 import { useModal } from "@/shared/hooks";
-
 import ModalAddNewCategory from "../modal-add-category/ModalAddNewCategory";
 import ModalAddASection from "../modal-add-a-section/ModalAddASection";
+import { useState } from "react";
 
 const NoCategories = () => {
     const { t } = useTranslation('knowledgeBase');
+
     const {
         visible: isModalAddCategoryVisible,
         toggle: toggleModalAddCategory,
@@ -26,6 +26,7 @@ const NoCategories = () => {
         toggle: toggleModalAddSection,
     } = useModal();
 
+    const [newCategory, setNewCategory] = useState<{ id: string; name: string } | null>(null);
     return (
         <>
             <S.Container>
@@ -46,6 +47,7 @@ const NoCategories = () => {
                     </Button>
                 </S.ButtonGroup>
             </S.Container>
+
             {isModalAddCategoryVisible && (
                 <ModalAddNewCategory
                     open={isModalAddCategoryVisible}
@@ -54,6 +56,7 @@ const NoCategories = () => {
                         toggleModalAddCategory();
                         toggleModalAddSection();
                     }}
+                    onAddCategory={(category) => setNewCategory(category)}
                 />
             )}
 
@@ -61,7 +64,9 @@ const NoCategories = () => {
                 <ModalAddASection
                     open={isModalAddSectionVisible}
                     onCancel={toggleModalAddSection}
-                    onOK={toggleModalAddSection}
+                    onOK={() => {
+                    }}
+                    category={newCategory}
                 />
             )}
         </>

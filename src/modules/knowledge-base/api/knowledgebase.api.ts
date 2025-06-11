@@ -1,10 +1,11 @@
 import { getRequest, postRequest } from "@/core/services/requests";
-import { HelpdeskArticleListResponse, HelpdeskCategoryCreatePayload } from "../interface";
+import { HelpdeskArticleCreatePayload, HelpdeskArticleListResponse, HelpdeskCategory, HelpdeskCategoryCreatePayload } from "../interface";
 
 const prefixContact: string = '';
 
 export const endpointContact = {
   GET_ALL_HELPDESK_ARTICLE: `${prefixContact}/helpdesk/articles`,
+  CRATE_A_HELPDESK_ARTICLE: `${prefixContact}/helpdesk/articles`,
   UPDATE_A_HELPDESK_ARTICLE: `${prefixContact}/helpdesk/articles/{id}`,
   DELETE_A_HELPDESK_ARTICLE: `${prefixContact}/helpdesk/articles/{id}`,
   GET_ALL_HELPDESK_CATEGORIES: `${prefixContact}/helpdesk/categories`,
@@ -20,7 +21,7 @@ export const getAllHelpdeskArticles = async (
   const url = `${endpointContact.GET_ALL_HELPDESK_ARTICLE}?page=${page}&limit=${limit}`;
   const response = await getRequest<HelpdeskArticleListResponse>(url);
   console.log("response", response);
-  
+
   return response;
 };
 
@@ -30,4 +31,26 @@ export const createHelpdeskCategory = async (
   return await postRequest(endpointContact.CREATE_A_NEW_HELPDESK_CATEGORY, {
     data,
   });
+};
+
+
+export const createHelpdeskArticle = async (
+  data: HelpdeskArticleCreatePayload
+): Promise<any> => {
+  return await postRequest(endpointContact.CRATE_A_HELPDESK_ARTICLE, {
+    data,
+  });
+};
+
+// services.ts
+export const getAllHelpdeskCategories = async (): Promise<HelpdeskCategory[]> => {
+  const url = endpointContact.GET_ALL_HELPDESK_CATEGORIES;
+  const response = await getRequest<any[]>(url);
+
+  const filtered = response.map((item) => ({
+    id: item.id,
+    name: item.name,
+  }));
+
+  return filtered;
 };

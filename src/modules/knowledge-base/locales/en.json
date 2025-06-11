@@ -8,11 +8,9 @@
     "new-article": "New article",
     "action": "Action",
     "search": "Search...",
-
     "language": {
       "english": "English"
     },
-
     "filter": {
       "view-my-knowledge-base": "View my knowledge base",
       "add-a-new-language": "Add a new language",
@@ -21,29 +19,26 @@
       "destroy-current-language": "Destroy current language",
       "remove-selected-articles": "Remove selected articles"
     },
-
-    "actions":{
-      "title":"Title",
-      "status":"Status",
-      "description":"Descrition",
-      "statistic":"Statistic",
-      "created":"Created",
-      "last-update":"Last update",
-      "category":"Category",
-      "articles":"articles",
-      "add-section":"Add section",
-      "edit":"Edit",
-      "remove":"Remove",
-      "view":"View"
+    "actions": {
+      "title": "Title",
+      "status": "Status",
+      "description": "Descrition",
+      "statistic": "Statistic",
+      "created": "Created",
+      "last-update": "Last update",
+      "category": "Category",
+      "articles": "articles",
+      "add-section": "Add section",
+      "edit": "Edit",
+      "remove": "Remove",
+      "view": "View"
     },
-
     "install-helpdesk": {
       "helpdesk-is-available": "Helpdesk Is Available In Your OnlyChat Essential",
       "the-helpdesk": "The Helpdesk plugin is available in your Essential plan.",
       "install-helpdesk": "Install Helpdesk",
       "cancel": "Cancel"
     },
-    
     "getting-started-knowledge": {
       "title": "Getting Started With Your Knowledge Base",
       "description": "Please insert modal description here.",
@@ -60,103 +55,105 @@
       "download-sample": "Download This Sample CSV File",
       "cancel": "Cancel",
       "continue": "Continue",
-      "locale-title":"Configure your Knowledge Base locale",
-      "locate-description":"OnlyChat Knowledge Base is fully multilingual. Get started by configuring your default Knowledge Base locale.",
-      "language":"Language",
-      "import-title":"You are almost done!",
-      "import-description":"Using another Knowledge Base provider? No problem! You can import all articles from your previous provider in a single click.",
-      "create-my-first-article":"Create my first Article",
-      "create":"Create",
-      "or":"Or",
-      "import-from-a":"Import from a previous provider",
-      "browse-file":"Browse file",
-      "no-articles":"There are no articles.",
-      "create-your-first-article":"Create your first article. Write a first draft, preview it, and publish it.",
-      "new-article":"New Articles",
-      "import-articles":"Import Articles"
+      "locale-title": "Configure your Knowledge Base locale",
+      "locate-description": "OnlyChat Knowledge Base is fully multilingual. Get started by configuring your default Knowledge Base locale.",
+      "language": "Language",
+      "import-title": "You are almost done!",
+      "import-description": "Using another Knowledge Base provider? No problem! You can import all articles from your previous provider in a single click.",
+      "create-my-first-article": "Create my first Article",
+      "create": "Create",
+      "or": "Or",
+      "import-from-a": "Import from a previous provider",
+      "browse-file": "Browse file",
+      "no-articles": "There are no articles.",
+      "create-your-first-article": "Create your first article. Write a first draft, preview it, and publish it.",
+      "new-article": "New Articles",
+      "import-articles": "Import Articles"
     },
-    "add-a-language":{
-      "add-language-title":"Add A Language To Your Knowledge Base",
-      "add-language-description":"Your Knowledge Base can be multilingual, and requires at least one locale.",
-      "language":"Language",
+    "add-a-language": {
+      "add-language-title": "Add A Language To Your Knowledge Base",
+      "add-language-description": "Your Knowledge Base can be multilingual, and requires at least one locale.",
+      "language": "Language",
       "cancel": "Cancel",
-      "add-language": "Add language" 
+      "add-language": "Add language"
     },
-    "import-articles":{
-      "import-articles-title":"Import Knowledge Base Articles",
-      "import-articles-description":"Please insert modal description here.",
-      "configure-import":"Configure import",
-      "onlychat-with-automatically":"OnlyChat with automatically configure and adjust articles from your previous Knowledge Base. Submit previous Knowledge Base URL and start the import.",
-      "previous-knowledge-base-url":"Previous Knowledge Base URL",
-      "enter-knowledge-base-url":"Enter Knowledge Base URL",
-      "import-title":"You are almost done!",
-      "import-description":"Using another Knowledge Base provider? No problem! You can import all articles from your previous provider in a single click.",
-      "import-from-a":"Import from a previous provider",
-      "browse-file":"Browse file",      
+    "import-articles": {
+      "import-articles-title": "Import Knowledge Base Articles",
+      "import-articles-description": "Please insert modal description here.",
+      "configure-import": "Configure import",
+      "onlychat-with-automatically": "OnlyChat with automatically configure and adjust articles from your previous Knowledge Base. Submit previous Knowledge Base URL and start the import.",
+      "previous-knowledge-base-url": "Previous Knowledge Base URL",
+      "enter-knowledge-base-url": "Enter Knowledge Base URL",
+      "import-title": "You are almost done!",
+      "import-description": "Using another Knowledge Base provider? No problem! You can import all articles from your previous provider in a single click.",
+      "import-from-a": "Import from a previous provider",
+      "browse-file": "Browse file",
       "cancel": "Cancel",
       "continue": "Continue",
-      "submit":"Submit",
+      "submit": "Submit",
       "configure": "Configure",
       "import": "Import"
     },
-    "export-articles":{
-      "title":"Export Knowledge Base Articles",
-      "description":"It will take a few minutes. You will get an email when the export is over.",
+    "export-articles": {
+      "title": "Export Knowledge Base Articles",
+      "description": "It will take a few minutes. You will get an email when the export is over.",
       "cancel": "Cancel"
     },
-    "remove-current-language":{
-      "title":"Remove English Current Language?",
-      "description":"Please read the following and then confirm to remove.",
-      "caution":"Caution",
-      "all-knowledge-base":"All Knowledge Base (articles, categories) for this language will be lost and non-recoverable. There is no coming back after you press remove.",
-      "confirm-language-removal":"Confirm language removal",
-      "enter-language-name":"Enter language name",
+    "remove-current-language": {
+      "title": "Remove English Current Language?",
+      "description": "Please read the following and then confirm to remove.",
+      "caution": "Caution",
+      "all-knowledge-base": "All Knowledge Base (articles, categories) for this language will be lost and non-recoverable. There is no coming back after you press remove.",
+      "confirm-language-removal": "Confirm language removal",
+      "enter-language-name": "Enter language name",
       "cancel": "Cancel",
-      "remove":"Remove"
+      "remove": "Remove"
     },
-    "add-a-new-article":{
-      "title":"Add An Article To Your Knowledge Base",
-      "description":"Please insert modal description here.",
-      "language":"Language",
-      "category":"Category",
-      "article-title":"Article title",
-      "enter-article-title":"Enter Article Title",
-      "getting-started":"Getting Started",
-      "article-content":"Article content",
-      "option":"Option",
-      "save-draft":"Save Draft",
-      "publish":"Publish"
+    "add-a-new-article": {
+      "title": "Add An Article To Your Knowledge Base",
+      "description": "Please insert modal description here.",
+      "language": "Language",
+      "category": "Category",
+      "article-title": "Article title",
+      "enter-article-title": "Enter Article Title",
+      "getting-started": "Getting Started",
+      "article-content": "Article content",
+      "option": "Option",
+      "save-draft": "Save Draft",
+      "publish": "Publish"
     },
-    "no-category":{
-      "title":"There are no category.",
-      "description":"Create your first category. Give it a color and an image, and test it li",
-      "new-category":"New Category"
+    "no-category": {
+      "title": "There are no category.",
+      "description": "Create your first category. Give it a color and an image, and test it li",
+      "new-category": "New Category"
     },
-    "add-a-category":{
-      "title":"Add A Category To Your Knowledge Base",
-      "description":"Please insert modal description here.",
-      "language":"Language",
-      "descriptions-field":"Descrition",
-      "enter-description":"Enter a description",
-      "name-of-the-category":"Name of the category",
-      "enter-a-name":"Enter a name of the category",
-      "category-color":"Category color",
-      "category-order-index":"Category order index",
-      "enter-category-order-index":"Enter category order index",
-      "category-image":"Category image",
-      "select-or-drag-file":"Select or drag file",
-      "cancel":"Cancel",
-      "add-category":"Add Category",
-      "fill-all-fields":"Please fill in all required fields."
+    "add-a-category": {
+      "title": "Add A Category To Your Knowledge Base",
+      "description": "Please insert modal description here.",
+      "language": "Language",
+      "descriptions-field": "Descrition",
+      "enter-description": "Enter a description",
+      "name-of-the-category": "Name of the category",
+      "enter-a-name": "Enter a name of the category",
+      "category-color": "Category color",
+      "category-order-index": "Category order index",
+      "enter-category-order-index": "Enter category order index",
+      "category-image": "Category image",
+      "select-or-drag-file": "Select or drag file",
+      "cancel": "Cancel",
+      "add-category": "Add Category",
+      "fill-name-fields": "Please enter a name of the category.",
+      "error": "An error occurred. Please try again.",
+      "upload-failed": "Upload failed. Please check your file and try again."
     },
-    "add-a-section":{
-      "title":"Add A Section To The Category",
-      "description":"Please insert modal description here.",
-      "category":"Category",
-      "name-of-the-section":"Name of the section",
-      "enter-a-name":"Enter a name of the section",
-      "cancel":"Cancel",
-      "add-section":"Add Section"
+    "add-a-section": {
+      "title": "Add A Section To The Category",
+      "description": "Please insert modal description here.",
+      "category": "Category",
+      "name-of-the-section": "Name of the section",
+      "enter-a-name": "Enter a name of the section",
+      "cancel": "Cancel",
+      "add-section": "Add Section"
     }
   }
 }

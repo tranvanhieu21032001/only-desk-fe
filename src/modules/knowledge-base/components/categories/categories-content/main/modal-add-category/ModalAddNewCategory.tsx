@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Image, Input, message } from 'antd';
+import { Image, Input, message, Progress } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -19,11 +19,13 @@ import { createHelpdeskCategory } from '@/modules/knowledge-base/api/knowledgeba
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import icImage from '@/assets/icons/knowledge-base/ic-image.svg';
 
+import { handleUploadImage } from '@/shared/components/common/Upload/api/upload';
+
 interface ModalAddNewCategoryProps {
     open: boolean;
     onCancel: () => void;
     onOK: () => void;
-    onAddCategory?: () => void;
+     onAddCategory?: (category: { id: string; name: string }) => void;
 }
 
 const ModalAddNewCategory = ({
@@ -39,22 +41,26 @@ const ModalAddNewCategory = ({
     const [desc, setDesc] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
-
+    const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
+    const [uploadProgress, setUploadProgress] = useState({
+        isLoading: false,
+        countUpload: 0,
+        progressPercent: 0,
+    });
 
     const handleAddCategory = async () => {
-        if (!name || !desc || !language) {
-            message.warning(t('article-menu.add-a-category.fill-all-fields'));
+        if (!name.trim()) {
+            message.warning(t('article-menu.add-a-category.fill-name-fields'));
             return;
         }
 
         const slug = name.trim().toLowerCase().replace(/\s+/g, '-');
-        const imageUrl = `https://storage.cloud.com/categories/${slug}.png`;
 
         const payload = {
             name,
             desc,
             slug,
-            image: imageUrl,
+            image: uploadedImageUrl,
             translations: {
                 [language]: {
                     name,
@@ -65,13 +71,19 @@ const ModalAddNewCategory = ({
         };
 
         try {
-            await createHelpdeskCategory(payload);
-            onAddCategory?.();
+            const created = await createHelpdeskCategory(payload);
+
+            // Truyền { id, name } nếu có onAddCategory
+            if (onAddCategory && created?.id) {
+                onAddCategory({ id: created.id, name: name });
+            }
+
             onOK();
         } catch {
             message.error(t('article-menu.add-a-category.error'));
         }
     };
+
 
     return (
         <S.WrapModal>
@@ -96,7 +108,7 @@ const ModalAddNewCategory = ({
                 </S.ModalHeader>
 
                 <S.ModalBody>
-                    {/* Language Select */}
+                    {/* Language */}
                     <S.FormField>
                         <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
                             <S.FormInput>
@@ -121,7 +133,7 @@ const ModalAddNewCategory = ({
                         </S.ChangeLang>
                     </S.FormField>
 
-                    {/* Name Field */}
+                    {/* Name */}
                     <S.FormField>
                         <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
                             <S.FormInput>
@@ -137,7 +149,7 @@ const ModalAddNewCategory = ({
                         />
                     </S.FormField>
 
-                    {/* Description Field */}
+                    {/* Description */}
                     <S.FormField>
                         <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
                             <S.FormInput>
@@ -160,22 +172,15 @@ const ModalAddNewCategory = ({
                         </Typography>
 
                         {previewImage ? (
-                            <S.ImagePreview>
-                                <Image src={previewImage} width={120} height={80} preview />
-                            </S.ImagePreview>
-                        ) : <><input
-                            id="upload-thumbnail"
-                            type="file"
-                            style={{ display: 'none' }}
-                            accept="image/*"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    setImageFile(file);
-                                    setPreviewImage(URL.createObjectURL(file));
-                                }
-                            }}
-                        />
+                            <>
+                                <S.ImagePreview>
+                                    <Image src={previewImage} width={120} height={80} preview />
+                                </S.ImagePreview>
+                                {uploadProgress.isLoading && (
+                                    <Progress percent={uploadProgress.progressPercent} size="small" />
+                                )}
+                            </>
+                        ) : (
                             <label htmlFor="upload-thumbnail">
                                 <S.SelectFile>
                                     <Image src={icImage} preview={false} />
@@ -183,8 +188,34 @@ const ModalAddNewCategory = ({
                                         {t('article-menu.add-a-category.select-or-drag-file')}
                                     </Typography>
                                 </S.SelectFile>
-                            </label></>}
+                            </label>
+                        )}
 
+                        <input
+                            id="upload-thumbnail"
+                            type="file"
+                            style={{ display: 'none' }}
+                            accept="image/*"
+                            onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    setImageFile(file);
+                                    setPreviewImage(URL.createObjectURL(file));
+
+                                    const formData = new FormData();
+                                    formData.append('image', file);
+
+                                    try {
+                                        const res = await handleUploadImage(formData, setUploadProgress);
+                                        if (res?.fileUrl) {
+                                            setUploadedImageUrl(res.fileUrl);
+                                        }
+                                    } catch {
+                                        message.error(t('article-menu.add-a-category.upload-failed'));
+                                    }
+                                }
+                            }}
+                        />
                     </S.FormField>
                 </S.ModalBody>
 
