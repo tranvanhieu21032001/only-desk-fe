@@ -158,8 +158,8 @@ export const GroupInput = styled.div`
 export const SelectFile = styled.div`
   display: flex;
   align-items: center;
-flex-direction: column;
-height:91px;
+  flex-direction: column;
+  height:91px;
   gap: 12px;
   padding: 12px 16px;
   border: 1px dashed ${(props) => props.theme.colors.newtral};
@@ -172,4 +172,15 @@ height:91px;
     height: 24px;
   }
 
+`;
+
+export const ImagePreview = styled.div`
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  img {
+    border-radius: 8px;
+    object-fit: cover;
+  }
 `;
