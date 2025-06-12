@@ -14,8 +14,10 @@ import icTrash from '@/assets/icons/knowledge-base/ic-trash.svg';
 import icEdit from '@/assets/icons/knowledge-base/ic-edit-2.svg';
 
 import Typography from '@/shared/components/common/Typography';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/core/store';
+import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
+import { deleteHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
 
 interface ArticleAPIResponse {
   id: string;
@@ -68,6 +70,7 @@ const AllArticle: React.FC<AllArticleProps> = ({
 }) => {
   const { t } = useTranslation('knowledgeBase');
   const { categories, loading } = useSelector((state: RootState) => state.helpdeskCategory);
+  const dispatch = useDispatch();
 
   const getCategoryNameById = (id: string): string => {
     const found = categories.find((cat) => cat.id === id);
@@ -112,25 +115,32 @@ const AllArticle: React.FC<AllArticleProps> = ({
     items: [
       {
         key: 'view',
-        icon: <Image src={icMonitor} width={24} height={24} preview={false} />,
-        label: <Typography padding="0 0 0 2px">{t('article-menu.actions.view')}</Typography>,
+        icon: <Image src={icMonitor} width={20} height={20} preview={false} />,
+        label: <Typography padding="0 0 0 4px">{t('article-menu.actions.view')}</Typography>,
         onClick: () => console.log('View', record),
       },
       {
         key: 'edit',
-        icon: <Image src={icEdit} width={24} height={24} preview={false} />,
-        label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
+        icon: <Image src={icEdit} width={20} height={20} preview={false} />,
+        label: <Typography padding="0 0 0 4px">{t('article-menu.actions.edit')}</Typography>,
         onClick: () => console.log('Edit', record),
       },
       {
         key: 'remove',
-        icon: <Image src={icTrash} width={24} height={24} preview={false} />,
+        icon: <Image src={icTrash} width={20} height={20} preview={false} />,
         label: (
-          <Typography padding="0 0 0 2px" color="red">
+          <Typography padding="0 0 0 4px" color="red">
             {t('article-menu.actions.remove')}
           </Typography>
         ),
-        onClick: () => console.log('Remove', record),
+       onClick: async () => {
+          try {
+            await deleteHelpdeskArticle(record?.key);
+            dispatch(fetchHelpdeskArticles());
+          } catch (error) {
+            console.error('Failed to delete article:', error);
+          }
+        },
       },
     ],
   });
