@@ -306,6 +306,8 @@ export const IconProps = styled.div<IconProps>`
 export const InputWrapper = styled.div`
   position: relative;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Input = styled.input<{ $hasEdit?: boolean }>`

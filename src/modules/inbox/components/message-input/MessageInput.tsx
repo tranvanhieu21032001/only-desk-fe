@@ -9,7 +9,6 @@ import { emitTypingStart, emitTypingStop } from '@/core/services/socket/socket';
 
 import { uploadFile } from '../../helpers/inbox.logic';
 import { InboxMessageType } from '@/modules/settings/helpers/enums/inbox.enums';
-
 import * as S from './MessageInput.styles';
 
 import file from '@/assets/icons/common/ic-file.svg';
@@ -194,6 +193,10 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
   return (
     <S.InputRow>
       {/* Button to trigger file input */}
@@ -261,28 +264,21 @@ const MessageInput: React.FC<MessageInputProps> = ({
         </S.TokenBox>
       )}
 
-      <S.Input
-        ref={inputRef}
-        value={inputValue}
-        onChange={(e) => {
-          setInputValue(e.target.value);
-          if (e.target.value === '') {
-            setActiveTab(null);
-            debouncedTypingStop();
-          } else {
-            debouncedTypingStart();
-            debouncedTypingStop();
-          }
-        }}
-        onKeyPress={async (e) => {
-          if (e.key === 'Enter') {
-            await handleSend();
-            debouncedTypingStop();
-          }
-        }}
-        placeholder="Messages..."
-        style={{ flex: 1 }}
-      />
+      <S.InputWrapper>
+        <S.Input
+          ref={inputRef}
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyPress={async (e) => {
+            if (e.key === 'Enter') {
+              await handleSend();
+              debouncedTypingStop();
+            }
+          }}
+          placeholder="Messages..."
+          style={{ flex: 1 }}
+        />
+      </S.InputWrapper>
 
       <S.InputIconsWrapper>
         <Image src={smile} preview={false} />
