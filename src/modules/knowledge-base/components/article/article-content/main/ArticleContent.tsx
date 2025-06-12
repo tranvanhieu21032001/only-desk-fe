@@ -22,22 +22,25 @@ import ModalAddALanguage from '../modal-add-a-language/ModalAddALanguage';
 import * as S from './ArticleContent.styles';
 
 import icArrowDown from '@/assets/icons/contact/ic-arrow-down.svg';
-import NoArticle from '../article-content-components/NoArticle';
-import AllArticle from '../article-content-components/allarticle/AllArticle';
 import ModalImportArticles from '../modal-import-articles/ModalImportArticles';
 import ModalExportArticles from '../modal-export-articles/ModalExportArticles';
 import ModalRemoveLanguage from '../modal-remove-language/ModalRemoveLanguage';
 import ModalAddNewArticles from '../modal-add-new-articles/ModalAddNewArticles';
 import { useLocation } from 'react-router-dom';
-import AllCategories from '../../../categories/categories-content/main/allcatgories/AllCategories';
-import NoCategories from '../../../categories/categories-content/main/nocategories/NoCategories';
+import ArticleComponent from '../article-content-components/ArticleComponent';
+import CategoryComponent from '../../../categories/categories-content/main/category-component/CategoryComponent';
+import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/core/store';
+import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
   const location = useLocation();
   const currentPath = location.pathname;
   const isCategoriesPage = currentPath === '/categories';
-  // console.log("isCategoriesPage", isCategoriesPage);
+
+  const dispatch = useDispatch<AppDispatch>();
 
 
   const {
@@ -76,6 +79,10 @@ function ArticleContent() {
     toggle: handleToggleModalNewArticle,
   } = useModal();
 
+  useEffect(() => {
+    dispatch(fetchHelpdeskCategories());
+    dispatch(fetchHelpdeskArticles())
+  }, [dispatch]);
 
   useEffect(() => {
     if (!isCategoriesPage) {
@@ -204,7 +211,7 @@ function ArticleContent() {
         </S.FilterPopoverWrap>
       </S.FilterWrap>
       {/* <NoArticle /> */}
-      {!isCategoriesPage ? <AllArticle /> : <NoCategories/>}
+      {!isCategoriesPage ? <ArticleComponent /> : <CategoryComponent />}
 
       {isModalInstallHelpdesk && (
         <ModalConfirmInstallHelpDesk
