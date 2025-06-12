@@ -25,6 +25,8 @@ import {
   InboxMessageType,
   InboxSender,
 } from '@/modules/settings/helpers/enums/inbox.enums';
+import { getShortcutsList } from '@/modules/settings/api/chatbox';
+import type { Shortcut } from '@/modules/settings/models/chatbox.model';
 
 import * as S from './InboxDetail.styles';
 
@@ -67,7 +69,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     loadMore,
     addMessage,
     updateMessage,
-    removeMessage,
   } = useMessageList({ conversationId });
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [selectedReminder, setSelectedReminder] = useState<string | null>(null);
@@ -78,6 +79,12 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   const [pendingImageScroll, setPendingImageScroll] = useState(false);
   const [pendingImageLoads, setPendingImageLoads] = useState(0);
   const [lastMessageId, setLastMessageId] = useState<string | null>(null);
+  const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
+  const [shortcutsPage, setShortcutsPage] = useState(1);
+  const [shortcutsHasMore, setShortcutsHasMore] = useState(true);
+  const [shortcutsLoading, setShortcutsLoading] = useState(false);
+  const [shortcutsKeyword, setShortcutsKeyword] = useState('');
+  const shortcutsListRef = useRef<HTMLDivElement>(null);
 
   const user = useUser();
   const currentUserId = user?.id;
@@ -88,7 +95,6 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
   // Use custom scroll hook
   const {
     wasAtBottom,
-    setWasAtBottom,
     showNewMessageNotice,
     setShowNewMessageNotice,
     handleScroll,
@@ -280,20 +286,93 @@ const InboxDetail: React.FC<InboxDetailProps> = ({
     setActiveTab(null);
   };
 
+  // Fetch shortcuts
+  const fetchShortcuts = async (page = 1, keyword = '') => {
+    setShortcutsLoading(true);
+    try {
+      const res = await getShortcutsList({ page, limit: 10, keyword });
+      if (page === 1) {
+        setShortcuts(res.data || []);
+      } else {
+        setShortcuts((prev) => [...prev, ...(res.data || [])]);
+      }
+      setShortcutsHasMore(res.hasNextPage);
+    } finally {
+      setShortcutsLoading(false);
+    }
+  };
+
+  // When clicking the Shortcuts tab or changing keywords
+  useEffect(() => {
+    if (activeTab === 'Shortcuts') {
+      setShortcutsPage(1);
+      fetchShortcuts(1, shortcutsKeyword);
+    }
+    // eslint-disable-next-line
+  }, [activeTab, shortcutsKeyword]);
+
+  // Scroll load more
+  useEffect(() => {
+    if (activeTab !== 'Shortcuts') return;
+    const handleScroll = () => {
+      const el = shortcutsListRef.current;
+      if (!el || shortcutsLoading || !shortcutsHasMore) return;
+      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {
+        setShortcutsPage((prev) => {
+          const next = prev + 1;
+          fetchShortcuts(next, shortcutsKeyword);
+          return next;
+        });
+      }
+    };
+    const el = shortcutsListRef.current;
+    if (el) el.addEventListener('scroll', handleScroll);
+    return () => {
+      if (el) el.removeEventListener('scroll', handleScroll);
+    };
+    // eslint-disable-next-line
+  }, [activeTab, shortcutsLoading, shortcutsHasMore, shortcutsKeyword]);
+
+  // When entering in input, if you are in the Shortcuts tab then search
+  useEffect(() => {
+    if (activeTab === 'Shortcuts') {
+      setShortcutsKeyword(inputValue);
+    }
+    // eslint-disable-next-line
+  }, [inputValue, activeTab]);
+
+  // When typing ! automatically switches to Shortcuts tab and search
+  useEffect(() => {
+    if (inputValue.startsWith('!')) {
+      setActiveTab('Shortcuts');
+      setShortcutsKeyword(inputValue.slice(1));
+    }
+    // eslint-disable-next-line
+  }, [inputValue]);
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'Shortcuts':
         return (
           <S.TabPanel>
-            <S.TabTitle>{t('inboxDetail.shortcuts')}</S.TabTitle>
-            <S.ShortcutItem>
-              <span>Hello</span>
-              <p>{t('inboxDetail.shortcutsHello')}</p>
-            </S.ShortcutItem>
-            <S.ShortcutItem>
-              <span>Welcome</span>
-              <p>{t('inboxDetail.shortcutsWelcome')}</p>
-            </S.ShortcutItem>
+            <S.TabTitle>Shortcuts</S.TabTitle>
+            <S.ShortcutsList ref={shortcutsListRef}>
+              {shortcuts.map((item) => (
+                <S.ShortcutsItem
+                  key={item.id}
+                  onClick={() => setInputValue(item.message)}
+                >
+                  <span>{item.shortcut}</span>
+                  <p>{item.message}</p>
+                </S.ShortcutsItem>
+              ))}
+              {shortcutsLoading && (
+                <S.NoShortcutsFound>Loading...</S.NoShortcutsFound>
+              )}
+              {!shortcutsLoading && shortcuts.length === 0 && (
+                <S.NoShortcutsFound>No shortcuts found</S.NoShortcutsFound>
+              )}
+            </S.ShortcutsList>
           </S.TabPanel>
         );
       case 'Note':

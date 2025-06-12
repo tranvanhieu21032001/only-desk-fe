@@ -528,6 +528,50 @@ export const NoteContainer = styled.div`
   align-items: flex-end;
 `;
 
+export const ShortcutsList = styled.div`
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #fff;
+  border-radius: 8px;
+  margin: 12px 0;
+`;
+
+export const ShortcutsItem = styled.div`
+  cursor: pointer;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+
+  p {
+    color: #333333;
+    font-size: 14px;
+    line-height: 23px;
+    font-weight: 400;
+  }
+
+  span {
+    color: #333333;
+    font-size: 14px;
+    line-height: 23px;
+    font-weight: 600;
+  }
+
+  &:hover {
+    background-color: #253a8e;
+    border-radius: 8px;
+
+    p,
+    span {
+      color: #fff;
+    }
+  }
+`;
+
+export const NoShortcutsFound = styled.div`
+  text-align: center;
+  padding: 12px;
+  color: #aaa;
+`;
+
 export const NoteRow = styled.div`
   display: flex;
   flex-direction: row;
