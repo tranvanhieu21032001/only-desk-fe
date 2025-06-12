@@ -16,14 +16,15 @@ export const endpointContact = {
 
 export const getAllHelpdeskArticles = async (
   page: number = 1,
-  limit: number = 10
+  limit: number = 10,
+  status: string = 'published',
+  lang: string = 'en'
 ): Promise<HelpdeskArticleListResponse> => {
-  const url = `${endpointContact.GET_ALL_HELPDESK_ARTICLE}?page=${page}&limit=${limit}`;
+  const url = `${endpointContact.GET_ALL_HELPDESK_ARTICLE}?page=${page}&limit=${limit}&status=${status}&lang=${lang}`;
   const response = await getRequest<HelpdeskArticleListResponse>(url);
-  console.log("response", response);
-
   return response;
 };
+
 
 export const createHelpdeskCategory = async (
   data: HelpdeskCategoryCreatePayload

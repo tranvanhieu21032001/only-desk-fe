@@ -11,6 +11,8 @@ import webStorageClient from '@/shared/utils/webStorageClient';
 import authReducer from '@/modules/auth/store/features/auth';
 import contactsReducer from '@/modules/contacts/store/features/contacts';
 import inboxReducer from '@/modules/inbox/store/features/inbox';
+import helpdeskCategorySlice from '@/modules/knowledge-base/store/helpdeskCategorySlice';
+import helpdeskArticlesReducer from '@/modules/knowledge-base/store/helpdeskArticleSlice'
 
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
@@ -38,6 +40,8 @@ export const store = configureStore({
 
     auth: authReducer,
     contacts: contactsReducer,
+    helpdeskArticles : helpdeskArticlesReducer,
+    helpdeskCategory: helpdeskCategorySlice,
     inbox: inboxReducer,
   },
   preloadedState: loadState(),

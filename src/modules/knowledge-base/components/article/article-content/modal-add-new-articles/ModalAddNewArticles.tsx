@@ -16,8 +16,12 @@ import icSetting from '@/assets/icons/knowledge-base/ic-setting.svg';
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
-import { createHelpdeskArticle, getAllHelpdeskCategories } from '@/modules/knowledge-base/api/knowledgebase.api';
 import { HelpdeskArticleCreatePayload, HelpdeskCategory } from '@/modules/knowledge-base/interface';
+import { AppDispatch, RootState } from '@/core/store';
+import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
+import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { createHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
 
 interface ModalAddNewArticlesProps {
   open: boolean;
@@ -29,57 +33,54 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
   const { t } = useTranslation('knowledgeBase');
   const editorRef = useRef<any>(null);
 
+  const dispatch = useDispatch<AppDispatch>();
+
   const [language, setLanguage] = useState(langOptions?.[0]?.value);
   const [category, setCategory] = useState('');
   const [articleTitle, setArticleTitle] = useState('');
   const [editorReady, setEditorReady] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
 
-
-const handleSubmit = async () => {
-  const content = editorRef.current?.getContent() || '';
-  const payload: HelpdeskArticleCreatePayload = {
-    title: articleTitle,
-    content: content,
-    categoryId: category,
-    translations: {
-      [language]: {
-        title: articleTitle,
-        content: content,
-      },
-    },
-    defaultLanguage: language,
-    slug: articleTitle.trim().toLowerCase().replace(/\s+/g, '-'),
-    status: 'published',
-    tags: ['workspace'],
-  };
-
-  try {
-    const res = await createHelpdeskArticle(payload);
-    console.log("Created article:", res);
-    onStart();
-  } catch (error) {
-    console.error("Failed to create article:", error);
-  }
-};
-
+  const { categories, loading, error } = useSelector(
+    (state: RootState) => state.helpdeskCategory
+  );
 
   useEffect(() => {
     if (open) {
-      const fetchCategories = async () => {
-        try {
-          const res = await getAllHelpdeskCategories();
-          console.log("res", res);
-          setCategoryOptions(res)
-        } catch (error) {
-          console.error("Failed to fetch categories:", error);
-        }
-      };
-
-      fetchCategories();
+      dispatch(fetchHelpdeskCategories());
     }
-  }, [open]);
+  }, [dispatch, open]);
 
+  useEffect(() => {
+    setCategoryOptions(categories);
+  }, [categories]);
+
+  const handleSubmit = async () => {
+    const content = editorRef.current?.getContent() || '';
+    const payload: HelpdeskArticleCreatePayload = {
+      title: articleTitle,
+      content: content,
+      categoryId: category,
+      translations: {
+        [language]: {
+          title: articleTitle,
+          content: content,
+        },
+      },
+      defaultLanguage: language,
+      slug: articleTitle.trim().toLowerCase().replace(/\s+/g, '-'),
+      status: 'published',
+      tags: ['workspace'],
+    };
+
+    try {
+      await createHelpdeskArticle(payload);
+      dispatch(fetchHelpdeskArticles());
+      onStart();
+    } catch (error) {
+      console.error('Failed to create article:', error);
+    }
+  };
 
   return (
     <S.WrapModal>
@@ -116,9 +117,10 @@ const handleSubmit = async () => {
               <S.ChangeLang
                 defaultValue={langOptions?.[0]?.value}
                 popupClassName="auth-lang"
+                onChange={(value) => setLanguage(value)}
               >
                 {langOptions?.map((lang: OptionsInterface) => (
-                  <S.LangOption key={lang?.key}>
+                  <S.LangOption key={lang?.key} value={lang?.value}>
                     <Image src={lang?.flag as string} preview={false} />
                     <Typography>
                       {t(`article-menu.language.${lang?.label}`)}
@@ -149,8 +151,8 @@ const handleSubmit = async () => {
               </S.ChangeLang>
             </S.FormField>
           </S.GroupInput>
-          <S.FormField>
 
+          <S.FormField>
             <Typography fontWeight={fontWeight.medium}>
               <S.FormInput>
                 {t('article-menu.add-a-new-article.article-title')}
@@ -163,7 +165,6 @@ const handleSubmit = async () => {
               placeholder={t('article-menu.add-a-new-article.enter-article-title')}
               size="large"
             />
-
           </S.FormField>
 
           <S.FormField>
@@ -174,7 +175,6 @@ const handleSubmit = async () => {
               </S.FormInput>
             </Typography>
 
-            {/* Skeleton placeholder while editor is loading */}
             {!editorReady && (
               <Skeleton
                 active
@@ -224,7 +224,7 @@ const handleSubmit = async () => {
                       input.setAttribute('accept', 'image/*');
                     } else if (meta.filetype === 'media') {
                       input.setAttribute('accept', 'video/*');
-                    } else if (meta.filetype === 'file') {
+                    } else {
                       input.setAttribute('accept', '*/*');
                     }
 
@@ -245,7 +245,6 @@ const handleSubmit = async () => {
               />
             </div>
           </S.FormField>
-
         </S.ModalBody>
 
         <S.ModalFooter>

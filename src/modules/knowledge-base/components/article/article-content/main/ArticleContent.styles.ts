@@ -6,7 +6,6 @@ export const ArticleContentContainer = styled.section`
   height: 100%;
   padding: 12px;
   border-radius: 0 8px 8px 0;
-
   background-color: ${(props) => props?.theme?.colors?.newtralLightest};
 `;
 

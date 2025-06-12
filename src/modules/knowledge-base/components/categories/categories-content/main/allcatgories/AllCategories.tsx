@@ -63,7 +63,7 @@ const categoryTableData: AllCategoriesInterface[] = rawCategoryArticles.reduce(
         category: article.category,
         isCategoryRow: true,
         title: `Category: ${article.category}`,
-        description: `Description for ${article.category}`, // Mô tả giả lập
+        description: `Description for ${article.category}`,
         statistic: '',
         created: '',
         lastUpdate: '',
