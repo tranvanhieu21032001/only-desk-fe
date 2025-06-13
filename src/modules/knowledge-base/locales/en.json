@@ -120,7 +120,9 @@
       "article-content": "Article content",
       "option": "Option",
       "save-draft": "Save Draft",
-      "publish": "Publish"
+      "publish": "Publish",
+      "cancel": "Cancel",
+      "update":"Update"
     },
     "no-category": {
       "title": "There are no category.",
