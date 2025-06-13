@@ -122,27 +122,93 @@ const handleSignInApi = async (
   dispatch(actionSignUp(true));
   const updatePayloads = omit(values, ['remember']);
 
-  await postRequest(endpointAuth?.SIGN_IN, {
-    data: updatePayloads,
-    messageSuccess: t('sign-in-success'),
-  })
-    .then((res) => {
-      dispatch(
-        actionLogin({
-          isAuth: true,
-          rememberMe: values?.remember || false,
-          userInfo: {
-            userId: res?.userId,
-            email: values?.email,
-          },
-          accessToken: res?.token,
-        }),
-      );
+  try {
+    const res = await postRequest(endpointAuth?.SIGN_IN, {
+      data: updatePayloads,
+      messageSuccess: t('sign-in-success'),
+    });
+    if (!res?.token) throw new Error('No token returned from login');
 
-      navigate(MAIN_ROUTES?.INBOX);
-    })
-    .catch((err) => err)
-    .finally(() => dispatch(actionSignUp(false)));
+    dispatch(
+      actionLogin({
+        isAuth: true,
+        rememberMe: values?.remember || false,
+        userInfo: {
+          userId: res?.userId,
+          email: values?.email,
+        },
+        accessToken: res?.token,
+      }),
+    );
+
+    // Save token to cookie for relay
+    const Cookies = (await import('js-cookie')).default;
+    Cookies.set('_access_token', res?.token, values?.remember ? { expires: 30 } : {});
+    // Update relay environment to use new token
+    const { updateRelayEnvironment } = await import('@/relay/RelayEnvironment');
+    updateRelayEnvironment();
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const { default: relayEnvironment } = await import('@/relay/RelayEnvironment');
+    const { fetchQuery } = await import('react-relay');
+    const { workspaceInfoQuery } = await import('@/relay/WorkspaceInfoQuery');
+    const { meQuery } = await import('@/relay/MeQuery');
+    // 1. Call workspaceInfoQuery first   
+    const workspaceDataRaw = await fetchQuery(
+      relayEnvironment,
+      workspaceInfoQuery,
+      {},
+      { fetchPolicy: 'network-only' }
+    ).toPromise();
+    const workspaceData: any = workspaceDataRaw;
+    const workspaces = workspaceData && Array.isArray(workspaceData.workspaces) ? workspaceData.workspaces : [];
+    if (!workspaces.length) throw new Error('No workspace found');
+    const firstWorkspace = workspaces[0];
+
+    // 2. Call meQuery after having workspace
+    const meDataRaw = await fetchQuery(
+      relayEnvironment,
+      meQuery,
+      {},
+      { fetchPolicy: 'network-only' }
+    ).toPromise();
+    const meData: any = meDataRaw;
+    const userInfo = meData?.me;
+
+    // 3. Update Redux store
+    const { actionUpdateUserInfo, actionSetWorkspaces, actionUpdateWorkSpaceCurrent } = await import('../store/features/auth');
+    if (userInfo) dispatch(actionUpdateUserInfo(userInfo));
+    if (workspaces) dispatch(actionSetWorkspaces(workspaces));
+    if (firstWorkspace) dispatch(actionUpdateWorkSpaceCurrent(firstWorkspace));
+
+    // 4. Set current workspace (get new token)
+    const { handleSwitchWorkspaceApi } = await import('@/modules/workspace/api/workspace');
+    let newToken = '';
+    await new Promise((resolve, reject) => {
+      handleSwitchWorkspaceApi(
+        firstWorkspace.id,
+        t,
+        () => {},
+        (token) => {
+          newToken = token;
+          resolve(token);
+        },
+      );
+    });
+    if (!newToken) throw new Error('No token returned from set current workspace');
+    const webStorageClient = (await import('@/shared/utils/webStorageClient')).default;
+    webStorageClient.setToken(newToken, values?.remember ? { expires: 30 } : {});
+    const constants = (await import('@/core/settings')).constants;
+    const webLocalStorage = (await import('@/shared/utils/webLocalStorage')).default;
+    webLocalStorage.set(constants.CURRENT_WORKSPACE, firstWorkspace);
+
+    // 5. Navigate sang inbox
+    navigate(MAIN_ROUTES?.INBOX);
+  } catch (err) {
+    // handle error (optionally show message)
+  } finally {
+    dispatch(actionSignUp(false));
+  }
 };
 
 const handleRequestResetPassword = async (

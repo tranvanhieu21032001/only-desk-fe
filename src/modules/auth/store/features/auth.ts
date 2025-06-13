@@ -107,12 +107,18 @@ const slice = createSlice({
       });
     },
     actionLogout: (state) => {
+      // Clear Redux store
       state.isAuth = false;
       state.userInfo = null;
-      webStorageClient.removeAll();
-      localStorage.clear();
+      state.permissionList = {};
       state.workspaces = [];
       state.currentWorkspace = null;
+      state.isLoading = false;
+
+      // Clear all storage
+      webStorageClient.removeAll();
+      localStorage.clear();
+      sessionStorage.clear();
     },
     actionUpdateWorkSpaceCurrent: (
       state,
@@ -155,6 +161,9 @@ const slice = createSlice({
         }
         return workspace;
       });
+    },
+    actionSetWorkspaces: (state, action) => {
+      state.workspaces = action.payload;
     },
   },
 
@@ -216,6 +225,7 @@ export const {
   actionUpdateWorkSpaceCurrent,
   actionSetGlobalLoading,
   actionUpdateCurrentWorkspace,
+  actionSetWorkspaces,
 } = slice.actions;
 
 export { fetchGetUserInfo, fetchWorkspace };

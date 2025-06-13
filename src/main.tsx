@@ -14,7 +14,6 @@ import GlobalStyle from './shared/styles/global/index.ts';
 import App from './App.tsx';
 import { TitleProvider } from './core/context/TitleContext.tsx';
 import environment from './relay/RelayEnvironment.ts';
-import { UserProvider } from './core/context/UserContext.tsx';
 
 function Index() {
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
@@ -26,19 +25,17 @@ function Index() {
   return (
     <Provider store={store}>
       <RelayEnvironmentProvider environment={environment}>
-        <UserProvider>
-          <ThemeProvider theme={isDarkTheme ? themes?.darkTheme : themes.default}>
-            <GlobalStyle />
-            <StrictMode>
-              <I18nextProvider i18n={i18n}>
-                <TitleProvider>
-                  <App />
-                </TitleProvider>
-                <ToastContainer position="bottom-right" hideProgressBar={true} />
-              </I18nextProvider>
-            </StrictMode>
-          </ThemeProvider>
-        </UserProvider>
+        <ThemeProvider theme={isDarkTheme ? themes?.darkTheme : themes.default}>
+          <GlobalStyle />
+          <StrictMode>
+            <I18nextProvider i18n={i18n}>
+              <TitleProvider>
+                <App />
+              </TitleProvider>
+              <ToastContainer position="bottom-right" hideProgressBar={true} />
+            </I18nextProvider>
+          </StrictMode>
+        </ThemeProvider>
       </RelayEnvironmentProvider>
     </Provider>
   );
