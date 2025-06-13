@@ -1,5 +1,5 @@
 import { deleteRequest, getRequest, postRequest, updateRequest } from "@/core/services/requests";
-import { HelpdeskArticleCreatePayload, HelpdeskArticleListResponse, HelpdeskCategory, HelpdeskCategoryCreatePayload } from "../interface";
+import { HelpdeskArticleCreatePayload, HelpdeskArticleListResponse, HelpdeskCategory, HelpdeskCategoryCreatePayload, HelpdeskSectionCreatePayload } from "../interface";
 
 const prefixContact: string = '';
 
@@ -12,12 +12,15 @@ export const endpointContact = {
   CREATE_A_NEW_HELPDESK_CATEGORY: `${prefixContact}/helpdesk/categories`,
   UPDATE_A_HELPDESK_CATEGORY: `${prefixContact}/helpdesk/categories/{id}`,
   DELETE_A_HELPDESK_CATEGORY: `${prefixContact}/helpdesk/categories/{id}`,
+  CREATE_A_HELPDESK_SECTIONS: `${prefixContact}/helpdesk/sections`,
+  UPDATE_A_HELPDESK_SECTIONS: `${prefixContact}/helpdesk/sections/{id}`,
+  DELETE_A_HELPDESK_SECTIONS: `${prefixContact}/helpdesk/sections/{id}`,
 };
 
 export const getAllHelpdeskArticles = async (
   page: number = 1,
   limit: number = 10,
-  status: string = 'published',
+  status: string = '',
   lang: string = 'en'
 ): Promise<HelpdeskArticleListResponse> => {
   const url = `${endpointContact.GET_ALL_HELPDESK_ARTICLE}?page=${page}&limit=${limit}&status=${status}&lang=${lang}`;
@@ -47,13 +50,7 @@ export const createHelpdeskArticle = async (
 export const getAllHelpdeskCategories = async (): Promise<HelpdeskCategory[]> => {
   const url = endpointContact.GET_ALL_HELPDESK_CATEGORIES;
   const response = await getRequest<any[]>(url);
-
-  const filtered = response.map((item) => ({
-    id: item.id,
-    name: item.name,
-  }));
-
-  return filtered;
+  return response;
 };
 
 export const updateHelpdeskArticle = async (
@@ -69,4 +66,13 @@ export const updateHelpdeskArticle = async (
 export const deleteHelpdeskArticle = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_ARTICLE.replace('{id}', id);
   return await deleteRequest(url);
+};
+
+
+export const createHelpdeskSection = async (
+  data: HelpdeskSectionCreatePayload
+): Promise<any> => {
+  return await postRequest(endpointContact.CREATE_A_HELPDESK_SECTIONS, {
+    data,
+  });
 };

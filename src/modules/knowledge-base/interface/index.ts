@@ -70,3 +70,15 @@ export interface HelpdeskArticleCreatePayload {
     slug: string;
     status: 'published';
 }
+
+
+export interface HelpdeskSectionCreatePayload {
+    name: string;
+    categoryId: string;
+    translations: {
+        [langCode: string]: {
+            name: string;
+        };
+    };
+    defaultLanguage: string;
+}

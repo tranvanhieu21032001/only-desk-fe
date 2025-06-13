@@ -31,7 +31,7 @@ export const fetchHelpdeskArticles = createAsyncThunk<
   try {
     const page = params?.page || 1;
     const limit = params?.limit || 10;
-    const status = params?.status || 'published';
+    const status = params?.status || '';
     const lang = params?.lang || 'en';
     const response = await getAllHelpdeskArticles(page, limit, status, lang);
     return response;

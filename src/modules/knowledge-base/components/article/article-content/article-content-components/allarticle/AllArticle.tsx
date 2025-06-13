@@ -6,10 +6,10 @@ import { MoreOutlined } from '@ant-design/icons';
 
 import * as S from './allarticle.styles';
 
-import icOnline from '@/assets/icons/knowledge-base/ic-online.svg';
+import icPublished from '@/assets/icons/knowledge-base/ic-online.svg';
 import icDraft from '@/assets/icons/knowledge-base/ic-draft.svg';
 import icHidden from '@/assets/icons/knowledge-base/ic-hidden.svg';
-import icVisible from '@/assets/icons/knowledge-base/ic-visible.svg';
+import icArchived from '@/assets/icons/knowledge-base/ic-visible.svg';
 import icMonitor from '@/assets/icons/knowledge-base/ic-monitor.svg';
 import icTrash from '@/assets/icons/knowledge-base/ic-trash.svg';
 import icEdit from '@/assets/icons/knowledge-base/ic-edit-2.svg';
@@ -35,10 +35,9 @@ export interface AllArticleInterface {
 }
 
 const statusIcons: Record<string, string> = {
-  online: icOnline,
+  archived: icArchived,
   draft: icDraft,
-  hidden: icHidden,
-  visible: icVisible,
+  published: icPublished,
 };
 
 const AllArticle = () => {
@@ -88,7 +87,7 @@ const AllArticle = () => {
       isCategoryRow: true,
       title: '',
       content:'',
-      status: 'online',
+      status: 'published',
       statistic: '',
       created: '',
       lastUpdate: '',
