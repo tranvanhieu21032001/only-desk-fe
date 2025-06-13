@@ -24,7 +24,7 @@ const CategoryComponent = () => {
 
   return (
     <>
-      {categories.length > 0 ? <AllCategories /> : <NoCategories />}
+      {categories.length > 0 ? <AllCategories categories={categories} /> : <NoCategories />}
     </>
   );
 };

@@ -11,127 +11,119 @@ import icTrash from '@/assets/icons/knowledge-base/ic-trash.svg';
 import icEdit from '@/assets/icons/knowledge-base/ic-edit-2.svg';
 import icAdd from '@/assets/icons/knowledge-base/ic-add2.svg';
 
-import { AllCategoriesInterface } from '@/modules/knowledge-base/models/article.model';
+interface Section {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  translations: { [key: string]: { name: string } };
+}
 
-const rawCategoryArticles: AllCategoriesInterface[] = [
-  {
-    key: '1',
-    title: 'Welcome guide',
-    description: 'Introductory guide for new users',
-    statistic: '100',
-    created: '2024-06-01',
-    lastUpdate: '2024-06-02',
-    category: 'Getting Started',
-  },
-  {
-    key: '2',
-    title: 'First Steps',
-    description: 'Step-by-step guide to set up your workspace',
-    statistic: '25',
-    created: '2024-06-02',
-    lastUpdate: '2024-06-02',
-    category: 'Getting Started',
-  },
-  {
-    key: '3',
-    title: 'Advanced search',
-    description: 'How to use advanced search filters',
-    statistic: '75',
-    created: '2024-05-20',
-    lastUpdate: '2024-05-25',
-    category: 'Automate',
-  },
-  {
-    key: '4',
-    title: 'API Access',
-    description: 'Enable and manage API usage',
-    statistic: '15',
-    created: '2024-05-15',
-    lastUpdate: '2024-05-20',
-    category: 'Automate',
-  },
-];
+interface Category {
+  id: string;
+  name: string;
+  desc: string;
+  createdAt: string;
+  updatedAt: string;
+  translations: { [key: string]: { name: string; desc: string } };
+  defaultLanguage: string;
+  sections: Section[];
+}
 
-const categoryTableData: AllCategoriesInterface[] = rawCategoryArticles.reduce(
-  (acc: AllCategoriesInterface[], article) => {
-    const categoryKey = `category-${article.category}`;
-    const categoryExists = acc.some((item) => item.key === categoryKey);
+interface RowItem {
+  key: string;
+  title: string;
+  description: string;
+  statistic: string;
+  created: string;
+  lastUpdate: string;
+  category: string;
+  isCategoryRow: boolean;
+}
 
-    if (!categoryExists) {
-      acc.push({
-        key: categoryKey,
-        category: article.category,
-        isCategoryRow: true,
-        title: `Category: ${article.category}`,
-        description: `Description for ${article.category}`,
-        statistic: '',
-        created: '',
-        lastUpdate: '',
-      });
-    }
-
-    acc.push({ ...article, isCategoryRow: false });
-    return acc;
-  },
-  [],
-);
-
-const getDropdownMenu = (rowData: AllCategoriesInterface, t: any) => {
-  if (rowData.isCategoryRow) {
-    return {
-      items: [
-        {
-          key: 'add-category',
-          icon: <Image src={icAdd} width={24} height={24} preview={false} />,
-          label: <Typography padding="0 0 0 2px">{t('article-menu.actions.add-section')}</Typography>,
-          onClick: () => console.log('Add Article to Category:', rowData.category),
-        },
-        {
-          key: 'edit-category',
-          icon: <Image src={icEdit} width={24} height={24} preview={false} />,
-          label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
-          onClick: () => console.log('Edit Category:', rowData.category),
-        },
-        {
-          key: 'remove-category',
-          icon: <Image src={icTrash} width={24} height={24} preview={false} />,
-          label: (
-            <Typography padding="0 0 0 2px" color="red">
-              {t('article-menu.actions.remove')}
-            </Typography>
-          ),
-          onClick: () => console.log('Remove Category:', rowData.category),
-        },
-      ],
-    };
-  }
-
-  return {
-    items: [
-      {
-        key: 'edit-article',
-        icon: <Image src={icEdit} width={24} height={24} preview={false} />,
-        label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
-        onClick: () => console.log('Edit Article:', rowData),
-      },
-      {
-        key: 'remove-article',
-        icon: <Image src={icTrash} width={24} height={24} preview={false} />,
-        label: (
-          <Typography padding="0 0 0 2px" color="red">
-            {t('article-menu.actions.remove')}
-          </Typography>
-        ),
-        onClick: () => console.log('Remove Article:', rowData),
-      },
-    ],
-  };
-};
-
-const AllCategories = () => {
+const AllCategories = ({ categories }: { categories: Category[] }) => {
   const { t } = useTranslation('knowledgeBase');
 
-  const columns: ColumnsType<AllCategoriesInterface> = [
+  const categoryTableData: RowItem[] = categories.flatMap((category) => {
+    const lang = category.defaultLanguage || 'en';
+    const catName = category.translations?.[lang]?.name || category.name;
+    const catDesc = category.translations?.[lang]?.desc || category.desc;
+
+    const catRow: RowItem = {
+      key: `category-${category.id}`,
+      title: `Category: ${catName}`,
+      description: catDesc || '',
+      statistic: '',
+      created: '',
+      lastUpdate: '',
+      category: catName,
+      isCategoryRow: true,
+    };
+
+    const sectionRows: RowItem[] = category.sections.map((section) => {
+      const secName = section.translations?.[lang]?.name || section.name;
+      return {
+        key: `section-${section.id}`,
+        title: secName,
+        description: '',
+        statistic: '',
+        created: new Date(section.createdAt).toLocaleDateString(),
+        lastUpdate: new Date(section.updatedAt).toLocaleDateString(),
+        category: catName,
+        isCategoryRow: false,
+      };
+    });
+
+    return [catRow, ...sectionRows];
+  });
+
+  const getDropdownMenu = (rowData: RowItem) => ({
+    items: rowData.isCategoryRow
+      ? [
+          {
+            key: 'add-category',
+            icon: <Image src={icAdd} width={24} height={24} preview={false} />,
+            label: <Typography padding="0 0 0 2px">{t('article-menu.actions.add-section')}</Typography>,
+            onClick: () => console.log('Add Section to Category:', rowData.category),
+          },
+          {
+            key: 'edit-category',
+            icon: <Image src={icEdit} width={24} height={24} preview={false} />,
+            label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
+            onClick: () => console.log('Edit Category:', rowData.category),
+          },
+          {
+            key: 'remove-category',
+            icon: <Image src={icTrash} width={24} height={24} preview={false} />,
+            label: (
+              <Typography padding="0 0 0 2px" color="red">
+                {t('article-menu.actions.remove')}
+              </Typography>
+            ),
+            onClick: () => console.log('Remove Category:', rowData.category),
+          },
+        ]
+      : [
+          {
+            key: 'edit-article',
+            icon: <Image src={icEdit} width={24} height={24} preview={false} />,
+            label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
+            onClick: () => console.log('Edit Section:', rowData),
+          },
+          {
+            key: 'remove-article',
+            icon: <Image src={icTrash} width={24} height={24} preview={false} />,
+            label: (
+              <Typography padding="0 0 0 2px" color="red">
+                {t('article-menu.actions.remove')}
+              </Typography>
+            ),
+            onClick: () => console.log('Remove Section:', rowData),
+          },
+        ],
+  });
+
+  const columns: ColumnsType<RowItem> = [
     {
       title: t('article-menu.actions.title'),
       dataIndex: 'title',
@@ -182,7 +174,7 @@ const AllCategories = () => {
       key: 'actions',
       align: 'right',
       render: (_, rowData) => (
-        <Dropdown menu={getDropdownMenu(rowData, t)} trigger={['click']}>
+        <Dropdown menu={getDropdownMenu(rowData)} trigger={['click']}>
           <MoreOutlined style={{ fontSize: 18, cursor: 'pointer' }} />
         </Dropdown>
       ),
@@ -191,12 +183,13 @@ const AllCategories = () => {
 
   return (
     <S.TableWrapper>
-      <Table<AllCategoriesInterface>
+      <Table<RowItem>
         columns={columns}
         dataSource={categoryTableData}
         rowSelection={{ type: 'checkbox' }}
         expandable={{ expandIcon: () => null }}
         rowKey="key"
+        pagination={false}
       />
     </S.TableWrapper>
   );
