@@ -1,4 +1,5 @@
-import { Image, Input } from 'antd';
+import { useState } from 'react';
+import { Image, Input, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import themeColors from '@/shared/styles/themes/default/colors';
@@ -11,6 +12,7 @@ import ModalCommon from '@/shared/components/common/ModalBase';
 import * as S from './ModalAddASection.styles';
 import { PlusOutlined } from '@ant-design/icons';
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
+import { createHelpdeskSection } from '@/modules/knowledge-base/api/knowledgebase.api';
 
 interface ModalAddASectionProps {
     open: boolean;
@@ -29,6 +31,33 @@ function ModalAddASection({
     category,
 }: ModalAddASectionProps) {
     const { t } = useTranslation('knowledgeBase');
+    const [sectionName, setSectionName] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleAddSection = async () => {
+        if (!sectionName.trim()) {
+            message.warning(t('article-menu.add-a-section.validation.required') || 'Section name is required');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await createHelpdeskSection({
+                name: sectionName,
+                categoryId: category.id,
+                defaultLanguage: 'en',
+                translations: {
+                    en: { name: sectionName },
+                },
+            });
+            setSectionName('');
+            onCancel()
+        } catch (error) {
+            message.error(t('article-menu.add-a-section.error') || 'Failed to add section');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <S.WrapModal>
@@ -54,7 +83,7 @@ function ModalAddASection({
 
                 <S.ModalBody>
                     <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding='0 0 8px 0'>
+                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
                             <S.FormInput>
                                 {t('article-menu.add-a-section.category')}
                                 <Image src={icValid} height={23} width={7} />
@@ -69,7 +98,7 @@ function ModalAddASection({
                     </S.FormField>
 
                     <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding='0 0 8px 0'>
+                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px 0">
                             <S.FormInput>
                                 {t('article-menu.add-a-section.name-of-the-section')}
                                 <Image src={icValid} height={23} width={7} />
@@ -78,6 +107,8 @@ function ModalAddASection({
                         <Input
                             placeholder={t('article-menu.add-a-section.enter-a-name')}
                             size="large"
+                            value={sectionName}
+                            onChange={(e) => setSectionName(e.target.value)}
                         />
                     </S.FormField>
                 </S.ModalBody>
@@ -86,7 +117,11 @@ function ModalAddASection({
                     <Button onClick={onCancel}>
                         {t('article-menu.add-a-section.cancel')}
                     </Button>
-                    <Button onClick={onOK} type="primary" icon={<PlusOutlined />}>
+                    <Button
+                        onClick={handleAddSection}
+                        type="primary"
+                        icon={<PlusOutlined />}
+                    >
                         {t('article-menu.add-a-section.add-section')}
                     </Button>
                 </S.ModalFooter>

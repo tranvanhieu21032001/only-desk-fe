@@ -16,8 +16,7 @@ const ArticleComponent = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchHelpdeskArticles({ page, limit: pageSize, status: 'published', lang: 'en' }));
-    console.log("articles", articles);
+    dispatch(fetchHelpdeskArticles({ page, limit: pageSize, status: '', lang: 'en' }));
     
   }, [dispatch, page, pageSize]);
 
