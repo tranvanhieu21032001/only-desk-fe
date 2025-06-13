@@ -1,4 +1,4 @@
-import { deleteRequest, getRequest, postRequest } from "@/core/services/requests";
+import { deleteRequest, getRequest, postRequest, updateRequest } from "@/core/services/requests";
 import { HelpdeskArticleCreatePayload, HelpdeskArticleListResponse, HelpdeskCategory, HelpdeskCategoryCreatePayload } from "../interface";
 
 const prefixContact: string = '';
@@ -55,6 +55,15 @@ export const getAllHelpdeskCategories = async (): Promise<HelpdeskCategory[]> =>
 
   return filtered;
 };
+
+export const updateHelpdeskArticle = async (
+  id: string,
+  data: HelpdeskArticleCreatePayload
+): Promise<any> => {
+  const url = endpointContact.UPDATE_A_HELPDESK_ARTICLE.replace('{id}', id);
+  return await updateRequest(url, { data });
+};
+
 
 
 export const deleteHelpdeskArticle = async (id: string): Promise<any> => {

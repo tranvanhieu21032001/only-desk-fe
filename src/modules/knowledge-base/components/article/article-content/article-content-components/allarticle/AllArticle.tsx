@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, Image, Tag, Dropdown, Skeleton } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import { MoreOutlined } from '@ant-design/icons';
+
 import * as S from './allarticle.styles';
 
 import icOnline from '@/assets/icons/knowledge-base/ic-online.svg';
@@ -16,41 +17,21 @@ import icEdit from '@/assets/icons/knowledge-base/ic-edit-2.svg';
 import Typography from '@/shared/components/common/Typography';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/core/store';
-import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 import { deleteHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
+import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
+import ModalEditArticles from '../../modal-edit-articles/ModalEditArticles';
 
-interface ArticleAPIResponse {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  title: string;
-  content: string;
-  slug: string;
-  translations: Record<string, { title: string; content: string }>;
-  defaultLanguage: string;
-  categoryId: string;
-  tags: string[];
-  status: string;
-  viewCount: number;
-}
-
-interface AllArticleInterface {
+export interface AllArticleInterface {
   key: string;
   title: string;
+  content:string;
   status: string;
   statistic: string;
   created: string;
   lastUpdate: string;
   category: string;
-  isCategoryRow: boolean;
-}
-
-interface AllArticleProps {
-  articles: ArticleAPIResponse[];
-  currentPage: number;
-  pageSize: number;
-  total: number;
-  onPageChange: (page: number, pageSize?: number) => void;
+  categoryId: string;
+  isCategoryRow?: boolean;
 }
 
 const statusIcons: Record<string, string> = {
@@ -58,82 +39,89 @@ const statusIcons: Record<string, string> = {
   draft: icDraft,
   hidden: icHidden,
   visible: icVisible,
-  published: icOnline,
 };
 
-const AllArticle: React.FC<AllArticleProps> = ({
-  articles,
-  currentPage,
-  pageSize,
-  total,
-  onPageChange,
-}) => {
-  const { t } = useTranslation('knowledgeBase');
-  const { categories, loading } = useSelector((state: RootState) => state.helpdeskCategory);
+const AllArticle = () => {
+  const { categories, loading: categoriesLoading } = useSelector((state: RootState) => state.helpdeskCategory);
+  const { items: articles, loading: articlesLoading, limit, page, total } = useSelector((state: RootState) => state.helpdeskArticles);
   const dispatch = useDispatch();
+  const { t } = useTranslation('knowledgeBase');
+  console.log("articles", articles);
+  
 
-  const getCategoryNameById = (id: string): string => {
-    const found = categories.find((cat) => cat.id === id);
-    return found ? found.name : 'Uncategorized';
-  };
+  const isLoading = categoriesLoading || articlesLoading || categories.length === 0 || articles.length === 0;
 
-  if (loading || !categories.length) return <Skeleton active />;
+  const [openModal, setOpenModal] = useState(false);
+  const [articleData, setArticleData] = useState<AllArticleInterface | null>(null);
 
-  const transformedData: AllArticleInterface[] = articles.map((article) => ({
-    key: article.id,
-    title: article.translations?.en?.title || article.title,
-    status: article.status,
-    statistic: article.viewCount.toString(),
-    created: article.createdAt.split('T')[0],
-    lastUpdate: article.updatedAt.split('T')[0],
-    category: getCategoryNameById(article.categoryId),
-    isCategoryRow: false,
-  }));
-
-  const flatData: AllArticleInterface[] = transformedData.reduce<AllArticleInterface[]>((acc, article) => {
-    const categoryKey = `category-${article.category}`;
-    const categoryExists = acc.some((item) => item.key === categoryKey);
-
-    if (!categoryExists) {
-      acc.push({
-        key: categoryKey,
-        category: article.category,
-        isCategoryRow: true,
-        title: '',
-        status: '',
-        statistic: '',
-        created: '',
-        lastUpdate: '',
-      });
-    }
-
-    acc.push(article);
+  const categoryMap = categories.reduce((acc: Record<string, string>, cat) => {
+    acc[cat.id] = cat.name;
     return acc;
-  }, []);
+  }, {});
+
+  const grouped = articles.reduce((acc: Record<string, AllArticleInterface[]>, article) => {
+    const categoryName = categoryMap[article.categoryId] || 'Uncategorized';
+    if (!acc[categoryName]) acc[categoryName] = [];
+    acc[categoryName].push({
+      key: article.id,
+      title: article.title,
+      content:article?.content,
+      status: article.status,
+      statistic: article.viewCount?.toString() || '0',
+      created: new Date(article.createdAt).toLocaleDateString(),
+      lastUpdate: new Date(article.updatedAt).toLocaleDateString(),
+      category: categoryName,
+      categoryId: article.categoryId,
+      isCategoryRow: false,
+    });
+    return acc;
+  }, {});
+
+  const flatData: AllArticleInterface[] = [];
+
+  Object.entries(grouped).forEach(([category, articles]) => {
+    const categoryId = articles[0]?.categoryId || '';
+    flatData.push({
+      key: `category-${category}`,
+      category,
+      categoryId,
+      isCategoryRow: true,
+      title: '',
+      content:'',
+      status: 'online',
+      statistic: '',
+      created: '',
+      lastUpdate: '',
+    });
+    flatData.push(...articles);
+  });
 
   const dropdownMenu = (record: AllArticleInterface) => ({
     items: [
       {
         key: 'view',
         icon: <Image src={icMonitor} width={20} height={20} preview={false} />,
-        label: <Typography padding="0 0 0 4px">{t('article-menu.actions.view')}</Typography>,
+        label: <Typography padding="0 0 0 2px">{t('article-menu.actions.view')}</Typography>,
         onClick: () => console.log('View', record),
       },
       {
         key: 'edit',
         icon: <Image src={icEdit} width={20} height={20} preview={false} />,
-        label: <Typography padding="0 0 0 4px">{t('article-menu.actions.edit')}</Typography>,
-        onClick: () => console.log('Edit', record),
+        label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
+        onClick: () => {
+          setArticleData(record);
+          setOpenModal(true);
+        },
       },
       {
         key: 'remove',
         icon: <Image src={icTrash} width={20} height={20} preview={false} />,
         label: (
-          <Typography padding="0 0 0 4px" color="red">
+          <Typography padding="0 0 0 2px" color="red">
             {t('article-menu.actions.remove')}
           </Typography>
         ),
-       onClick: async () => {
+        onClick: async () => {
           try {
             await deleteHelpdeskArticle(record?.key);
             dispatch(fetchHelpdeskArticles());
@@ -156,7 +144,8 @@ const AllArticle: React.FC<AllArticleProps> = ({
             <span style={{ fontWeight: 600 }}>{t('article-menu.actions.category')}:</span>{' '}
             <Tag color="green" style={{ color: '#1677ff' }}>
               {record.category}
-            </Tag>
+            </Tag>{' '}
+            <span>{grouped[record.category]?.length || 0} {t('article-menu.actions.articles')}</span>
           </>
         ) : (
           <span>{record.title}</span>
@@ -170,7 +159,7 @@ const AllArticle: React.FC<AllArticleProps> = ({
         record.isCategoryRow ? null : (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Image src={statusIcons[status]} preview={false} />
-            <span style={{ textTransform: 'capitalize' }}>{status}</span>
+            <span style={{ textTransform: 'capitalize' }}>{t(`${status}`)}</span>
           </div>
         ),
     },
@@ -178,7 +167,7 @@ const AllArticle: React.FC<AllArticleProps> = ({
       title: t('article-menu.actions.statistic'),
       dataIndex: 'statistic',
       key: 'statistic',
-      render: (_, record) => (record.isCategoryRow ? null : <span>{record.statistic} visit</span>),
+      render: (_, record) => (record.isCategoryRow ? null : record.statistic),
     },
     {
       title: t('article-menu.actions.created'),
@@ -205,32 +194,42 @@ const AllArticle: React.FC<AllArticleProps> = ({
   ];
 
   return (
-    <S.TableWrapper>
-      <Table<AllArticleInterface>
-        columns={columns}
-        dataSource={flatData}
-        rowSelection={{
-          type: 'checkbox',
-        }}
-        expandable={{
-          expandIcon: () => null,
-        }}
-        rowKey="key"
-        pagination={{
-          current: currentPage,
-          pageSize,
-          total,
-          onChange: onPageChange,
-          showTotal: (total, range) => (
-            <div style={{ marginRight: 50 }}>
-              Page {currentPage} of {Math.ceil(total / pageSize)}
-            </div>
-          ),
+    <>
+      <S.TableWrapper>
+        {isLoading ? (
+          <Skeleton active paragraph={{ rows: 8 }} />
+        ) : (
+          <Table<AllArticleInterface>
+            columns={columns}
+            dataSource={flatData}
+            rowSelection={{
+              type: 'checkbox',
+            }}
+            expandable={{
+              expandIcon: () => null,
+            }}
+            rowKey="key"
+            pagination={{
+              // onChange: onPageChange,
+              showTotal: () => (
+                <div style={{ marginRight: 50 }}>
+                  Page {page} of {Math.ceil(total / limit)}
+                </div>
+              ),
 
+            }}
+          />
+        )}
+      </S.TableWrapper>
+      <ModalEditArticles
+        open={openModal}
+        onCancel={() => setOpenModal(false)}
+        onStart={() => {
+          // setOpenModal(false);
         }}
-
-      />
-    </S.TableWrapper>
+        article={articleData}
+        />
+      </>
   );
 };
 
