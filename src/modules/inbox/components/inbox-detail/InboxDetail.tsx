@@ -8,7 +8,6 @@ import { LoadingOutlined, CloseCircleTwoTone } from '@ant-design/icons';
 import AvatarWithStatus from '../../../../shared/components/common/Avatar';
 import MessageInput from '../message-input/MessageInput';
 
-import { useUser } from '@/core/context/UserContext';
 import {
   sendAgentMessage,
   closeConversation,
@@ -19,6 +18,7 @@ import {
 
 import { Message } from '../../interfaces/inbox';
 import { useMessageList } from '../../hooks/useMessageList';
+import { useUser } from '@/core/context/UserContext';
 import { useScrollHandler } from '../../hooks/useScrollHandler';
 import {
   InboxMessageStatus,
