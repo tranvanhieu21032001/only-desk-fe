@@ -146,7 +146,8 @@
       "add-category": "Add Category",
       "fill-name-fields": "Please enter a name of the category.",
       "error": "An error occurred. Please try again.",
-      "upload-failed": "Upload failed. Please check your file and try again."
+      "upload-failed": "Upload failed. Please check your file and try again.",
+      "update":"Update"
     },
     "add-a-section": {
       "title": "Add A Section To The Category",
@@ -155,7 +156,8 @@
       "name-of-the-section": "Name of the section",
       "enter-a-name": "Enter a name of the section",
       "cancel": "Cancel",
-      "add-section": "Add Section"
+      "add-section": "Add Section",
+      "update":"Update"
     }
   }
 }

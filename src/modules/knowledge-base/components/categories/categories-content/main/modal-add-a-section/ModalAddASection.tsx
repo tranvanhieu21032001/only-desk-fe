@@ -67,7 +67,6 @@ function ModalAddASection({
                         en: { name: sectionName },
                     },
                 });
-                message.success(t('article-menu.edit-a-section.success') || 'Section updated successfully');
             } else {
                 await createHelpdeskSection({
                     name: sectionName,
@@ -77,13 +76,12 @@ function ModalAddASection({
                         en: { name: sectionName },
                     },
                 });
-                message.success(t('article-menu.add-a-section.success') || 'Section added successfully');
             }
 
             onCancel();
             onOK();
         } catch (error) {
-            message.error(t('article-menu.add-a-section.error') || 'Failed to save section');
+            message.error('Failed to save section');
         } finally {
             setLoading(false);
         }
@@ -101,15 +99,11 @@ function ModalAddASection({
                 <S.ModalHeader>
                     <S.ModalHeaderContent>
                         <Typography fontWeight={fontWeight?.semiBold}>
-                            {sectionToEdit
-                                ? t('article-menu.edit-a-section.title') || 'Edit Section'
-                                : t('article-menu.add-a-section.title') || 'Add a Section'}
+                            {t('article-menu.add-a-section.title') || 'Add a Section'}
                         </Typography>
                         <S.ModalDescription>
                             <Typography color={themeColors?.newtralLight}>
-                                {sectionToEdit
-                                    ? t('article-menu.edit-a-section.description') || 'Update the name of this section.'
-                                    : t('article-menu.add-a-section.description')}
+                                {t('article-menu.add-a-section.description')}
                             </Typography>
                         </S.ModalDescription>
                     </S.ModalHeaderContent>
@@ -158,7 +152,7 @@ function ModalAddASection({
                         loading={loading}
                     >
                         {sectionToEdit
-                            ? t('article-menu.edit-a-section.update') || 'Update Section'
+                            ? t('article-menu.add-a-section.update')
                             : t('article-menu.add-a-section.add-section')}
                     </Button>
                 </S.ModalFooter>
