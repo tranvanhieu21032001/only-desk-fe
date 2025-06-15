@@ -22,6 +22,7 @@ import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskAr
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { createHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
+import { handleUploadImage } from '@/shared/components/common/Upload/api/upload';
 
 interface ModalAddNewArticlesProps {
   open: boolean;
@@ -40,10 +41,17 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
   const [articleTitle, setArticleTitle] = useState('');
   const [editorReady, setEditorReady] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
+  
 
   const { categories, loading, error } = useSelector(
     (state: RootState) => state.helpdeskCategory
   );
+
+  const [uploadProgress, setUploadProgress] = useState({
+    isLoading: false,
+    countUpload: 0,
+    progressPercent: 0,
+  });
 
   useEffect(() => {
     if (open) {
@@ -84,13 +92,7 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
 
   return (
     <S.WrapModal>
-      <ModalCommon
-        open={open}
-        onCancel={onCancel}
-        showFooter={false}
-        width={1200}
-        rootClassName="modal-getting-started-knowledgebase"
-      >
+      <ModalCommon open={open} onCancel={onCancel} showFooter={false} width={1200} rootClassName="modal-getting-started-knowledgebase" >
         <S.ModalHeader>
           <S.ModalHeaderContent>
             <Typography fontWeight={fontWeight.semiBold}>
@@ -103,7 +105,6 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
             </S.ModalDescription>
           </S.ModalHeaderContent>
         </S.ModalHeader>
-
         <S.ModalBody>
           <S.GroupInput>
             <S.FormField>
@@ -198,7 +199,6 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                   editorRef.current = editor;
                   setEditorReady(true);
                 }}
-                initialValue=""
                 init={{
                   height: '100%',
                   menubar: false,
@@ -207,41 +207,66 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                     'advlist autolink lists link image charmap print preview anchor',
                     'searchreplace visualblocks code fullscreen',
                     'insertdatetime media table paste code help wordcount',
-                    'image',
-                    'media',
                     'link',
+                    'image',
                   ],
                   toolbar:
                     'undo redo | formatselect fontsizeselect | bold italic underline | link image media | ' +
                     'alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
                   fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
-                  file_picker_types: 'image media file',
-                  file_picker_callback: (cb, value, meta) => {
+                  file_picker_types: 'image file',
+                  automatic_uploads: true,
+                  image_uploadtab: false,
+
+                  images_upload_handler: async (blobInfo, success, failure) => {
+                    try {
+                      const formData = new FormData();
+                      formData.append('image', blobInfo.blob(), blobInfo.filename());
+
+                      const res = await handleUploadImage(formData, setUploadProgress);
+                      if (res?.fileUrl) {
+                        success(res.fileUrl);
+                      } else {
+                        failure('Image upload failed');
+                      }
+                    } catch (err) {
+                      failure('Upload error: ' + err.message);
+                    }
+                  },
+
+                  file_picker_callback: async (cb, value, meta) => {
                     const input = document.createElement('input');
                     input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
 
-                    if (meta.filetype === 'image') {
-                      input.setAttribute('accept', 'image/*');
-                    } else if (meta.filetype === 'media') {
-                      input.setAttribute('accept', 'video/*');
-                    } else {
-                      input.setAttribute('accept', '*/*');
-                    }
-
-                    input.onchange = () => {
+                    input.onchange = async () => {
+                      console.log("action");
+                      
                       const file = input.files?.[0];
-                      const reader = new FileReader();
+                      if (!file) return;
 
-                      reader.onload = () => {
-                        cb(reader.result?.toString() || '', { title: file?.name });
-                      };
+                      const formData = new FormData();
+                      formData.append('image', file);
 
-                      if (file) reader.readAsDataURL(file);
+                      try {
+                        const res = await handleUploadImage(formData, setUploadProgress);
+                        if (res?.fileUrl) {
+                          console.log("res?.fileUrl", res?.fileUrl);
+                          
+                          cb(res.fileUrl, { title: file.name, alt: file.name });
+                        } else {
+                          console.error('Upload failed');
+                        }
+                      } catch (err) {
+                        console.error('Upload error:', err);
+                      }
                     };
 
                     input.click();
-                  },
+                  }
+
                 }}
+
               />
             </div>
           </S.FormField>

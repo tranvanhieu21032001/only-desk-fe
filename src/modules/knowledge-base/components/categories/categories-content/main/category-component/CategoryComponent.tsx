@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import AllCategories from '../allcatgories/AllCategories';
 import NoCategories from '../nocategories/NoCategories';
 
-import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice'; // đảm bảo path đúng
+import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { RootState } from '@/core/store';
 import { useAppDispatch } from '@/shared/hooks';
+import { Skeleton, Alert } from 'antd';
 
 const CategoryComponent = () => {
   const dispatch = useAppDispatch();
@@ -15,16 +16,24 @@ const CategoryComponent = () => {
     (state: RootState) => state.helpdeskCategory
   );
 
-  useEffect(() => {
+  const loadCategories = useCallback(() => {
     dispatch(fetchHelpdeskCategories());
   }, [dispatch]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  useEffect(() => {
+    loadCategories();
+  }, [loadCategories]);
 
+  if (loading) {
+    return <div style={{ marginTop: 12 }}><Skeleton active paragraph={{ rows: 6 }} /></div>;
+  }
   return (
     <>
-      {categories.length > 0 ? <AllCategories categories={categories} /> : <NoCategories />}
+      {categories.length > 0 ? (
+        <AllCategories categories={categories} onReload={loadCategories} />
+      ) : (
+        <NoCategories />
+      )}
     </>
   );
 };

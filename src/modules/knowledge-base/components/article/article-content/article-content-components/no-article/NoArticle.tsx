@@ -9,6 +9,8 @@ import Button from "@/shared/components/common/Button";
 
 import icImport from '@/assets/icons/knowledge-base/ic-import-new.svg';
 import icAdd from '@/assets/icons/knowledge-base/ic-add.svg';
+import ModalAddNewArticles from "../../modal-add-new-articles/ModalAddNewArticles";
+import { useModal } from "@/shared/hooks";
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +21,6 @@ const Container = styled.div`
   text-align: center;
   gap: 12px;
 `;
-
 
 const ButtonGroup = styled.div`
   display: flex;
@@ -35,6 +36,10 @@ const IconTextWrapper = styled.span`
 
 const NoArticle = () => {
   const { t } = useTranslation('knowledgeBase');
+  const {
+    visible: isModalNewArticles,
+    toggle: handleToggleModalNewArticle,
+  } = useModal();
 
   return (
     <Container>
@@ -47,7 +52,7 @@ const NoArticle = () => {
       </Typography>
 
       <ButtonGroup>
-        <Button>
+        <Button onClick={handleToggleModalNewArticle}>
           <IconTextWrapper>
             <Image src={icAdd} width={18} height={18} preview={false} />
             {t('article-menu.getting-started-knowledge.new-article')}
@@ -60,6 +65,16 @@ const NoArticle = () => {
           </IconTextWrapper>
         </Button>
       </ButtonGroup>
+
+      {isModalNewArticles && (
+        <ModalAddNewArticles
+          open={isModalNewArticles}
+          onCancel={handleToggleModalNewArticle}
+          onStart={() => {
+            handleToggleModalNewArticle();
+          }}
+        />
+      )}
     </Container>
   );
 };

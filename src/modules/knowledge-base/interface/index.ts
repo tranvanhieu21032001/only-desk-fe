@@ -82,3 +82,33 @@ export interface HelpdeskSectionCreatePayload {
     };
     defaultLanguage: string;
 }
+
+export interface Section {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  translations: { [key: string]: { name: string } };
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  desc: string;
+  createdAt: string;
+  updatedAt: string;
+  translations: { [key: string]: { name: string; desc: string } };
+  defaultLanguage: string;
+  sections: Section[];
+}
+
+export interface RowItem {
+  key: string;
+  title: string;
+  description: string;
+  statistic: string;
+  created: string;
+  lastUpdate: string;
+  category: string;
+  isCategoryRow: boolean;
+}

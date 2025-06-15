@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, Input, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -10,9 +10,13 @@ import Typography from '@/shared/components/common/Typography';
 import ModalCommon from '@/shared/components/common/ModalBase';
 
 import * as S from './ModalAddASection.styles';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined } from '@ant-design/icons';
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
-import { createHelpdeskSection } from '@/modules/knowledge-base/api/knowledgebase.api';
+
+import {
+    createHelpdeskSection,
+    updateHelpdeskSection
+} from '@/modules/knowledge-base/api/knowledgebase.api';
 
 interface ModalAddASectionProps {
     open: boolean;
@@ -22,6 +26,10 @@ interface ModalAddASectionProps {
         id: string;
         name: string;
     };
+    sectionToEdit?: {
+        key: string;
+        name: string;
+    } | null;
 }
 
 function ModalAddASection({
@@ -29,12 +37,21 @@ function ModalAddASection({
     onCancel,
     onOK,
     category,
+    sectionToEdit = null,
 }: ModalAddASectionProps) {
     const { t } = useTranslation('knowledgeBase');
     const [sectionName, setSectionName] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleAddSection = async () => {
+    useEffect(() => {
+        if (sectionToEdit?.name) {
+            setSectionName(sectionToEdit.name);
+        } else {
+            setSectionName('');
+        }
+    }, [sectionToEdit, open]);
+
+    const handleSubmit = async () => {
         if (!sectionName.trim()) {
             message.warning(t('article-menu.add-a-section.validation.required') || 'Section name is required');
             return;
@@ -42,18 +59,31 @@ function ModalAddASection({
 
         setLoading(true);
         try {
-            await createHelpdeskSection({
-                name: sectionName,
-                categoryId: category.id,
-                defaultLanguage: 'en',
-                translations: {
-                    en: { name: sectionName },
-                },
-            });
-            setSectionName('');
-            onCancel()
+            if (sectionToEdit) {
+                await updateHelpdeskSection(sectionToEdit?.id, {
+                    name: sectionName,
+                    defaultLanguage: 'en',
+                    translations: {
+                        en: { name: sectionName },
+                    },
+                });
+                message.success(t('article-menu.edit-a-section.success') || 'Section updated successfully');
+            } else {
+                await createHelpdeskSection({
+                    name: sectionName,
+                    categoryId: category.id,
+                    defaultLanguage: 'en',
+                    translations: {
+                        en: { name: sectionName },
+                    },
+                });
+                message.success(t('article-menu.add-a-section.success') || 'Section added successfully');
+            }
+
+            onCancel();
+            onOK();
         } catch (error) {
-            message.error(t('article-menu.add-a-section.error') || 'Failed to add section');
+            message.error(t('article-menu.add-a-section.error') || 'Failed to save section');
         } finally {
             setLoading(false);
         }
@@ -71,11 +101,15 @@ function ModalAddASection({
                 <S.ModalHeader>
                     <S.ModalHeaderContent>
                         <Typography fontWeight={fontWeight?.semiBold}>
-                            {t('article-menu.add-a-section.title')}
+                            {sectionToEdit
+                                ? t('article-menu.edit-a-section.title') || 'Edit Section'
+                                : t('article-menu.add-a-section.title') || 'Add a Section'}
                         </Typography>
                         <S.ModalDescription>
                             <Typography color={themeColors?.newtralLight}>
-                                {t('article-menu.add-a-section.description')}
+                                {sectionToEdit
+                                    ? t('article-menu.edit-a-section.description') || 'Update the name of this section.'
+                                    : t('article-menu.add-a-section.description')}
                             </Typography>
                         </S.ModalDescription>
                     </S.ModalHeaderContent>
@@ -118,11 +152,14 @@ function ModalAddASection({
                         {t('article-menu.add-a-section.cancel')}
                     </Button>
                     <Button
-                        onClick={handleAddSection}
+                        onClick={handleSubmit}
                         type="primary"
-                        icon={<PlusOutlined />}
+                        icon={sectionToEdit ? <EditOutlined /> : <PlusOutlined />}
+                        loading={loading}
                     >
-                        {t('article-menu.add-a-section.add-section')}
+                        {sectionToEdit
+                            ? t('article-menu.edit-a-section.update') || 'Update Section'
+                            : t('article-menu.add-a-section.add-section')}
                     </Button>
                 </S.ModalFooter>
             </ModalCommon>

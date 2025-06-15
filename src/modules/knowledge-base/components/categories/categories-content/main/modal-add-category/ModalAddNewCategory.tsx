@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, Input, message, Progress } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { PlusOutlined } from '@ant-design/icons';
@@ -14,7 +14,7 @@ import * as S from './ModalAddNewCategory.styles';
 
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
-import { createHelpdeskCategory } from '@/modules/knowledge-base/api/knowledgebase.api';
+import { createHelpdeskCategory, updateHelpdeskCategory } from '@/modules/knowledge-base/api/knowledgebase.api';
 
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import icImage from '@/assets/icons/knowledge-base/ic-image.svg';
@@ -25,7 +25,15 @@ interface ModalAddNewCategoryProps {
     open: boolean;
     onCancel: () => void;
     onOK: () => void;
-     onAddCategory?: (category: { id: string; name: string }) => void;
+    onAddCategory?: (category: { id: string; name: string }) => void;
+    categoryToEdit?: {
+        id: string;
+        name: string;
+        desc?: string;
+        image?: string;
+        defaultLanguage?: string;
+        translations?: Record<string, { name: string; desc: string }>;
+    };
 }
 
 const ModalAddNewCategory = ({
@@ -33,8 +41,12 @@ const ModalAddNewCategory = ({
     onCancel,
     onOK,
     onAddCategory,
+    categoryToEdit,
 }: ModalAddNewCategoryProps) => {
     const { t } = useTranslation('knowledgeBase');
+
+    console.log("categoryToEdit", categoryToEdit);
+
 
     const [language, setLanguage] = useState(langOptions[0]?.value);
     const [name, setName] = useState('');
@@ -48,7 +60,25 @@ const ModalAddNewCategory = ({
         progressPercent: 0,
     });
 
-    const handleAddCategory = async () => {
+    useEffect(() => {
+        if (categoryToEdit) {
+            const lang = categoryToEdit.defaultLanguage || 'en';
+            setLanguage(lang);
+            setName(categoryToEdit.translations?.[lang]?.name || categoryToEdit.name || '');
+            setDesc(categoryToEdit.translations?.[lang]?.desc || categoryToEdit.desc || '');
+            setUploadedImageUrl(categoryToEdit.image || '');
+            setPreviewImage(categoryToEdit.image || null);
+        } else {
+            setLanguage(langOptions[0]?.value);
+            setName('');
+            setDesc('');
+            setUploadedImageUrl('');
+            setPreviewImage(null);
+            setImageFile(null);
+        }
+    }, [categoryToEdit, open]);
+
+    const handleSubmit = async () => {
         if (!name.trim()) {
             message.warning(t('article-menu.add-a-category.fill-name-fields'));
             return;
@@ -56,11 +86,29 @@ const ModalAddNewCategory = ({
 
         const slug = name.trim().toLowerCase().replace(/\s+/g, '-');
 
+        let imageUrl = uploadedImageUrl;
+
+        if (imageFile) {
+            const formData = new FormData();
+            formData.append('image', imageFile);
+
+            try {
+                const res = await handleUploadImage(formData, setUploadProgress);
+                if (res?.fileUrl) {
+                    imageUrl = res.fileUrl;
+                    setUploadedImageUrl(res.fileUrl); // lưu lại để reuse
+                }
+            } catch {
+                message.error(t('article-menu.add-a-category.upload-failed'));
+                return;
+            }
+        }
+
         const payload = {
             name,
             desc,
             slug,
-            image: uploadedImageUrl,
+            image: imageUrl,
             translations: {
                 [language]: {
                     name,
@@ -71,11 +119,15 @@ const ModalAddNewCategory = ({
         };
 
         try {
-            const created = await createHelpdeskCategory(payload);
-
-            // Truyền { id, name } nếu có onAddCategory
-            if (onAddCategory && created?.id) {
-                onAddCategory({ id: created.id, name: name });
+            if (categoryToEdit?.id) {
+                await updateHelpdeskCategory(categoryToEdit.id, payload);
+                message.success(t('article-menu.add-a-category.success-updated'));
+            } else {
+                const created = await createHelpdeskCategory(payload);
+                if (onAddCategory && created?.id) {
+                    onAddCategory({ id: created.id, name });
+                }
+                message.success(t('article-menu.add-a-category.success-added'));
             }
 
             onOK();
@@ -83,7 +135,6 @@ const ModalAddNewCategory = ({
             message.error(t('article-menu.add-a-category.error'));
         }
     };
-
 
     return (
         <S.WrapModal>
@@ -97,7 +148,9 @@ const ModalAddNewCategory = ({
                 <S.ModalHeader>
                     <S.ModalHeaderContent>
                         <Typography fontWeight={fontWeight.semiBold}>
-                            {t('article-menu.add-a-category.title')}
+                            {categoryToEdit
+                                ? t('article-menu.add-a-category.edit-title')
+                                : t('article-menu.add-a-category.title')}
                         </Typography>
                         <S.ModalDescription>
                             <Typography color={themeColors.newtralLight}>
@@ -172,14 +225,20 @@ const ModalAddNewCategory = ({
                         </Typography>
 
                         {previewImage ? (
-                            <>
+                            <S.ImagePreviewWrapper>
                                 <S.ImagePreview>
                                     <Image src={previewImage} width={120} height={80} preview />
+                                    <S.RemoveImageButton onClick={() => {
+                                        setImageFile(null);
+                                        setPreviewImage(null);
+                                    }}>
+                                        ×
+                                    </S.RemoveImageButton>
                                 </S.ImagePreview>
                                 {uploadProgress.isLoading && (
                                     <Progress percent={uploadProgress.progressPercent} size="small" />
                                 )}
-                            </>
+                            </S.ImagePreviewWrapper>
                         ) : (
                             <label htmlFor="upload-thumbnail">
                                 <S.SelectFile>
@@ -196,26 +255,15 @@ const ModalAddNewCategory = ({
                             type="file"
                             style={{ display: 'none' }}
                             accept="image/*"
-                            onChange={async (e) => {
+                            onChange={(e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
                                     setImageFile(file);
                                     setPreviewImage(URL.createObjectURL(file));
-
-                                    const formData = new FormData();
-                                    formData.append('image', file);
-
-                                    try {
-                                        const res = await handleUploadImage(formData, setUploadProgress);
-                                        if (res?.fileUrl) {
-                                            setUploadedImageUrl(res.fileUrl);
-                                        }
-                                    } catch {
-                                        message.error(t('article-menu.add-a-category.upload-failed'));
-                                    }
                                 }
                             }}
                         />
+
                     </S.FormField>
                 </S.ModalBody>
 
@@ -224,12 +272,10 @@ const ModalAddNewCategory = ({
                     <Button onClick={onCancel}>
                         {t('article-menu.add-a-category.cancel')}
                     </Button>
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={handleAddCategory}
-                    >
-                        {t('article-menu.add-a-category.add-category')}
+                    <Button type="primary" icon={<PlusOutlined />} onClick={handleSubmit}>
+                        {categoryToEdit
+                            ? t('article-menu.add-a-category.update-category')
+                            : t('article-menu.add-a-category.add-category')}
                     </Button>
                 </S.ModalFooter>
             </ModalCommon>
