@@ -44,6 +44,15 @@ enum ActionArticleFilterEnums {
   DESTROY_CURRENT_LANGUAGE = 'DESTROY_CURRENT_LANGUAGE',
 }
 
+enum ActionCategoryFilterEnums {
+  EDIT_A_CATEGORY = 'EDIT_A_CATEGORY',
+  REMOVE_A_CATEGORY = 'REMOVE_A_CATEGORY',
+  ADD_A_NEW_SECTION = 'ADD_A_NEW_SECTION',
+  EDIT_A_SECTION = 'EDIT_A_SECTION',
+  REMOVE_A_SECTION = 'REMOVE_A_SECTION',
+
+}
+
 export {
   AccountMenusEnums,
   EnableTwoFactorEnums,
@@ -51,4 +60,5 @@ export {
   DeleteAccountStepEnums,
   DisableTwoFactorStepEnums,
   ActionArticleFilterEnums,
+  ActionCategoryFilterEnums
 };

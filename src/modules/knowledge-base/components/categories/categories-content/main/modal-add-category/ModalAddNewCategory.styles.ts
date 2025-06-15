@@ -184,3 +184,30 @@ export const ImagePreview = styled.div`
     object-fit: cover;
   }
 `;
+
+export const ImagePreviewWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+export const RemoveImageButton = styled.button`
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: #d9363e;
+  }
+`;

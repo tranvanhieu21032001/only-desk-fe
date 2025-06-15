@@ -1,5 +1,5 @@
-import React from 'react';
-import { Table, Image, Tag, Dropdown } from 'antd';
+import React, { useState } from 'react';
+import { Table, Image, Tag, Dropdown, Modal, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { MoreOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -11,38 +11,33 @@ import icTrash from '@/assets/icons/knowledge-base/ic-trash.svg';
 import icEdit from '@/assets/icons/knowledge-base/ic-edit-2.svg';
 import icAdd from '@/assets/icons/knowledge-base/ic-add2.svg';
 
-interface Section {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  translations: { [key: string]: { name: string } };
+import { Category, RowItem, Section } from '@/modules/knowledge-base/interface';
+import { ActionCategoryFilterEnums } from '@/modules/knowledge-base/helpers/enums/article';
+import { useModal } from '@/shared/hooks';
+import ModalAddNewCategory from '../modal-add-category/ModalAddNewCategory';
+import { deleteHelpdeskCategory, deleteHelpdeskSection } from '@/modules/knowledge-base/api/knowledgebase.api';
+import ModalAddASection from '../modal-add-a-section/ModalAddASection';
+
+interface AllCategoriesProps {
+  categories: Category[];
+  onReload: () => void;
 }
 
-interface Category {
-  id: string;
-  name: string;
-  desc: string;
-  createdAt: string;
-  updatedAt: string;
-  translations: { [key: string]: { name: string; desc: string } };
-  defaultLanguage: string;
-  sections: Section[];
-}
-
-interface RowItem {
-  key: string;
-  title: string;
-  description: string;
-  statistic: string;
-  created: string;
-  lastUpdate: string;
-  category: string;
-  isCategoryRow: boolean;
-}
-
-const AllCategories = ({ categories }: { categories: Category[] }) => {
+const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
   const { t } = useTranslation('knowledgeBase');
+
+  const {
+    visible: isModalEditCategory,
+    toggle: handleToggleModalEditCategory,
+  } = useModal();
+  const {
+    visible: isModalAddSection,
+    toggle: toggleModalAddSection,
+  } = useModal();
+
+  const [categoryToAddSection, setCategoryToAddSection] = useState<Category | null>(null);
+  const [sectionToEdit, setSectionToEdit] = useState<Section | null>(null);
+  const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
 
   const categoryTableData: RowItem[] = categories.flatMap((category) => {
     const lang = category.defaultLanguage || 'en';
@@ -77,20 +72,93 @@ const AllCategories = ({ categories }: { categories: Category[] }) => {
     return [catRow, ...sectionRows];
   });
 
+  const handleActionFilterArticle = async (
+    actionType: ActionCategoryFilterEnums,
+    rowData: RowItem
+  ) => {
+    switch (actionType) {
+      case ActionCategoryFilterEnums.EDIT_A_CATEGORY:
+        const selectedCategory = categories.find(
+          (cat) => cat.translations?.[cat.defaultLanguage || 'en']?.name === rowData.category
+        );
+        if (selectedCategory) {
+          setCategoryToEdit(selectedCategory);
+          handleToggleModalEditCategory();
+        }
+        return;
+
+      case ActionCategoryFilterEnums.REMOVE_A_CATEGORY:
+        const category = categories.find(
+          (cat) => cat.translations?.[cat.defaultLanguage || 'en']?.name === rowData.category
+        );
+        if (category) {
+          try {
+            await deleteHelpdeskCategory(category.id);
+            onReload();
+            message.success(t('Xóa danh mục thành công'));
+          } catch (error) {
+            console.error(error);
+            message.error(t('Xóa danh mục thất bại'));
+          }
+        }
+        return;
+
+      case ActionCategoryFilterEnums.REMOVE_A_SECTION:
+        const sectionId = rowData.key.replace('section-', '');
+        try {
+          await deleteHelpdeskSection(sectionId);
+          onReload();
+        } catch (error) {
+          console.error(error);
+          message.error(t('Xóa mục thất bại'));
+        }
+        return;
+
+      case ActionCategoryFilterEnums.ADD_A_NEW_SECTION:
+        const targetCategory = categories.find(
+          (cat) => cat.translations?.[cat.defaultLanguage || 'en']?.name === rowData.category
+        );
+        if (targetCategory) {
+          setCategoryToAddSection(targetCategory);
+          toggleModalAddSection();
+        }
+        return;
+
+      case ActionCategoryFilterEnums.EDIT_A_SECTION:
+        const secId = rowData.key.replace('section-', '');
+        const matchedCategory = categories.find((cat) =>
+          cat.sections.some((sec) => sec.id === secId)
+        );
+        const matchedSection = matchedCategory?.sections.find((sec) => sec.id === secId);
+
+        if (matchedCategory && matchedSection) {
+          setCategoryToAddSection(matchedCategory);
+          setSectionToEdit(matchedSection);
+          toggleModalAddSection();
+        }
+        return;
+
+      default:
+        break;
+    }
+  };
+
   const getDropdownMenu = (rowData: RowItem) => ({
     items: rowData.isCategoryRow
       ? [
           {
-            key: 'add-category',
+            key: 'add-section',
             icon: <Image src={icAdd} width={24} height={24} preview={false} />,
             label: <Typography padding="0 0 0 2px">{t('article-menu.actions.add-section')}</Typography>,
-            onClick: () => console.log('Add Section to Category:', rowData.category),
+            onClick: () =>
+              handleActionFilterArticle(ActionCategoryFilterEnums.ADD_A_NEW_SECTION, rowData),
           },
           {
             key: 'edit-category',
             icon: <Image src={icEdit} width={24} height={24} preview={false} />,
             label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
-            onClick: () => console.log('Edit Category:', rowData.category),
+            onClick: () =>
+              handleActionFilterArticle(ActionCategoryFilterEnums.EDIT_A_CATEGORY, rowData),
           },
           {
             key: 'remove-category',
@@ -100,25 +168,28 @@ const AllCategories = ({ categories }: { categories: Category[] }) => {
                 {t('article-menu.actions.remove')}
               </Typography>
             ),
-            onClick: () => console.log('Remove Category:', rowData.category),
+            onClick: () =>
+              handleActionFilterArticle(ActionCategoryFilterEnums.REMOVE_A_CATEGORY, rowData),
           },
         ]
       : [
           {
-            key: 'edit-article',
+            key: 'edit-section',
             icon: <Image src={icEdit} width={24} height={24} preview={false} />,
             label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
-            onClick: () => console.log('Edit Section:', rowData),
+            onClick: () =>
+              handleActionFilterArticle(ActionCategoryFilterEnums.EDIT_A_SECTION, rowData),
           },
           {
-            key: 'remove-article',
+            key: 'remove-section',
             icon: <Image src={icTrash} width={24} height={24} preview={false} />,
             label: (
               <Typography padding="0 0 0 2px" color="red">
                 {t('article-menu.actions.remove')}
               </Typography>
             ),
-            onClick: () => console.log('Remove Section:', rowData),
+            onClick: () =>
+              handleActionFilterArticle(ActionCategoryFilterEnums.REMOVE_A_SECTION, rowData),
           },
         ],
   });
@@ -191,6 +262,36 @@ const AllCategories = ({ categories }: { categories: Category[] }) => {
         rowKey="key"
         pagination={false}
       />
+
+      {isModalEditCategory && (
+        <ModalAddNewCategory
+          open={isModalEditCategory}
+          onCancel={handleToggleModalEditCategory}
+          onOK={() => {
+            handleToggleModalEditCategory();
+            onReload();
+          }}
+          onAddCategory={() => {}}
+          categoryToEdit={categoryToEdit}
+        />
+      )}
+
+      {isModalAddSection && categoryToAddSection && (
+        <ModalAddASection
+          open={isModalAddSection}
+          onCancel={() => {
+            toggleModalAddSection();
+            setSectionToEdit(null);
+          }}
+          onOK={() => {
+            toggleModalAddSection();
+            setSectionToEdit(null);
+            onReload();
+          }}
+          category={categoryToAddSection}
+          sectionToEdit={sectionToEdit}
+        />
+      )}
     </S.TableWrapper>
   );
 };
