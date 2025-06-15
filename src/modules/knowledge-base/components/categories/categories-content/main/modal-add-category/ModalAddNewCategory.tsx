@@ -148,9 +148,7 @@ const ModalAddNewCategory = ({
                 <S.ModalHeader>
                     <S.ModalHeaderContent>
                         <Typography fontWeight={fontWeight.semiBold}>
-                            {categoryToEdit
-                                ? t('article-menu.add-a-category.edit-title')
-                                : t('article-menu.add-a-category.title')}
+                            {t('article-menu.add-a-category.title')}
                         </Typography>
                         <S.ModalDescription>
                             <Typography color={themeColors.newtralLight}>
@@ -274,7 +272,7 @@ const ModalAddNewCategory = ({
                     </Button>
                     <Button type="primary" icon={<PlusOutlined />} onClick={handleSubmit}>
                         {categoryToEdit
-                            ? t('article-menu.add-a-category.update-category')
+                            ? t('article-menu.add-a-category.update')
                             : t('article-menu.add-a-category.add-category')}
                     </Button>
                 </S.ModalFooter>
