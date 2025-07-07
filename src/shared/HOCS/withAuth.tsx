@@ -15,7 +15,11 @@ export default function useWithAuth<
   useEffect(() => {
     if (!isAuth && !Object.values(AUTH_ROUTES).includes(currentPath)) {
       navigate(AUTH_ROUTES.SIGN_IN, { replace: true });
-    } else if (isAuth && Object.values(AUTH_ROUTES).includes(currentPath)) {
+    } else if (
+      isAuth &&
+      Object.values(AUTH_ROUTES).includes(currentPath) &&
+      currentPath !== AUTH_ROUTES.GETTING_STARTED && currentPath !== AUTH_ROUTES.ACCEPT_INVITATION
+    ) {
       navigate(MAIN_ROUTES?.HOME, { replace: true });
     }
   }, [isAuth]);

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { passwordRegex } from '@/shared/regex';
-import { handleSignInApi } from '../../api/auth';
+import { handleGoogleTokenLoginApi, handleSignInApi } from '../../api/auth';
 import { AUTH_ROUTES } from '@/core/routes/constants';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 
@@ -11,26 +11,48 @@ import Input from '@/shared/components/common/Input';
 import Checkbox from '@/shared/components/common/Checkbox';
 import Typography from '@/shared/components/common/Typography';
 
-import icApple from '@/assets/icons/common/ic-apple.svg';
 import icGoogle from '@/assets/icons/common/ic-google.svg';
 import icArrowRight from '@/assets/icons/common/ic-arrow-right.svg';
 
 import * as S from './SignIn.styles';
+import { useEffect, useRef, useState } from 'react';
 
 function SignIn() {
+  const API_SERVER = import.meta.env.VITE_API_SERVER;
   const { t } = useTranslation('auth');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [form] = Form.useForm();
   const { isLoading } = useAppSelector((state) => state?.auth);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const hasHandledGoogleLogin = useRef(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+
+    if (token && !hasHandledGoogleLogin.current) {
+      hasHandledGoogleLogin.current = true;
+
+      const cleanUrl = location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
+
+      handleGoogleTokenLoginApi(token, dispatch, navigate, t).finally(() => {
+        setGoogleLoading(false);
+      });
+    }
+  }, [location.search]);
 
   function handleSignIn(values: any) {
     handleSignInApi(values, dispatch, navigate, t);
   }
 
   function handleLoginWithGoogle() {
-    //Handle later
+    setGoogleLoading(true);
+    const googleLoginUrl = `${API_SERVER}/auth/google`;
+    window.location.href = googleLoginUrl;
   }
 
   function handleLoginWithFacebook() {
@@ -147,10 +169,10 @@ function SignIn() {
             {t('sign-in-with-google')}
           </S.LoginButton>
 
-          <S.LoginButton onClick={handleLoginWithFacebook}>
+          {/* <S.LoginButton onClick={handleLoginWithFacebook}>
             <Image src={icApple} preview={false} />
             {t('sign-in-with-facebook')}
-          </S.LoginButton>
+          </S.LoginButton> */}
         </S.FormWrap>
       </S.SignInForm>
     </S.SignInWrap>
