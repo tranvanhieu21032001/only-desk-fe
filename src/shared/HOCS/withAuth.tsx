@@ -18,7 +18,14 @@ export default function useWithAuth<
     } else if (
       isAuth &&
       Object.values(AUTH_ROUTES).includes(currentPath) &&
-      currentPath !== AUTH_ROUTES.GETTING_STARTED && currentPath !== AUTH_ROUTES.ACCEPT_INVITATION
+      currentPath !== AUTH_ROUTES.GETTING_STARTED &&
+      currentPath !== AUTH_ROUTES.ACCEPT_INVITATION &&
+      currentPath !== AUTH_ROUTES.ACTIVE_PRODUCT &&
+      currentPath !== AUTH_ROUTES.YOUR_NAME &&
+      currentPath !== AUTH_ROUTES.COMPANY_SIZE &&
+      currentPath !== AUTH_ROUTES.WEBSITE_ADDRESS &&
+      currentPath !== AUTH_ROUTES.CONNECT_ONLY_CHAT &&
+      currentPath !== AUTH_ROUTES.CUSTOMER
     ) {
       navigate(MAIN_ROUTES?.HOME, { replace: true });
     }

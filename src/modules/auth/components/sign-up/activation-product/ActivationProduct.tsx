@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useRouter } from '@/shared/hooks/useRouter';
-import { SignUpStepEnums } from '@/modules/auth/helpers/enums/auth';
+import { GettingStartedEnums, SignUpStepEnums } from '@/modules/auth/helpers/enums/auth';
 
 import Typography from '@/shared/components/common/Typography';
 
@@ -13,15 +13,16 @@ import bannerEmpty from '@/assets/images/auth/banner-empty.png';
 
 function ActivationProduct() {
   const { t } = useTranslation('auth');
-  const { replaceState } = useRouter();
+  const { navigate } = useRouter();
 
   useEffect(() => {
-    setTimeout(() => {
-      replaceState({
-        type: SignUpStepEnums?.YOUR_NAME,
-      });
+    const timer = setTimeout(() => {
+      navigate(`/auth/sign-up/${SignUpStepEnums.YOUR_NAME}`);
     }, 2000);
-  }, []);
+
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
 
   return (
     <S.SignInWrap>

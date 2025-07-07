@@ -1,10 +1,10 @@
 import { Form, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { constants } from '@/core/settings';
 import { websiteRegex } from '@/shared/regex';
-import { useRouter } from '@/shared/hooks/useRouter';
 import webLocalStorage from '@/shared/utils/webLocalStorage';
 import { SignUpStepEnums } from '@/modules/auth/helpers/enums/auth';
 
@@ -18,7 +18,7 @@ function WebsiteAddress() {
   const { t } = useTranslation('auth');
 
   const [form] = Form.useForm();
-  const { replaceState } = useRouter();
+  const navigate = useNavigate();
 
   const signUpFromLocal = webLocalStorage.get(constants?.SIGN_UP_INFO);
 
@@ -36,9 +36,7 @@ function WebsiteAddress() {
       websiteUrl: values?.websiteUrl,
     });
 
-    replaceState({
-      type: SignUpStepEnums?.CONNECT_ONLY_CHAT,
-    });
+    navigate(`/auth/sign-up/${SignUpStepEnums.CONNECT_ONLY_CHAT}`);
   }
 
   return (
