@@ -42,7 +42,7 @@ function StartForFree() {
   }, []);
 
   async function handleFinish(values: any) {
-    handleSignUp(values, dispatch, replaceState, t);
+    handleSignUp(values, dispatch, navigate, t);
   }
 
   function handleLoginWithGoogle() {
@@ -155,14 +155,13 @@ function StartForFree() {
             name="phoneNumber"
             rules={[
               {
-                required: true,
+                required: false,
                 message: t('sign-up-form.please-enter-mobile-phone-number'),
               },
             ]}
           >
             <PhoneNumberByCountry
               label={t('sign-up-form.mobile-phone-number')}
-              isRequired
               placeholder={t('sign-up-form.enter-your-mobile-phone-number')}
               nameField="phoneNumber"
               currentInstanceForm={form}

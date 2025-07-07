@@ -1,7 +1,6 @@
-import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import { useAppSelector } from '@/shared/hooks';
 import { SignUpStepEnums } from '../../helpers/enums/auth';
 
 import YourName from '@/modules/auth/components/sign-up/your-name/YourName';
@@ -17,17 +16,15 @@ import ActivationProduct from '@/modules/auth/components/sign-up/activation-prod
 import * as S from './SignUp.styles';
 
 function SignUp() {
-  const [search] = useSearchParams();
-  const { currentObjHistory }: any = useAppSelector(
-    (state) => state?.historyRoute,
-  );
+  const { t } = useTranslation('auth');
+  const location = useLocation();
 
-  const signUpType =
-    (currentObjHistory || [])?.find((item: any) => item?.key === 'type')
-      ?.value || search.get('type');
+  // ✅ Lấy bước từ path cuối cùng
+  const currentPath = location.pathname;
+  const stepFromPath = currentPath.split('/').pop() || SignUpStepEnums.SIGN_UP;
 
-  const renderContentSignUp = useMemo(() => {
-    switch (signUpType) {
+  const renderContentSignUp = () => {
+    switch (stepFromPath) {
       case SignUpStepEnums?.SIGN_UP:
         return <StartForFree />;
       case SignUpStepEnums?.CONFIRM_CODE:
@@ -49,9 +46,9 @@ function SignUp() {
       default:
         return <StartForFree />;
     }
-  }, [signUpType]);
+  };
 
-  return <S.SignInWrap>{renderContentSignUp}</S.SignInWrap>;
+  return <S.SignInWrap>{renderContentSignUp()}</S.SignInWrap>;
 }
 
 export default SignUp;

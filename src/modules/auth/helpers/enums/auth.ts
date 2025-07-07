@@ -15,4 +15,10 @@ enum RecoverPassStepEnums {
   CREATE_NEW_PASS = "create-new-pass",
 }
 
-export { SignUpStepEnums,RecoverPassStepEnums };
+enum GettingStartedEnums{
+  GET_INFORMATION = "get-information",
+  CONNECT_ZEST_CHAT = "connect-zest-chat",
+  INVITE_TEAM = "invite-team"
+}
+
+export { SignUpStepEnums,RecoverPassStepEnums, GettingStartedEnums };

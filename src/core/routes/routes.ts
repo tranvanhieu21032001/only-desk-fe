@@ -46,7 +46,10 @@ const Billing = React.lazy(
 );
 
 const ChangePlan = React.lazy(
-  () => import('@/modules/settings/components/billing/billing-content/main/change-plan/ChangePlan'),
+  () =>
+    import(
+      '@/modules/settings/components/billing/billing-content/main/change-plan/ChangePlan'
+    ),
 );
 
 //Knowledge Base
@@ -80,7 +83,6 @@ const PluginsAdmin = React.lazy(
   () => import('@/modules/admin/pages/plugins/PluginsAdmin'),
 );
 
-
 const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
@@ -95,6 +97,48 @@ const routes_auth: RouterElementInterface[] = [
     path: AUTH_ROUTES?.SIGN_UP,
     component: SignUp,
     name: 'auth-sign-up',
+  },
+  {
+    key: 'sign-up-1',
+    path: AUTH_ROUTES?.CONFIRM_CODE,
+    component: SignUp,
+    name: 'auth-sign-up',
+  },
+  {
+    key: 'sign-up-2',
+    path: AUTH_ROUTES?.ACTIVE_PRODUCT,
+    component: SignUp,
+    name: 'activating-product',
+  },
+  {
+    key: 'your-name',
+    path: AUTH_ROUTES?.YOUR_NAME,
+    component: SignUp,
+    name: 'your-name',
+  },
+  {
+    key: 'website-address',
+    path: AUTH_ROUTES?.WEBSITE_ADDRESS,
+    component: SignUp,
+    name: 'website-address',
+  },
+  {
+    key: 'connect-only-chat',
+    path: AUTH_ROUTES?.CONNECT_ONLY_CHAT,
+    component: SignUp,
+    name: 'connect-only-chat',
+  },
+  {
+    key: 'company-size',
+    path: AUTH_ROUTES?.COMPANY_SIZE,
+    component: SignUp,
+    name: 'company-size',
+  },
+    {
+    key: 'customer',
+    path: AUTH_ROUTES?.CUSTOMER,
+    component: SignUp,
+    name: 'customer',
   },
   {
     key: 'forgot-password',
@@ -249,7 +293,7 @@ const routes_main: RouterElementInterface[] = [
   },
 
   //Admin
-    {
+  {
     key: 'workspace-admin',
     path: MAIN_ROUTES.WORKSPACE_ADMIN,
     component: WorkSpaceAdmin,
@@ -267,7 +311,6 @@ const routes_main: RouterElementInterface[] = [
     component: PluginsAdmin,
     name: 'plugins-admin',
   },
-  
 
   //Settings
   {
@@ -282,7 +325,7 @@ const routes_main: RouterElementInterface[] = [
     component: Billing,
     name: 'billing',
   },
-    {
+  {
     key: 'change-plan',
     path: MAIN_ROUTES.CHANGEPLAN,
     component: ChangePlan,

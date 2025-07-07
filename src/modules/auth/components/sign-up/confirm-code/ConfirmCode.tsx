@@ -1,6 +1,7 @@
 import { Form, Image } from 'antd';
 import OTPInput from 'react-otp-input';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 import { constants } from '@/core/settings';
 import { useRouter } from '@/shared/hooks/useRouter';
@@ -16,13 +17,14 @@ import icGmail from '@/assets/icons/common/ic-google.svg';
 import icArrowRight from '@/assets/icons/common/ic-arrow-right.svg';
 
 import * as S from './ConfirmCode.styles';
+import { useNavigate } from 'react-router-dom';
 
 function ConfirmCode() {
   const { t } = useTranslation('auth');
 
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const { replaceState } = useRouter();
+  const navigate = useNavigate();
   const codeWatch = Form.useWatch('code', form);
 
   const { isLoading } = useAppSelector((state) => state?.auth);
@@ -33,7 +35,7 @@ function ConfirmCode() {
     const payloads = {
       code: values?.code,
     };
-    handleVerifyOtp(payloads, dispatch, replaceState, t);
+    handleVerifyOtp(payloads, dispatch, navigate, t);
   }
 
   function handleGetANewOtp() {
@@ -93,13 +95,14 @@ function ConfirmCode() {
             </Typography>
           </S.LoginLabelWrap>
 
-          <Form.Item name="code" className="otp-form-item">
+          <Form.Item
+            name="code"
+            className="otp-form-item"
+            rules={[{ required: true, message: t('confirm-code.required') }]}
+          >
             <OTPInput
-              onChange={(value) => {
-                if (value?.length === 6) {
-                  form.submit();
-                }
-              }}
+              value={codeWatch || ''}
+              onChange={(value) => form.setFieldsValue({ code: value })}
               containerStyle="otp-input-wrapper"
               shouldAutoFocus={true}
               numInputs={6}
@@ -126,7 +129,7 @@ function ConfirmCode() {
               type="primary"
               onClick={form.submit}
               isLoading={isLoading}
-              disabled={isLoading || codeWatch?.length < 6 || !codeWatch}
+              disabled={isLoading || (codeWatch?.length || 0) < 6}
             >
               {t('confirm-code.continue')}
               <Image src={icArrowRight} preview={false} />

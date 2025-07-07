@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Form, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { constants } from '@/core/settings';
-import { useRouter } from '@/shared/hooks/useRouter';
 import webLocalStorage from '@/shared/utils/webLocalStorage';
 import { SignUpStepEnums } from '@/modules/auth/helpers/enums/auth';
 
@@ -17,24 +17,23 @@ function YourName() {
   const { t } = useTranslation('auth');
 
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+
   const signUpFromLocal = webLocalStorage.get(constants?.SIGN_UP_INFO);
 
-  const { replaceState } = useRouter();
-
   useEffect(() => {
-    if (signUpFromLocal?.name) {
-      form.setFieldValue('name', signUpFromLocal?.name);
+    if (signUpFromLocal?.workspaceName) {
+      form.setFieldValue('name', signUpFromLocal?.workspaceName);
     }
-  }, [signUpFromLocal?.name]);
+  }, [signUpFromLocal]);
 
-  function handleSignUp({ name }: any) {
+  function handleContinue({ name }: any) {
     webLocalStorage.set(constants?.SIGN_UP_INFO, {
       ...signUpFromLocal,
-      name: name,
+      workspaceName: name,
     });
-    replaceState({
-      type: SignUpStepEnums?.WEBSITE_ADDRESS,
-    });
+
+    navigate(`/auth/sign-up/${SignUpStepEnums.WEBSITE_ADDRESS}`);
   }
 
   return (
@@ -42,7 +41,7 @@ function YourName() {
       <S.SignInForm className="center-column-auth">
         <S.FormWrap
           form={form}
-          onFinish={handleSignUp}
+          onFinish={handleContinue}
           validateTrigger="onSubmit"
         >
           <S.LoginLabelWrap>
@@ -63,7 +62,6 @@ function YourName() {
             <Input
               isRequired
               placeholder={t('your-name.enter-your-name')}
-              type="email"
               allowClear
             />
           </S.FormItem>

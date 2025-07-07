@@ -1,11 +1,11 @@
 import { Form, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { isArray } from 'lodash';
 
 import { constants } from '@/core/settings';
 import { useAppSelector } from '@/shared/hooks';
-import { useRouter } from '@/shared/hooks/useRouter';
 import webLocalStorage from '@/shared/utils/webLocalStorage';
 import { companySizes } from '@/modules/auth/helpers/data/signUp';
 import { SignUpStepEnums } from '@/modules/auth/helpers/enums/auth';
@@ -17,44 +17,45 @@ import * as S from './CompanySize.styles';
 
 function CompanySize() {
   const { t } = useTranslation('auth');
-  const [search] = useSearchParams();
-  const { replaceState } = useRouter();
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
+  
+
   const signUpFromLocal = webLocalStorage.get(constants?.SIGN_UP_INFO);
   const { currentObjHistory }: any = useAppSelector(
     (state) => state?.historyRoute,
   );
 
-  const companySize =
+  const initialCompanySize =
     (isArray(currentObjHistory) ? currentObjHistory : [])?.find(
       (item) => item?.key === 'size',
-    )?.value ||
-    search.get('size') ||
-    signUpFromLocal?.companySize;
+    )?.value || signUpFromLocal?.companySize || '';
 
-  const [form] = Form.useForm();
+  const [companySize, setCompanySize] = useState<string>(initialCompanySize);
 
-  function handleSignUp() {
+  useEffect(() => {
+    if (initialCompanySize) {
+      setCompanySize(initialCompanySize);
+    }
+  }, [initialCompanySize]);
+
+  function selectCompanySize(size: string) {
+    setCompanySize(size);
+  }
+
+  function handleSubmit() {
     webLocalStorage.set(constants?.SIGN_UP_INFO, {
       ...signUpFromLocal,
       companySize: companySize || '',
     });
 
-    replaceState({
-      type: SignUpStepEnums?.INVITE_YOUR_TEAM,
-      size: '',
-    });
-  }
-
-  function handleSelectSize(size: string) {
-    replaceState({
-      size: size,
-    });
+    navigate(`/auth/sign-up/${SignUpStepEnums.CUSTOMER}`);
   }
 
   return (
     <S.SignInWrap>
       <S.SignInForm className="center-column-auth">
-        <S.FormWrap form={form} onFinish={handleSignUp}>
+        <S.FormWrap form={form} onFinish={handleSubmit}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center">
               {t('company-size.company-size')}
@@ -65,7 +66,7 @@ function CompanySize() {
             {companySizes?.map((size) => (
               <S.ButtonSize
                 key={size?.key}
-                onClick={() => handleSelectSize(size?.value)}
+                onClick={() => selectCompanySize(size?.value)}
                 $isActive={size?.value === companySize}
               >
                 {size?.value === companySize && (
@@ -76,7 +77,6 @@ function CompanySize() {
                     height={20}
                   />
                 )}
-
                 {size?.label}
               </S.ButtonSize>
             ))}

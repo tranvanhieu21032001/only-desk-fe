@@ -1,11 +1,9 @@
 import { Form, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
-
+import { useNavigate } from 'react-router-dom';
 import { useModal } from '@/shared/hooks';
-import { useRouter } from '@/shared/hooks/useRouter';
 import themeColors from '@/shared/styles/themes/default/colors';
 import { SignUpStepEnums } from '@/modules/auth/helpers/enums/auth';
-import { connectPlugins } from '@/modules/auth/helpers/data/signUp';
 import { renderStatusInstalled } from '@/modules/auth/helpers/auth.logic';
 import { AuthStatusInstalledCodeEnums } from '@/modules/auth/helpers/auth.enums';
 
@@ -22,23 +20,16 @@ import icArrowRight from '@/assets/icons/common/ic-arrow-right.svg';
 
 function ConnectOnlyChat() {
   const { t } = useTranslation('auth');
-
+  const navigate = useNavigate();
   const [form] = Form.useForm();
-  const { replaceState } = useRouter();
   const { visible: inviteModal, toggle: handleOpenModalInvite } = useModal();
 
-  function handleInviteYourTeam() {
-    replaceState({
-      type: SignUpStepEnums?.COMPANY_SIZE,
-    });
-  }
-
   function handleCopyCode() {
-    //TODO handle later
+    // TODO: Copy logic
   }
 
   function handleCheckAgain() {
-    //TODO handle later
+    // TODO: Check logic
   }
 
   function handleInviteYourDeveloper() {
@@ -46,25 +37,21 @@ function ConnectOnlyChat() {
   }
 
   function handleCheckInstall() {
-    //TODO handle later
-  }
-
-  function handleConnectPlugin() {
-    //TODO handle later
-  }
-
-  function handleCheckInstallPlugin() {
-    //TODO handle later
+    // TODO: Check install guide
   }
 
   function handleCopyInviteLink() {
-    //TODO handle later
+    // TODO: Copy link logic
+  }
+
+  function handleContinue() {
+    navigate(`/auth/sign-up/${SignUpStepEnums.COMPANY_SIZE}`);
   }
 
   return (
     <S.SignInWrap>
       <S.SignInForm className="center-column-auth">
-        <S.FormWrap form={form} onFinish={handleInviteYourTeam}>
+        <S.FormWrap form={form} onFinish={handleContinue}>
           <S.LoginLabelWrap>
             <S.Title variant="h2" textAlign="center">
               {t('connect-onlychat.connect-onlychat-to-your-website')}
@@ -77,7 +64,7 @@ function ConnectOnlyChat() {
                 {t('connect-onlychat.connect-onlychat-manually')}
               </S.Title>
               <Typography color={themeColors?.newtralLight} margin="4px 0 0 0">
-                {t('connect-onlychat.paste-the-code')}{' '}
+                {t('connect-onlychat.paste-the-code')}
                 <Image src={icInfo} preview={false} />
               </Typography>
             </S.ConnectOnlyChatCodeHeader>
@@ -123,35 +110,6 @@ function ConnectOnlyChat() {
               </Button>
             </S.ButtonInstallGuide>
           </S.ConnectOnlyChatCodeInvite>
-
-          <S.ConnectPluginWrap gutter={[8, 24]}>
-            {connectPlugins?.map((item) => (
-              <S.ConnectPlugin key={item?.key} xs={24} sm={12} md={8}>
-                <S.ConnectPluginCollapse
-                  title={
-                    <S.ConnectPluginTitle>
-                      <Image src={item?.icon} preview={false} />
-                      <Typography>{item?.label}</Typography>
-                    </S.ConnectPluginTitle>
-                  }
-                  defaultOpen={false}
-                >
-                  <S.ConnectPluginAction>
-                    <S.BtnConnect>
-                      <Button type="primary" onClick={handleConnectPlugin}>
-                        {t('connect-onlychat.connect')}
-                      </Button>
-                    </S.BtnConnect>
-                    <S.BtnCheck>
-                      <Button onClick={handleCheckInstallPlugin}>
-                        {t('connect-onlychat.check-install-guide')}
-                      </Button>
-                    </S.BtnCheck>
-                  </S.ConnectPluginAction>
-                </S.ConnectPluginCollapse>
-              </S.ConnectPlugin>
-            ))}
-          </S.ConnectPluginWrap>
 
           <S.LoginButton type="primary" onClick={() => form.submit()}>
             {t('website.continue')}

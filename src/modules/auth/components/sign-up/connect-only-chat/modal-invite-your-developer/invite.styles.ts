@@ -42,7 +42,7 @@ export const ModalBottom = styled.div`
   display: flex;
   gap: 12px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
 
   @media ${(props) => props?.theme?.breakpoints?.smMax} {
     flex-direction: column;

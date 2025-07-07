@@ -2,7 +2,7 @@ import { Form, Image, Switch } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import { useRouter } from '@/shared/hooks/useRouter';
-import { handleFinishSignUp } from '@/modules/auth/api/auth';
+import { handleFinishSignUp, handleSetWebsite } from '@/modules/auth/api/auth';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { chatWithCustomers } from '@/modules/auth/helpers/data/signUp';
@@ -11,6 +11,9 @@ import { chatWithCustomersInterface } from '@/modules/auth/models/auth';
 import Typography from '@/shared/components/common/Typography';
 
 import * as S from './Customer.styles';
+import webLocalStorage from '@/shared/utils/webLocalStorage';
+import { constants } from '@/core/settings';
+import { MAIN_ROUTES } from '@/core/routes/constants';
 
 function Customer() {
   const { t } = useTranslation('auth');
@@ -23,7 +26,22 @@ function Customer() {
   const { isLoading } = useAppSelector((state) => state?.auth);
 
   function handleInviteYourTeam(values: any) {
-    handleFinishSignUp(values, dispatch, navigate, t, replaceState);
+    const signUpData = webLocalStorage.get(constants?.SIGN_UP_INFO);
+
+    const selectedPlatforms = Object.entries(values)
+      .filter(([_, checked]) => checked)
+      .map(([key]) => key);
+
+    const payload = {
+      workspaceName: signUpData?.workspaceName,
+      websiteUrl: signUpData?.websiteUrl,
+      companySize: signUpData?.companySize,
+      messagingPlatform: selectedPlatforms,
+    };
+
+    handleSetWebsite(payload, dispatch, t, () => {
+      navigate(MAIN_ROUTES?.HOME);
+    });
   }
 
   return (

@@ -15,7 +15,14 @@ const AUTH_ROUTES = {
   DESIGN_SYSTEM: `${preRouterAuth}/design-system`,
   GETTING_STARTED: `${preRouterAuth}/getting-started`,
   ACCEPT_INVITATION: `${preRouterAuth}/accept-invitation`,
+  ACTIVE_PRODUCT: `${preRouterAuth}/sign-up/activating-product`,
+  YOUR_NAME: `${preRouterAuth}/sign-up/your-name`,
+  WEBSITE_ADDRESS: `${preRouterAuth}/sign-up/website-address`,
+  CONNECT_ONLY_CHAT: `${preRouterAuth}/sign-up/connect-only-chat`,
+  COMPANY_SIZE: `${preRouterAuth}/sign-up/company-size`,
+  CUSTOMER: `${preRouterAuth}/sign-up/customer`,
 };
+
 
 const MAIN_ROUTES = {
   HOME: '/',
@@ -55,11 +62,10 @@ const MAIN_ROUTES = {
   ALL_PLUGINS: `${preRouterMain}/all-plugins`,
   INSTALLED_PLUGINS: `${preRouterMain}/installed-plugins`,
 
-    // Admin
+  // Admin
   WORKSPACE_ADMIN: `${preRouterMain}/admin/workspace`,
   USERS_ADMIN: `${preRouterMain}/admin/users`,
   PLUGINS_ADMIN: `${preRouterMain}/admin/plugins`,
-
 
   // Settings
   ACCOUNT: `${preRouterMain}/setting-account`,
