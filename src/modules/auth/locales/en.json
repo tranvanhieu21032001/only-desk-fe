@@ -137,6 +137,6 @@
     "create-new-password":"Create new password",
     "save":"Save",
     "a-password-reset":"A password reset link has been sent to your email address.",
-    "forgot.create-new-password-success":"Create new password successfully"
+    "create-new-password-success":"Create new password successfully"
   }
 }

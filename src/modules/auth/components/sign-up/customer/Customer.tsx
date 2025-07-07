@@ -2,7 +2,7 @@ import { Form, Image, Switch } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import { useRouter } from '@/shared/hooks/useRouter';
-import { handleFinishSignUp, handleSetWebsite } from '@/modules/auth/api/auth';
+import { handleCompleteRegister} from '@/modules/auth/api/auth';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { chatWithCustomers } from '@/modules/auth/helpers/data/signUp';
@@ -21,7 +21,6 @@ function Customer() {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const { navigate } = useRouter();
-  const { replaceState } = useRouter();
 
   const { isLoading } = useAppSelector((state) => state?.auth);
 
@@ -33,13 +32,11 @@ function Customer() {
       .map(([key]) => key);
 
     const payload = {
-      workspaceName: signUpData?.workspaceName,
-      websiteUrl: signUpData?.websiteUrl,
       companySize: signUpData?.companySize,
       messagingPlatform: selectedPlatforms,
     };
 
-    handleSetWebsite(payload, dispatch, t, () => {
+    handleCompleteRegister(payload, dispatch, t, () => {
       navigate(MAIN_ROUTES?.HOME);
     });
   }
