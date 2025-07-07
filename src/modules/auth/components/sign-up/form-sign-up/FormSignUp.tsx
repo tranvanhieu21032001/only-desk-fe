@@ -2,7 +2,7 @@ import { Form, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { constants } from '@/core/settings';
 import { handleSignUp } from '@/modules/auth/api/auth';
 import { passwordRegex } from '@/shared/regex';
@@ -24,12 +24,12 @@ import * as S from './FormSignUp.styles';
 
 function StartForFree() {
   const { t } = useTranslation('auth');
-
+  const API_SERVER = import.meta.env.VITE_API_SERVER;
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const { replaceState } = useRouter();
   const navigate = useNavigate();
-
+  const [googleLoading, setGoogleLoading] = useState(false);
   const policyWatch = Form.useWatch('policy', form);
   const passwordWatch = Form.useWatch('password', form);
   const { isLoading } = useAppSelector((state) => state?.auth);
@@ -46,7 +46,9 @@ function StartForFree() {
   }
 
   function handleLoginWithGoogle() {
-    //Handle later
+    setGoogleLoading(true);
+    const googleLoginUrl = `${API_SERVER}/auth/google`;
+    window.location.href = googleLoginUrl;
   }
 
   function handleLoginWithFacebook() {
@@ -197,15 +199,15 @@ function StartForFree() {
 
           <S.DriversLicenseWrap />
 
-          <S.LoginButton onClick={handleLoginWithGoogle}>
+          <S.LoginButton onClick={handleLoginWithGoogle} isLoading={googleLoading}>
             <Image src={icGoogle} />
             {t('sign-in-with-google')}
           </S.LoginButton>
 
-          <S.LoginButton onClick={handleLoginWithFacebook}>
+          {/* <S.LoginButton onClick={handleLoginWithFacebook}>
             <Image src={icApple} />
             {t('sign-in-with-facebook')}
-          </S.LoginButton>
+          </S.LoginButton> */}
         </S.FormWrap>
       </S.SignInForm>
     </S.SignInWrap>

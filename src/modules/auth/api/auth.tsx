@@ -3,15 +3,21 @@ import { TFunction } from 'i18next';
 
 import { constants } from '@/core/settings';
 
-import { postRequest } from '@/core/services/requests';
+import { getRequest, postRequest } from '@/core/services/requests';
 import { SignUpStepEnums } from '../helpers/enums/auth';
 import { omitSubmitSignUp } from '../helpers/data/signUp';
 import webLocalStorage from '@/shared/utils/webLocalStorage';
 import { AUTH_ROUTES, MAIN_ROUTES } from '@/core/routes/constants';
-import { actionLogin, actionSignUp } from '../store/features/auth';
+import {
+  actionLogin,
+  actionSetWorkspaces,
+  actionSignUp,
+  actionUpdateUserInfo,
+  actionUpdateWorkSpaceCurrent,
+} from '../store/features/auth';
 
 const prefixAuth: string = '/auth';
-
+const prefixWorkspaces: string = '/workspaces';
 const endpointAuth = {
   SIGN_IN: `${prefixAuth}/login`,
   SIGN_UP: `${prefixAuth}/register`,
@@ -20,6 +26,127 @@ const endpointAuth = {
   COMPLETE_SIGN_UP: `${prefixAuth}/complete-register`,
   REQUEST_RESET_PASSWORD: `${prefixAuth}/password-reset/request`,
   RESET_PASSWORD: `${prefixAuth}/password-reset/request`,
+  GOOGLE_TOKEN_LOGIN: (token: string) => `${prefixAuth}/google/login/${token}`,
+  VERIFY_INVITATION: (token: string) =>
+    `${prefixWorkspaces}/invitations/check?token=${token}`,
+  ACCEPT_INVITATION: (token: string) =>
+    `${prefixWorkspaces}/invitations/accept?token=${token}`,
+};
+
+
+const verifyTokenApi = async (token: string) => {
+  return await getRequest(endpointAuth.GOOGLE_TOKEN_LOGIN(token), {
+    enableFlashMessageError: true,
+    enableFlashMessageSuccess: false,
+  }).then((res) => res);
+};
+
+const handleGoogleTokenLoginApi = async (
+  token: string,
+  dispatch: any,
+  navigate: any,
+  t: TFunction,
+) => {
+  dispatch(actionSignUp(true));
+
+  try {
+    const res = await verifyTokenApi(token);
+
+    console.log('res', res);
+
+    const userEmail = res?.email || '';
+
+    dispatch(
+      actionLogin({
+        isAuth: true,
+        rememberMe: true, // Google login → mặc định remember
+        userInfo: {
+          userId: res?.userId,
+          email: userEmail,
+        },
+        accessToken: res?.token,
+      }),
+    );
+
+    // Save token to cookie
+    const Cookies = (await import('js-cookie')).default;
+    Cookies.set('_access_token', res?.token, { expires: 30 });
+
+    // Update relay environment
+    const { updateRelayEnvironment } = await import('@/relay/RelayEnvironment');
+    updateRelayEnvironment();
+
+    const { default: relayEnvironment } = await import(
+      '@/relay/RelayEnvironment'
+    );
+    const { fetchQuery } = await import('react-relay');
+    const { workspaceInfoQuery } = await import('@/relay/WorkspaceInfoQuery');
+    const { meQuery } = await import('@/relay/MeQuery');
+
+    // 1. Fetch workspace info
+    const workspaceDataRaw = await fetchQuery(
+      relayEnvironment,
+      workspaceInfoQuery,
+      {},
+      { fetchPolicy: 'network-only' },
+    ).toPromise();
+    const workspaceData: any = workspaceDataRaw;
+    const workspaces = Array.isArray(workspaceData?.workspaces)
+      ? workspaceData.workspaces
+      : [];
+    if (!workspaces.length) throw new Error('No workspace found');
+    const firstWorkspace = workspaces[0];
+
+    // 2. Fetch current user info
+    const meDataRaw = await fetchQuery(
+      relayEnvironment,
+      meQuery,
+      {},
+      { fetchPolicy: 'network-only' },
+    ).toPromise();
+    const userInfo = meDataRaw?.me;
+
+    if (userInfo) dispatch(actionUpdateUserInfo(userInfo));
+    dispatch(actionSetWorkspaces(workspaces));
+    dispatch(actionUpdateWorkSpaceCurrent(firstWorkspace));
+
+    // 3. Switch to current workspace → get new token
+    const { handleSwitchWorkspaceApi } = await import(
+      '@/modules/workspace/api/workspace'
+    );
+    let newToken = '';
+    await new Promise((resolve) => {
+      handleSwitchWorkspaceApi(
+        firstWorkspace.id,
+        t,
+        () => {},
+        (token: string) => {
+          newToken = token;
+          resolve(token);
+        },
+      );
+    });
+
+    if (!newToken)
+      throw new Error('No token returned after switching workspace');
+
+    // Save new token
+    const webStorageClient = (await import('@/shared/utils/webStorageClient'))
+      .default;
+    webStorageClient.setToken(newToken, { expires: 30 });
+
+    const constants = (await import('@/core/settings')).constants;
+    const webLocalStorage = (await import('@/shared/utils/webLocalStorage'))
+      .default;
+    webLocalStorage.set(constants.CURRENT_WORKSPACE, firstWorkspace);
+
+    // Navigate
+    navigate(MAIN_ROUTES.INBOX);
+  } catch (error) {
+    console.error('Google login failed:', error);
+  } finally {
+    dispatch(actionSignUp(false));
+  }
 };
 
 const handleSignUp = async (
@@ -143,25 +270,34 @@ const handleSignInApi = async (
 
     // Save token to cookie for relay
     const Cookies = (await import('js-cookie')).default;
-    Cookies.set('_access_token', res?.token, values?.remember ? { expires: 30 } : {});
+    Cookies.set(
+      '_access_token',
+      res?.token,
+      values?.remember ? { expires: 30 } : {},
+    );
     // Update relay environment to use new token
     const { updateRelayEnvironment } = await import('@/relay/RelayEnvironment');
     updateRelayEnvironment();
 
     await new Promise((resolve) => setTimeout(resolve, 0));
-    const { default: relayEnvironment } = await import('@/relay/RelayEnvironment');
+    const { default: relayEnvironment } = await import(
+      '@/relay/RelayEnvironment'
+    );
     const { fetchQuery } = await import('react-relay');
     const { workspaceInfoQuery } = await import('@/relay/WorkspaceInfoQuery');
     const { meQuery } = await import('@/relay/MeQuery');
-    // 1. Call workspaceInfoQuery first   
+    // 1. Call workspaceInfoQuery first
     const workspaceDataRaw = await fetchQuery(
       relayEnvironment,
       workspaceInfoQuery,
       {},
-      { fetchPolicy: 'network-only' }
+      { fetchPolicy: 'network-only' },
     ).toPromise();
     const workspaceData: any = workspaceDataRaw;
-    const workspaces = workspaceData && Array.isArray(workspaceData.workspaces) ? workspaceData.workspaces : [];
+    const workspaces =
+      workspaceData && Array.isArray(workspaceData.workspaces)
+        ? workspaceData.workspaces
+        : [];
     if (!workspaces.length) throw new Error('No workspace found');
     const firstWorkspace = workspaces[0];
 
@@ -170,19 +306,25 @@ const handleSignInApi = async (
       relayEnvironment,
       meQuery,
       {},
-      { fetchPolicy: 'network-only' }
+      { fetchPolicy: 'network-only' },
     ).toPromise();
     const meData: any = meDataRaw;
     const userInfo = meData?.me;
 
     // 3. Update Redux store
-    const { actionUpdateUserInfo, actionSetWorkspaces, actionUpdateWorkSpaceCurrent } = await import('../store/features/auth');
+    const {
+      actionUpdateUserInfo,
+      actionSetWorkspaces,
+      actionUpdateWorkSpaceCurrent,
+    } = await import('../store/features/auth');
     if (userInfo) dispatch(actionUpdateUserInfo(userInfo));
     if (workspaces) dispatch(actionSetWorkspaces(workspaces));
     if (firstWorkspace) dispatch(actionUpdateWorkSpaceCurrent(firstWorkspace));
 
     // 4. Set current workspace (get new token)
-    const { handleSwitchWorkspaceApi } = await import('@/modules/workspace/api/workspace');
+    const { handleSwitchWorkspaceApi } = await import(
+      '@/modules/workspace/api/workspace'
+    );
     let newToken = '';
     await new Promise((resolve, reject) => {
       handleSwitchWorkspaceApi(
@@ -195,11 +337,17 @@ const handleSignInApi = async (
         },
       );
     });
-    if (!newToken) throw new Error('No token returned from set current workspace');
-    const webStorageClient = (await import('@/shared/utils/webStorageClient')).default;
-    webStorageClient.setToken(newToken, values?.remember ? { expires: 30 } : {});
+    if (!newToken)
+      throw new Error('No token returned from set current workspace');
+    const webStorageClient = (await import('@/shared/utils/webStorageClient'))
+      .default;
+    webStorageClient.setToken(
+      newToken,
+      values?.remember ? { expires: 30 } : {},
+    );
     const constants = (await import('@/core/settings')).constants;
-    const webLocalStorage = (await import('@/shared/utils/webLocalStorage')).default;
+    const webLocalStorage = (await import('@/shared/utils/webLocalStorage'))
+      .default;
     webLocalStorage.set(constants.CURRENT_WORKSPACE, firstWorkspace);
 
     // 5. Navigate sang inbox
@@ -255,4 +403,5 @@ export {
   handleSignInApi,
   handleRequestResetPassword,
   handleResetPassword,
+  handleGoogleTokenLoginApi
 };

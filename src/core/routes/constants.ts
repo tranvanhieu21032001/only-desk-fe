@@ -8,10 +8,13 @@ const ADMIN_ROUTES = {
 };
 
 const AUTH_ROUTES = {
-  SIGN_IN: `${preRouterAuth}/sign-in`,
+  SIGN_IN: `${preRouterAuth}/login`,
   SIGN_UP: `${preRouterAuth}/sign-up`,
+  CONFIRM_CODE: `${preRouterAuth}/sign-up/confirm-code`,
   FORGOT_PASSWORD: `${preRouterAuth}/forgot-password`,
   DESIGN_SYSTEM: `${preRouterAuth}/design-system`,
+  GETTING_STARTED: `${preRouterAuth}/getting-started`,
+  ACCEPT_INVITATION: `${preRouterAuth}/accept-invitation`,
 };
 
 const MAIN_ROUTES = {
