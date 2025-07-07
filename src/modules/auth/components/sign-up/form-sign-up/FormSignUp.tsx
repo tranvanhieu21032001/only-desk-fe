@@ -21,6 +21,7 @@ import icApple from '@/assets/icons/common/ic-apple.svg';
 import icGoogle from '@/assets/icons/common/ic-google.svg';
 
 import * as S from './FormSignUp.styles';
+import fontWeight from '@/shared/styles/themes/default/fontWeight';
 
 function StartForFree() {
   const { t } = useTranslation('auth');
@@ -200,7 +201,7 @@ function StartForFree() {
 
           <S.LoginButton onClick={handleLoginWithGoogle} isLoading={googleLoading}>
             <Image src={icGoogle} />
-            {t('sign-in-with-google')}
+            <Typography fontWeight={fontWeight?.semiBold} margin='0 0 0 8px'>{t('sign-in-with-google')}</Typography>
           </S.LoginButton>
 
           {/* <S.LoginButton onClick={handleLoginWithFacebook}>

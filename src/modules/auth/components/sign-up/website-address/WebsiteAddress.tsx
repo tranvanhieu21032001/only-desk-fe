@@ -13,13 +13,16 @@ import Input from '@/shared/components/common/Input';
 import icArrowRight from '@/assets/icons/common/ic-arrow-right.svg';
 
 import * as S from './WebsiteAddress.styles';
+import { handleSetWebsite } from '@/modules/auth/api/auth';
+import { MAIN_ROUTES } from '@/core/routes/constants';
+import { useAppDispatch } from '@/shared/hooks';
 
 function WebsiteAddress() {
   const { t } = useTranslation('auth');
 
   const [form] = Form.useForm();
   const navigate = useNavigate();
-
+  const dispatch = useAppDispatch();
   const signUpFromLocal = webLocalStorage.get(constants?.SIGN_UP_INFO);
 
   useEffect(() => {
@@ -30,13 +33,36 @@ function WebsiteAddress() {
     }
   }, [signUpFromLocal?.websiteUrl]);
 
-  function handleSignUp(values: any) {
+  async function handleSignUp(values: any) {
     webLocalStorage.set(constants?.SIGN_UP_INFO, {
       ...signUpFromLocal,
       websiteUrl: values?.websiteUrl,
     });
 
-    navigate(`/auth/sign-up/${SignUpStepEnums.CONNECT_ONLY_CHAT}`);
+    const signUpData = webLocalStorage.get(constants?.SIGN_UP_INFO);
+
+    const payload = {
+      workspaceName: signUpData?.workspaceName,
+      websiteUrl: signUpData?.websiteUrl,
+      companySize: '',
+      messagingPlatform: [],
+    };
+
+    try {
+      const res: any = await handleSetWebsite(payload, dispatch, t);
+
+      if (res?.websiteID) {
+        webLocalStorage.set(constants?.SIGN_UP_INFO, {
+          ...signUpFromLocal,
+          websiteUrl: values?.websiteUrl,
+          websiteID: res.websiteID,
+        });
+      }
+
+      navigate(`/auth/sign-up/${SignUpStepEnums.CONNECT_ONLY_CHAT}`);
+    } catch (err) {
+      console.error('Error setting website info:', err);
+    }
   }
 
   return (

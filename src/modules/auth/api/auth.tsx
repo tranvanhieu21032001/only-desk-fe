@@ -25,8 +25,9 @@ const endpointAuth = {
   INVITE_TEAM: `${prefixAuth}/invite-team`,
   COMPLETE_SIGN_UP: `${prefixAuth}/complete-register`,
   REQUEST_RESET_PASSWORD: `${prefixAuth}/password-reset/request`,
-  RESET_PASSWORD: `${prefixAuth}/password-reset/request`,
+  RESET_PASSWORD: `${prefixAuth}/password-reset`,
   SET_WEBSITE: `${prefixAuth}/set-website`,
+  COMPLETE_REGISTER: `${prefixAuth}/complete-register`,
   GOOGLE_TOKEN_LOGIN: (token: string) => `${prefixAuth}/google/login/${token}`,
   VERIFY_INVITATION: (token: string) =>
     `${prefixWorkspaces}/invitations/check?token=${token}`,
@@ -196,6 +197,28 @@ const handleSetWebsite = async (
       if (websiteID) {
         webLocalStorage.set('WEBSITE_ID', websiteID);
       }
+      onSuccess?.();
+    })
+    .catch((err) => err)
+    .finally(() => dispatch(actionSignUp(false)));
+};
+
+const handleCompleteRegister = async (
+  values: {
+    companySize: string;
+    messagingPlatform: string[];
+  },
+  dispatch: any,
+  t: TFunction,
+  onSuccess?: () => void,
+) => {
+  dispatch(actionSignUp(true));
+
+  await postRequest(endpointAuth?.COMPLETE_REGISTER, {
+    data: values,
+    enableFlashMessageSuccess: false,
+  })
+    .then((res) => {
       onSuccess?.();
     })
     .catch((err) => err)
@@ -466,5 +489,6 @@ export {
   handleResetPassword,
   handleGoogleTokenLoginApi,
   handleSetWebsite,
-  handleInviteTeam
+  handleInviteTeam,
+  handleCompleteRegister
 };

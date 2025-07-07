@@ -82,7 +82,6 @@ export const FormItem = styled(Form.Item)<{
 
 export const LoginButton = styled(Button)`
   margin-top: 12px;
-
   display: flex;
   gap: 8px;
   align-items: center;

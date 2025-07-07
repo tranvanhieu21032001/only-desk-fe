@@ -1,7 +1,7 @@
-import { Form, Image } from 'antd';
+import { Form, Image, message, Spin } from 'antd';
 import OTPInput from 'react-otp-input';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { constants } from '@/core/settings';
 import { useRouter } from '@/shared/hooks/useRouter';
@@ -28,8 +28,9 @@ function ConfirmCode() {
   const codeWatch = Form.useWatch('code', form);
 
   const { isLoading } = useAppSelector((state) => state?.auth);
-
   const signUpFromLocal = webLocalStorage?.get(constants?.SIGN_UP_INFO);
+
+  const [isResending, setIsResending] = useState(false);
 
   function handleContinue(values: any) {
     const payloads = {
@@ -38,8 +39,16 @@ function ConfirmCode() {
     handleVerifyOtp(payloads, dispatch, navigate, t);
   }
 
-  function handleGetANewOtp() {
-    handleResendOtp(t);
+  async function handleGetANewOtp() {
+    setIsResending(true);
+    try {
+      await handleResendOtp(t);
+      message.success(t('confirm-code.sent-success'));
+    } catch (error) {
+      message.error(t('confirm-code.sent-failed'));
+    } finally {
+      setIsResending(false);
+    }
   }
 
   function handleOpenGmail() {
@@ -90,7 +99,7 @@ function ConfirmCode() {
             </S.Title>
             <Typography textAlign="center">
               {t('confirm-code.we-sent')}{' '}
-              <S.Email>{signUpFromLocal?.email || ' --/-- '}</S.Email>{' '}
+              <S.Email>{signUpFromLocal?.email || '--/--'}</S.Email>{' '}
               {t('confirm-code.go-to')}
             </Typography>
           </S.LoginLabelWrap>
@@ -112,6 +121,7 @@ function ConfirmCode() {
             />
           </Form.Item>
 
+          {/* Gmail button (disabled)
           <S.Gmail>
             <Button width="fit-content" onClick={handleOpenGmail}>
               <Image
@@ -123,6 +133,7 @@ function ConfirmCode() {
               {t(`confirm-code.${isGmail() ? 'open-gmail' : 'open-email'}`)}
             </Button>
           </S.Gmail>
+          */}
 
           <S.Continue>
             <S.LoginButton
@@ -137,9 +148,8 @@ function ConfirmCode() {
 
             <S.Subtitle textAlign="center" margin="12px 0 0 0">
               {t('confirm-code.didnt-get')}
-              <S.SignInAction onClick={handleGetANewOtp}>
-                {' '}
-                {t('confirm-code.get-a-new')}
+              <S.SignInAction onClick={!isResending ? handleGetANewOtp : undefined}>
+                {isResending ? <Spin size="small" /> : t('confirm-code.get-a-new')}
               </S.SignInAction>
             </S.Subtitle>
           </S.Continue>
