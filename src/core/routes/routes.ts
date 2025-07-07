@@ -83,6 +83,10 @@ const PluginsAdmin = React.lazy(
   () => import('@/modules/admin/pages/plugins/PluginsAdmin'),
 );
 
+const AcceptIvitation = React.lazy(
+  () => import('@/modules/auth/pages/accept-invitation/AcceptiIvitation'),
+);
+
 const routes_admin: RouterElementInterface[] = [];
 
 const routes_auth: RouterElementInterface[] = [
@@ -134,11 +138,17 @@ const routes_auth: RouterElementInterface[] = [
     component: SignUp,
     name: 'company-size',
   },
-    {
+  {
     key: 'customer',
     path: AUTH_ROUTES?.CUSTOMER,
     component: SignUp,
     name: 'customer',
+  },
+  {
+    key: 'accept-invitation',
+    path: AUTH_ROUTES?.ACCEPT_INVITATION,
+    component: AcceptIvitation,
+    name: 'accept-invitation',
   },
   {
     key: 'forgot-password',

@@ -1,4 +1,4 @@
-import { omit } from 'lodash';
+import { isArray, omit } from 'lodash';
 import { TFunction } from 'i18next';
 
 import { constants } from '@/core/settings';
@@ -14,6 +14,10 @@ import {
   actionUpdateUserInfo,
   actionUpdateWorkSpaceCurrent,
 } from '../store/features/auth';
+import { toast } from 'react-toastify';
+import ToastMessage from '@/shared/components/common/ToastMessage';
+import { ToastMessageType } from '@/shared/helper/enums/common';
+import React from 'react';
 
 const prefixAuth: string = '/auth';
 const prefixWorkspaces: string = '/workspaces';
@@ -33,6 +37,57 @@ const endpointAuth = {
     `${prefixWorkspaces}/invitations/check?token=${token}`,
   ACCEPT_INVITATION: (token: string) =>
     `${prefixWorkspaces}/invitations/accept?token=${token}`,
+};
+
+const checkInvitationToken = async (token: string) => {
+  try {
+    const response = await getRequest(endpointAuth.VERIFY_INVITATION(token), {
+      enableFlashMessageError: false,
+      enableFlashMessageSuccess: false,
+    });
+    return response;
+  } catch (error) {
+    console.error('[ERROR CHECKING INVITATION]:', error);
+    throw error;
+  }
+};
+
+const acceptInvitationToken = async (token: string) => {
+  try {
+    const res = await getRequest(endpointAuth.ACCEPT_INVITATION(token), {
+      enableFlashMessageError: false,
+    });
+    return res;
+  } catch (error: any) {
+    const messageFromError = error?.response?.data?.message;
+
+    if (isArray(messageFromError)) {
+      messageFromError.forEach((msg: string) => {
+        toast(
+          React.createElement(ToastMessage, {
+            typeToast: ToastMessageType.ERROR,
+            message: msg,
+          }),
+        );
+      });
+    } else if (typeof messageFromError === 'string') {
+      toast(
+        React.createElement(ToastMessage, {
+          typeToast: ToastMessageType.ERROR,
+          message: messageFromError,
+        }),
+      );
+    } else {
+      toast(
+        React.createElement(ToastMessage, {
+          typeToast: ToastMessageType.ERROR,
+          message: 'Failed to accept workspace invitation.',
+        }),
+      );
+    }
+
+    throw error;
+  }
 };
 
 const verifyTokenApi = async (token: string) => {
@@ -490,5 +545,7 @@ export {
   handleGoogleTokenLoginApi,
   handleSetWebsite,
   handleInviteTeam,
-  handleCompleteRegister
+  handleCompleteRegister,
+  checkInvitationToken,
+  acceptInvitationToken
 };
