@@ -134,7 +134,7 @@ export const SignInAction = styled.span`
   color: ${(props) => props?.theme?.colors?.secondary};
   font-size: ${(props) => props?.theme?.fontSize?.base};
   cursor: pointer;
-
+  margin-left:8px;
   &:hover {
     text-decoration: underline;
   }

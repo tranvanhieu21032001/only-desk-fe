@@ -1,4 +1,4 @@
-import { Form, Image } from 'antd';
+import { Form, Image, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '@/shared/hooks';
@@ -28,7 +28,14 @@ function ConnectOnlyChat() {
 
   const scriptSnippet = `<script type="text/javascript">window.$crisp=[];window.ZC_WEBSITE_ID="${websiteID}";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>`;
   function handleCopyCode() {
-    // TODO: Copy logic
+    navigator.clipboard
+      .writeText(scriptSnippet)
+      .then(() => {
+        message.success('Copied script to clipboard!');
+      })
+      .catch(() => {
+        message.error('Failed to copy. Please try again.');
+      });
   }
 
   function handleCheckAgain() {
@@ -73,7 +80,13 @@ function ConnectOnlyChat() {
             </S.ConnectOnlyChatCodeHeader>
 
             <S.ConnectOnlyChatCodeBody>
-            {scriptSnippet}
+              <S.ConnectOnlyChatCodeBody>
+                <pre
+                  style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                >
+                  {scriptSnippet}
+                </pre>
+              </S.ConnectOnlyChatCodeBody>
             </S.ConnectOnlyChatCodeBody>
 
             <S.ConnectOnlyChatCodeBottom>

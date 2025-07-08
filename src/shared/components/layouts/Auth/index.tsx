@@ -1,16 +1,14 @@
 import { Image } from 'antd';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { useAppSelector } from '@/shared/hooks';
-import { useRouter } from '@/shared/hooks/useRouter';
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import themeColors from '@/shared/styles/themes/default/colors';
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { SignUpStepEnums } from '@/modules/auth/helpers/enums/auth';
-import { objectHistoryInterface, OptionsInterface } from '@/core/model/common';
+import { OptionsInterface } from '@/core/model/common';
 
 import Typography from '@/shared/components/common/Typography';
 
@@ -25,50 +23,42 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const { t } = useTranslation('auth');
-  const [search] = useSearchParams();
-  const { replaceState } = useRouter();
-  const { currentObjHistory } = useAppSelector((state) => state?.historyRoute);
   const navigate = useNavigate();
 
-  const signUpType =
-    (currentObjHistory || [])?.find(
-      (item: objectHistoryInterface) => item?.key === 'type',
-    )?.value ||
-    search.get('type') ||
-    SignUpStepEnums?.SIGN_UP;
+  const pathParts = window.location.pathname.split('/');
+  const signUpType = pathParts[pathParts.length - 1] || SignUpStepEnums.SIGN_UP;
 
   const showInprogress = useMemo(() => {
-    const currentPath = window.location.pathname;
-    return currentPath.includes(SignUpStepEnums?.SIGN_UP);
+    return window.location.pathname.includes('/auth/sign-up');
   }, [window.location.pathname]);
 
   function handleBack() {
     switch (signUpType) {
-      case SignUpStepEnums?.SIGN_UP:
+      case SignUpStepEnums.SIGN_UP:
         return window.history.back();
-      case SignUpStepEnums?.CONFIRM_CODE:
-        return replaceState({ type: SignUpStepEnums?.SIGN_UP });
-      case SignUpStepEnums?.YOUR_NAME:
-        return replaceState({ type: SignUpStepEnums?.CONFIRM_CODE });
-      case SignUpStepEnums?.WEBSITE_ADDRESS:
-        return replaceState({ type: SignUpStepEnums?.YOUR_NAME });
-      case SignUpStepEnums?.CONNECT_ONLY_CHAT:
-        return replaceState({ type: SignUpStepEnums?.WEBSITE_ADDRESS });
-      case SignUpStepEnums?.COMPANY_SIZE:
-        return replaceState({ type: SignUpStepEnums?.CONNECT_ONLY_CHAT });
-      case SignUpStepEnums?.INVITE_YOUR_TEAM:
-        return replaceState({ type: SignUpStepEnums?.COMPANY_SIZE });
-      case SignUpStepEnums?.CUSTOMER:
-        return replaceState({ type: SignUpStepEnums?.INVITE_YOUR_TEAM });
+      case SignUpStepEnums.CONFIRM_CODE:
+        return navigate(`/auth/sign-up/${SignUpStepEnums.SIGN_UP}`);
+      case SignUpStepEnums.YOUR_NAME:
+        return navigate(`/auth/sign-up/${SignUpStepEnums.CONFIRM_CODE}`);
+      case SignUpStepEnums.WEBSITE_ADDRESS:
+        return navigate(`/auth/sign-up/${SignUpStepEnums.YOUR_NAME}`);
+      case SignUpStepEnums.CONNECT_ONLY_CHAT:
+        return navigate(`/auth/sign-up/${SignUpStepEnums.WEBSITE_ADDRESS}`);
+      case SignUpStepEnums.COMPANY_SIZE:
+        return navigate(`/auth/sign-up/${SignUpStepEnums.CONNECT_ONLY_CHAT}`);
+      case SignUpStepEnums.INVITE_YOUR_TEAM:
+        return navigate(`/auth/sign-up/${SignUpStepEnums.COMPANY_SIZE}`);
+      case SignUpStepEnums.CUSTOMER:
+        return navigate(`/auth/sign-up/${SignUpStepEnums.INVITE_YOUR_TEAM}`);
+      case SignUpStepEnums.ACTIVATING_PRODUCT:
+        return navigate(`/auth/sign-up/${SignUpStepEnums.CUSTOMER}`);
       default:
         return window.history.back();
     }
   }
 
   function handleRedirectHome() {
-    navigate(MAIN_ROUTES?.HOME, {
-      replace: true,
-    });
+    navigate(MAIN_ROUTES.HOME, { replace: true });
   }
 
   return (
@@ -80,7 +70,7 @@ export default function AuthLayout({
             <S.MultipleLangWrap>
               <S.NeedHelp
                 fontWeight={fontWeight?.semiBold}
-                color={`${themeColors?.secondary}`}
+                color={themeColors?.secondary}
               >
                 {t('need-help')}
               </S.NeedHelp>
@@ -112,25 +102,25 @@ export default function AuthLayout({
               </S.Back>
 
               <S.LineProgressWrap>
-                {Object.values(SignUpStepEnums)?.map(
-                  (key: string, index: number) => {
-                    const currentIndex = Object.values(SignUpStepEnums).indexOf(
-                      signUpType as SignUpStepEnums,
-                    );
-                    let lineColor = '';
+                {Object.values(SignUpStepEnums).map((key, index) => {
+                  const currentIndex = Object.values(SignUpStepEnums).indexOf(
+                    signUpType as SignUpStepEnums,
+                  );
+                  let lineColor = '';
 
-                    if (index < currentIndex) {
-                      lineColor = 'old';
-                    } else if (index === currentIndex) {
-                      lineColor = 'current';
-                    }
-                    return <S.Line key={key} $color={lineColor} />;
-                  },
-                )}
+                  if (index < currentIndex) {
+                    lineColor = 'old';
+                  } else if (index === currentIndex) {
+                    lineColor = 'current';
+                  }
+
+                  return <S.Line key={key} $color={lineColor} />;
+                })}
               </S.LineProgressWrap>
             </S.Inprogress>
           )}
         </S.Header>
+
         <S.ChildrenWrap>{children}</S.ChildrenWrap>
       </S.AuthLayout>
     </S.WrapAuthLayout>
