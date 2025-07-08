@@ -46,6 +46,7 @@ function SignIn() {
     const token = params.get('token');
 
     if (token && !hasHandledGoogleLogin.current) {
+      setGoogleLoading(true);
       hasHandledGoogleLogin.current = true;
 
       const cleanUrl = location.pathname;
@@ -174,7 +175,7 @@ function SignIn() {
             <S.LoginButton
               type="primary"
               onClick={form.submit}
-              isLoading={isLoading}
+              isLoading={isLoading && !googleLoading}
               disabled={isLoading}
             >
               {t('login')}

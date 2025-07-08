@@ -15,9 +15,10 @@ import icArrowRight from '@/assets/icons/common/ic-arrow-right.svg';
 import * as S from './WebsiteAddress.styles';
 import { handleSetWebsite } from '@/modules/auth/api/auth';
 import { MAIN_ROUTES } from '@/core/routes/constants';
-import { useAppDispatch } from '@/shared/hooks';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 
 function WebsiteAddress() {
+  const { isLoading } = useAppSelector((state) => state?.auth);
   const { t } = useTranslation('auth');
 
   const [form] = Form.useForm();
@@ -100,7 +101,11 @@ function WebsiteAddress() {
             />
           </S.FormItem>
 
-          <S.LoginButton type="primary" onClick={form.submit}>
+          <S.LoginButton
+            type="primary"
+            onClick={form.submit}
+            isLoading={isLoading}
+          >
             {t('website.continue')}
             <Image src={icArrowRight} preview={false} />
           </S.LoginButton>

@@ -43,7 +43,6 @@ function ConfirmCode() {
     setIsResending(true);
     try {
       await handleResendOtp(t);
-      message.success(t('confirm-code.sent-success'));
     } catch (error) {
       message.error(t('confirm-code.sent-failed'));
     } finally {
