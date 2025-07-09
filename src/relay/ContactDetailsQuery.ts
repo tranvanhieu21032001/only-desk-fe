@@ -5,16 +5,23 @@ export const contactDetailsQuery = graphql`
     node(id: $id) {
       ... on Contact {
         id
+        rawId
         name
         email
         phoneNumber
         address
+        gender
+        website
+        notification
+        avatar
+        createdAt
+        updatedAt
+        isOnline
+        segments
         companyInfo {
           company
           jobTitle
         }
-        segments
-        lastActivityAt
       }
     }
   }

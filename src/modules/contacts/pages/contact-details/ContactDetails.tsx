@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import { ReactSVG } from 'react-svg';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -53,12 +52,15 @@ function ContactDetails() {
   const { t } = useTranslation('contacts');
   const navigate = useNavigate();
   const { id } = useParams();
+  
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
   const { isLoading, contactDetails, isDetails } = useAppSelector(
     (state) => state.contacts,
   );
+
+  
   const [params, setParams] = useState<{
     isLoading: boolean;
     countUpload: number;
@@ -73,11 +75,12 @@ function ContactDetails() {
 
   const locationPath = window.location.pathname;
 
-  useEffect(() => {
-    if (id && isEmpty(contactDetails)) {
-      dispatch(fetchDetailsContact({ idContact: id as string }));
-    }
-  }, [id, dispatch, form]);
+useEffect(() => {
+  if (id) {
+    dispatch(fetchDetailsContact({ idContact: id as string }));
+  }
+}, [id, dispatch]);
+
 
   useEffect(() => {
     let convertMetadata: { key: string; value: string }[] = [];
@@ -197,9 +200,9 @@ function ContactDetails() {
 
   function handleEditContactProfile(values: any) {
     dispatch(actionUpdateIsLoading(true));
-    if (id) {
+    if (contactDetails?.rawId) {
       handleEditProfile(
-        id,
+        contactDetails?.rawId,
         values,
         t('contact-profile.edit-contact-profile-success'),
         dispatch,

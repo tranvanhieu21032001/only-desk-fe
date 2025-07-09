@@ -268,17 +268,10 @@ type HelpDeskArticleTypeEdge {
 type Query {
   me: User
   workspaces: [Workspace!]!
-  conversations(args: ConnectionArgs!): ConversationConnection!
-  messages(conversationId: ID!, args: ConnectionArgs!): MessageConnection!
+  conversations(first: Float, after: String, last: Float, before: String): ConversationConnection!
+  messages(conversationId: ID!, first: Float, after: String, last: Float, before: String): MessageConnection!
   contacts(args: PaginationArgs!): ContactPagination!
   node(id: ID!): Node
-}
-
-input ConnectionArgs {
-  first: Int = 10
-  after: String
-  last: Int
-  before: String
 }
 
 input PaginationArgs {

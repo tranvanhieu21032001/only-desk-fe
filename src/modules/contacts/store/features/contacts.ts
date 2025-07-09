@@ -32,11 +32,7 @@ const initialState: ContactsInitialStateInterface = {
 
 const createContact = createAsyncThunk(
   'contacts/create-contact',
-  async (values: {
-    email: string;
-    name: string;
-    t: TFunction;
-  }) => {
+  async (values: { email: string; name: string; t: TFunction }) => {
     const { email, name, t } = values;
     const results = await postRequest(endpointContact?.CREATE_CONTACT, {
       data: {
@@ -109,7 +105,7 @@ const fetchDetailsContact = createAsyncThunk(
       { fetchPolicy: 'network-only' },
     ).toPromise();
 
-    return results?.contact || {};
+    return results?.node || {};
   },
 );
 

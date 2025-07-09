@@ -1,33 +1,38 @@
 import { graphql } from 'react-relay';
 
 export const conversationListQuery = graphql`
-  query ConversationListQuery($args: ConnectionArgs!) {
-    conversations(args: $args) {
-      edges {
-        cursor
-        node {
+ query ConversationListQuery($first: Float, $after: String) {
+  conversations(first: $first, after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        contact {
+          avatar
+          name
+          isOnline
+        }
+        status
+        subject
+        metadata
+        createdAt
+        updatedAt
+        lastActivityAt
+        closedAt
+        unreadCount
+        assignedTo {
           id
-          contact {
-            avatar
-            name
-            isOnline
-          }
-          status
-          subject
-          metadata
-          createdAt
-          updatedAt
-          lastActivityAt
-          closedAt
-          unreadCount
-          assignedTo {
-            id
-          }
-          latestMessage {
-            content
-          }
+        }
+        latestMessage {
+          content
         }
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
+}
+
 `;
