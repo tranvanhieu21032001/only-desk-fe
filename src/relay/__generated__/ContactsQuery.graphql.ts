@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5f6a635643cc09464810a92915f49fb3>>
+ * @generated SignedSource<<67e9335ab5a073b245988e431aef024d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,6 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type ContactGender = "FEMALE" | "MALE" | "%future added value";
 export type PaginationArgs = {
   first?: number | null | undefined;
   last?: number | null | undefined;
@@ -25,25 +24,14 @@ export type ContactsQuery$data = {
         readonly address: string | null | undefined;
         readonly avatar: string | null | undefined;
         readonly companyInfo: {
-          readonly city: string | null | undefined;
           readonly company: string | null | undefined;
-          readonly country: string | null | undefined;
-          readonly employees: number | null | undefined;
-          readonly jobRole: string | null | undefined;
-          readonly jobTitle: string | null | undefined;
-          readonly website: string | null | undefined;
         } | null | undefined;
         readonly email: string | null | undefined;
-        readonly gender: ContactGender | null | undefined;
         readonly id: string;
         readonly lastActivityAt: any | null | undefined;
-        readonly metadata: any;
         readonly name: string;
-        readonly notes: string | null | undefined;
-        readonly phoneNumber: string | null | undefined;
         readonly rawId: string;
         readonly segments: ReadonlyArray<string>;
-        readonly website: string | null | undefined;
       };
     }>;
     readonly pageInfo: {
@@ -68,14 +56,7 @@ var v0 = [
     "name": "args"
   }
 ],
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "website",
-  "storageKey": null
-},
-v2 = [
+v1 = [
   {
     "alias": null,
     "args": [
@@ -165,35 +146,6 @@ v2 = [
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "metadata",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "gender",
-                "storageKey": null
-              },
-              (v1/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "phoneNumber",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "notes",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
                 "concreteType": "CompanyInfo",
                 "kind": "LinkedField",
                 "name": "companyInfo",
@@ -204,42 +156,6 @@ v2 = [
                     "args": null,
                     "kind": "ScalarField",
                     "name": "company",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "jobTitle",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "jobRole",
-                    "storageKey": null
-                  },
-                  (v1/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "city",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "country",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "employees",
                     "storageKey": null
                   }
                 ],
@@ -307,7 +223,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "ContactsQuery",
-    "selections": (v2/*: any*/),
+    "selections": (v1/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -316,19 +232,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "ContactsQuery",
-    "selections": (v2/*: any*/)
+    "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "6b5258faa0a94d6a3d21119e5ea40ecd",
+    "cacheID": "4d056bd168586ad172fac9bfa52ff9b6",
     "id": null,
     "metadata": {},
     "name": "ContactsQuery",
     "operationKind": "query",
-    "text": "query ContactsQuery(\n  $args: PaginationArgs!\n) {\n  contacts(args: $args) {\n    edges {\n      node {\n        id\n        name\n        email\n        address\n        rawId\n        segments\n        lastActivityAt\n        avatar\n        metadata\n        gender\n        website\n        phoneNumber\n        notes\n        companyInfo {\n          company\n          jobTitle\n          jobRole\n          website\n          city\n          country\n          employees\n        }\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
+    "text": "query ContactsQuery(\n  $args: PaginationArgs!\n) {\n  contacts(args: $args) {\n    edges {\n      node {\n        id\n        name\n        email\n        address\n        rawId\n        segments\n        lastActivityAt\n        avatar\n        companyInfo {\n          company\n        }\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "824ae9d2cc74369722fa3710ee3c2da4";
+(node as any).hash = "3618cd0bf46fa9319d6b279f06fd2257";
 
 export default node;
