@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<91ce05fc2c047e664ea31611ae3142ef>>
+ * @generated SignedSource<<2cfdee73e2eb1ca15687740678d97328>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,14 +10,9 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type ConversationStatus = "ACTIVE" | "CLOSED" | "PENDING" | "%future added value";
-export type ConnectionArgs = {
-  after?: string | null | undefined;
-  before?: string | null | undefined;
-  first?: number | null | undefined;
-  last?: number | null | undefined;
-};
 export type ConversationListQuery$variables = {
-  args: ConnectionArgs;
+  after?: string | null | undefined;
+  first?: number | null | undefined;
 };
 export type ConversationListQuery$data = {
   readonly conversations: {
@@ -46,6 +41,10 @@ export type ConversationListQuery$data = {
         readonly updatedAt: any | null | undefined;
       };
     }>;
+    readonly pageInfo: {
+      readonly endCursor: string | null | undefined;
+      readonly hasNextPage: boolean;
+    };
   };
 };
 export type ConversationListQuery = {
@@ -54,112 +53,120 @@ export type ConversationListQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "args"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "after"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "first"
+},
+v2 = [
   {
     "kind": "Variable",
-    "name": "args",
-    "variableName": "args"
+    "name": "after",
+    "variableName": "after"
+  },
+  {
+    "kind": "Variable",
+    "name": "first",
+    "variableName": "first"
   }
 ],
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "cursor",
   "storageKey": null
 },
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "avatar",
   "storageKey": null
 },
-v5 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "name",
   "storageKey": null
 },
-v6 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "isOnline",
   "storageKey": null
 },
-v7 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "status",
   "storageKey": null
 },
-v8 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "subject",
   "storageKey": null
 },
-v9 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "metadata",
   "storageKey": null
 },
-v10 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
 },
-v11 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "updatedAt",
   "storageKey": null
 },
-v12 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "lastActivityAt",
   "storageKey": null
 },
-v13 = {
+v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "closedAt",
   "storageKey": null
 },
-v14 = {
+v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "unreadCount",
   "storageKey": null
 },
-v15 = {
+v16 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -167,27 +174,55 @@ v15 = {
   "name": "assignedTo",
   "plural": false,
   "selections": [
-    (v3/*: any*/)
+    (v4/*: any*/)
   ],
   "storageKey": null
 },
-v16 = {
+v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "content",
   "storageKey": null
+},
+v18 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "PageInfo",
+  "kind": "LinkedField",
+  "name": "pageInfo",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasNextPage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "endCursor",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "ConversationListQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "ConversationConnection",
         "kind": "LinkedField",
         "name": "conversations",
@@ -201,7 +236,7 @@ return {
             "name": "edges",
             "plural": true,
             "selections": [
-              (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -210,7 +245,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v3/*: any*/),
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -219,13 +254,12 @@ return {
                     "name": "contact",
                     "plural": false,
                     "selections": [
-                      (v4/*: any*/),
                       (v5/*: any*/),
-                      (v6/*: any*/)
+                      (v6/*: any*/),
+                      (v7/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v7/*: any*/),
                   (v8/*: any*/),
                   (v9/*: any*/),
                   (v10/*: any*/),
@@ -234,6 +268,7 @@ return {
                   (v13/*: any*/),
                   (v14/*: any*/),
                   (v15/*: any*/),
+                  (v16/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -242,7 +277,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v16/*: any*/)
+                      (v17/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -251,7 +286,8 @@ return {
               }
             ],
             "storageKey": null
-          }
+          },
+          (v18/*: any*/)
         ],
         "storageKey": null
       }
@@ -261,13 +297,16 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "ConversationListQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "ConversationConnection",
         "kind": "LinkedField",
         "name": "conversations",
@@ -281,7 +320,7 @@ return {
             "name": "edges",
             "plural": true,
             "selections": [
-              (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -290,7 +329,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v3/*: any*/),
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -299,14 +338,13 @@ return {
                     "name": "contact",
                     "plural": false,
                     "selections": [
-                      (v4/*: any*/),
                       (v5/*: any*/),
                       (v6/*: any*/),
-                      (v3/*: any*/)
+                      (v7/*: any*/),
+                      (v4/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v7/*: any*/),
                   (v8/*: any*/),
                   (v9/*: any*/),
                   (v10/*: any*/),
@@ -315,6 +353,7 @@ return {
                   (v13/*: any*/),
                   (v14/*: any*/),
                   (v15/*: any*/),
+                  (v16/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -323,8 +362,8 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v16/*: any*/),
-                      (v3/*: any*/)
+                      (v17/*: any*/),
+                      (v4/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -333,23 +372,24 @@ return {
               }
             ],
             "storageKey": null
-          }
+          },
+          (v18/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "0686f0cfc61c12efda9bb54e0bfd90dd",
+    "cacheID": "ccb7c2a2e082aef08943c66e6ce285d2",
     "id": null,
     "metadata": {},
     "name": "ConversationListQuery",
     "operationKind": "query",
-    "text": "query ConversationListQuery(\n  $args: ConnectionArgs!\n) {\n  conversations(args: $args) {\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n        }\n        status\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListQuery(\n  $first: Float\n  $after: String\n) {\n  conversations(first: $first, after: $after) {\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n        }\n        status\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "89700a34e2a218be34c116c48db8b94f";
+(node as any).hash = "ab5aeb6d0b40479a262536f6b695c2ba";
 
 export default node;

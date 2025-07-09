@@ -1,8 +1,20 @@
 import { graphql } from 'relay-runtime';
 
 export const messageQuery = graphql`
-  query MessageQuery($conversationId: ID!, $args: ConnectionArgs!) {
-    messages(conversationId: $conversationId, args: $args) {
+  query MessageQuery(
+    $conversationId: ID!
+    $first: Float
+    $after: String
+    $last: Float
+    $before: String
+  ) {
+    messages(
+      conversationId: $conversationId
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+    ) {
       pageInfo {
         hasNextPage
         endCursor

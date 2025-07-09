@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cb0f5c3d3e901b09327cdbd0501d43d4>>
+ * @generated SignedSource<<a1e0444a0dae9eea7f4adbf50d95e405>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,15 +12,12 @@ import { ConcreteRequest } from 'relay-runtime';
 export type MessageSender = "AGENT" | "GUEST" | "SYSTEM" | "%future added value";
 export type MessageStatus = "DELIVERED" | "FAILED" | "READ" | "SENT" | "%future added value";
 export type MessageTypeEnum = "FILE" | "IMAGE" | "NOTE" | "SYSTEM" | "TEXT" | "%future added value";
-export type ConnectionArgs = {
+export type MessageQuery$variables = {
   after?: string | null | undefined;
   before?: string | null | undefined;
+  conversationId: string;
   first?: number | null | undefined;
   last?: number | null | undefined;
-};
-export type MessageQuery$variables = {
-  args: ConnectionArgs;
-  conversationId: string;
 };
 export type MessageQuery$data = {
   readonly messages: {
@@ -54,26 +51,56 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "args"
+  "name": "after"
 },
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "before"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "conversationId"
 },
-v2 = [
+v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "first"
+},
+v4 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "last"
+},
+v5 = [
   {
     "kind": "Variable",
-    "name": "args",
-    "variableName": "args"
+    "name": "after",
+    "variableName": "after"
+  },
+  {
+    "kind": "Variable",
+    "name": "before",
+    "variableName": "before"
   },
   {
     "kind": "Variable",
     "name": "conversationId",
     "variableName": "conversationId"
+  },
+  {
+    "kind": "Variable",
+    "name": "first",
+    "variableName": "first"
+  },
+  {
+    "kind": "Variable",
+    "name": "last",
+    "variableName": "last"
   }
 ],
-v3 = {
+v6 = {
   "alias": null,
   "args": null,
   "concreteType": "PageInfo",
@@ -98,70 +125,70 @@ v3 = {
   ],
   "storageKey": null
 },
-v4 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "content",
   "storageKey": null
 },
-v5 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "sender",
   "storageKey": null
 },
-v6 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
 },
-v7 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "metadata",
   "storageKey": null
 },
-v8 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "firstName",
   "storageKey": null
 },
-v9 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "lastName",
   "storageKey": null
 },
-v10 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "avatar",
   "storageKey": null
 },
-v11 = {
+v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "type",
   "storageKey": null
 },
-v12 = {
+v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "status",
   "storageKey": null
 },
-v13 = {
+v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -172,7 +199,10 @@ return {
   "fragment": {
     "argumentDefinitions": [
       (v0/*: any*/),
-      (v1/*: any*/)
+      (v1/*: any*/),
+      (v2/*: any*/),
+      (v3/*: any*/),
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
@@ -180,13 +210,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": "MessageConnection",
         "kind": "LinkedField",
         "name": "messages",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v6/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -203,10 +233,10 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/),
-                  (v5/*: any*/),
-                  (v6/*: any*/),
                   (v7/*: any*/),
+                  (v8/*: any*/),
+                  (v9/*: any*/),
+                  (v10/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -215,14 +245,14 @@ return {
                     "name": "user",
                     "plural": false,
                     "selections": [
-                      (v8/*: any*/),
-                      (v9/*: any*/),
-                      (v10/*: any*/)
+                      (v11/*: any*/),
+                      (v12/*: any*/),
+                      (v13/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v11/*: any*/),
-                  (v12/*: any*/)
+                  (v14/*: any*/),
+                  (v15/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -239,21 +269,24 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v1/*: any*/),
-      (v0/*: any*/)
+      (v2/*: any*/),
+      (v3/*: any*/),
+      (v0/*: any*/),
+      (v4/*: any*/),
+      (v1/*: any*/)
     ],
     "kind": "Operation",
     "name": "MessageQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v2/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": "MessageConnection",
         "kind": "LinkedField",
         "name": "messages",
         "plural": false,
         "selections": [
-          (v3/*: any*/),
+          (v6/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -270,10 +303,10 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/),
-                  (v5/*: any*/),
-                  (v6/*: any*/),
                   (v7/*: any*/),
+                  (v8/*: any*/),
+                  (v9/*: any*/),
+                  (v10/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -282,16 +315,16 @@ return {
                     "name": "user",
                     "plural": false,
                     "selections": [
-                      (v8/*: any*/),
-                      (v9/*: any*/),
-                      (v10/*: any*/),
-                      (v13/*: any*/)
+                      (v11/*: any*/),
+                      (v12/*: any*/),
+                      (v13/*: any*/),
+                      (v16/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v11/*: any*/),
-                  (v12/*: any*/),
-                  (v13/*: any*/)
+                  (v14/*: any*/),
+                  (v15/*: any*/),
+                  (v16/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -304,16 +337,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "73cb9ca3abc7f5d9b5806198ffd03eb2",
+    "cacheID": "daf2459513fbbf55710e6bcbbf139ddd",
     "id": null,
     "metadata": {},
     "name": "MessageQuery",
     "operationKind": "query",
-    "text": "query MessageQuery(\n  $conversationId: ID!\n  $args: ConnectionArgs!\n) {\n  messages(conversationId: $conversationId, args: $args) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      node {\n        content\n        sender\n        createdAt\n        metadata\n        user {\n          firstName\n          lastName\n          avatar\n          id\n        }\n        type\n        status\n        id\n      }\n    }\n  }\n}\n"
+    "text": "query MessageQuery(\n  $conversationId: ID!\n  $first: Float\n  $after: String\n  $last: Float\n  $before: String\n) {\n  messages(conversationId: $conversationId, first: $first, after: $after, last: $last, before: $before) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      node {\n        content\n        sender\n        createdAt\n        metadata\n        user {\n          firstName\n          lastName\n          avatar\n          id\n        }\n        type\n        status\n        id\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1463308084605644cfed6ba306d139f6";
+(node as any).hash = "8874cd53522e1a3a5e9d08e0642b7c64";
 
 export default node;

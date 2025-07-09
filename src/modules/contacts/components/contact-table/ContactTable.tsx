@@ -8,6 +8,7 @@ import { RootState } from '@/core/store';
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import {
   actionUpdateContactDetails,
+  fetchContacts,
   handleRemoveContactAction,
 } from '../../store/features/contacts';
 import { ContactInterface } from '../../models/contacts.model';
@@ -25,21 +26,21 @@ import imgDefault from '@/assets/images/common/img-default.jpeg';
 import icAvatarDefault from '@/assets/images/avatar-default.png';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 import dayjs from 'dayjs';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { KEY_PAGE, KEY_PAGE_SIZE, PAGE, PAGE_SIZE_OPTIONS } from '@/shared/constant/common';
 
 function ContactTable() {
   const { t } = useTranslation('contacts');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
+  const [searchParams] = useSearchParams();
   const { currentWorkspace } = useAppSelector(
     (state: RootState) => state?.auth,
   );
   const { isLoading, contacts, totalDocs } = useAppSelector(
     (state: RootState) => state.contacts,
   );
-
-console.log("contacts", contacts);
-
 
   function handleRemoveContact(idContact: string) {
     dispatch(
@@ -142,7 +143,9 @@ console.log("contacts", contacts);
       width: 150,
       render: (record: ContactInterface) => (
         <S.TooltipColumn title={record?.lastActivityAt}>
-            {record?.lastActivityAt ? dayjs(record?.lastActivityAt).format('DD/MM/YYYY HH:mm') : '-'}
+          {record?.lastActivityAt
+            ? dayjs(record?.lastActivityAt).format('DD/MM/YYYY HH:mm')
+            : '-'}
         </S.TooltipColumn>
       ),
     },
@@ -217,6 +220,23 @@ console.log("contacts", contacts);
     dispatch(actionUpdateContactDetails(record));
     navigate(MAIN_ROUTES?.CONTACT_DETAILS?.replace(':id', record?.id));
   }
+
+  useEffect(() => {
+    const page = Number(searchParams.get(KEY_PAGE) || PAGE);
+    const pageSize =
+      Number(searchParams.get(KEY_PAGE_SIZE)) || PAGE_SIZE_OPTIONS?.[0]?.value;
+
+    const offset = (page - 1) * pageSize;
+
+    if (currentWorkspace?.id) {
+      dispatch(
+        fetchContacts({
+          workspaceId: currentWorkspace.id,
+          offset,
+        }),
+      );
+    }
+  }, [searchParams, currentWorkspace?.id, dispatch]);
 
   return (
     <S.ContactTableContainer>
