@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<575a79d7d3b2e1f01a7181027d0bc266>>
+ * @generated SignedSource<<5f6a635643cc09464810a92915f49fb3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,7 +17,6 @@ export type PaginationArgs = {
 };
 export type ContactsQuery$variables = {
   args: PaginationArgs;
-  workspaceId: string;
 };
 export type ContactsQuery$data = {
   readonly contacts: {
@@ -25,7 +24,15 @@ export type ContactsQuery$data = {
       readonly node: {
         readonly address: string | null | undefined;
         readonly avatar: string | null | undefined;
-        readonly companyInfo: any;
+        readonly companyInfo: {
+          readonly city: string | null | undefined;
+          readonly company: string | null | undefined;
+          readonly country: string | null | undefined;
+          readonly employees: number | null | undefined;
+          readonly jobRole: string | null | undefined;
+          readonly jobTitle: string | null | undefined;
+          readonly website: string | null | undefined;
+        } | null | undefined;
         readonly email: string | null | undefined;
         readonly gender: ContactGender | null | undefined;
         readonly id: string;
@@ -34,6 +41,7 @@ export type ContactsQuery$data = {
         readonly name: string;
         readonly notes: string | null | undefined;
         readonly phoneNumber: string | null | undefined;
+        readonly rawId: string;
         readonly segments: ReadonlyArray<string>;
         readonly website: string | null | undefined;
       };
@@ -53,15 +61,19 @@ export type ContactsQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "args"
-},
+var v0 = [
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "args"
+  }
+],
 v1 = {
-  "defaultValue": null,
-  "kind": "LocalArgument",
-  "name": "workspaceId"
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "website",
+  "storageKey": null
 },
 v2 = [
   {
@@ -71,11 +83,6 @@ v2 = [
         "kind": "Variable",
         "name": "args",
         "variableName": "args"
-      },
-      {
-        "kind": "Variable",
-        "name": "workspaceId",
-        "variableName": "workspaceId"
       }
     ],
     "concreteType": "ContactPagination",
@@ -103,14 +110,14 @@ v2 = [
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "name",
+                "name": "id",
                 "storageKey": null
               },
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "id",
+                "name": "name",
                 "storageKey": null
               },
               {
@@ -131,6 +138,13 @@ v2 = [
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "rawId",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "segments",
                 "storageKey": null
               },
@@ -139,13 +153,6 @@ v2 = [
                 "args": null,
                 "kind": "ScalarField",
                 "name": "lastActivityAt",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "companyInfo",
                 "storageKey": null
               },
               {
@@ -169,13 +176,7 @@ v2 = [
                 "name": "gender",
                 "storageKey": null
               },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "website",
-                "storageKey": null
-              },
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -188,6 +189,60 @@ v2 = [
                 "args": null,
                 "kind": "ScalarField",
                 "name": "notes",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "CompanyInfo",
+                "kind": "LinkedField",
+                "name": "companyInfo",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "company",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "jobTitle",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "jobRole",
+                    "storageKey": null
+                  },
+                  (v1/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "city",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "country",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "employees",
+                    "storageKey": null
+                  }
+                ],
                 "storageKey": null
               }
             ],
@@ -248,10 +303,7 @@ v2 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": [
-      (v0/*: any*/),
-      (v1/*: any*/)
-    ],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "ContactsQuery",
@@ -261,25 +313,22 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [
-      (v1/*: any*/),
-      (v0/*: any*/)
-    ],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "ContactsQuery",
     "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "8a0c83eef62182315378da332e569a2a",
+    "cacheID": "6b5258faa0a94d6a3d21119e5ea40ecd",
     "id": null,
     "metadata": {},
     "name": "ContactsQuery",
     "operationKind": "query",
-    "text": "query ContactsQuery(\n  $workspaceId: ID!\n  $args: PaginationArgs!\n) {\n  contacts(workspaceId: $workspaceId, args: $args) {\n    edges {\n      node {\n        name\n        id\n        email\n        address\n        segments\n        lastActivityAt\n        companyInfo\n        avatar\n        metadata\n        gender\n        website\n        phoneNumber\n        notes\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
+    "text": "query ContactsQuery(\n  $args: PaginationArgs!\n) {\n  contacts(args: $args) {\n    edges {\n      node {\n        id\n        name\n        email\n        address\n        rawId\n        segments\n        lastActivityAt\n        avatar\n        metadata\n        gender\n        website\n        phoneNumber\n        notes\n        companyInfo {\n          company\n          jobTitle\n          jobRole\n          website\n          city\n          country\n          employees\n        }\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "2ce84f06e3b17e90534c030bb43f198d";
+(node as any).hash = "824ae9d2cc74369722fa3710ee3c2da4";
 
 export default node;

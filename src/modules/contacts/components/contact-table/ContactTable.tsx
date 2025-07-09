@@ -24,6 +24,7 @@ import icRemove from '@/assets/icons/contact/ic-remove.svg';
 import imgDefault from '@/assets/images/common/img-default.jpeg';
 import icAvatarDefault from '@/assets/images/avatar-default.png';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
+import dayjs from 'dayjs';
 
 function ContactTable() {
   const { t } = useTranslation('contacts');
@@ -36,6 +37,9 @@ function ContactTable() {
   const { isLoading, contacts, totalDocs } = useAppSelector(
     (state: RootState) => state.contacts,
   );
+
+console.log("contacts", contacts);
+
 
   function handleRemoveContact(idContact: string) {
     dispatch(
@@ -104,7 +108,7 @@ function ContactTable() {
       width: 200,
       render: (record: ContactInterface) => (
         <S.TooltipColumn title={record?.companyInfo?.name}>
-          {record?.companyInfo?.name || '-'}
+          {record?.companyInfo?.name || 'Unknow'}
         </S.TooltipColumn>
       ),
     },
@@ -136,8 +140,10 @@ function ContactTable() {
       key: 'lastActive',
       minWidth: 150,
       width: 150,
-      render: (text: string) => (
-        <S.TooltipColumn title={text}>{text || '-'}</S.TooltipColumn>
+      render: (record: ContactInterface) => (
+        <S.TooltipColumn title={record?.lastActivityAt}>
+            {record?.lastActivityAt ? dayjs(record?.lastActivityAt).format('DD/MM/YYYY HH:mm') : '-'}
+        </S.TooltipColumn>
       ),
     },
     {
@@ -183,7 +189,7 @@ function ContactTable() {
               <S.FilterActionWrap>
                 <S.FilterAction
                   onClick={() => {
-                    handleRemoveContact(record?.id);
+                    handleRemoveContact(record?.rawId);
                   }}
                   $isRemove={true}
                 >

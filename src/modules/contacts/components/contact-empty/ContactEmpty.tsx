@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ReactSVG } from 'react-svg';
 import { useTranslation } from 'react-i18next';
 
-import { useModal } from '@/shared/hooks';
+import { useAppDispatch, useModal } from '@/shared/hooks';
 
 import Button from '@/shared/components/common/Button';
 import Typography from '@/shared/components/common/Typography';
@@ -15,19 +15,27 @@ import * as S from './ContactEmpty.styles';
 import icPlus from '@/assets/icons/contact/ic-plus.svg';
 import icImport from '@/assets/icons/contact/ic-import.svg';
 import imgContactEmpty from '@/assets/images/contact/img-contact-empty.png';
+import { createContact } from '../../store/features/contacts';
 
 function ContactEmpty() {
   const { t } = useTranslation('contacts');
   const [isLoading] = useState<boolean>(false);
-
+  const dispatch = useAppDispatch();
   const { visible: addContact, toggle: handleOpenModalAddContact } = useModal();
 
   function handleImportContact() {
     //TODO handle later
   }
 
-  function handleAddContact() {
-    //TODO handle later
+  function handleAddContact(values: { name: string; email: string }) {
+    dispatch(
+      createContact({
+        ...values,
+        t,
+      }),
+    );
+
+    handleOpenModalAddContact();
   }
 
   return (
