@@ -16,8 +16,6 @@ import Input from '@/shared/components/common/Input';
 import Checkbox from '@/shared/components/common/Checkbox';
 import Typography from '@/shared/components/common/Typography';
 import PhoneNumberByCountry from '@/shared/components/common/PhoneNumber';
-
-import icApple from '@/assets/icons/common/ic-apple.svg';
 import icGoogle from '@/assets/icons/common/ic-google.svg';
 
 import * as S from './FormSignUp.styles';
@@ -28,7 +26,6 @@ function StartForFree() {
   const API_SERVER = import.meta.env.VITE_API_SERVER;
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const { replaceState } = useRouter();
   const navigate = useNavigate();
   const [googleLoading, setGoogleLoading] = useState(false);
   const policyWatch = Form.useWatch('policy', form);
@@ -43,7 +40,7 @@ function StartForFree() {
   }, []);
 
   async function handleFinish(values: any) {
-    handleSignUp(values, dispatch, navigate, t);
+    handleSignUp(values, dispatch, navigate);
   }
 
   function handleLoginWithGoogle() {
@@ -52,9 +49,6 @@ function StartForFree() {
     window.location.href = googleLoginUrl;
   }
 
-  function handleLoginWithFacebook() {
-    //Handle later
-  }
 
   function handleLogin() {
     navigate(AUTH_ROUTES?.SIGN_IN);

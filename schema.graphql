@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+interface Node {
+  id: ID!
+}
+
 type User implements Node {
   id: ID!
   firstName: String
@@ -10,15 +14,12 @@ type User implements Node {
   phone: String
   avatar: String
   role: String!
-  isVerified: Boolean!
+  status: String!
   isOnline: Boolean!
   lastActivityAt: DateTime
   createdAt: DateTime
   updatedAt: DateTime
-}
-
-interface Node {
-  id: ID!
+  rawId: String!
 }
 
 """
@@ -42,8 +43,18 @@ type Workspace implements Node {
   contactEmail: String
   contactPhone: String
   owner: User
+  status: WorkspaceStatus
   role: WorkspaceMemberRole
   metadata: JSON
+  rawId: String!
+}
+
+"""Status of a workspace"""
+enum WorkspaceStatus {
+  DRAFT
+  PENDING
+  INSTALLED
+  CLOSED
 }
 
 """Type of member"""
@@ -73,6 +84,7 @@ type Message implements Node {
   metadata: JSON
   createdAt: DateTime!
   updatedAt: DateTime!
+  rawId: String!
 }
 
 """Type of message sender"""
@@ -109,6 +121,29 @@ type MessageConnection {
   pageInfo: PageInfo!
 }
 
+type ContactContext {
+  ip: String
+  country: String
+  city: String
+  region: String
+  latitude: Float
+  longitude: Float
+  timezone: String
+  browser: String
+  os: String
+  language: String
+}
+
+type CompanyInfo {
+  company: String
+  jobTitle: String
+  jobRole: String
+  website: String
+  city: String
+  country: String
+  employees: Int
+}
+
 type Contact implements Node {
   id: ID!
   guestId: String
@@ -120,16 +155,16 @@ type Contact implements Node {
   website: String
   gender: ContactGender
   notification: Boolean!
-  companyInfo: JSON!
+  companyInfo: CompanyInfo
   segments: [String!]!
   metadata: JSON!
-  trackingInfo: JSON!
+  context: ContactContext
   notes: String
   isOnline: Boolean!
   lastActivityAt: DateTime
-  workspace: Workspace
   createdAt: DateTime
   updatedAt: DateTime
+  rawId: String!
 }
 
 """The gender of the contact"""
@@ -163,6 +198,7 @@ type Conversation implements Node {
   closedAt: DateTime
   unreadCount: Int
   latestMessage: Message
+  rawId: String!
 }
 
 """Status of a conversation"""
@@ -182,14 +218,60 @@ type ConversationConnection {
   pageInfo: PageInfo!
 }
 
+type HelpDeskCategory implements Node {
+  id: ID!
+  name: String!
+  image: String
+  slug: String!
+  desc: String
+  workspace: Workspace
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type HelpDeskCategoryTypeEdge {
+  cursor: String!
+  node: HelpDeskCategory!
+}
+
+type HelpDeskCategorySection implements Node {
+  id: ID!
+  name: String!
+  articleCount: Int!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type HelpDeskCategorySectionTypeEdge {
+  cursor: String!
+  node: HelpDeskCategorySection!
+}
+
+type HelpDeskArticle implements Node {
+  id: ID!
+  workspace: Workspace
+  title: String!
+  content: String!
+  slug: String!
+  tags: [String!]!
+  status: String!
+  viewCount: Int!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type HelpDeskArticleTypeEdge {
+  cursor: String!
+  node: HelpDeskArticle!
+}
+
 type Query {
   me: User
   workspaces: [Workspace!]!
-  conversation(id: String!): Conversation
-  conversations(workspaceId: ID!, args: ConnectionArgs!): ConversationConnection!
+  conversations(args: ConnectionArgs!): ConversationConnection!
   messages(conversationId: ID!, args: ConnectionArgs!): MessageConnection!
-  contact(id: String!): Contact
-  contacts(workspaceId: ID!, args: PaginationArgs!): ContactPagination!
+  contacts(args: PaginationArgs!): ContactPagination!
+  node(id: ID!): Node
 }
 
 input ConnectionArgs {

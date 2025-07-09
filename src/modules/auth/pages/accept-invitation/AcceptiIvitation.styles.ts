@@ -1,7 +1,3 @@
-import Select from '@/shared/components/common/Select';
-import Typography from '@/shared/components/common/Typography';
-import themeColors from '@/shared/styles/themes/default/colors';
-import { Option } from 'antd/es/mentions';
 import { styled } from 'styled-components';
 
 export const SignInWrap = styled.section`

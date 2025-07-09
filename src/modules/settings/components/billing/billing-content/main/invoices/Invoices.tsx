@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as S from "./Invoices.styles";
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import themeColors from '@/shared/styles/themes/default/colors';

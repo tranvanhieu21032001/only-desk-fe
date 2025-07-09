@@ -1,4 +1,3 @@
-import { StringNullableChain } from 'lodash';
 import {
   AccountMenusEnums,
   ActionArticleFilterEnums,

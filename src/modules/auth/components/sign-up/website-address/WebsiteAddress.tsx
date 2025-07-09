@@ -14,7 +14,6 @@ import icArrowRight from '@/assets/icons/common/ic-arrow-right.svg';
 
 import * as S from './WebsiteAddress.styles';
 import { handleSetWebsite } from '@/modules/auth/api/auth';
-import { MAIN_ROUTES } from '@/core/routes/constants';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 
 function WebsiteAddress() {

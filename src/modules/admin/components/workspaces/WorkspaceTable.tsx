@@ -3,7 +3,8 @@ import { Table, Tag, Dropdown, Menu } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import * as S from './WorkspaceTable.styles';
 import styled from 'styled-components';
-const CustomTable = styled(Table)`
+
+const TableWrapper = styled.div`
   .ant-table-cell {
     padding: 12px !important;
   }
@@ -91,18 +92,21 @@ const WorkspaceTable: React.FC<Props> = ({ data, onRowSelectionChange }) => {
   ];
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: Workspace[]) => {
+    onChange: (_: React.Key[], selectedRows: Workspace[]) => {
       onRowSelectionChange?.(selectedRows);
     },
   };
 
   return (
-    <CustomTable
-      dataSource={data}
-      columns={columns}
-      rowSelection={rowSelection}
-      pagination={{ pageSize: 5 }}
-    />
+    <TableWrapper>
+      <Table<Workspace>
+        dataSource={data}
+        columns={columns}
+        rowSelection={rowSelection}
+        pagination={{ pageSize: 5 }}
+        rowKey="key"
+      />
+    </TableWrapper>
   );
 };
 

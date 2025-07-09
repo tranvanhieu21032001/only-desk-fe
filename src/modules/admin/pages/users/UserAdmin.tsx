@@ -1,4 +1,3 @@
-import React from 'react';
 import { Image } from 'antd';
 import * as S from './UserAdmin.styles';
 import Typography from '@/shared/components/common/Typography';

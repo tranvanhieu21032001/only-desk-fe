@@ -1,6 +1,6 @@
-import React from 'react';
+// import React from 'react';
 import { Image } from 'antd';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import Typography from '@/shared/components/common/Typography';
 import Input from '@/shared/components/common/Input';
@@ -13,7 +13,7 @@ import * as S from './WorkspaceAdmin.styles';
 import WorkspaceTable from '../../components/workspaces/WorkspaceTable';
 
 const WorkspaceAdmin = () => {
-  const { t } = useTranslation('workspace');
+  // const { t } = useTranslation('workspace');
 
   const dataSource = [
     {

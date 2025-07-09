@@ -1,7 +1,6 @@
 import themeColors from '@/shared/styles/themes/default/colors';
-import fontSize from '@/shared/styles/themes/default/fontSize';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
-import { css, styled } from 'styled-components';
+import { styled } from 'styled-components';
 
 export const BillingInformationContainer = styled.section`
   height: calc(100vh - 80px);

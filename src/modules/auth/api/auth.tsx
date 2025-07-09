@@ -154,12 +154,12 @@ const handleGoogleTokenLoginApi = async (
     const firstWorkspace = workspaces[0];
 
     // 2. Fetch current user info
-    const meDataRaw = await fetchQuery(
+    const meDataRaw = (await fetchQuery(
       relayEnvironment,
       meQuery,
       {},
       { fetchPolicy: 'network-only' },
-    ).toPromise();
+    ).toPromise()) as { me?: any };
     const userInfo = meDataRaw?.me;
 
     if (userInfo) dispatch(actionUpdateUserInfo(userInfo));
@@ -209,7 +209,6 @@ const handleSignUp = async (
   values: any,
   dispatch: any,
   navigate: (path: string, options?: any) => void,
-  t: TFunction,
 ) => {
   const updateData = omit(values, ['confirmPassword', 'policy']);
   dispatch(actionSignUp(true));
@@ -238,7 +237,7 @@ const handleSetWebsite = async (
     messagingPlatform: string[];
   },
   dispatch: any,
-  t: TFunction,
+  // t: TFunction,
   onSuccess?: () => void,
 ) => {
   dispatch(actionSignUp(true));
@@ -263,8 +262,8 @@ const handleCompleteRegister = async (
     companySize: string;
     messagingPlatform: string[];
   },
-  dispatch: any,
-  t: TFunction,
+  dispatch?: any,
+  // t: TFunction,
   onSuccess?: () => void,
 ) => {
   dispatch(actionSignUp(true));
@@ -273,7 +272,7 @@ const handleCompleteRegister = async (
     data: values,
     enableFlashMessageSuccess: false,
   })
-    .then((res) => {
+    .then((_res) => {
       onSuccess?.();
     })
     .catch((err) => err)
@@ -303,7 +302,7 @@ const handleVerifyOtp = async (
   payloads: { code: string },
   dispatch: any,
   navigate: any,
-  t: TFunction,
+  // _t: TFunction,
 ) => {
   dispatch(actionSignUp(true));
   const email = webLocalStorage.get(constants.SIGN_UP_INFO)?.email;
@@ -441,12 +440,12 @@ const handleSignInApi = async (
     const firstWorkspace = workspaces[0];
 
     // 2. Call meQuery after having workspace
-    const meDataRaw = await fetchQuery(
+    const meDataRaw = (await fetchQuery(
       relayEnvironment,
       meQuery,
       {},
       { fetchPolicy: 'network-only' },
-    ).toPromise();
+    ).toPromise()) as { me?: any };
     const meData: any = meDataRaw;
     const userInfo = meData?.me;
 
@@ -465,7 +464,7 @@ const handleSignInApi = async (
       '@/modules/workspace/api/workspace'
     );
     let newToken = '';
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve, _reject) => {
       handleSwitchWorkspaceApi(
         firstWorkspace.id,
         t,
@@ -547,5 +546,5 @@ export {
   handleInviteTeam,
   handleCompleteRegister,
   checkInvitationToken,
-  acceptInvitationToken
+  acceptInvitationToken,
 };

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Image, Dropdown, Menu } from 'antd';
+import { useState } from 'react';
+import { Image, Dropdown } from 'antd';
 import * as S from './VisitorMenu.styles';
 import Typography from '@/shared/components/common/Typography';
 import themeColors from '@/shared/styles/themes/default/colors';
@@ -10,7 +10,6 @@ import icAvatar from '@/assets/icons/visitor/ic-avatar.svg';
 import icThreeDot from '@/assets/icons/visitor/ic-threedot.svg';
 import icMagicPen from "@/assets/icons/visitor/ic-magicpen.svg"
 import icMessage from "@/assets/icons/visitor/ic-message.svg";
-import icEmpty from '@/assets/icons/visitor/ic-empty.svg';
 
 const VisitorMenu = () => {
     const [searchTerm, setSearchTerm] = useState('');

@@ -1,19 +1,14 @@
 import { Form, Image, message, Spin } from 'antd';
 import OTPInput from 'react-otp-input';
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { constants } from '@/core/settings';
-import { useRouter } from '@/shared/hooks/useRouter';
 import webLocalStorage from '@/shared/utils/webLocalStorage';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import { handleResendOtp, handleVerifyOtp } from '@/modules/auth/api/auth';
 
-import Button from '@/shared/components/common/Button';
 import Typography from '@/shared/components/common/Typography';
-
-import icEmail from '@/assets/icons/auth/ic-email.svg';
-import icGmail from '@/assets/icons/common/ic-google.svg';
 import icArrowRight from '@/assets/icons/common/ic-arrow-right.svg';
 
 import * as S from './ConfirmCode.styles';
@@ -36,7 +31,7 @@ function ConfirmCode() {
     const payloads = {
       code: values?.code,
     };
-    handleVerifyOtp(payloads, dispatch, navigate, t);
+    handleVerifyOtp(payloads, dispatch, navigate);
   }
 
   async function handleGetANewOtp() {
@@ -50,43 +45,43 @@ function ConfirmCode() {
     }
   }
 
-  function handleOpenGmail() {
-    const domain: string =
-      signUpFromLocal?.email.split('@')[1]?.toLowerCase() || '';
-    const providers = {
-      'gmail.com': 'https://mail.google.com',
-      'outlook.com': 'https://outlook.live.com',
-      'hotmail.com': 'https://outlook.live.com',
-      'yahoo.com': 'https://mail.yahoo.com',
-      'icloud.com': 'https://www.icloud.com/mail',
-      'aol.com': 'https://mail.aol.com',
-      'gmx.com': 'https://mail.gmx.com',
-      'mail.com': 'https://www.mail.com',
-      'proton.me': 'https://proton.me/mail',
-      'zoho.com': 'https://mail.zoho.com',
-      'yandex.com': 'https://mail.yandex.com',
-      'mail.ru': 'https://mail.ru',
-      '163.com': 'https://mail.163.com',
-      '126.com': 'https://mail.126.com',
-      'qq.com': 'https://mail.qq.com',
-      'fastmail.com': 'https://fastmail.com',
-      'tutanota.com': 'https://mail.tutanota.com',
-      'posteo.de': 'https://posteo.de',
-      'hushmail.com': 'https://www.hushmail.com',
-    };
+  // function handleOpenGmail() {
+  //   const domain: string =
+  //     signUpFromLocal?.email.split('@')[1]?.toLowerCase() || '';
+  //   const providers = {
+  //     'gmail.com': 'https://mail.google.com',
+  //     'outlook.com': 'https://outlook.live.com',
+  //     'hotmail.com': 'https://outlook.live.com',
+  //     'yahoo.com': 'https://mail.yahoo.com',
+  //     'icloud.com': 'https://www.icloud.com/mail',
+  //     'aol.com': 'https://mail.aol.com',
+  //     'gmx.com': 'https://mail.gmx.com',
+  //     'mail.com': 'https://www.mail.com',
+  //     'proton.me': 'https://proton.me/mail',
+  //     'zoho.com': 'https://mail.zoho.com',
+  //     'yandex.com': 'https://mail.yandex.com',
+  //     'mail.ru': 'https://mail.ru',
+  //     '163.com': 'https://mail.163.com',
+  //     '126.com': 'https://mail.126.com',
+  //     'qq.com': 'https://mail.qq.com',
+  //     'fastmail.com': 'https://fastmail.com',
+  //     'tutanota.com': 'https://mail.tutanota.com',
+  //     'posteo.de': 'https://posteo.de',
+  //     'hushmail.com': 'https://www.hushmail.com',
+  //   };
 
-    const url = providers?.[domain as keyof typeof providers];
-    if (url) {
-      window.open(url, '_blank');
-    } else {
-      alert('Unsupported email provider');
-    }
-  }
+  //   const url = providers?.[domain as keyof typeof providers];
+  //   if (url) {
+  //     window.open(url, '_blank');
+  //   } else {
+  //     alert('Unsupported email provider');
+  //   }
+  // }
 
-  function isGmail() {
-    const domain = signUpFromLocal?.email.split('@')[1]?.toLowerCase();
-    return domain === 'gmail.com';
-  }
+  // function isGmail() {
+  //   const domain = signUpFromLocal?.email.split('@')[1]?.toLowerCase();
+  //   return domain === 'gmail.com';
+  // }
 
   return (
     <S.SignInWrap>

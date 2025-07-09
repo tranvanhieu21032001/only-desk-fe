@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import { SignUpStepEnums } from '../../helpers/enums/auth';
 
@@ -16,10 +16,9 @@ import ActivationProduct from '@/modules/auth/components/sign-up/activation-prod
 import * as S from './SignUp.styles';
 
 function SignUp() {
-  const { t } = useTranslation('auth');
+  // const { t } = useTranslation('auth');
   const location = useLocation();
 
-  // ✅ Lấy bước từ path cuối cùng
   const currentPath = location.pathname;
   const stepFromPath = currentPath.split('/').pop() || SignUpStepEnums.SIGN_UP;
 

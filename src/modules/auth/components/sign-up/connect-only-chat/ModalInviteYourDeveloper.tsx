@@ -50,9 +50,9 @@ function ConnectOnlyChat() {
     // TODO: Check install guide
   }
 
-  function handleCopyInviteLink() {
-    // TODO: Copy link logic
-  }
+  // function handleCopyInviteLink() {
+  //   // TODO: Copy link logic
+  // }
 
   function handleContinue() {
     navigate(`/auth/sign-up/${SignUpStepEnums.COMPANY_SIZE}`);
@@ -129,7 +129,7 @@ function ConnectOnlyChat() {
         <ModalInvite
           open={inviteModal}
           onCancel={handleOpenModalInvite}
-          onCopyInviteLink={handleCopyInviteLink}
+          // onCopyInviteLink={handleCopyInviteLink}
         />
       )}
     </S.SignInWrap>
