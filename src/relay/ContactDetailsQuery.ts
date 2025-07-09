@@ -1,26 +1,21 @@
 import { graphql } from 'react-relay';
 
 export const contactDetailsQuery = graphql`
-  query ContactDetailsQuery($id: String!) {
-    contact(id: $id) {
-      id
-      name
-      email
-      phoneNumber
-      address
-      notification
-      companyInfo
-      segments
-      metadata
-      trackingInfo
-      notes
-      isOnline
-      lastActivityAt
-      createdAt
-      updatedAt
-      gender
-      avatar
-      website
+  query ContactDetailsQuery($id: ID!) {
+    node(id: $id) {
+      ... on Contact {
+        id
+        name
+        email
+        phoneNumber
+        address
+        companyInfo {
+          company
+          jobTitle
+        }
+        segments
+        lastActivityAt
+      }
     }
   }
 `;

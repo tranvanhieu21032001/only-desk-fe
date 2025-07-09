@@ -35,15 +35,13 @@ const createContact = createAsyncThunk(
   async (values: {
     email: string;
     name: string;
-    workspaceId: string;
     t: TFunction;
   }) => {
-    const { email, name, workspaceId, t } = values;
+    const { email, name, t } = values;
     const results = await postRequest(endpointContact?.CREATE_CONTACT, {
       data: {
         ...(email && { email }),
         ...(name && { name }),
-        ...(workspaceId && { workspaceId }),
       },
       messageSuccess: t('create-contact.create-contact-success'),
     });

@@ -1,23 +1,21 @@
 import { graphql } from 'react-relay';
 
 export const contactsQuery = graphql`
-  query ContactsQuery($workspaceId: ID!, $args: PaginationArgs!) {
-    contacts(workspaceId: $workspaceId, args: $args) {
+  query ContactsQuery($args: PaginationArgs!) {
+    contacts(args: $args) {
       edges {
         node {
-          name
           id
+          name
           email
           address
+          rawId
           segments
           lastActivityAt
-          companyInfo
           avatar
-          metadata
-          gender
-          website
-          phoneNumber
-          notes
+          companyInfo {
+            company
+          }
         }
       }
       totalCount

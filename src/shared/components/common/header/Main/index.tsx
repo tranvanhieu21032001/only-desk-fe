@@ -90,17 +90,14 @@ const Header: React.FC = () => {
   }, []);
 
   function handleAddContact(values: { name: string; email: string }) {
-    if (currentWorkspace?.id) {
-      dispatch(
-        createContact({
-          ...values,
-          workspaceId: currentWorkspace?.id as string,
-          t,
-        }),
-      );
+    dispatch(
+      createContact({
+        ...values,
+        t,
+      }),
+    );
 
-      handleOpenModalAddContact();
-    }
+    handleOpenModalAddContact();
   }
 
   return (

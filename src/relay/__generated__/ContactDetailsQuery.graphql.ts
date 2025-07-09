@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9178367d5c11d10dae90dbf968be69e8>>
+ * @generated SignedSource<<a616717769bf78c38b7dca7cc1f9e164>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,30 +9,22 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type ContactGender = "FEMALE" | "MALE" | "%future added value";
 export type ContactDetailsQuery$variables = {
   id: string;
 };
 export type ContactDetailsQuery$data = {
-  readonly contact: {
-    readonly address: string | null | undefined;
-    readonly avatar: string | null | undefined;
-    readonly companyInfo: any;
-    readonly createdAt: any | null | undefined;
-    readonly email: string | null | undefined;
-    readonly gender: ContactGender | null | undefined;
-    readonly id: string;
-    readonly isOnline: boolean;
-    readonly lastActivityAt: any | null | undefined;
-    readonly metadata: any;
-    readonly name: string;
-    readonly notes: string | null | undefined;
-    readonly notification: boolean;
-    readonly phoneNumber: string | null | undefined;
-    readonly segments: ReadonlyArray<string>;
-    readonly trackingInfo: any;
-    readonly updatedAt: any | null | undefined;
-    readonly website: string | null | undefined;
+  readonly node: {
+    readonly address?: string | null | undefined;
+    readonly companyInfo?: {
+      readonly company: string | null | undefined;
+      readonly jobTitle: string | null | undefined;
+    } | null | undefined;
+    readonly email?: string | null | undefined;
+    readonly id?: string;
+    readonly lastActivityAt?: any | null | undefined;
+    readonly name?: string;
+    readonly phoneNumber?: string | null | undefined;
+    readonly segments?: ReadonlyArray<string>;
   } | null | undefined;
 };
 export type ContactDetailsQuery = {
@@ -50,156 +42,119 @@ var v0 = [
 ],
 v1 = [
   {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "id",
-        "variableName": "id"
-      }
-    ],
-    "concreteType": "Contact",
-    "kind": "LinkedField",
-    "name": "contact",
-    "plural": false,
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "id",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "name",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "email",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "phoneNumber",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "address",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "notification",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "companyInfo",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "segments",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "metadata",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "trackingInfo",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "notes",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "isOnline",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "lastActivityAt",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "createdAt",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "updatedAt",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "gender",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "avatar",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "website",
-        "storageKey": null
-      }
-    ],
-    "storageKey": null
+    "kind": "Variable",
+    "name": "id",
+    "variableName": "id"
   }
-];
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "email",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "phoneNumber",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "address",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "CompanyInfo",
+  "kind": "LinkedField",
+  "name": "companyInfo",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "company",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "jobTitle",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "segments",
+  "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lastActivityAt",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "ContactDetailsQuery",
-    "selections": (v1/*: any*/),
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
+        "plural": false,
+        "selections": [
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v2/*: any*/),
+              (v3/*: any*/),
+              (v4/*: any*/),
+              (v5/*: any*/),
+              (v6/*: any*/),
+              (v7/*: any*/),
+              (v8/*: any*/),
+              (v9/*: any*/)
+            ],
+            "type": "Contact",
+            "abstractKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ],
     "type": "Query",
     "abstractKey": null
   },
@@ -208,19 +163,53 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "ContactDetailsQuery",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "node",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
+            "storageKey": null
+          },
+          (v2/*: any*/),
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              (v3/*: any*/),
+              (v4/*: any*/),
+              (v5/*: any*/),
+              (v6/*: any*/),
+              (v7/*: any*/),
+              (v8/*: any*/),
+              (v9/*: any*/)
+            ],
+            "type": "Contact",
+            "abstractKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "c9589bb1c9d16c09dd3d24adfdc36439",
+    "cacheID": "87efe076a1e4a6c846229f4d9818022d",
     "id": null,
     "metadata": {},
     "name": "ContactDetailsQuery",
     "operationKind": "query",
-    "text": "query ContactDetailsQuery(\n  $id: String!\n) {\n  contact(id: $id) {\n    id\n    name\n    email\n    phoneNumber\n    address\n    notification\n    companyInfo\n    segments\n    metadata\n    trackingInfo\n    notes\n    isOnline\n    lastActivityAt\n    createdAt\n    updatedAt\n    gender\n    avatar\n    website\n  }\n}\n"
+    "text": "query ContactDetailsQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Contact {\n      id\n      name\n      email\n      phoneNumber\n      address\n      companyInfo {\n        company\n        jobTitle\n      }\n      segments\n      lastActivityAt\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "c7ad77f649909eb2f3c903ed696cdb3e";
+(node as any).hash = "4d310e0e1624c5bf794b451fc8120c63";
 
 export default node;

@@ -1,8 +1,8 @@
 import { graphql } from 'react-relay';
 
 export const conversationListQuery = graphql`
-  query ConversationListQuery($workspaceId: ID!, $args: ConnectionArgs!) {
-    conversations(workspaceId: $workspaceId, args: $args) {
+  query ConversationListQuery($args: ConnectionArgs!) {
+    conversations(args: $args) {
       edges {
         cursor
         node {

@@ -17,7 +17,8 @@
     "lastActivity": "Last Activity",
     "score": "Score",
     "remove": "Remove",
-    "remove-profile": "Remove profile"
+    "remove-profile": "Remove profile",
+    "unknown":"Unknown"
   },
 
   "empty": {
@@ -187,5 +188,9 @@
     "other": "Other"
   },
 
-  "website-domain-invalid": "Website domain is invalid"
+  "website-domain-invalid": "Website domain is invalid",
+  
+  "create-contact": {
+    "create-contact-success": "Contact created successfully"
+  }
 }
