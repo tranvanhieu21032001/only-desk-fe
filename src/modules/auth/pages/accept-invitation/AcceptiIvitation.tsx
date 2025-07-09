@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -30,7 +30,7 @@ const CenteredOverlay = styled.div`
 const AcceptInvitation = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { t } = useTranslation('auth');
+  // const { t } = useTranslation('auth');
   const dispatch = useAppDispatch();
 
   const token = searchParams.get('token');

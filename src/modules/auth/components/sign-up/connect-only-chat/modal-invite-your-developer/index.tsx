@@ -26,7 +26,7 @@ interface ModalConfirmDeleteProps {
   open: boolean;
   onCancel: () => void;
   isLoading?: boolean;
-  onCopyInviteLink?: () => void;
+  // onCopyInviteLink?: () => void;
 }
 
 function ModalInvite({
@@ -34,7 +34,7 @@ function ModalInvite({
   open,
   onCancel,
   isLoading,
-  onCopyInviteLink,
+  // onCopyInviteLink,
 }: ModalConfirmDeleteProps) {
   const { t } = useTranslation('auth');
   const [form] = Form.useForm();

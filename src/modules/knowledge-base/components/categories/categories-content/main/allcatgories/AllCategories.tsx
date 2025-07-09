@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Table, Image, Tag, Dropdown, Modal, message } from 'antd';
+import { useState } from 'react';
+import { Table, Image, Tag, Dropdown, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { MoreOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';

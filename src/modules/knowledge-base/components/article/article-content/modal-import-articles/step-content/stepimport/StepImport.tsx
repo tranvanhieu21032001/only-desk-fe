@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Typography from '@/shared/components/common/Typography';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
@@ -6,8 +6,6 @@ import * as S from './StepImport.styles';
 import { useTranslation } from 'react-i18next';
 import { Image, Progress, Upload, message } from 'antd';
 import type { UploadProps } from 'antd';
-
-import icAdd from '@/assets/icons/knowledge-base/ic-add.svg';
 import icUpload from '@/assets/icons/knowledge-base/ic-upload.svg';
 import icFileCSV from '@/assets/icons/knowledge-base/ic-file-csv.svg';
 import icUploading from '@/assets/icons/knowledge-base/ic-loading.svg';

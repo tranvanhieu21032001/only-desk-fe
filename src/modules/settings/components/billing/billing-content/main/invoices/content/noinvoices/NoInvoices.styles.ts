@@ -1,6 +1,4 @@
 import { styled } from 'styled-components';
-import themeColors from '@/shared/styles/themes/default/colors';
-import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import Typography from '@/shared/components/common/Typography';
 
 

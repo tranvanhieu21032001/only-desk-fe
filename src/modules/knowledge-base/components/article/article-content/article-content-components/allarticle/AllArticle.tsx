@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Table, Image, Tag, Dropdown, Skeleton } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,6 @@ import * as S from './allarticle.styles';
 
 import icPublished from '@/assets/icons/knowledge-base/ic-online.svg';
 import icDraft from '@/assets/icons/knowledge-base/ic-draft.svg';
-import icHidden from '@/assets/icons/knowledge-base/ic-hidden.svg';
 import icArchived from '@/assets/icons/knowledge-base/ic-visible.svg';
 import icMonitor from '@/assets/icons/knowledge-base/ic-monitor.svg';
 import icTrash from '@/assets/icons/knowledge-base/ic-trash.svg';

@@ -68,10 +68,6 @@ function SignIn() {
     window.location.href = googleLoginUrl;
   }
 
-  function handleLoginWithFacebook() {
-    //Handle later
-  }
-
   function handleSignUp() {
     navigate(AUTH_ROUTES?.SIGN_UP);
   }

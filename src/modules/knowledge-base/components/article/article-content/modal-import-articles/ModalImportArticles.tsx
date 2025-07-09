@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +19,6 @@ import icConfigureActive from '@/assets/icons/knowledge-base/ic-configure.svg';
 import icImport from '@/assets/icons/knowledge-base/ic-import.svg';
 import icImportActive from '@/assets/icons/knowledge-base/ic-import-active.svg';
 import icArrowright from '@/assets/icons/knowledge-base/ic-arrowright.svg';
-import icDownload from '@/assets/icons/knowledge-base/ic-download.svg';
 import icTick from '@/assets/icons/knowledge-base/ic-tick.svg';
 
 interface ImportArticlesProps {

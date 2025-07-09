@@ -1,4 +1,3 @@
-import Typography from '@/shared/components/common/Typography';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import styled from 'styled-components';

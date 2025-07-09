@@ -1,4 +1,3 @@
-import React from 'react';
 import * as S from "./NoInvoices.styles";
 
 import icEmpty from '@/assets/icons/billing/ic-empty-payment.svg';

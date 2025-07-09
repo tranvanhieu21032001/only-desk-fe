@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useRouter } from '@/shared/hooks/useRouter';
-import { GettingStartedEnums, SignUpStepEnums } from '@/modules/auth/helpers/enums/auth';
+import { SignUpStepEnums } from '@/modules/auth/helpers/enums/auth';
 
 import Typography from '@/shared/components/common/Typography';
 

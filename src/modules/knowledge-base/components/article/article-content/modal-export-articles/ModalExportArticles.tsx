@@ -11,7 +11,6 @@ import ModalCommon from '@/shared/components/common/ModalBase';
 import * as S from './ModalExportArticles.styles';
 
 import icConfirm from '@/assets/icons/contact/ic-confirm.svg';
-import { PlusCircleOutlined } from '@ant-design/icons';
 
 interface ModalExportArticlesProps {
   open: boolean;

@@ -19,7 +19,6 @@ import { OptionsInterface } from '@/core/model/common';
 import { HelpdeskArticleCreatePayload, HelpdeskCategory } from '@/modules/knowledge-base/interface';
 import { AppDispatch, RootState } from '@/core/store';
 import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
-import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
 

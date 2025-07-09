@@ -57,9 +57,9 @@ const Articles = React.lazy(
   () => import('@/modules/knowledge-base/pages/articles/Articles'),
 );
 
-const ChatboxPage = React.lazy(
-  () => import('@/modules/inbox/pages/chatbox-page/ChatboxPage'),
-);
+// const ChatboxPage = React.lazy(
+//   () => import('@/modules/inbox/pages/chatbox-page/ChatboxPage'),
+// );
 
 const Chatbox = React.lazy(
   () => import('@/modules/settings/pages/chatbox/Chatbox'),

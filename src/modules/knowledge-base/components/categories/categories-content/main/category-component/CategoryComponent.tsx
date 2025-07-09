@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import AllCategories from '../allcatgories/AllCategories';
@@ -7,12 +7,12 @@ import NoCategories from '../nocategories/NoCategories';
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { RootState } from '@/core/store';
 import { useAppDispatch } from '@/shared/hooks';
-import { Skeleton, Alert } from 'antd';
+import { Skeleton } from 'antd';
 
 const CategoryComponent = () => {
   const dispatch = useAppDispatch();
 
-  const { categories, loading, error } = useSelector(
+  const { categories, loading } = useSelector(
     (state: RootState) => state.helpdeskCategory
   );
 

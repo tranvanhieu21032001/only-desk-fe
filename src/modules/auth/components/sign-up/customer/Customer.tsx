@@ -36,7 +36,7 @@ function Customer() {
       messagingPlatform: selectedPlatforms,
     };
 
-    handleCompleteRegister(payload, dispatch, t, () => {
+    handleCompleteRegister(payload, dispatch, () => {
       navigate(MAIN_ROUTES?.HOME);
     });
   }
