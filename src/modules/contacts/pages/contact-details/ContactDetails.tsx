@@ -407,14 +407,14 @@ function ContactDetails() {
           <Col xs={24} lg={14} xl={12}>
             <Data form={form} />
             <Conversation isLoading={isLoading} />
-            <PageVisitedRecently isLoading={isLoading} />
-            <Campaign isLoading={isLoading} />
+            {/* <PageVisitedRecently isLoading={isLoading} /> */}
+            {/* <Campaign isLoading={isLoading} /> */}
             <PrivateNotepad />
           </Col>
           <Col xs={24} xl={6}>
             <LastReportedLocation isLoading={isLoading} />
-            <RecentEvent isLoading={isLoading} />
-            <RatingScore isLoading={isLoading} />
+            {/* <RecentEvent isLoading={isLoading} /> */}
+            {/* <RatingScore isLoading={isLoading} /> */}
           </Col>
         </S.ContactContainerWrap>
       </Form>

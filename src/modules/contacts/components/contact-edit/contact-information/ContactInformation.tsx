@@ -70,7 +70,7 @@ function ContactInformation() {
             <Input
               placeholder={field?.placeholder}
               disabled={field?.disable}
-              type="number"
+              type="text"
             />
           </Form.Item>
         );

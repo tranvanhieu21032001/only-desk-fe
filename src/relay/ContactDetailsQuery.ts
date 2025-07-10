@@ -29,6 +29,16 @@ export const contactDetailsQuery = graphql`
           country
           employees
         }
+        context {
+          country
+          city
+          latitude
+          longitude
+          browser
+          os
+          timezone
+          language
+        }
       }
     }
   }

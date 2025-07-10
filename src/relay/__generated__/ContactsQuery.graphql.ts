@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<67e9335ab5a073b245988e431aef024d>>
+ * @generated SignedSource<<a4be5d0947007a7e055c9910835c1f71>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,6 +25,12 @@ export type ContactsQuery$data = {
         readonly avatar: string | null | undefined;
         readonly companyInfo: {
           readonly company: string | null | undefined;
+        } | null | undefined;
+        readonly context: {
+          readonly city: string | null | undefined;
+          readonly country: string | null | undefined;
+          readonly language: string | null | undefined;
+          readonly timezone: string | null | undefined;
         } | null | undefined;
         readonly email: string | null | undefined;
         readonly id: string;
@@ -160,6 +166,45 @@ v1 = [
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "ContactContext",
+                "kind": "LinkedField",
+                "name": "context",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "country",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "city",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "timezone",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "language",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -235,16 +280,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "4d056bd168586ad172fac9bfa52ff9b6",
+    "cacheID": "0ceab80a736807ba5668a2c34a3a6bfa",
     "id": null,
     "metadata": {},
     "name": "ContactsQuery",
     "operationKind": "query",
-    "text": "query ContactsQuery(\n  $args: PaginationArgs!\n) {\n  contacts(args: $args) {\n    edges {\n      node {\n        id\n        name\n        email\n        address\n        rawId\n        segments\n        lastActivityAt\n        avatar\n        companyInfo {\n          company\n        }\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
+    "text": "query ContactsQuery(\n  $args: PaginationArgs!\n) {\n  contacts(args: $args) {\n    edges {\n      node {\n        id\n        name\n        email\n        address\n        rawId\n        segments\n        lastActivityAt\n        avatar\n        companyInfo {\n          company\n        }\n        context {\n          country\n          city\n          timezone\n          language\n        }\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "3618cd0bf46fa9319d6b279f06fd2257";
+(node as any).hash = "f901c577c89023a6998f404ca59fab74";
 
 export default node;
