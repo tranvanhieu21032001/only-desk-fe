@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a8028bfd6620180e35d3a64ea9857111>>
+ * @generated SignedSource<<030def8e574c535c282ed520f3b2b1fd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,15 +18,22 @@ export type ContactDetailsQuery$data = {
     readonly address?: string | null | undefined;
     readonly avatar?: string | null | undefined;
     readonly companyInfo?: {
+      readonly city: string | null | undefined;
       readonly company: string | null | undefined;
+      readonly country: string | null | undefined;
+      readonly employees: number | null | undefined;
+      readonly jobRole: string | null | undefined;
       readonly jobTitle: string | null | undefined;
+      readonly website: string | null | undefined;
     } | null | undefined;
     readonly createdAt?: any | null | undefined;
     readonly email?: string | null | undefined;
     readonly gender?: ContactGender | null | undefined;
     readonly id?: string;
     readonly isOnline?: boolean;
+    readonly metadata?: any;
     readonly name?: string;
+    readonly notes?: string | null | undefined;
     readonly notification?: boolean;
     readonly phoneNumber?: string | null | undefined;
     readonly rawId?: string;
@@ -156,6 +163,20 @@ v15 = {
 v16 = {
   "alias": null,
   "args": null,
+  "kind": "ScalarField",
+  "name": "notes",
+  "storageKey": null
+},
+v17 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "metadata",
+  "storageKey": null
+},
+v18 = {
+  "alias": null,
+  "args": null,
   "concreteType": "CompanyInfo",
   "kind": "LinkedField",
   "name": "companyInfo",
@@ -173,6 +194,35 @@ v16 = {
       "args": null,
       "kind": "ScalarField",
       "name": "jobTitle",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "jobRole",
+      "storageKey": null
+    },
+    (v9/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "city",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "country",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "employees",
       "storageKey": null
     }
   ],
@@ -210,7 +260,9 @@ return {
               (v13/*: any*/),
               (v14/*: any*/),
               (v15/*: any*/),
-              (v16/*: any*/)
+              (v16/*: any*/),
+              (v17/*: any*/),
+              (v18/*: any*/)
             ],
             "type": "Contact",
             "abstractKey": null
@@ -260,7 +312,9 @@ return {
               (v13/*: any*/),
               (v14/*: any*/),
               (v15/*: any*/),
-              (v16/*: any*/)
+              (v16/*: any*/),
+              (v17/*: any*/),
+              (v18/*: any*/)
             ],
             "type": "Contact",
             "abstractKey": null
@@ -271,16 +325,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ce9930c050dc61b8fa228c3e7eaab8f4",
+    "cacheID": "4ac6e95ec43c9ebeff3fcf797f373668",
     "id": null,
     "metadata": {},
     "name": "ContactDetailsQuery",
     "operationKind": "query",
-    "text": "query ContactDetailsQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Contact {\n      id\n      rawId\n      name\n      email\n      phoneNumber\n      address\n      gender\n      website\n      notification\n      avatar\n      createdAt\n      updatedAt\n      isOnline\n      segments\n      companyInfo {\n        company\n        jobTitle\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query ContactDetailsQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Contact {\n      id\n      rawId\n      name\n      email\n      phoneNumber\n      address\n      gender\n      website\n      notification\n      avatar\n      createdAt\n      updatedAt\n      isOnline\n      segments\n      notes\n      metadata\n      companyInfo {\n        company\n        jobTitle\n        jobRole\n        website\n        city\n        country\n        employees\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b7a3c26650f126051fe1e18dfe3c1c40";
+(node as any).hash = "80b04556d9995aa557d481cb62163883";
 
 export default node;

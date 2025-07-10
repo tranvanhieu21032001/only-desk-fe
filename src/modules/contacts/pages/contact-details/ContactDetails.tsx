@@ -9,6 +9,7 @@ import {
   actionUpdateIsDetails,
   actionUpdateIsLoading,
   fetchDetailsContact,
+  handleRemoveContactAction,
 } from '../../store/features/contacts';
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import { handleEditProfile } from '../../api/contacts.api';
@@ -47,20 +48,23 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import icSendMessage from '@/assets/icons/contact/ic-send-message.svg';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 import icConversation from '@/assets/icons/contact/ic-new-conversation.svg';
+import { RootState } from '@/core/store';
 
 function ContactDetails() {
   const { t } = useTranslation('contacts');
   const navigate = useNavigate();
   const { id } = useParams();
-  
+
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
   const { isLoading, contactDetails, isDetails } = useAppSelector(
     (state) => state.contacts,
   );
+  const { currentWorkspace } = useAppSelector(
+    (state: RootState) => state?.auth,
+  );
 
-  
   const [params, setParams] = useState<{
     isLoading: boolean;
     countUpload: number;
@@ -75,12 +79,11 @@ function ContactDetails() {
 
   const locationPath = window.location.pathname;
 
-useEffect(() => {
-  if (id) {
-    dispatch(fetchDetailsContact({ idContact: id as string }));
-  }
-}, [id, dispatch]);
-
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchDetailsContact({ idContact: id as string }));
+    }
+  }, [id, dispatch]);
 
   useEffect(() => {
     let convertMetadata: { key: string; value: string }[] = [];
@@ -101,9 +104,9 @@ useEffect(() => {
 
     const defaultValuesForm = {
       ...contactDetails,
-      nameCompany: contactDetails?.companyInfo?.name,
-      positionCompany: contactDetails?.companyInfo?.position,
-      departmentCompany: contactDetails?.companyInfo?.department,
+      company: contactDetails?.companyInfo?.company,
+      jobTitle: contactDetails?.companyInfo?.jobTitle,
+      jobRole: contactDetails?.companyInfo?.jobRole,
       websiteCompany: contactDetails?.companyInfo?.website,
       cityCompany: contactDetails?.companyInfo?.city,
       countryCompany: contactDetails?.companyInfo?.country,
@@ -130,16 +133,25 @@ useEffect(() => {
     actionType: ActionProfileDetailsTypeEnums,
   ) {
     switch (actionType) {
-      case ActionProfileDetailsTypeEnums?.EDIT:
-        return navigate(MAIN_ROUTES?.CONTACT_EDIT?.replace(':id', id || ''));
-      case ActionProfileDetailsTypeEnums?.COPY:
-        //TODO handle later
+      case ActionProfileDetailsTypeEnums.EDIT:
+        return navigate(MAIN_ROUTES.CONTACT_EDIT.replace(':id', id || ''));
+
+      case ActionProfileDetailsTypeEnums.COPY:
         return;
-      case ActionProfileDetailsTypeEnums?.REMOVE:
-        //TODO handle later
+
+      case ActionProfileDetailsTypeEnums.REMOVE:
+        dispatch(
+          handleRemoveContactAction({
+            workspaceId: currentWorkspace?.id as string,
+            id: contactDetails?.rawId,
+            t,
+          }),
+        );
+        navigate('/contacts');
         return;
+
       default:
-        break;
+        return;
     }
   }
 
