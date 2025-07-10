@@ -47,6 +47,7 @@
     "relay-runtime": "^19.0.0",
     "socket.io-client": "^4.8.1",
     "styled-components": "^6.1.17",
+    "timeago.js": "^4.0.2",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

@@ -12,6 +12,9 @@ export const TooltipColumn = styled(Tooltip)`
     cursor: pointer;
     color: ${(props) => props?.theme?.colors?.newtralLight};
   }
+  p {
+    font-size: 13px !important;
+  }
 `;
 
 export const RemoveActionColumn = styled.div`
@@ -43,7 +46,7 @@ export const FullNameColumn = styled.div`
 
 export const LocationColumn = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 6px;
   align-items: center;
 `;
 

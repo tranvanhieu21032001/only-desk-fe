@@ -49,7 +49,6 @@ export const ContactInfoWrap = styled.div`
 
   img {
     border-radius: 100px;
-    min-width: 90px;
   }
 
   @media ${(props) => props?.theme?.breakpoints?.xlMax} {
@@ -58,6 +57,7 @@ export const ContactInfoWrap = styled.div`
 `;
 
 export const Avatar = styled.div`
+  position: relative;
   .ant-form-item {
     margin-bottom: 0px;
 
@@ -206,4 +206,72 @@ export const ImageUpload = styled.div<{ $isLoading?: boolean }>`
     opacity: 1;
     z-index: 2;
   }
+`;
+// export const FlagIcon = styled.img`
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 27px !important;
+//   height: 27px !important;
+//   z-index: 2;
+//   border-radius: 50%; /* hoặc 6px tùy bạn */
+//   object-fit: cover;  /* rất quan trọng để ảnh không bị méo khi bo tròn */
+//   background-color: white; /* để tránh ảnh SVG bị trong suốt */
+// `;
+
+interface FlagIconProps {
+  src: string;
+}
+
+export const WrappIcon = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 27px;
+  height: 27px;
+  border: 1px solid #FFFFFF;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  overflow: hidden;
+`;
+
+export const FlagIcon = styled.div<FlagIconProps>`
+  width: 54px;
+  height: 54px;
+  background-image: url(${(props) => props.src});
+  background-size: cover;
+  background-position: center;
+  background-color: white;
+  z-index: 2;
+`;
+
+export const FlagCountry = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 27px !important;
+  height: 27px !important;
+  z-index: 2;
+  border-radius: 9999px;
+  object-fit: cover;
+  background-color: white;
+`;
+
+export const OnlineIcon = styled.img`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px !important;
+  height: 16px !important;
+  z-index: 2;
+`;
+
+
+
+export const WrappButton = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
 `;

@@ -28,13 +28,13 @@ import Breadcrumb from '@/shared/components/common/Breadcrumb';
 import UploadImage from '@/shared/components/common/Upload/main';
 import Company from '../../components/contact-details/company/Company';
 import Segments from '../../components/contact-details/segments/Segments';
-import Campaign from '../../components/contact-details/campaign/Campaign';
-import RecentEvent from '../../components/contact-details/recent-event/RecentEvent';
-import RatingScore from '../../components/contact-details/rating-score/RatingScore';
+// import Campaign from '../../components/contact-details/campaign/Campaign';
+// import RecentEvent from '../../components/contact-details/recent-event/RecentEvent';
+// import RatingScore from '../../components/contact-details/rating-score/RatingScore';
 import Conversation from '../../components/contact-details/conversation/Conversation';
 import PrivateNotepad from '../../components/contact-details/private-notepad/PrivateNotepad';
 import ContactInformation from '../../components/contact-edit/contact-information/ContactInformation';
-import PageVisitedRecently from '../../components/contact-details/page-visited-recently/PageVisitedRecently';
+// import PageVisitedRecently from '../../components/contact-details/page-visited-recently/PageVisitedRecently';
 import LastReportedLocation from '../../components/contact-details/last-reported-location/ContactInformation';
 
 import * as S from './ContactDetails.styles';
@@ -48,13 +48,18 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import icSendMessage from '@/assets/icons/contact/ic-send-message.svg';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 import icConversation from '@/assets/icons/contact/ic-new-conversation.svg';
+import icOnline from '@/assets/icons/contact/ic-online.svg';
+import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
 import { RootState } from '@/core/store';
+import flagList from '@/shared/helper/data/flagIcon';
+import { format } from 'timeago.js';
+import Modal from '@/shared/components/common/Modal';
 
 function ContactDetails() {
   const { t } = useTranslation('contacts');
   const navigate = useNavigate();
   const { id } = useParams();
-
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
@@ -140,14 +145,7 @@ function ContactDetails() {
         return;
 
       case ActionProfileDetailsTypeEnums.REMOVE:
-        dispatch(
-          handleRemoveContactAction({
-            workspaceId: currentWorkspace?.id as string,
-            id: contactDetails?.rawId,
-            t,
-          }),
-        );
-        navigate('/contacts');
+        setIsRemoveModalOpen(true);
         return;
 
       default:
@@ -210,6 +208,16 @@ function ContactDetails() {
     },
   ];
 
+  function handleConfirmRemove(idContact: string) {
+    dispatch(
+      handleRemoveContactAction({
+        workspaceId: currentWorkspace?.id as string,
+        id: idContact,
+        t: t,
+      }),
+    );
+    navigate('/contacts');
+  }
   function handleEditContactProfile(values: any) {
     dispatch(actionUpdateIsLoading(true));
     if (contactDetails?.rawId) {
@@ -230,6 +238,11 @@ function ContactDetails() {
       avatar: avatarPath,
     });
   };
+
+  const countryCode = contactDetails?.context?.language
+    ?.split('-')?.[1]
+    ?.toUpperCase();
+  const flagIcon = flagList.find((item) => item.code === countryCode)?.image;
 
   return (
     <S.ContactsContainer>
@@ -313,15 +326,26 @@ function ContactDetails() {
                     </S.ImageUpload>
                   }
                 />
+                {/* Overlay icons */}
+                {/* <S.FlagIcon src={flagIcon} alt="Flag" /> */}
+                <S.WrappIcon>
+                  <S.FlagIcon src={flagIcon} />
+                </S.WrappIcon>
+
+                {contactDetails?.isOnline && (
+                  <S.OnlineIcon src={icOnline} alt="Online" />
+                )}
               </S.Avatar>
 
               <S.ContactInfo>
                 <Typography variant="h3" fontWeight={fontWeight?.semiBold}>
                   {contactDetails?.name}
                 </Typography>
-                <Typography margin="2px 0 0 0">
-                  {contactDetails?.lastActivityAt}
-                </Typography>
+                {!contactDetails?.isOnline && (
+                  <Typography margin="2px 0 0 0">
+                    Last active: {format(contactDetails?.lastActivityAt)}
+                  </Typography>
+                )}
               </S.ContactInfo>
             </S.ContactInfoWrap>
           )}
@@ -418,6 +442,40 @@ function ContactDetails() {
           </Col>
         </S.ContactContainerWrap>
       </Form>
+
+      <Modal
+        isOpen={isRemoveModalOpen}
+        onClose={() => setIsRemoveModalOpen(false)}
+        hideHeader={true}
+        width={440}
+        children={
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <ReactSVG src={icNoitify} />
+            <div>
+              <Typography fontWeight={fontWeight?.semiBold} margin='0 0 12px 0'>
+                {t('contact-profile.confirm-delete-title')}
+              </Typography>
+              <Typography color='#5B5B5B'>
+                {contactDetails?.email ?? '-'}
+                {` ${t('contact-profile.and-its-data')}`}
+              </Typography>
+            </div>
+          </div>
+        }
+        footer={
+          <S.WrappButton>
+            <Button onClick={() => setIsRemoveModalOpen(false)}>
+              {t('contact-profile.cancel')}
+            </Button>
+            <Button
+              type="danger"
+              onClick={() => handleConfirmRemove(contactDetails?.rawId)}
+            >
+              {t('contact-profile.remove')}
+            </Button>
+          </S.WrappButton>
+        }
+      />
     </S.ContactsContainer>
   );
 }

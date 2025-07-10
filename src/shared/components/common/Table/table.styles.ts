@@ -36,9 +36,6 @@ export const TableWrap = styled(Table)<{ $isWidth: string | number }>`
     tr,
     td,
     p {
-      color: ${({ theme }) => theme.colors.primary} !important;
-      font-size: ${(props) => props?.theme?.fontSize.base};
-
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -91,7 +88,7 @@ export const TableWrap = styled(Table)<{ $isWidth: string | number }>`
     font-weight: ${({ theme }) => theme.fontWeight.regular} !important;
     font-size: ${({ theme }) => theme.fontSize.base} !important;
     line-height: 20px !important;
-    color: ${({ theme }) => theme.colors.newtralDark} !important;
+    color: #333333;
 
     p {
       display: -webkit-box;

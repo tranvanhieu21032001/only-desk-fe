@@ -92,6 +92,9 @@ importers:
       styled-components:
         specifier: ^6.1.17
         version: 6.1.18(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      timeago.js:
+        specifier: ^4.0.2
+        version: 4.0.2
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -2755,6 +2758,9 @@ packages:
   throttle-debounce@5.0.2:
     resolution: {integrity: sha512-B71/4oyj61iNH0KeCamLuE2rmKuTO5byTOSVwECM5FA7TiAiAW+UqTKZ9ERueC4qvgSttUhdmq1mXC3kJqGX7A==}
     engines: {node: '>=12.22'}
+
+  timeago.js@4.0.2:
+    resolution: {integrity: sha512-a7wPxPdVlQL7lqvitHGGRsofhdwtkoSXPGATFuSOA2i1ZNQEPLrGnj68vOp2sOJTCFAQVXPeNMX/GctBaO9L2w==}
 
   timezone-groups@0.10.4:
     resolution: {integrity: sha512-AnkJYrbb7uPkDCEqGeVJiawZNiwVlSkkeX4jZg1gTEguClhyX+/Ezn07KB6DT29tG3UN418ldmS/W6KqGOTDjg==}
@@ -5973,6 +5979,8 @@ snapshots:
   tapable@2.2.2: {}
 
   throttle-debounce@5.0.2: {}
+
+  timeago.js@4.0.2: {}
 
   timezone-groups@0.10.4: {}
 

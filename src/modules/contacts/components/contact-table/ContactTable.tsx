@@ -101,17 +101,17 @@ function ContactTable() {
           (item) => item.code === countryCode,
         )?.image;
 
+        const city = record?.context?.city;
+        const country = record?.context?.country;
+        const locationText = [city, country].filter(Boolean).join(', ') || '-';
+
         return (
           <S.LocationColumn>
-            <Image
-              preview={false}
-              width={36}
-              height={23}
-              src={flagIcon || imgDefault}
-              onError={(e) => (e.currentTarget.src = imgDefault)}
-            />
-            <S.TooltipColumn title={record?.address}>
-              {record?.address || '-'}
+            {flagIcon && (
+              <Image preview={false} width={36} height={23} src={flagIcon} />
+            )}
+            <S.TooltipColumn title={locationText}>
+              {locationText}
             </S.TooltipColumn>
           </S.LocationColumn>
         );
@@ -125,7 +125,7 @@ function ContactTable() {
       width: 200,
       render: (record: ContactInterface) => (
         <S.TooltipColumn title={record?.companyInfo?.company}>
-          {record?.companyInfo?.company || 'Unknow'}
+          {record?.companyInfo?.company || <Typography color={themeColors?.newtralDark}>Unknow</Typography>}
         </S.TooltipColumn>
       ),
     },

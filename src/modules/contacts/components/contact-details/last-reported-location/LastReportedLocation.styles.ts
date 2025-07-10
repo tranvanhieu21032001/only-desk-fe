@@ -1,3 +1,4 @@
+import { Image } from 'antd';
 import { styled } from 'styled-components';
 
 export const Container = styled.section`
@@ -23,7 +24,6 @@ export const Body = styled.div``;
 
 export const ContentWrap = styled.div`
   display: flex;
-  gap: 8px;
   align-items: center;
 
   p {
@@ -37,4 +37,16 @@ export const ContentWrap = styled.div`
   p:first-of-type {
     min-width: 120px;
   }
+`;
+
+
+export const Flag2 = styled(Image)`
+`;
+
+
+
+export const EmptyWrap = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 `;
