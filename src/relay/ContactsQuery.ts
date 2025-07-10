@@ -16,6 +16,12 @@ export const contactsQuery = graphql`
           companyInfo {
             company
           }
+          context {
+            country
+            city
+            timezone
+            language
+          }
         }
       }
       totalCount

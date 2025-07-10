@@ -7,7 +7,6 @@
     "import": "Import contact profiles",
     "remove-selected-profiles": "Remove selected profiles"
   },
-
   "table": {
     "fullName": "Full Name",
     "email": "Email",
@@ -18,16 +17,14 @@
     "score": "Score",
     "remove": "Remove",
     "remove-profile": "Remove profile",
-    "unknown":"Unknown"
+    "unknown": "Unknown"
   },
-
   "empty": {
     "you-have-no-contact": "You have no contact.",
     "contacts-are-stored": "Contacts are stored from conversations, or can be created and even imported",
     "new-contact": "New contact",
     "import-contact": "Import contact profiles"
   },
-
   "modal-add-contact": {
     "new-contact": "New contact",
     "please-insert-modal-description-here": "Please insert modal description here.",
@@ -41,7 +38,6 @@
     "email-invalid": "Email is invalid",
     "start-by-entering": "Start by entering some basic details to create a new contact."
   },
-
   "add-filter": {
     "advanced-filter": "Advanced filter",
     "insert-page": "Insert page description here.",
@@ -49,18 +45,15 @@
     "new-filter": "New filter",
     "save": "Save"
   },
-
   "modal-confirm": {
     "create-filter": "Create filter",
     "this-filter-will": "This filter will be created for everyone in your team"
   },
-
   "modal-confirm-export": {
     "export-contact-database": "Export contact database",
     "it-will-export": "It will take a few minutes. You will get an email when the export is over.",
     "cancel": "Cancel"
   },
-
   "modal-import-contact": {
     "import-contact-profile": "Import contact profile",
     "please-insert-modal-description-here": "Please insert modal description here.",
@@ -72,21 +65,17 @@
     "continue": "Continue",
     "download-this-sample": "Download this sample CSV file",
     "completed": "Completed",
-
     "configure-csv-import": "Configure CSV import",
     "you-can-upload-a-standard": "You can upload a standard CSV file containing the full name and email of your contacts, to add them to your contact database on OnlyChat.",
-
     "all": "All",
     "mapped": "Mapped",
     "skipped": "Skipped",
     "column-separator": "Column separator",
     "skip-header": "Skip header",
-
     "table": {
       "columns-in-csv": "Columns in CSV",
       "fields-in-only-chat": "Fields in OnlyChat"
     },
-
     "import-is-being-executed": "Import is being executed",
     "your-contact-profiles-are-being-processed": "Your contact profiles are being processed",
     "done-importing": "Done importing contact profiles!",
@@ -94,7 +83,6 @@
     "remaining": "Remaining",
     "close-import": "Close import"
   },
-
   "contact-profile": {
     "edit-profile": "Edit profile",
     "remove-profile": "Remove profile",
@@ -102,7 +90,6 @@
     "send-a-message": "Send a message",
     "new-conversation": "New conversation",
     "start-a-call": "Start a call",
-
     "contact-information": "Contact information",
     "name": "Name",
     "email": "Email",
@@ -119,38 +106,30 @@
     "add-data": "Add Data",
     "no-data-added": "No data added.",
     "conversation": "Conversation",
-
+    "device": "Device",
     "page-visited-recently": "Page Visited Recently",
     "time-on-website": "Time on Website",
     "device-information": "Device Information",
-
     "no-campaign-found": "No campaign found",
     "campaign": "Campaign",
-
     "private-notepads": "Private notepads",
     "this-is-content": "This is content in notepad. This is content in notepad. This is content in notepad.",
-
     "recent-event": "Recent event",
     "no-event-added": "No event added.",
-
     "rating-score": "Rating score",
     "no-rating-submitted": "No rating submitted.",
-
     "last-reported-location": "Last reported location",
     "city": "City, country",
     "local-time": "Local time",
     "languages": "Languages",
-
     "contact": "Contact",
     "profile": "Profile",
-
     "save": "Save",
     "select-segments": "Select segments",
-
     "enter-company-name": "Enter company name",
     "job-title": "Job title",
-    "jobTitle":"Job Title",
-    "jobRole":"Job role",
+    "jobTitle": "Job Title",
+    "jobRole": "Job role",
     "enter-jobTitle": "Enter job title",
     "job-role": "Job role",
     "enter-jobRole": "Enter job role",
@@ -164,7 +143,6 @@
     "select-country": "Select country",
     "select-key": "Select key",
     "enter-value": "Enter value",
-
     "edit-contact-profile-success": "Edit contact profile successfully",
     "enter-company-position": "Enter company position",
     "department": "Department",
@@ -173,25 +151,19 @@
     "enter-position": "Enter position",
     "enter-key": "Enter key",
     "company-information": "Company information",
-
     "please-enter-key": "Please enter key",
     "please-enter-value": "Please enter value",
     "enter-notes": "Enter notes",
-
     "active": "Active",
     "inactive": "Inactive"
   },
-
   "remove-contact-success": "Contact removed successfully",
-
   "gender-options": {
     "male": "Male",
     "female": "Female",
     "other": "Other"
   },
-
   "website-domain-invalid": "Website domain is invalid",
-  
   "create-contact": {
     "create-contact-success": "Contact created successfully"
   }

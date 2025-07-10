@@ -44,7 +44,6 @@ const handleEditProfile = async (
         country: values?.countryCompany,
         employees: Number(values?.employeesCompany) || 0,
       },
-      segments: ['VIP', 'Enterprise'],
       metadata: metadataConvert,
     },
     omitKeys,

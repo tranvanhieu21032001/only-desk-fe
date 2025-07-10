@@ -54,12 +54,17 @@ const proceedMockup = [
 
 const lastReportedLocation = [
   {
+    key: 'country',
+    label: 'Country',
+    value: 'New York, USA',
+  },
+   {
     key: 'city',
-    label: 'city',
+    label: 'City',
     value: 'New York, USA',
   },
   {
-    key: 'local-time',
+    key: 'timezone',
     label: 'local-time',
     value: '2:34pm (UTC +7)',
   },
@@ -179,7 +184,7 @@ const companyMockup = [
   {
     key: 'employeesCompany',
     label: 'employees',
-    type: FormTypeEnums.INPUT,
+    type: FormTypeEnums.PHONE_NUMBER,
     placeholder: 'enter-employees',
     fieldName: 'employees',
   },

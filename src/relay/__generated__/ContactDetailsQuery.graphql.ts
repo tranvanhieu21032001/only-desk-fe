@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<030def8e574c535c282ed520f3b2b1fd>>
+ * @generated SignedSource<<54ee1ab7c029dd488b056449cef4ad9e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,6 +25,16 @@ export type ContactDetailsQuery$data = {
       readonly jobRole: string | null | undefined;
       readonly jobTitle: string | null | undefined;
       readonly website: string | null | undefined;
+    } | null | undefined;
+    readonly context?: {
+      readonly browser: string | null | undefined;
+      readonly city: string | null | undefined;
+      readonly country: string | null | undefined;
+      readonly language: string | null | undefined;
+      readonly latitude: number | null | undefined;
+      readonly longitude: number | null | undefined;
+      readonly os: string | null | undefined;
+      readonly timezone: string | null | undefined;
     } | null | undefined;
     readonly createdAt?: any | null | undefined;
     readonly email?: string | null | undefined;
@@ -177,6 +187,20 @@ v17 = {
 v18 = {
   "alias": null,
   "args": null,
+  "kind": "ScalarField",
+  "name": "city",
+  "storageKey": null
+},
+v19 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "country",
+  "storageKey": null
+},
+v20 = {
+  "alias": null,
+  "args": null,
   "concreteType": "CompanyInfo",
   "kind": "LinkedField",
   "name": "companyInfo",
@@ -204,25 +228,68 @@ v18 = {
       "storageKey": null
     },
     (v9/*: any*/),
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "city",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "country",
-      "storageKey": null
-    },
+    (v18/*: any*/),
+    (v19/*: any*/),
     {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
       "name": "employees",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v21 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "ContactContext",
+  "kind": "LinkedField",
+  "name": "context",
+  "plural": false,
+  "selections": [
+    (v19/*: any*/),
+    (v18/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "latitude",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "longitude",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "browser",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "os",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "timezone",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "language",
       "storageKey": null
     }
   ],
@@ -262,7 +329,8 @@ return {
               (v15/*: any*/),
               (v16/*: any*/),
               (v17/*: any*/),
-              (v18/*: any*/)
+              (v20/*: any*/),
+              (v21/*: any*/)
             ],
             "type": "Contact",
             "abstractKey": null
@@ -314,7 +382,8 @@ return {
               (v15/*: any*/),
               (v16/*: any*/),
               (v17/*: any*/),
-              (v18/*: any*/)
+              (v20/*: any*/),
+              (v21/*: any*/)
             ],
             "type": "Contact",
             "abstractKey": null
@@ -325,16 +394,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "4ac6e95ec43c9ebeff3fcf797f373668",
+    "cacheID": "29a84ac072cfa5339b00f907a9dba5ab",
     "id": null,
     "metadata": {},
     "name": "ContactDetailsQuery",
     "operationKind": "query",
-    "text": "query ContactDetailsQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Contact {\n      id\n      rawId\n      name\n      email\n      phoneNumber\n      address\n      gender\n      website\n      notification\n      avatar\n      createdAt\n      updatedAt\n      isOnline\n      segments\n      notes\n      metadata\n      companyInfo {\n        company\n        jobTitle\n        jobRole\n        website\n        city\n        country\n        employees\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query ContactDetailsQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Contact {\n      id\n      rawId\n      name\n      email\n      phoneNumber\n      address\n      gender\n      website\n      notification\n      avatar\n      createdAt\n      updatedAt\n      isOnline\n      segments\n      notes\n      metadata\n      companyInfo {\n        company\n        jobTitle\n        jobRole\n        website\n        city\n        country\n        employees\n      }\n      context {\n        country\n        city\n        latitude\n        longitude\n        browser\n        os\n        timezone\n        language\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "80b04556d9995aa557d481cb62163883";
+(node as any).hash = "82c944fc3b673852e536ff024e5d0b84";
 
 export default node;

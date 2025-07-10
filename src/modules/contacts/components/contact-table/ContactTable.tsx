@@ -28,7 +28,13 @@ import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { KEY_PAGE, KEY_PAGE_SIZE, PAGE, PAGE_SIZE_OPTIONS } from '@/shared/constant/common';
+import {
+  KEY_PAGE,
+  KEY_PAGE_SIZE,
+  PAGE,
+  PAGE_SIZE_OPTIONS,
+} from '@/shared/constant/common';
+import flagList from '@/shared/helper/data/flagIcon';
 
 function ContactTable() {
   const { t } = useTranslation('contacts');
@@ -87,29 +93,39 @@ function ContactTable() {
       key: 'location',
       minWidth: 210,
       width: 210,
-      render: (record: ContactInterface) => (
-        <S.LocationColumn>
-          <Image
-            preview={false}
-            width={36}
-            height={23}
-            src={imgDefault}
-            onError={(e) => (e.currentTarget.src = imgDefault)}
-          />
-          <S.TooltipColumn title={record?.address}>
-            {record?.address || '-'}
-          </S.TooltipColumn>
-        </S.LocationColumn>
-      ),
+      render: (record: ContactInterface) => {
+        const countryCode = record?.context?.language
+          ?.split('-')?.[1]
+          ?.toUpperCase();
+        const flagIcon = flagList.find(
+          (item) => item.code === countryCode,
+        )?.image;
+
+        return (
+          <S.LocationColumn>
+            <Image
+              preview={false}
+              width={36}
+              height={23}
+              src={flagIcon || imgDefault}
+              onError={(e) => (e.currentTarget.src = imgDefault)}
+            />
+            <S.TooltipColumn title={record?.address}>
+              {record?.address || '-'}
+            </S.TooltipColumn>
+          </S.LocationColumn>
+        );
+      },
     },
+
     {
       title: t('table.company'),
       key: 'company',
       minWidth: 200,
       width: 200,
       render: (record: ContactInterface) => (
-        <S.TooltipColumn title={record?.companyInfo?.name}>
-          {record?.companyInfo?.name || 'Unknow'}
+        <S.TooltipColumn title={record?.companyInfo?.company}>
+          {record?.companyInfo?.company || 'Unknow'}
         </S.TooltipColumn>
       ),
     },
@@ -149,28 +165,28 @@ function ContactTable() {
         </S.TooltipColumn>
       ),
     },
-    {
-      title: t('table.score'),
-      dataIndex: 'score',
-      key: 'score',
-      minWidth: 130,
-      width: 130,
-      render: (text: number) => (
-        <S.ScoreColumn>
-          <ConfigProvider
-            theme={{
-              components: {
-                Rate: {
-                  starColor: themeColors?.warningDarkest,
-                },
-              },
-            }}
-          >
-            <Rate allowHalf defaultValue={text} disabled={true} />
-          </ConfigProvider>
-        </S.ScoreColumn>
-      ),
-    },
+    // {
+    //   title: t('table.score'),
+    //   dataIndex: 'score',
+    //   key: 'score',
+    //   minWidth: 130,
+    //   width: 130,
+    //   render: (text: number) => (
+    //     <S.ScoreColumn>
+    //       <ConfigProvider
+    //         theme={{
+    //           components: {
+    //             Rate: {
+    //               starColor: themeColors?.warningDarkest,
+    //             },
+    //           },
+    //         }}
+    //       >
+    //         <Rate allowHalf defaultValue={text} disabled={true} />
+    //       </ConfigProvider>
+    //     </S.ScoreColumn>
+    //   ),
+    // },
     {
       minWidth: 50,
       width: 50,
