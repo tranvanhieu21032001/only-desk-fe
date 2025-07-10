@@ -32,7 +32,7 @@ export const ModalDescription = styled.p`
 
 export const Footer = styled.div`
   display: flex;
-  padding: 12px;
+  padding: 20px;
   border-top: 1px solid #e0e0e0;
   justify-content: flex-end;
 `;
@@ -51,7 +51,7 @@ export const Button = styled.button`
 `;
 
 export const ModalChildren = styled.div`
-  padding: 14px;
+  padding: 20px;
 `;
 
 export const ModalHeader = styled.div`

@@ -24,6 +24,11 @@ export interface ContactInterface {
     department: string;
     [key: string]: any;
   };
+  context: {
+    country: string;
+    city: string;
+    language: string;
+  };
   email: string;
   name: string;
   address: string;

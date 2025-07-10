@@ -155,7 +155,11 @@
     "please-enter-value": "Please enter value",
     "enter-notes": "Enter notes",
     "active": "Active",
-    "inactive": "Inactive"
+    "inactive": "Inactive",
+    "confirm-delete-title": "Remove contact",
+    "and-its-data": "and its data will be permanently deleted.",
+    "cancel": "Cancel",
+    "remove": "Remove contact"
   },
   "remove-contact-success": "Contact removed successfully",
   "gender-options": {

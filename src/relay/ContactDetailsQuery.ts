@@ -13,6 +13,7 @@ export const contactDetailsQuery = graphql`
         gender
         website
         notification
+        lastActivityAt
         avatar
         createdAt
         updatedAt
