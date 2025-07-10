@@ -90,7 +90,6 @@ const handleRemoveContactAction = createAsyncThunk(
     return workspaceId;
   },
 );
-
 const fetchDetailsContact = createAsyncThunk(
   'contacts/get-details-contact',
   async (values: { idContact: string }) => {

@@ -29,19 +29,22 @@ const handleEditProfile = async (
     },
     {} as Record<string, any>,
   );
-
+  if (typeof values?.gender === 'string') {
+    values.gender = values.gender.toLowerCase();
+  }
   const updatePayload = omit(
     {
       ...values,
       companyInfo: {
-        name: values?.nameCompany,
-        position: values?.positionCompany,
-        department: values?.departmentCompany,
+        company: values?.company,
+        jobTitle: values?.jobTitle,
+        jobRole: values?.jobRole,
         website: values?.websiteCompany,
         city: values?.cityCompany,
         country: values?.countryCompany,
-        employees: values?.employeesCompany,
+        employees: Number(values?.employeesCompany) || 0,
       },
+      segments: ['VIP', 'Enterprise'],
       metadata: metadataConvert,
     },
     omitKeys,
