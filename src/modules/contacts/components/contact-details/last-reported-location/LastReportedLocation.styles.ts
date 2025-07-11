@@ -27,7 +27,7 @@ export const ContentWrap = styled.div`
   align-items: center;
 
   p {
-    padding: 10px 8px;
+    padding: 10px 0px !important;
 
     white-space: nowrap;
     overflow: hidden;
