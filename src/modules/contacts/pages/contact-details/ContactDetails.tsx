@@ -328,9 +328,11 @@ function ContactDetails() {
                 />
                 {/* Overlay icons */}
                 {/* <S.FlagIcon src={flagIcon} alt="Flag" /> */}
-                <S.WrappIcon>
-                  <S.FlagIcon src={flagIcon} />
-                </S.WrappIcon>
+                {flagIcon && (
+                  <S.WrappIcon>
+                    <S.FlagIcon src={flagIcon} />
+                  </S.WrappIcon>
+                )}
 
                 {contactDetails?.isOnline && (
                   <S.OnlineIcon src={icOnline} alt="Online" />
@@ -341,7 +343,7 @@ function ContactDetails() {
                 <Typography variant="h3" fontWeight={fontWeight?.semiBold}>
                   {contactDetails?.name}
                 </Typography>
-                {!contactDetails?.isOnline && (
+                {contactDetails?.lastActivityAt && (
                   <Typography margin="2px 0 0 0">
                     Last active: {format(contactDetails?.lastActivityAt)}
                   </Typography>
@@ -452,10 +454,10 @@ function ContactDetails() {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
             <ReactSVG src={icNoitify} />
             <div>
-              <Typography fontWeight={fontWeight?.semiBold} margin='0 0 12px 0'>
+              <Typography fontWeight={fontWeight?.semiBold} margin="0 0 12px 0">
                 {t('contact-profile.confirm-delete-title')}
               </Typography>
-              <Typography color='#5B5B5B'>
+              <Typography color="#5B5B5B">
                 {contactDetails?.email ?? '-'}
                 {` ${t('contact-profile.and-its-data')}`}
               </Typography>

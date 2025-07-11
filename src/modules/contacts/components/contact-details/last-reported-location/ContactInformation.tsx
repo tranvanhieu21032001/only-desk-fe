@@ -19,7 +19,6 @@ interface ContactInformationProps {
   isLoading?: boolean;
 }
 
-// Format giờ hiện tại theo timezone
 const getTimeInTimezone = (tz: string) => {
   if (!tz) return '-';
   const currentTime = dayjs().tz(tz);
@@ -30,7 +29,7 @@ const getTimeInTimezone = (tz: string) => {
 function LastReportedLocation({ isLoading }: ContactInformationProps) {
   const { t } = useTranslation('contacts');
   const { contactDetails } = useAppSelector((state) => state.contacts);
-  const context = contactDetails?.context || {};
+  const context = contactDetails?.context;
 
   const city = context?.city;
   const country = context?.country;
@@ -39,7 +38,6 @@ function LastReportedLocation({ isLoading }: ContactInformationProps) {
   const device = context?.os;
   const browser = context?.browser;
 
-  // Lấy countryCode từ language: vi-VN => VN
   const countryCodeFromLang = language?.split('-')?.[1]?.toUpperCase();
   const flagIcon = flagList.find(
     (item) => item.code === countryCodeFromLang,
@@ -144,7 +142,6 @@ function LastReportedLocation({ isLoading }: ContactInformationProps) {
                         preview={false}
                         width={36}
                         height={23}
-                        style={{ marginRight: 8 }}
                       />
                     )}
                   </>
