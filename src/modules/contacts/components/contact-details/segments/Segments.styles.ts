@@ -48,3 +48,11 @@ export const ContentWrap = styled.div`
     display: block;
   }
 `;
+
+export const EmptyWrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width:100%;
+`;
