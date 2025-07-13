@@ -20,20 +20,19 @@ function ContactInformation() {
   const { isLoading, contactDetails, isDetails } = useAppSelector(
     (state) => state.contacts,
   );
-
   const renderForm = (field: any) => {
-    switch (field?.type) {
-      case FormTypeEnums?.INPUT:
+    switch (field.type) {
+      case FormTypeEnums.INPUT:
         return (
           <Form.Item
-            name={field?.key}
+            name={field.key}
             rules={[
               {
                 validator: (_, value) => {
                   if (
-                    FormFieldKeyEnums?.WEBSITE === field?.key &&
-                    !websiteRegex.test(value) &&
-                    value
+                    field.key === FormFieldKeyEnums.WEBSITE &&
+                    value &&
+                    !websiteRegex.test(value)
                   ) {
                     return Promise.reject(
                       new Error(t('website-domain-invalid')),
@@ -45,23 +44,29 @@ function ContactInformation() {
             ]}
           >
             <Input
-              placeholder={t(`contact-profile.${field?.placeholder}`)}
-              disabled={field?.disable}
+              placeholder={t(`contact-profile.${field.placeholder}`)}
+              disabled={field.disable}
             />
           </Form.Item>
         );
-      case FormTypeEnums?.PHONE_NUMBER:
+
+      case FormTypeEnums.PHONE_NUMBER:
         return (
-          <Form.Item name={field?.key}>
+          <Form.Item name={field.key}>
             <Input
-              placeholder={field?.placeholder}
-              disabled={field?.disable}
-              type="number"
+              placeholder={field.placeholder}
+              disabled={field.disable}
+              type="text"
             />
           </Form.Item>
         );
+
       default:
-        return <Typography>{contactDetails?.[field?.key]}</Typography>;
+        return (
+          <Typography>
+            {contactDetails?.companyInfo?.[field.fieldName] || '-'}
+          </Typography>
+        );
     }
   };
 
@@ -70,24 +75,23 @@ function ContactInformation() {
       {isLoading ? (
         <S.Container>
           <S.Header>
-            <Image src={icInfo} width={24} height={24} />
-            <Typography variant="h5" color={themeColors?.secondaryDarker}>
+            <Image src={icInfo} width={24} height={24} preview={false} />
+            <Typography variant="h5" color={themeColors.secondaryDarker}>
               {t('contact-profile.company-information')}
             </Typography>
           </S.Header>
 
           <S.Body>
-            {companyMockup?.map((item) => (
-              <S.ContentWrap key={item?.key}>
-                <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
-
+            {companyMockup.map((item) => (
+              <S.ContentWrap key={item.key}>
+                <Typography>{t(`contact-profile.${item.label}`)}</Typography>
                 <Skeleton.Input
                   active
                   style={{
-                    height: '39px',
+                    height: 39,
                     width: '100%',
-                    marginTop: '8px',
-                    minHeight: '39px',
+                    marginTop: 8,
+                    minHeight: 39,
                   }}
                 />
               </S.ContentWrap>
@@ -97,28 +101,28 @@ function ContactInformation() {
       ) : (
         <S.Container>
           <S.Header>
-            <Image src={icInfo} width={24} height={24} />
-            <Typography variant="h5" color={themeColors?.secondaryDarker}>
+            <Image src={icInfo} width={24} height={24} preview={false} />
+            <Typography variant="h5" color={themeColors.secondaryDarker}>
               {t('contact-profile.company-information')}
             </Typography>
           </S.Header>
 
           <S.Body>
-            {companyMockup?.map((item) => {
-              return !isDetails ? (
-                <S.ContentWrap key={item?.key}>
-                  <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
+            {companyMockup.map((item) =>
+              !isDetails ? (
+                <S.ContentWrap key={item.key}>
+                  <Typography>{t(`contact-profile.${item.label}`)}</Typography>
                   {renderForm(item)}
                 </S.ContentWrap>
               ) : (
-                <S.ContentWrap key={item?.key}>
-                  <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
+                <S.ContentWrap key={item.key}>
+                  <Typography>{t(`contact-profile.${item.label}`)}</Typography>
                   <Typography>
-                    {contactDetails?.companyInfo?.[item?.fieldName]}
+                    {contactDetails?.companyInfo?.[item.fieldName] || '-'}
                   </Typography>
                 </S.ContentWrap>
-              );
-            })}
+              ),
+            )}
           </S.Body>
         </S.Container>
       )}

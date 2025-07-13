@@ -1,8 +1,10 @@
 import { isEmpty } from 'lodash';
 import { ReactSVG } from 'react-svg';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ConfigProvider, Image, Rate } from 'antd';
+import { Image } from 'antd';
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
 import { RootState } from '@/core/store';
 import { MAIN_ROUTES } from '@/core/routes/constants';
@@ -22,42 +24,59 @@ import Typography from '@/shared/components/common/Typography';
 import * as S from './ContactTable.styles';
 
 import icRemove from '@/assets/icons/contact/ic-remove.svg';
-import imgDefault from '@/assets/images/common/img-default.jpeg';
 import icAvatarDefault from '@/assets/images/avatar-default.png';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
-import dayjs from 'dayjs';
-import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
+
 import {
   KEY_PAGE,
   KEY_PAGE_SIZE,
   PAGE,
   PAGE_SIZE_OPTIONS,
 } from '@/shared/constant/common';
+
 import flagList from '@/shared/helper/data/flagIcon';
+import Modal from '@/shared/components/common/Modal';
+import fontWeight from '@/shared/styles/themes/default/fontWeight';
+import Button from '@/shared/components/common/Button';
 
 function ContactTable() {
   const { t } = useTranslation('contacts');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
-  const { currentWorkspace } = useAppSelector(
-    (state: RootState) => state?.auth,
-  );
-  const { isLoading, contacts, totalDocs } = useAppSelector(
+
+  const { currentWorkspace } = useAppSelector((state: RootState) => state.auth);
+  const { isLoading, contacts, totalDocs, contactDetails } = useAppSelector(
     (state: RootState) => state.contacts,
   );
 
-  function handleRemoveContact(idContact: string) {
-    dispatch(
-      handleRemoveContactAction({
-        workspaceId: currentWorkspace?.id as string,
-        id: idContact,
-        t: t,
-      }),
-    );
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+
+  function handleRemoveContact(record: ContactInterface) {
+    dispatch(actionUpdateContactDetails(record));
+    setIsRemoveModalOpen(true);
   }
 
+  function handleConfirmRemove(idContact?: string) {
+    const workspaceId = currentWorkspace?.id;
+    const contactId = idContact || contactDetails?.rawId;
+
+    if (!workspaceId || !contactId) return;
+
+    dispatch(
+      handleRemoveContactAction({
+        workspaceId,
+        id: contactId,
+        t,
+      }),
+    );
+
+    setIsRemoveModalOpen(false);
+    navigate('/contacts');
+  }
+
+  /* ===== COLUMNS ===== */
   const columnsContactTable = [
     {
       title: t('table.fullName'),
@@ -82,8 +101,8 @@ function ContactTable() {
       title: t('table.email'),
       dataIndex: 'email',
       key: 'email',
-      minWidth: 150,
-      width: 150,
+      minWidth: 250,
+      width: 250,
       render: (text: string) => (
         <S.TooltipColumn title={text}>{text || '-'}</S.TooltipColumn>
       ),
@@ -91,8 +110,8 @@ function ContactTable() {
     {
       title: t('table.location'),
       key: 'location',
-      minWidth: 210,
-      width: 210,
+      minWidth: 200,
+      width: 200,
       render: (record: ContactInterface) => {
         const countryCode = record?.context?.language
           ?.split('-')?.[1]
@@ -103,21 +122,18 @@ function ContactTable() {
 
         const city = record?.context?.city;
         const country = record?.context?.country;
-        const locationText = [city, country].filter(Boolean).join(', ') || '-';
+        const location = [city, country].filter(Boolean).join(', ') || '-';
 
         return (
           <S.LocationColumn>
             {flagIcon && (
               <Image preview={false} width={36} height={23} src={flagIcon} />
             )}
-            <S.TooltipColumn title={locationText}>
-              {locationText}
-            </S.TooltipColumn>
+            <S.TooltipColumn title={location}>{location}</S.TooltipColumn>
           </S.LocationColumn>
         );
       },
     },
-
     {
       title: t('table.company'),
       key: 'company',
@@ -125,77 +141,51 @@ function ContactTable() {
       width: 200,
       render: (record: ContactInterface) => (
         <S.TooltipColumn title={record?.companyInfo?.company}>
-          {record?.companyInfo?.company || <Typography color={themeColors?.newtralDark}>Unknow</Typography>}
+          {record?.companyInfo?.company || (
+            <Typography color={themeColors?.newtralDark}>Unknown</Typography>
+          )}
         </S.TooltipColumn>
       ),
     },
     {
       title: t('table.segments'),
       key: 'segments',
-      minWidth: 280,
-      width: 280,
+      minWidth: 230,
+      width: 230,
       render: (record: ContactInterface) => (
         <S.SegmentColumn>
-          {!isEmpty(record?.segments) ? (
-            record?.segments
-              ?.slice(0, 2)
-              ?.map((segment: string, index: number) => (
-                <S.Segment key={index}>
-                  <Typography>{segment}</Typography>
-                </S.Segment>
-              ))
+          {record?.segments?.length ? (
+            record.segments.map((segment: string, idx: number) => (
+              <S.Segment key={idx}>
+                <Typography>{segment}</Typography>
+              </S.Segment>
+            ))
           ) : (
             <Typography>-</Typography>
           )}
-          {record?.segments?.length > 2 && <Typography>...</Typography>}
         </S.SegmentColumn>
       ),
     },
+
     {
       title: t('table.lastActivity'),
       dataIndex: 'lastActivityAt',
       key: 'lastActive',
-      minWidth: 150,
-      width: 150,
+      minWidth: 120,
+      width: 120,
       render: (record: ContactInterface) => (
         <S.TooltipColumn title={record?.lastActivityAt}>
           {record?.lastActivityAt
-            ? dayjs(record?.lastActivityAt).format('DD/MM/YYYY HH:mm')
+            ? dayjs(record.lastActivityAt).format('DD/MM/YYYY HH:mm')
             : '-'}
         </S.TooltipColumn>
       ),
     },
-    // {
-    //   title: t('table.score'),
-    //   dataIndex: 'score',
-    //   key: 'score',
-    //   minWidth: 130,
-    //   width: 130,
-    //   render: (text: number) => (
-    //     <S.ScoreColumn>
-    //       <ConfigProvider
-    //         theme={{
-    //           components: {
-    //             Rate: {
-    //               starColor: themeColors?.warningDarkest,
-    //             },
-    //           },
-    //         }}
-    //       >
-    //         <Rate allowHalf defaultValue={text} disabled={true} />
-    //       </ConfigProvider>
-    //     </S.ScoreColumn>
-    //   ),
-    // },
     {
       minWidth: 50,
       width: 50,
       render: (record: ContactInterface) => (
-        <S.LocationColumn
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
+        <S.LocationColumn onClick={(e) => e.stopPropagation()}>
           <PopoverAction
             placement="bottomRight"
             trigger="click"
@@ -207,10 +197,8 @@ function ContactTable() {
             content={
               <S.FilterActionWrap>
                 <S.FilterAction
-                  onClick={() => {
-                    handleRemoveContact(record?.rawId);
-                  }}
-                  $isRemove={true}
+                  onClick={() => handleRemoveContact(record)}
+                  $isRemove
                 >
                   <ReactSVG src={icRemove} width={24} height={24} />
                   <Typography color={themeColors?.errorDark}>
@@ -226,22 +214,22 @@ function ContactTable() {
   ];
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
-      console.log('selectedRows changed: ', selectedRows);
-    },
+    onChange: (
+      selectedRowKeys: React.Key[],
+      selectedRows: ContactInterface[],
+    ) => console.log({ selectedRowKeys, selectedRows }),
   };
 
-  function handleViewContactProfile(record: any) {
+  function handleViewContactProfile(record: ContactInterface) {
     dispatch(actionUpdateContactDetails(record));
-    navigate(MAIN_ROUTES?.CONTACT_DETAILS?.replace(':id', record?.id));
+    navigate(MAIN_ROUTES.CONTACT_DETAILS.replace(':id', record.id));
   }
 
   useEffect(() => {
     const page = Number(searchParams.get(KEY_PAGE) || PAGE);
-    const pageSize =
-      Number(searchParams.get(KEY_PAGE_SIZE)) || PAGE_SIZE_OPTIONS?.[0]?.value;
-
+    const pageSize = Number(
+      searchParams.get(KEY_PAGE_SIZE) || PAGE_SIZE_OPTIONS[0].value,
+    );
     const offset = (page - 1) * pageSize;
 
     if (currentWorkspace?.id) {
@@ -266,6 +254,40 @@ function ContactTable() {
           onClick: () => handleViewContactProfile(record),
           style: { cursor: 'pointer' },
         })}
+      />
+
+      <Modal
+        isOpen={isRemoveModalOpen}
+        onClose={() => setIsRemoveModalOpen(false)}
+        hideHeader
+        width={440}
+        children={
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <ReactSVG src={icNoitify} />
+            <div>
+              <Typography fontWeight={fontWeight?.semiBold} margin="0 0 12px 0">
+                {t('contact-profile.confirm-delete-title')}
+              </Typography>
+              <Typography color="#5B5B5B">
+                {contactDetails?.email ?? '-'}{' '}
+                {t('contact-profile.and-its-data')}
+              </Typography>
+            </div>
+          </div>
+        }
+        footer={
+          <S.WrappButton>
+            <Button onClick={() => setIsRemoveModalOpen(false)}>
+              {t('contact-profile.cancel')}
+            </Button>
+            <Button
+              type="danger"
+              onClick={() => handleConfirmRemove(contactDetails?.rawId)}
+            >
+              {t('contact-profile.remove')}
+            </Button>
+          </S.WrappButton>
+        }
       />
     </S.ContactTableContainer>
   );

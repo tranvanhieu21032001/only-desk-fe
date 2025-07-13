@@ -107,3 +107,8 @@ export const Segment = styled.div`
     display: block !important;
   }
 `;
+export const WrappButton = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+`;

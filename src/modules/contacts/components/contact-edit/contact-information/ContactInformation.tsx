@@ -31,7 +31,7 @@ function ContactInformation() {
 
   const renderForm = (field: any) => {
     switch (field?.type) {
-      case FormTypeEnums?.INPUT:
+      case FormTypeEnums.INPUT:
         return (
           <Form.Item name={field?.key}>
             <Input
@@ -44,7 +44,8 @@ function ContactInformation() {
             />
           </Form.Item>
         );
-      case FormTypeEnums?.WEBSITE:
+
+      case FormTypeEnums.WEBSITE:
         return (
           <Form.Item
             name={field?.key}
@@ -64,7 +65,8 @@ function ContactInformation() {
             <Input placeholder={field?.placeholder} disabled={field?.disable} />
           </Form.Item>
         );
-      case FormTypeEnums?.PHONE_NUMBER:
+
+      case FormTypeEnums.PHONE_NUMBER:
         return (
           <Form.Item name={field?.key}>
             <Input
@@ -74,50 +76,63 @@ function ContactInformation() {
             />
           </Form.Item>
         );
-      case FormTypeEnums?.SELECT:
+
+      case FormTypeEnums.SELECT:
         return (
           <Form.Item name={field?.key}>
             <Select
               placeholder={field?.placeholder}
-              options={genderOptions?.map((option) => ({
-                ...option,
-                label: t(`gender-options.${option?.label}`),
+              options={genderOptions.map((opt) => ({
+                ...opt,
+                label: t(`gender-options.${opt.label}`),
               }))}
             />
           </Form.Item>
         );
-      case FormTypeEnums?.SWITCH:
+
+      case FormTypeEnums.SWITCH:
         return (
           <Form.Item name={field?.key}>
             <Switch />
           </Form.Item>
         );
-      case FormTypeEnums?.CREATE_DATE:
+
+      case FormTypeEnums.CREATE_DATE:
         return (
           <Typography>
-            {dayjs(contactDetails?.[field?.key]).format(
-              DATE_TIME_FORMAT?.EURO_DATE_TIME_FORMAT,
-            )}
+            {contactDetails?.[field?.key]
+              ? dayjs(contactDetails[field.key]).format(
+                  DATE_TIME_FORMAT.EURO_DATE_TIME_FORMAT,
+                )
+              : '-'}
           </Typography>
         );
+
       default:
-        return <Typography>{contactDetails?.[field?.key]}</Typography>;
+        return (
+          <Typography>
+            {contactDetails?.[field?.key] || '-'}
+          </Typography>
+        );
     }
   };
 
   const renderDetails = (field: any) => {
+    const value = contactDetails?.[field?.key];
+
     switch (field?.type) {
-      case FormTypeEnums?.CREATE_DATE:
-        return dayjs(contactDetails?.[field?.key]).format(
-          DATE_TIME_FORMAT?.EURO_DATE_TIME_FORMAT,
-        );
-      case FormTypeEnums?.SWITCH:
-        return contactDetails?.[field?.key]
+      case FormTypeEnums.CREATE_DATE:
+        return value
+          ? dayjs(value).format(DATE_TIME_FORMAT.EURO_DATE_TIME_FORMAT)
+          : '-';
+
+      case FormTypeEnums.SWITCH:
+        return value
           ? t('contact-profile.active')
           : t('contact-profile.inactive');
 
       default:
-        return contactDetails?.[field?.key];
+        return value || '-';
     }
   };
 
@@ -127,22 +142,18 @@ function ContactInformation() {
         <S.Container>
           <S.Header>
             <Image src={icInfo} width={24} height={24} preview={false} />
-            <Typography variant="h5" color={themeColors?.secondaryDarker}>
+            <Typography variant="h5" color={themeColors.secondaryDarker}>
               {t('contact-profile.contact-information')}
             </Typography>
           </S.Header>
 
           <S.Body>
-            {contactInformationMockup?.map((item) => (
-              <S.ContentWrap key={item?.key}>
-                <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
+            {contactInformationMockup.map((item) => (
+              <S.ContentWrap key={item.key}>
+                <Typography>{t(`contact-profile.${item.label}`)}</Typography>
                 <Skeleton.Input
                   active
-                  style={{
-                    height: '39px',
-                    width: '100%',
-                    marginTop: '8px',
-                  }}
+                  style={{ height: 39, width: '100%', marginTop: 8 }}
                 />
               </S.ContentWrap>
             ))}
@@ -152,27 +163,27 @@ function ContactInformation() {
         <S.Container>
           <S.Header>
             <Image src={icInfo} width={24} height={24} preview={false} />
-            <Typography variant="h5" color={themeColors?.secondaryDarker}>
+            <Typography variant="h5" color={themeColors.secondaryDarker}>
               {t('contact-profile.contact-information')}
             </Typography>
           </S.Header>
 
           <S.Body>
-            {contactInformationMockup?.map((item) => {
-              return !isDetails ? (
-                <S.ContentWrap key={item?.key}>
-                  <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
+            {contactInformationMockup.map((item) =>
+              !isDetails ? (
+                <S.ContentWrap key={item.key}>
+                  <Typography>{t(`contact-profile.${item.label}`)}</Typography>
                   {renderForm(item)}
                 </S.ContentWrap>
               ) : (
-                <S.ContentWrap key={item?.key}>
-                  <Typography>{t(`contact-profile.${item?.label}`)}</Typography>
-                  <Tooltip title={contactDetails?.[item?.key]}>
+                <S.ContentWrap key={item.key}>
+                  <Typography>{t(`contact-profile.${item.label}`)}</Typography>
+                  <Tooltip title={renderDetails(item)}>
                     <Typography>{renderDetails(item)}</Typography>
                   </Tooltip>
                 </S.ContentWrap>
-              );
-            })}
+              ),
+            )}
           </S.Body>
         </S.Container>
       )}
