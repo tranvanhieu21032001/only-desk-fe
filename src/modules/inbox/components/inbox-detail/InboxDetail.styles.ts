@@ -582,6 +582,8 @@ export const NoteBubbleRight = styled.div`
   font-weight: 500;
   font-size: 15px;
   display: inline-block;
+  word-break: break-word;
+  white-space: pre-wrap;
 `;
 
 export const NoteMeta = styled.div`

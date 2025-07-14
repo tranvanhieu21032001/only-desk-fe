@@ -73,31 +73,16 @@ import { Conversation } from '../../interfaces/inbox';
 interface InboxDetailProps {
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
+  conversation?: any;
 }
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
-  ({ isSidebarOpen, toggleSidebar }) => {
+  ({ isSidebarOpen, toggleSidebar, conversation }) => {
     const renderCount = useRef(0);
     renderCount.current++;
 
     // Add mount/unmount tracking
     const mountTimestamp = useRef(Date.now());
-
-    useEffect(() => {
-      console.log('🌟 [InboxDetail] Component MOUNTED:', {
-        mountTimestamp: mountTimestamp.current,
-        isSidebarOpen,
-        timestamp: new Date().toISOString(),
-      });
-
-      return () => {
-        console.log('💀 [InboxDetail] Component UNMOUNTED:', {
-          mountTimestamp: mountTimestamp.current,
-          lifespan: Date.now() - mountTimestamp.current,
-          timestamp: new Date().toISOString(),
-        });
-      };
-    }, []);
 
     const { t } = useTranslation('inbox');
     const [searchParams] = useSearchParams();
@@ -106,13 +91,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const prevUrlRef = useRef<string>('');
     const currentUrl = window.location.href;
     if (prevUrlRef.current !== currentUrl) {
-      console.log('🌍 [InboxDetail] URL changed:', {
-        from: prevUrlRef.current,
-        to: currentUrl,
-        conversationId,
-        renderCount: renderCount.current,
-        mountAge: Date.now() - mountTimestamp.current,
-      });
       prevUrlRef.current = currentUrl;
     }
 
@@ -121,12 +99,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     if (stableConversationId.current !== conversationId) {
       const now = Date.now();
       if (!stableConversationId.current || now % 1000 < 100) {
-        console.log('📍 [InboxDetail] Conversation ID stabilized:', {
-          from: stableConversationId.current,
-          to: conversationId,
-          renderCount: renderCount.current,
-          mountAge: now - mountTimestamp.current,
-        });
       }
       stableConversationId.current = conversationId;
     }
@@ -218,24 +190,18 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     }, [workspaceId, conversations]);
 
     const currentConversation = useMemo(() => {
+      if (conversation) return conversation;
       const foundInRedux = currentConversations.find(
         (conv) => conv.id === stableConversationId.current,
       );
-
       if (foundInRedux) {
         return foundInRedux;
       }
-
       if (messages && messages.length > 0 && stableConversationId.current) {
-        console.log(
-          '🔄 [InboxDetail] Conversation not in Redux, creating fallback from messages',
-        );
-
         const guestMessage = messages.find(
           (msg) => msg.sender === InboxSender.Guest,
         );
         const latestMessage = messages[0];
-
         return {
           id: stableConversationId.current,
           contact: {
@@ -271,28 +237,14 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             : null,
         } as Conversation;
       }
-
       return undefined;
     }, [
+      conversation,
       currentConversations,
       stableConversationId.current,
       messages,
       workspaceId,
     ]);
-
-    useEffect(() => {
-      if (currentConversation) {
-        console.log('✅ [InboxDetail] Conversation resolved:', {
-          id: currentConversation.id,
-          contactName: currentConversation.contact?.name,
-          source: currentConversations.find(
-            (conv) => conv.id === stableConversationId.current,
-          )
-            ? 'Redux'
-            : 'Fallback',
-        });
-      }
-    }, [currentConversation]);
 
     const messageEndRef = useRef<HTMLDivElement>(null);
     const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -344,9 +296,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         isFirstMessageLoad.current &&
         stableConversationId.current
       ) {
-        console.log(
-          '🚀 [InboxDetail] First message load complete, scrolling to bottom',
-        );
         const container = messageContainerRef.current;
         if (container) {
           // Use requestAnimationFrame for smoother scroll
@@ -922,6 +871,39 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       const isImageMessage =
         contextMenu.message.type === InboxMessageType.Image;
 
+      if (isImageMessage) {
+        return (
+          <S.ContextMenu
+            style={{
+              top: contextMenu.y,
+              left: contextMenu.x,
+              position: 'fixed',
+              width: MENU_WIDTH,
+              zIndex: 1000,
+            }}
+            onClick={(e) => e.stopPropagation()}
+            onMouseEnter={() => {
+              if (contextMenu.messageId) {
+                setHoveredMessageId(contextMenu.messageId);
+              }
+            }}
+            onMouseLeave={() => {
+              setHoveredMessageId(null);
+            }}
+          >
+            <S.ContextMenuItem onClick={handleReply}>
+              <img src={iconReply} alt="Reply" />
+              Reply
+            </S.ContextMenuItem>
+            <S.ContextMenuSeparator />
+            <S.ContextMenuItem onClick={handleDeleteMessage} danger>
+              <img src={iconDelete} alt="Delete" />
+              Delete
+            </S.ContextMenuItem>
+          </S.ContextMenu>
+        );
+      }
+
       return (
         <S.ContextMenu
           style={{
@@ -998,6 +980,25 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       );
     }
 
+    const renderLoadingOverlay = () => (
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: 'rgba(255,255,255,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10,
+        }}
+      >
+        <LoadingOutlined spin style={{ fontSize: 32, color: '#999' }} />
+      </div>
+    );
+
     return (
       <>
         <GlobalStyle />
@@ -1006,7 +1007,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           <S.Header>
             <S.HeaderLeft>
               <AvatarWithStatus
-                avatarSrc={currentConversation?.contact?.avatar || defaultAvatar}
+                avatarSrc={
+                  currentConversation?.contact?.avatar || defaultAvatar
+                }
                 flagSrc={flag}
                 isOnline={true}
               />
@@ -1022,19 +1025,25 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                 {t('inboxDetail.markResolved')}
               </S.MarkResolvedButton>
               <S.ToggleSidebarButton onClick={toggleSidebar}>
-                <Image src={isSidebarOpen ? barClose : barOpen} preview={false} />
+                <Image
+                  src={isSidebarOpen ? barClose : barOpen}
+                  preview={false}
+                />
               </S.ToggleSidebarButton>
             </S.HeaderRight>
           </S.Header>
 
-          <S.MainContent $hasOverlay={!!activeTab}>
+          <S.MainContent
+            $hasOverlay={!!activeTab}
+            style={{ position: 'relative' }}
+          >
             <S.MessageContainer
               isSidebarOpen={isSidebarOpen}
               ref={messageContainerRef}
             >
-              {loading ? (
+              {messages.length === 0 && loading ? (
                 renderSkeleton()
-              ) : messages.length === 0 ? (
+              ) : messages.length === 0 && !loading ? (
                 <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
               ) : (
                 <>
@@ -1149,7 +1158,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                                     >
                                       {hoveredMessageId === msg.id ? (
                                         <S.MessageHoverIconNearTime
-                                          onClick={(e) => handleIconClick(e, msg)}
+                                          onClick={(e) =>
+                                            handleIconClick(e, msg)
+                                          }
                                         >
                                           <img src={icBar} alt="menu" />
                                         </S.MessageHoverIconNearTime>
@@ -1225,53 +1236,28 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                                       {msg.status ===
                                         InboxMessageStatus.Sending && (
                                         <LoadingOutlined
-                                          style={{ marginLeft: 6, fontSize: 12 }}
+                                          style={{
+                                            marginLeft: 6,
+                                            fontSize: 12,
+                                          }}
                                           spin
                                         />
                                       )}
                                       {msg.status ===
                                         InboxMessageStatus.Failed && (
-                                      <Tooltip title="Send failed">
-                                        <CloseCircleTwoTone
-                                          twoToneColor="#ff4d4f"
-                                          style={{
-                                            marginLeft: 6,
-                                            fontSize: 12,
-                                          }}
-                                        />
-                                      </Tooltip>
-                                    )}
-                                  </S.MessageTime>
-                                </S.TimeWithIconContainer>
-                                <S.MessageBubbleRight
-                                  onMouseEnter={() =>
-                                    setHoveredMessageId(msg.id)
-                                  }
-                                  onMouseLeave={() => {
-                                    if (!contextMenu.visible) {
-                                      setHoveredMessageId(null);
-                                    }
-                                  }}
-                                >
-                                  {msg.content}
-                                </S.MessageBubbleRight>
-                              </S.AgentMessageContainer>
-                            )}
-                          </S.MessageRowUser>
-                        ) : (
-                          <S.MessageRow>
-                            <S.MessageAvatarWrapper>
-                              <S.MessageAvatar
-                                src={avatarAdmin}
-                                alt={msg.user?.firstName}
-                              />
-                              <S.MessageColumnView>
-                                <S.MessageSenderName>
-                                  {msg.user?.firstName || 'Guest'}
-                                </S.MessageSenderName>
-                                {msg.type === InboxMessageType.Image &&
-                                msg.metadata?.fileUrl ? (
-                                  <S.MessageImageLeft
+                                        <Tooltip title="Send failed">
+                                          <CloseCircleTwoTone
+                                            twoToneColor="#ff4d4f"
+                                            style={{
+                                              marginLeft: 6,
+                                              fontSize: 12,
+                                            }}
+                                          />
+                                        </Tooltip>
+                                      )}
+                                    </S.MessageTime>
+                                  </S.TimeWithIconContainer>
+                                  <S.MessageBubbleRight
                                     onMouseEnter={() =>
                                       setHoveredMessageId(msg.id)
                                     }
@@ -1281,27 +1267,25 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                                       }
                                     }}
                                   >
-                                    <Image
-                                      src={msg.metadata.fileUrl}
-                                      alt="image"
-                                      onLoad={() => {
-                                        setPendingImageLoads((prev) => {
-                                          const next = Math.max(prev - 1, 0);
-                                          if (next === 0) {
-                                            scrollToBottom();
-                                          }
-                                          return next;
-                                        });
-                                        if (pendingImageScroll) {
-                                          setPendingImageScroll(false);
-                                        }
-                                      }}
-                                      preview={true}
-                                    />
-                                  </S.MessageImageLeft>
-                                ) : (
-                                  <S.GuestMessageContainer>
-                                    <S.MessageBubbleLeft
+                                    {msg.content}
+                                  </S.MessageBubbleRight>
+                                </S.AgentMessageContainer>
+                              )}
+                            </S.MessageRowUser>
+                          ) : (
+                            <S.MessageRow>
+                              <S.MessageAvatarWrapper>
+                                <S.MessageAvatar
+                                  src={avatarAdmin}
+                                  alt={msg.user?.firstName}
+                                />
+                                <S.MessageColumnView>
+                                  <S.MessageSenderName>
+                                    {msg.user?.firstName || 'Guest'}
+                                  </S.MessageSenderName>
+                                  {msg.type === InboxMessageType.Image &&
+                                  msg.metadata?.fileUrl ? (
+                                    <S.MessageImageLeft
                                       onMouseEnter={() =>
                                         setHoveredMessageId(msg.id)
                                       }
@@ -1311,52 +1295,83 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                                         }
                                       }}
                                     >
-                                      {msg.content}
-                                    </S.MessageBubbleLeft>
-                                  </S.GuestMessageContainer>
-                                )}
-                              </S.MessageColumnView>
-                            </S.MessageAvatarWrapper>
-                            <S.TimeWithIconContainer
-                              onMouseEnter={() => setHoveredMessageId(msg.id)}
-                              onMouseLeave={() => {
-                                if (!contextMenu.visible) {
-                                  setHoveredMessageId(null);
-                                }
-                              }}
-                            >
-                              <S.MessageTime>
-                                {formatTime(msg.createdAt)}
-                                {msg.status === InboxMessageStatus.Sending && (
-                                  <LoadingOutlined
-                                    style={{ marginLeft: 6, fontSize: 12 }}
-                                    spin
-                                  />
-                                )}
-                                {msg.status === InboxMessageStatus.Failed && (
-                                  <Tooltip title="Send failed">
-                                    <CloseCircleTwoTone
-                                      twoToneColor="#ff4d4f"
+                                      <Image
+                                        src={msg.metadata.fileUrl}
+                                        alt="image"
+                                        onLoad={() => {
+                                          setPendingImageLoads((prev) => {
+                                            const next = Math.max(prev - 1, 0);
+                                            if (next === 0) {
+                                              scrollToBottom();
+                                            }
+                                            return next;
+                                          });
+                                          if (pendingImageScroll) {
+                                            setPendingImageScroll(false);
+                                          }
+                                        }}
+                                        preview={true}
+                                      />
+                                    </S.MessageImageLeft>
+                                  ) : (
+                                    <S.GuestMessageContainer>
+                                      <S.MessageBubbleLeft
+                                        onMouseEnter={() =>
+                                          setHoveredMessageId(msg.id)
+                                        }
+                                        onMouseLeave={() => {
+                                          if (!contextMenu.visible) {
+                                            setHoveredMessageId(null);
+                                          }
+                                        }}
+                                      >
+                                        {msg.content}
+                                      </S.MessageBubbleLeft>
+                                    </S.GuestMessageContainer>
+                                  )}
+                                </S.MessageColumnView>
+                              </S.MessageAvatarWrapper>
+                              <S.TimeWithIconContainer
+                                onMouseEnter={() => setHoveredMessageId(msg.id)}
+                                onMouseLeave={() => {
+                                  if (!contextMenu.visible) {
+                                    setHoveredMessageId(null);
+                                  }
+                                }}
+                              >
+                                <S.MessageTime>
+                                  {formatTime(msg.createdAt)}
+                                  {msg.status ===
+                                    InboxMessageStatus.Sending && (
+                                    <LoadingOutlined
                                       style={{ marginLeft: 6, fontSize: 12 }}
+                                      spin
                                     />
-                                  </Tooltip>
+                                  )}
+                                  {msg.status === InboxMessageStatus.Failed && (
+                                    <Tooltip title="Send failed">
+                                      <CloseCircleTwoTone
+                                        twoToneColor="#ff4d4f"
+                                        style={{ marginLeft: 6, fontSize: 12 }}
+                                      />
+                                    </Tooltip>
+                                  )}
+                                </S.MessageTime>
+                                {hoveredMessageId === msg.id ? (
+                                  <S.MessageHoverIconNearTime
+                                    onClick={(e) => handleIconClick(e, msg)}
+                                  >
+                                    <img src={icBar} alt="menu" />
+                                  </S.MessageHoverIconNearTime>
+                                ) : (
+                                  <S.MessageHoverIconPlaceholder />
                                 )}
-                              </S.MessageTime>
-                              {hoveredMessageId === msg.id ? (
-                                <S.MessageHoverIconNearTime
-                                  onClick={(e) => handleIconClick(e, msg)}
-                                >
-                                  <img src={icBar} alt="menu" />
-                                </S.MessageHoverIconNearTime>
-                              ) : (
-                                <S.MessageHoverIconPlaceholder />
-                              )}
-                            </S.TimeWithIconContainer>
-                          </S.MessageRow>
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
+                              </S.TimeWithIconContainer>
+                            </S.MessageRow>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
                 </>
               )}
               <div ref={messageEndRef} />
@@ -1370,8 +1385,8 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                   />
                 </S.NewMessageNoticeButton>
               )}
+              {loading && messages.length > 0 && renderLoadingOverlay()}
             </S.MessageContainer>
-            {/* Overlay tab content */}
             {activeTab && (
               <S.TabOverlay $tabtype={activeTab}>
                 {renderTabContent()}
