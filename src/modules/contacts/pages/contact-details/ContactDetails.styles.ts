@@ -11,14 +11,19 @@ export const ContactsContainer = styled.section`
   background-color: ${(props) => props?.theme?.colors?.newtralLightest};
 `;
 
-export const ScrollArea = styled.div`
+export const ScrollArea = styled.div<{ $showScroll: boolean }>`
   height: calc(100vh - 90px);
   overflow-y: auto;
   overflow-x: hidden;
 
   &::-webkit-scrollbar {
     width: 4px;
-    height: 9px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background-color: ${({ $showScroll, theme }) =>
+      $showScroll ? theme.colors.newtralDarker || '#c1c1c1' : 'transparent'};
+    transition: background-color 0.2s ease;
   }
 
   @media ${(props) => props?.theme?.breakpoints?.mdMax} {
