@@ -59,7 +59,7 @@ const handleSwitchWorkspaceApi = async (
     
     const response = await patchRequest(endpointAuth?.CURRENT_WORKSPACE, {
       data: { workspaceId: rawWorkspaceId },
-      messageSuccess: t('create-workspace.switch-success'),
+      messageSuccess: "Switch workspace successfully!",
     });
 
     if (response?.token) {

@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
+import { usePaginationFragment } from 'react-relay';
+import { conversationListFragment } from '@/relay/ConversationListFragment';
+import type { ConversationListFragment_query$key } from '@/relay/__generated__/ConversationListFragment_query.graphql';
 
 import AvatarWithStatus from '@/shared/components/common/Avatar';
 import Modal from '@/shared/components/common/Modal';
@@ -41,7 +44,12 @@ import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
 import avatarDefault from '@/assets/images/avatar-default.png';
 
-const ConversationList = () => {
+type Props = {
+  conversationsRef: ConversationListFragment_query$key;
+  onSelectConversation?: (conversation: any) => void;
+};
+
+const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversation }) => {
   const { t } = useTranslation('inbox');
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [isAllDropdownOpen, setIsAllDropdownOpen] = useState(false);
@@ -81,6 +89,44 @@ const ConversationList = () => {
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
 
+  // Relay pagination
+  const {
+    data,
+    loadNext,
+    hasNext,
+    isLoadingNext,
+  } = usePaginationFragment(
+    conversationListFragment,
+    conversationsRef
+  );
+
+  // Khi mount hoặc khi activeConversationId thay đổi, truyền conversation object lên cha nếu có
+  useEffect(() => {
+    if (onSelectConversation && activeConversationId) {
+      const conversation = data.conversations.edges.find(edge => edge.node.id === activeConversationId)?.node;
+      if (conversation) {
+        onSelectConversation(conversation);
+      }
+    }
+  }, [activeConversationId, onSelectConversation, data.conversations.edges]);
+
+  // Scroll event for load more
+  useEffect(() => {
+    const wrapper = conversationListWrapperRef.current;
+    if (!wrapper) return;
+    const handleScroll = () => {
+      if (
+        wrapper.scrollTop + wrapper.clientHeight >= wrapper.scrollHeight - 50 &&
+        hasNext &&
+        !isLoadingNext
+      ) {
+        loadNext(10);
+      }
+    };
+    wrapper.addEventListener('scroll', handleScroll);
+    return () => wrapper.removeEventListener('scroll', handleScroll);
+  }, [hasNext, isLoadingNext, loadNext]);
+
   const decodeGlobalId = (globalId: string): string => {
     try {
       const decoded = atob(globalId);
@@ -101,13 +147,6 @@ const ConversationList = () => {
 
   const [customFilterName, setCustomFilterName] = useState('');
 
-  // Fetch initial conversation list (only when mounting or changing workspace)
-  useEffect(() => {
-    if (workspaceId && !conversations[workspaceId]) {
-      dispatch(fetchConversations(workspaceId));
-    }
-  }, [workspaceId, dispatch, conversations]);
-
   // Listen for workspace changes
   useEffect(() => {
     const handleWorkspaceChange = () => {
@@ -121,39 +160,6 @@ const ConversationList = () => {
       eventBus.off(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
     };
   }, [workspaceId, dispatch, conversations]);
-
-  // Load more conversations
-  const loadMore = async () => {
-    if (loadingMore || !hasMore) return;
-    setLoadingMore(true);
-    try {
-      const response = await fetchConversationsRelay(workspaceId || '', 10, lastCursor);
-      setConversationEdges((prev) => [...prev, ...response.data]);
-      setLastCursor(response.hasNextPage ? response.endCursor : null);
-      setHasMore(response.hasNextPage);
-    } catch (error) {
-      console.error('Error loading more conversations:', error);
-    } finally {
-      setLoadingMore(false);
-    }
-  };
-
-  // Listen for scroll event
-  useEffect(() => {
-    const wrapper = conversationListWrapperRef.current;
-    if (!wrapper) return;
-    const handleScroll = () => {
-      if (
-        wrapper.scrollTop + wrapper.clientHeight >= wrapper.scrollHeight - 50 &&
-        hasMore &&
-        !loadingMore
-      ) {
-        loadMore();
-      }
-    };
-    wrapper.addEventListener('scroll', handleScroll);
-    return () => wrapper.removeEventListener('scroll', handleScroll);
-  }, [hasMore, loadingMore, lastCursor]);
 
   const resetFilterStates = () => {
     setSelectedModalFilter(null);
@@ -213,6 +219,10 @@ const ConversationList = () => {
   };
 
   const handleConversationClick = (conversationId: string) => {
+    const conversation = data.conversations.edges.find(edge => edge.node.id === conversationId)?.node;
+    if (onSelectConversation && conversation) {
+      onSelectConversation(conversation); // GỌI TRƯỚC navigate
+    }
     navigate(`?conversationId=${conversationId}`);
   };
 
@@ -346,85 +356,84 @@ const ConversationList = () => {
       </S.SearchFilterWrapper>
 
       <S.ConversationListWrapper ref={conversationListWrapperRef}>
-        {loading && renderSkeleton()}
-        {!loading && currentConversations.length === 0 && (
+        {isLoadingNext && renderSkeleton()}
+        {data.conversations.edges.length === 0 && !isLoadingNext && (
           <S.AllDataLoaded>{t('inboxList.noConversationYet')}</S.AllDataLoaded>
         )}
-        {!loading &&
-          currentConversations.map(
-            (conversation: Conversation, index: number) => (
-              <S.NotificationItem
-                key={conversation.id}
-                active={conversation.id === activeConversationId}
-                onClick={() => handleConversationClick(conversation.id)}
-              >
-                <S.Avatar>
-                  <AvatarWithStatus
-                    avatarSrc={conversation.contact?.avatar || avatarDefault}
-                    isOnline={conversation.contact?.isOnline || false}
-                    flagSrc={flag}
-                  />
-                </S.Avatar>
-                <S.Content>
-                  <S.Title>
-                    {conversation.contact?.name || DEFAULT_FULL_NAME}
-                  </S.Title>
-                  <S.Subtitle>
-                    {conversation.latestMessage?.content || <p>No message</p>}
-                  </S.Subtitle>
-                </S.Content>
-                <S.RightSection ref={menuRef}>
-                  <S.Time className="time">
-                    {getFormattedTime(conversation.lastActivityAt)}
-                  </S.Time>
-                  <S.BarIcon onClick={(e) => handleMenuClick(index, e)}>
-                    <Image src={barColumn} preview={false} />
-                  </S.BarIcon>
-                  {conversation.unreadGuestCount ? (
-                    <S.Badge>{conversation.unreadGuestCount}</S.Badge>
-                  ) : (
-                    <></>
-                  )}
-                  {activeMenu === index && (
-                    <S.MenuDropdown isOpen={true}>
-                      <S.MenuItem
-                        onClick={(e) => handleMenuItemClick('resolve', e)}
-                      >
-                        <Image src={check} preview={false} />
-                        Mark as resolved
-                      </S.MenuItem>
-                      <S.MenuItem
-                        onClick={(e) => handleMenuItemClick('unread', e)}
-                      >
-                        <Image src={unreadIcon} preview={false} />
-                        Mark as unread
-                      </S.MenuItem>
-                      <S.MenuItem
-                        onClick={(e) => handleMenuItemClick('copy', e)}
-                      >
-                        <Image src={copyIcon} preview={false} />
-                        Copy link
-                      </S.MenuItem>
-                      <S.MenuItem
-                        onClick={(e) => handleMenuItemClick('block', e)}
-                      >
-                        <Image src={blockIcon} preview={false} />
-                        Block Admin 3
-                      </S.MenuItem>
-                      <S.MenuItem
-                        className="delete"
-                        onClick={(e) => handleMenuItemClick('delete', e)}
-                      >
-                        <Image src={deleteIcon} preview={false} />
-                        Delete conversation
-                      </S.MenuItem>
-                    </S.MenuDropdown>
-                  )}
-                </S.RightSection>
-              </S.NotificationItem>
-            ),
-          )}
-        {/* {loading && <S.LoadingMore>{t('inboxList.loadMore')}</S.LoadingMore>} */}
+        {data.conversations.edges.map((edge, index) => {
+          const conversation = edge.node;
+          return (
+            <S.NotificationItem
+              key={conversation.id}
+              active={conversation.id === activeConversationId}
+              onClick={() => handleConversationClick(conversation.id)}
+            >
+              <S.Avatar>
+                <AvatarWithStatus
+                  avatarSrc={conversation.contact?.avatar || avatarDefault}
+                  isOnline={conversation.contact?.isOnline || false}
+                  flagSrc={flag}
+                />
+              </S.Avatar>
+              <S.Content>
+                <S.Title>
+                  {conversation.contact?.name || DEFAULT_FULL_NAME}
+                </S.Title>
+                <S.Subtitle>
+                  {conversation.latestMessage?.content || <p>No message</p>}
+                </S.Subtitle>
+              </S.Content>
+              <S.RightSection ref={menuRef}>
+                <S.Time className="time">
+                  {getFormattedTime(conversation.lastActivityAt)}
+                </S.Time>
+                <S.BarIcon onClick={(e) => handleMenuClick(index, e)}>
+                  <Image src={barColumn} preview={false} />
+                </S.BarIcon>
+                {conversation.unreadCount ? (
+                  <S.Badge>{conversation.unreadCount}</S.Badge>
+                ) : (
+                  <></>
+                )}
+                {activeMenu === index && (
+                  <S.MenuDropdown isOpen={true}>
+                    <S.MenuItem
+                      onClick={(e) => handleMenuItemClick('resolve', e)}
+                    >
+                      <Image src={check} preview={false} />
+                      Mark as resolved
+                    </S.MenuItem>
+                    <S.MenuItem
+                      onClick={(e) => handleMenuItemClick('unread', e)}
+                    >
+                      <Image src={unreadIcon} preview={false} />
+                      Mark as unread
+                    </S.MenuItem>
+                    <S.MenuItem
+                      onClick={(e) => handleMenuItemClick('copy', e)}
+                    >
+                      <Image src={copyIcon} preview={false} />
+                      Copy link
+                    </S.MenuItem>
+                    <S.MenuItem
+                      onClick={(e) => handleMenuItemClick('block', e)}
+                    >
+                      <Image src={blockIcon} preview={false} />
+                      Block Admin 3
+                    </S.MenuItem>
+                    <S.MenuItem
+                      className="delete"
+                      onClick={(e) => handleMenuItemClick('delete', e)}
+                    >
+                      <Image src={deleteIcon} preview={false} />
+                      Delete conversation
+                    </S.MenuItem>
+                  </S.MenuDropdown>
+                )}
+              </S.RightSection>
+            </S.NotificationItem>
+          );
+        })}
       </S.ConversationListWrapper>
 
       <Modal
