@@ -108,9 +108,10 @@ export const MessageBubbleRight = styled(MessageBubbleLeft)`
 `;
 
 export const MessageTime = styled.div`
-  font-size: 10px;
+  font-size: 9px;
   margin-right: 8px;
   color: #aaa;
+  font-style: italic;
 `;
 
 export const Footer = styled.div`
@@ -199,6 +200,29 @@ export const MessageContainer = styled.div<MessageContainerProps>`
   overflow-y: auto;
   background: #fafafa;
   transition: flex 0.3s;
+
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+    transition: background 0.3s ease;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: ${(props) => props.theme.colors.primary};
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${(props) => props.theme.colors.primary};
+  }
 `;
 
 export const Sidebar = styled.div`
@@ -526,6 +550,7 @@ export const NoteContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  /* Remove padding that causes broad hover area */
 `;
 
 export const ShortcutsList = styled.div`
@@ -566,10 +591,122 @@ export const ShortcutsItem = styled.div`
   }
 `;
 
+// Trong InboxDetail.styles.ts
+export const ContextMenu = styled.div`
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e5e5e5;
+  overflow: hidden;
+`;
+
+export const ContextMenuItem = styled.div<{ danger?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: ${props => props.danger ? '#ff4d4f' : '#333'};
+  
+  &:hover {
+    background: ${props => props.danger ? '#fff2f0' : '#f5f5f5'};
+  }
+  
+  img {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+
+
+export const TimeWithIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  /* Remove padding that causes broad hover area */
+`;
+
+export const MessageHoverIconNearTime = styled.div`
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  opacity: 0.7;
+  width: 20px; /* Reserve space */
+  height: 20px; /* Reserve space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.05);
+  }
+  
+  img {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+export const MessageHoverIconPlaceholder = styled.div`
+  width: 20px; /* Same size as icon */
+  height: 20px;
+  /* Invisible placeholder to reserve space */
+`;
+
+export const ContextMenuSeparator = styled.div`
+  height: 1px;
+  background-color: #f0f0f0;
+  margin: 4px 0;
+`;
+
+export const SmallPopupMenu = styled.div`
+  position: fixed;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  z-index: 2000;
+  min-width: 140px;
+`;
+
+export const SmallPopupMenuItem = styled.div`
+  padding: 8px 16px;
+  font-size: 16px;
+  color: #222;
+  cursor: pointer;
+  &:hover {
+    background: #f5f5f5;
+  }
+`;
+
 export const NoShortcutsFound = styled.div`
   text-align: center;
   padding: 12px;
   color: #aaa;
+`;
+
+export const AgentMessageContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: flex-end; /* Change from center to flex-end to align to bottom */
+  gap: 8px;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+  /* Remove padding that causes broad hover area */
+`;
+
+export const GuestMessageContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row;
+  width: 100%;
+  /* Remove padding that causes broad hover area */
 `;
 
 export const NoteRow = styled.div`
@@ -577,3 +714,17 @@ export const NoteRow = styled.div`
   flex-direction: row;
   align-items: flex-end;
 `;
+
+// Spinner loading more messages at the top of message box
+export const InboxSpinner = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 0 8px 0;
+  background: #fafafa;
+  z-index: 10;
+  position: sticky;
+  top: 0;
+`;
+

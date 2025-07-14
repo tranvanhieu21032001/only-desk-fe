@@ -4,7 +4,14 @@ import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import React, {
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import Cookies from 'js-cookie';
 
 import {
@@ -109,7 +116,20 @@ interface Props {
   children: React.ReactNode;
 }
 
-const MainLayout: React.FC<Props> = ({ children }) => {
+const MainLayout: React.FC<Props> = React.memo(({ children }) => {
+  const mountTimestamp = useRef(Date.now());
+  const renderCount = useRef(0);
+  renderCount.current++;
+
+  useEffect(() => {
+    console.log('🏠 [MainLayout] Component MOUNTED:', {
+      mountTimestamp: mountTimestamp.current,
+      timestamp: new Date().toISOString(),
+    });
+
+    return () => {};
+  }, []);
+
   const { t } = useTranslation('layout');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -132,19 +152,27 @@ const MainLayout: React.FC<Props> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showDisconnectBanner, setShowDisconnectBanner] = useState(false);
 
-  const routePath = window?.location?.pathname;
+  const routePath = useMemo(
+    () => window?.location?.pathname,
+    [window?.location?.pathname],
+  );
+
+  const prevRoutePath = useRef<string>('');
 
   const WORKSPACE_ID = useAppSelector(selectCurrentWorkspaceId);
   const USER_TOKEN = Cookies.get('_access_token');
   const isLoadingAuth = useAppSelector(selectIsLoading);
 
-  function handleClickChildrenMenu(key: string) {
-    if (key) {
-      navigate(`${key}`, { replace: true });
-    } else {
-      navigate(`${MAIN_ROUTES?.HOME}`, { replace: true });
-    }
-  }
+  const handleClickChildrenMenu = useCallback(
+    (key: string) => {
+      if (key) {
+        navigate(`${key}`, { replace: true });
+      } else {
+        navigate(`${MAIN_ROUTES?.HOME}`, { replace: true });
+      }
+    },
+    [navigate],
+  );
 
   useEffect(() => {
     dispatch(fetchGetUserInfo());
@@ -515,7 +543,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         </S.PopoverContent>
       ),
     },
-     {
+    {
       key: 'admin',
       icon: icUser,
       children: (
@@ -550,17 +578,14 @@ const MainLayout: React.FC<Props> = ({ children }) => {
               $isActive={routePath === MAIN_ROUTES?.USERS_ADMIN}
             >
               <S.ChildrenMenuLabel>
-                <Image
-                  src={icUser2}
-                  preview={false}
-                  width={24}
-                  height={24}
-                />
+                <Image src={icUser2} preview={false} width={24} height={24} />
                 <Typography>User</Typography>
               </S.ChildrenMenuLabel>
             </S.ChildrenMenuWrap>
             <S.ChildrenMenuWrap
-              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.PLUGINS_ADMIN)}
+              onClick={() =>
+                handleClickChildrenMenu(MAIN_ROUTES?.PLUGINS_ADMIN)
+              }
               $isActive={routePath === MAIN_ROUTES?.PLUGINS_ADMIN}
             >
               <S.ChildrenMenuLabel>
@@ -593,32 +618,50 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     },
   ];
 
-  function handleProfileDetail() {
+  const handleProfileDetail = useCallback(() => {
     //TODO handle later
-  }
+  }, []);
 
-  function handleLogout() {
+  const handleLogout = useCallback(() => {
     disconnectSocket();
     dispatch(actionLogout());
-  }
+  }, [dispatch]);
 
-  function handleSelectWorkSpaceCurrent(workSpace: WorkspaceInterface) {
-    if (workSpace.id === currentWorkspace?.id) return;
+  const handleSelectWorkSpaceCurrent = useCallback(
+    (workSpace: WorkspaceInterface) => {
+      if (workSpace.id === currentWorkspace?.id) return;
 
-    handleSwitchWorkspaceApi(workSpace.id, t, setIsLoading, (newToken) => {
-      webStorageClient.setToken(newToken);
-      dispatch(actionUpdateWorkSpaceCurrent(workSpace));
-      disconnectSocket();
-      connectSocket({
-        token: newToken,
-        workspaceId: workSpace.id,
+      handleSwitchWorkspaceApi(workSpace.id, t, setIsLoading, (newToken) => {
+        webStorageClient.setToken(newToken);
+        dispatch(actionUpdateWorkSpaceCurrent(workSpace));
+        disconnectSocket();
+        connectSocket({
+          token: newToken,
+          workspaceId: workSpace.id,
+        });
+
+        updateRelayEnvironment();
       });
+    },
+    [currentWorkspace?.id, t, dispatch],
+  );
 
-      // Update Relay environment with new token
-      updateRelayEnvironment();
-    });
-  }
+  const handleCreateWorkspace = useCallback(
+    (values: any) => {
+      setIsLoading((prev) => !prev);
 
+      handleCreateWorkspaceApi(
+        values,
+        t,
+        handleOpenModalCreateWorkspace,
+        setIsLoading,
+        dispatch,
+      );
+    },
+    [t, handleOpenModalCreateWorkspace, dispatch],
+  );
+
+  // Stabilize renderWorkSpaces with proper dependencies
   const renderWorkSpaces = useMemo(() => {
     return (
       <S.PopoverContent>
@@ -672,181 +715,15 @@ const MainLayout: React.FC<Props> = ({ children }) => {
         </S.PopoverAction>
       </S.PopoverContent>
     );
-  }, [workspaces, currentWorkspace]);
+  }, [
+    workspaces,
+    currentWorkspace?.id,
+    t,
+    handleSelectWorkSpaceCurrent,
+    handleOpenModalCreateWorkspace,
+  ]);
 
-  const renderSettings = (
-    <S.PopoverContent>
-      <Typography fontWeight={fontWeight?.semiBold} variant="body-text-larger">
-        {t('settings.settings')}
-      </Typography>
-      <S.Line />
-      <S.PopoverLabelWrapNoBorder>
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.ACCOUNT)}
-          $isActive={routePath === MAIN_ROUTES?.ACCOUNT}
-        >
-          <S.ChildrenMenuLabel>
-            <Image src={icAccount} preview={false} width={24} height={24} />
-            <Typography>{t('settings.account')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.BILLING)}
-          $isActive={routePath === MAIN_ROUTES?.BILLING}
-        >
-          <S.ChildrenMenuLabel>
-            <Image src={icBilling} preview={false} width={24} height={24} />
-            <Typography>{t('settings.billing')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.WORKSPACE)}
-          $isActive={routePath === MAIN_ROUTES?.WORKSPACE}
-        >
-          <S.ChildrenMenuLabel>
-            <Image src={icWorkspace} preview={false} width={24} height={24} />
-            <Typography>{t('settings.Workspace')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.CHATBOX)}
-          $isActive={routePath === MAIN_ROUTES?.CHATBOX}
-        >
-          <S.ChildrenMenuLabel>
-            <Image src={icAllChats} preview={false} width={24} height={24} />
-            <Typography>{t('settings.chatbox')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.EMAIL)}
-          $isActive={routePath === MAIN_ROUTES?.EMAIL}
-        >
-          <S.ChildrenMenuLabel>
-            <Image src={icEmail} preview={false} width={24} height={24} />
-            <Typography>{t('settings.email')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.KNOWLEDGE_BASE)}
-          $isActive={routePath === MAIN_ROUTES?.KNOWLEDGE_BASE}
-        >
-          <S.ChildrenMenuLabel>
-            <Image
-              src={icKnowledgeBase}
-              preview={false}
-              width={24}
-              height={24}
-            />
-            <Typography>{t('settings.knowledge-base')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.STATUS_PAGE)}
-          $isActive={routePath === MAIN_ROUTES?.STATUS_PAGE}
-        >
-          <S.ChildrenMenuLabel>
-            <Image
-              src={icInstalledPlugins}
-              preview={false}
-              width={24}
-              height={24}
-            />
-            <Typography>{t('settings.status-page')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-      </S.PopoverLabelWrapNoBorder>
-    </S.PopoverContent>
-  );
-
-  const renderProfiles = (
-    <S.PopoverContent>
-      <S.ProfilesWrap>
-        <AvatarWithStatus
-          avatarSrc={userInfo?.avatar || icDefaultAvatar}
-          flagSrc={flag}
-          isOnline={true}
-        />
-        <S.ProfilesInfo>
-          <S.ProfilesName>
-            <Typography>
-              {userInfo?.firstName
-                ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
-                : DEFAULT_FULL_NAME}
-            </Typography>
-
-            <Image src={icVector} preview={false} width={13} height={13} />
-          </S.ProfilesName>
-          <Typography>{userInfo?.email || DEFAULT_EMAIL}</Typography>
-        </S.ProfilesInfo>
-        <S.ProfileDetail
-          onClick={handleProfileDetail}
-          src={icArrowRight}
-          preview={false}
-          width={16}
-          height={16}
-        />
-      </S.ProfilesWrap>
-
-      <S.Line />
-      <S.PopoverLabelWrap>
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.ACCOUNT_SETTINGS)}
-          $isActive={routePath === MAIN_ROUTES?.ACCOUNT_SETTINGS}
-        >
-          <S.ChildrenMenuLabel>
-            <Image src={icUserEdit} preview={false} width={24} height={24} />
-            <Typography>{t('profiles.account-settings')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.INTEGRATIONS)}
-          $isActive={routePath === MAIN_ROUTES?.INTEGRATIONS}
-        >
-          <S.ChildrenMenuLabel>
-            <Image src={icAllPlugins} preview={false} width={24} height={24} />
-            <Typography>{t('profiles.integrations')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-      </S.PopoverLabelWrap>
-
-      <S.LineDash />
-
-      <S.PopoverLabelWrap>
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.GUIDE)}
-          $isActive={routePath === MAIN_ROUTES?.GUIDE}
-        >
-          <S.ChildrenMenuLabel>
-            <Image src={icGuide} preview={false} width={24} height={24} />
-            <Typography>{t('profiles.guide')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-
-        <S.ChildrenMenuWrap
-          onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.INTEGRATIONS)}
-          $isActive={routePath === MAIN_ROUTES?.INTEGRATIONS}
-        >
-          <S.ChildrenMenuLabel>
-            <Image src={icHeadPhone} preview={false} width={24} height={24} />
-            <Typography>{t('profiles.help-center')}</Typography>
-          </S.ChildrenMenuLabel>
-        </S.ChildrenMenuWrap>
-      </S.PopoverLabelWrap>
-
-      <S.LineDash />
-
-      <S.ChildrenMenuWrap onClick={handleLogout}>
-        <S.ChildrenMenuLabel>
-          <Image src={icLogout} preview={false} width={24} height={24} />
-          <Typography color={themeColors?.errorDark}>
-            {t('profiles.logout')}
-          </Typography>
-        </S.ChildrenMenuLabel>
-      </S.ChildrenMenuWrap>
-    </S.PopoverContent>
-  );
-
+  // Stabilize renderHeader to prevent child re-renders
   const renderHeader = useMemo(() => {
     const hasMatch = hiddenHeaderRouter.some((pattern) =>
       matchPath({ path: pattern, end: true }, routePath),
@@ -854,69 +731,257 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     return !hasMatch;
   }, [routePath]);
 
-  function handleCreateWorkspace(values: any) {
-    setIsLoading((prev) => !prev);
+  const renderMenu = useCallback(
+    ({
+      key,
+      icon,
+      children,
+      childrenPath,
+      redirect,
+    }: {
+      key: string;
+      icon: string;
+      children?: ReactNode;
+      childrenPath: string[];
+      redirect?: string;
+    }) => {
+      if (!isEmpty(children)) {
+        return (
+          <S.MenuPopover
+            placement="rightTop"
+            content={children}
+            rootClassName="menu-popover"
+            $isActive={childrenPath?.includes(routePath)}
+            open={key === 'chats' ? isChatsPopoverOpen : undefined}
+            onOpenChange={(visible) => {
+              if (key === 'chats') {
+                setIsChatsPopoverOpen(visible);
+              }
+            }}
+          >
+            <S.MenuIcon>
+              <Image src={icon} preview={false} width={24} height={24} />
+            </S.MenuIcon>
+          </S.MenuPopover>
+        );
+      }
 
-    handleCreateWorkspaceApi(
-      values,
-      t,
-      handleOpenModalCreateWorkspace,
-      setIsLoading,
-      dispatch,
-    );
-  }
-
-  const renderMenu = ({
-    key,
-    icon,
-    children,
-    childrenPath,
-    redirect,
-  }: {
-    key: string;
-    icon: string;
-    children?: ReactNode;
-    childrenPath: string[];
-    redirect?: string;
-  }) => {
-    if (!isEmpty(children)) {
       return (
         <S.MenuPopover
-          placement="rightTop"
-          content={children}
-          rootClassName="menu-popover"
+          placement="right"
+          content={<Typography>{t(key)}</Typography>}
+          rootClassName="menu-no-children-popover"
           $isActive={childrenPath?.includes(routePath)}
-          open={key === 'chats' ? isChatsPopoverOpen : undefined}
-          onOpenChange={(visible) => {
-            if (key === 'chats') {
-              setIsChatsPopoverOpen(visible);
-            }
-          }}
         >
-          <S.MenuIcon>
+          <S.MenuIcon
+            onClick={() => {
+              redirect && handleClickChildrenMenu(redirect);
+            }}
+          >
             <Image src={icon} preview={false} width={24} height={24} />
           </S.MenuIcon>
         </S.MenuPopover>
       );
-    }
+    },
+    [routePath, isChatsPopoverOpen, t, handleClickChildrenMenu],
+  );
 
-    return (
-      <S.MenuPopover
-        placement="right"
-        content={<Typography>{t(key)}</Typography>}
-        rootClassName="menu-no-children-popover"
-        $isActive={childrenPath?.includes(routePath)}
-      >
-        <S.MenuIcon
-          onClick={() => {
-            redirect && handleClickChildrenMenu(redirect);
-          }}
+  const renderSettings = useMemo(
+    () => (
+      <S.PopoverContent>
+        <Typography
+          fontWeight={fontWeight?.semiBold}
+          variant="body-text-larger"
         >
-          <Image src={icon} preview={false} width={24} height={24} />
-        </S.MenuIcon>
-      </S.MenuPopover>
-    );
-  };
+          {t('settings.settings')}
+        </Typography>
+        <S.Line />
+        <S.PopoverLabelWrapNoBorder>
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.ACCOUNT)}
+            $isActive={routePath === MAIN_ROUTES?.ACCOUNT}
+          >
+            <S.ChildrenMenuLabel>
+              <Image src={icAccount} preview={false} width={24} height={24} />
+              <Typography>{t('settings.account')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.BILLING)}
+            $isActive={routePath === MAIN_ROUTES?.BILLING}
+          >
+            <S.ChildrenMenuLabel>
+              <Image src={icBilling} preview={false} width={24} height={24} />
+              <Typography>{t('settings.billing')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.WORKSPACE)}
+            $isActive={routePath === MAIN_ROUTES?.WORKSPACE}
+          >
+            <S.ChildrenMenuLabel>
+              <Image src={icWorkspace} preview={false} width={24} height={24} />
+              <Typography>{t('settings.Workspace')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.CHATBOX)}
+            $isActive={routePath === MAIN_ROUTES?.CHATBOX}
+          >
+            <S.ChildrenMenuLabel>
+              <Image src={icAllChats} preview={false} width={24} height={24} />
+              <Typography>{t('settings.chatbox')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.EMAIL)}
+            $isActive={routePath === MAIN_ROUTES?.EMAIL}
+          >
+            <S.ChildrenMenuLabel>
+              <Image src={icEmail} preview={false} width={24} height={24} />
+              <Typography>{t('settings.email')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.KNOWLEDGE_BASE)}
+            $isActive={routePath === MAIN_ROUTES?.KNOWLEDGE_BASE}
+          >
+            <S.ChildrenMenuLabel>
+              <Image
+                src={icKnowledgeBase}
+                preview={false}
+                width={24}
+                height={24}
+              />
+              <Typography>{t('settings.knowledge-base')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.STATUS_PAGE)}
+            $isActive={routePath === MAIN_ROUTES?.STATUS_PAGE}
+          >
+            <S.ChildrenMenuLabel>
+              <Image
+                src={icInstalledPlugins}
+                preview={false}
+                width={24}
+                height={24}
+              />
+              <Typography>{t('settings.status-page')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+        </S.PopoverLabelWrapNoBorder>
+      </S.PopoverContent>
+    ),
+    [t, handleClickChildrenMenu, routePath],
+  );
+
+  // Stabilize renderProfiles to prevent re-creation
+  const renderProfiles = useMemo(
+    () => (
+      <S.PopoverContent>
+        <S.ProfilesWrap>
+          <AvatarWithStatus
+            avatarSrc={userInfo?.avatar || icDefaultAvatar}
+            flagSrc={flag}
+            isOnline={true}
+          />
+          <S.ProfilesInfo>
+            <S.ProfilesName>
+              <Typography>
+                {userInfo?.firstName
+                  ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
+                  : DEFAULT_FULL_NAME}
+              </Typography>
+
+              <Image src={icVector} preview={false} width={13} height={13} />
+            </S.ProfilesName>
+            <Typography>{userInfo?.email || DEFAULT_EMAIL}</Typography>
+          </S.ProfilesInfo>
+          <S.ProfileDetail
+            onClick={handleProfileDetail}
+            src={icArrowRight}
+            preview={false}
+            width={16}
+            height={16}
+          />
+        </S.ProfilesWrap>
+
+        <S.Line />
+        <S.PopoverLabelWrap>
+          <S.ChildrenMenuWrap
+            onClick={() =>
+              handleClickChildrenMenu(MAIN_ROUTES?.ACCOUNT_SETTINGS)
+            }
+            $isActive={routePath === MAIN_ROUTES?.ACCOUNT_SETTINGS}
+          >
+            <S.ChildrenMenuLabel>
+              <Image src={icUserEdit} preview={false} width={24} height={24} />
+              <Typography>{t('profiles.account-settings')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.INTEGRATIONS)}
+            $isActive={routePath === MAIN_ROUTES?.INTEGRATIONS}
+          >
+            <S.ChildrenMenuLabel>
+              <Image
+                src={icAllPlugins}
+                preview={false}
+                width={24}
+                height={24}
+              />
+              <Typography>{t('profiles.integrations')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+        </S.PopoverLabelWrap>
+
+        <S.LineDash />
+
+        <S.PopoverLabelWrap>
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.GUIDE)}
+            $isActive={routePath === MAIN_ROUTES?.GUIDE}
+          >
+            <S.ChildrenMenuLabel>
+              <Image src={icGuide} preview={false} width={24} height={24} />
+              <Typography>{t('profiles.guide')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+
+          <S.ChildrenMenuWrap
+            onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.INTEGRATIONS)}
+            $isActive={routePath === MAIN_ROUTES?.INTEGRATIONS}
+          >
+            <S.ChildrenMenuLabel>
+              <Image src={icHeadPhone} preview={false} width={24} height={24} />
+              <Typography>{t('profiles.help-center')}</Typography>
+            </S.ChildrenMenuLabel>
+          </S.ChildrenMenuWrap>
+        </S.PopoverLabelWrap>
+
+        <S.LineDash />
+
+        <S.ChildrenMenuWrap onClick={handleLogout}>
+          <S.ChildrenMenuLabel>
+            <Image src={icLogout} preview={false} width={24} height={24} />
+            <Typography color={themeColors?.errorDark}>
+              {t('profiles.logout')}
+            </Typography>
+          </S.ChildrenMenuLabel>
+        </S.ChildrenMenuWrap>
+      </S.PopoverContent>
+    ),
+    [
+      userInfo,
+      t,
+      handleProfileDetail,
+      handleClickChildrenMenu,
+      routePath,
+      handleLogout,
+    ],
+  );
 
   return (
     <S.LayoutWrapper>
@@ -1024,6 +1089,8 @@ const MainLayout: React.FC<Props> = ({ children }) => {
       )}
     </S.LayoutWrapper>
   );
-};
+});
+
+MainLayout.displayName = 'MainLayout';
 
 export default MainLayout;

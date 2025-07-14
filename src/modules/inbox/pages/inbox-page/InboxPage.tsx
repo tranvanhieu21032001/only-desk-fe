@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Splitter } from 'antd';
 
 import ConversationList from '../../components/inbox-list/InboxList';
@@ -10,11 +10,11 @@ import { DEFAULT_RESIZER_CONFIG } from '@/core/settings/constants';
 import * as S from './InboxPage.styles';
 
 const MainInbox: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev);
-  };
+  }, []);
 
   return (
     <S.InboxWrapper>

@@ -44,7 +44,6 @@ export interface Conversation {
   contact: Contact;
   assignedTo: null | string;
   participants: string[];
-  status: string;
   lastActivityAt: string;
   latestMessage: Message;
   unreadGuestCount?: number;

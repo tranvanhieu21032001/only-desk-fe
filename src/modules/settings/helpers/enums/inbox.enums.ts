@@ -9,6 +9,7 @@ export enum InboxMessageType {
   Text = 'text',
   Image = 'image',
   Note = 'note',
+  Loading = 'loading',
 }
 
 // Message Status
