@@ -3,6 +3,12 @@ import { graphql } from 'react-relay';
 export const conversationListQuery = graphql`
   query ConversationListQuery {
     conversations {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
       edges {
         cursor
         node {

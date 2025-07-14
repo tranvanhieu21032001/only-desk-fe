@@ -42,6 +42,7 @@ import ToastMessage from '@/shared/components/common/ToastMessage';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 
 import * as S from './InboxDetail.styles';
+import { GlobalStyle } from './InboxDetail.styles';
 
 import avatarAdmin from '@/assets/images/avatar-default.png';
 import check from '@/assets/icons/common/ic-check.svg';
@@ -948,7 +949,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             Reply
           </S.ContextMenuItem>
 
-          {/* Only show Copy text and Edit for non-image messages */}
           {!isImageMessage && (
             <S.ContextMenuItem onClick={handleCopyText}>
               <img src={iconCopy} alt="Copy" />
@@ -982,18 +982,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     }>({ visible: false, x: 0, y: 0 });
     const barIconRef = useRef<HTMLImageElement>(null);
 
-    const handleBarMenuClick = (e: React.MouseEvent) => {
-      e.stopPropagation();
-      const rect = barIconRef.current?.getBoundingClientRect();
-      if (rect) {
-        setBarMenu({
-          visible: true,
-          x: rect.left - 100,
-          y: rect.top - 150,
-        });
-      }
-    };
-
     useEffect(() => {
       if (barMenu.visible) {
         const close = () => setBarMenu((prev) => ({ ...prev, visible: false }));
@@ -1011,140 +999,67 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     }
 
     return (
-      <S.Container>
-        {renderContextMenu()}
-        <S.Header>
-          <S.HeaderLeft>
-            <AvatarWithStatus
-              avatarSrc={currentConversation?.contact?.avatar || defaultAvatar}
-              flagSrc={flag}
-              isOnline={true}
-            />
-            <S.Info>
-              <S.Name>
-                {currentConversation?.contact?.name || DEFAULT_FULL_NAME}
-              </S.Name>
-            </S.Info>
-          </S.HeaderLeft>
-          <S.HeaderRight>
-            <S.MarkResolvedButton>
-              <Image src={check} preview={false} />{' '}
-              {t('inboxDetail.markResolved')}
-            </S.MarkResolvedButton>
-            <S.ToggleSidebarButton onClick={toggleSidebar}>
-              <Image src={isSidebarOpen ? barClose : barOpen} preview={false} />
-            </S.ToggleSidebarButton>
-          </S.HeaderRight>
-        </S.Header>
+      <>
+        <GlobalStyle />
+        <S.Container>
+          {renderContextMenu()}
+          <S.Header>
+            <S.HeaderLeft>
+              <AvatarWithStatus
+                avatarSrc={currentConversation?.contact?.avatar || defaultAvatar}
+                flagSrc={flag}
+                isOnline={true}
+              />
+              <S.Info>
+                <S.Name>
+                  {currentConversation?.contact?.name || DEFAULT_FULL_NAME}
+                </S.Name>
+              </S.Info>
+            </S.HeaderLeft>
+            <S.HeaderRight>
+              <S.MarkResolvedButton>
+                <Image src={check} preview={false} />{' '}
+                {t('inboxDetail.markResolved')}
+              </S.MarkResolvedButton>
+              <S.ToggleSidebarButton onClick={toggleSidebar}>
+                <Image src={isSidebarOpen ? barClose : barOpen} preview={false} />
+              </S.ToggleSidebarButton>
+            </S.HeaderRight>
+          </S.Header>
 
-        <S.MainContent>
-          <S.MessageContainer
-            isSidebarOpen={isSidebarOpen}
-            ref={messageContainerRef}
-          >
-            {loading ? (
-              renderSkeleton()
-            ) : messages.length === 0 ? (
-              <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
-            ) : (
-              <>
-                {isLoadingMoreMessages && (
-                  <S.InboxSpinner>
-                    <LoadingOutlined
-                      spin
-                      style={{ fontSize: 24, color: '#999' }}
-                    />
-                  </S.InboxSpinner>
-                )}
-                {messages
-                  .slice()
-                  .reverse()
-                  .map((msg, idx) => {
-                    const isAgent =
-                      (msg.user?.id && msg.user?.id === currentUserId) ||
-                      (!msg.user && msg.sender === InboxSender.Agent);
-
-                    return (
-                      <React.Fragment key={msg.id || idx}>
-                        {isAgent ? (
-                          <S.MessageRowUser>
-                            {msg.type === InboxMessageType.Image &&
-                            msg.metadata?.fileUrl ? (
-                              <S.AgentMessageContainer>
-                                <S.TimeWithIconContainer
-                                  onMouseEnter={() =>
-                                    setHoveredMessageId(msg.id)
-                                  }
-                                  onMouseLeave={() => {
-                                    if (!contextMenu.visible) {
-                                      setHoveredMessageId(null);
-                                    }
-                                  }}
-                                >
-                                  {hoveredMessageId === msg.id ? (
-                                    <S.MessageHoverIconNearTime
-                                      onClick={(e) => handleIconClick(e, msg)}
-                                    >
-                                      <img src={icBar} alt="menu" />
-                                    </S.MessageHoverIconNearTime>
-                                  ) : (
-                                    <S.MessageHoverIconPlaceholder />
-                                  )}
-                                  <S.MessageTime>
-                                    {formatTime(msg.createdAt)}
-                                    {msg.status ===
-                                      InboxMessageStatus.Sending && (
-                                      <LoadingOutlined
-                                        style={{ marginLeft: 6, fontSize: 12 }}
-                                        spin
-                                      />
-                                    )}
-                                    {msg.status ===
-                                      InboxMessageStatus.Failed && (
-                                      <Tooltip title="Send failed">
-                                        <CloseCircleTwoTone
-                                          twoToneColor="#ff4d4f"
-                                          style={{
-                                            marginLeft: 6,
-                                            fontSize: 12,
-                                          }}
-                                        />
-                                      </Tooltip>
-                                    )}
-                                  </S.MessageTime>
-                                </S.TimeWithIconContainer>
-                                <S.MessageImage
-                                  onMouseEnter={() =>
-                                    setHoveredMessageId(msg.id)
-                                  }
-                                  onMouseLeave={() => {
-                                    if (!contextMenu.visible) {
-                                      setHoveredMessageId(null);
-                                    }
-                                  }}
-                                >
-                                  <Image
-                                    src={msg.metadata.fileUrl}
-                                    alt="image"
-                                    preview={true}
-                                    onLoad={() => {
-                                      setPendingImageLoads((prev) => {
-                                        const next = Math.max(prev - 1, 0);
-                                        if (next === 0) {
-                                          scrollToBottom();
-                                        }
-                                        return next;
-                                      });
-                                      if (pendingImageScroll) {
-                                        setPendingImageScroll(false);
-                                      }
-                                    }}
-                                  />
-                                </S.MessageImage>
-                              </S.AgentMessageContainer>
-                            ) : msg.type === InboxMessageType.Note ? (
-                              <S.NoteContainer>
-                                <S.NoteRow>
+          <S.MainContent $hasOverlay={!!activeTab}>
+            <S.MessageContainer
+              isSidebarOpen={isSidebarOpen}
+              ref={messageContainerRef}
+            >
+              {loading ? (
+                renderSkeleton()
+              ) : messages.length === 0 ? (
+                <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
+              ) : (
+                <>
+                  {isLoadingMoreMessages && (
+                    <S.InboxSpinner>
+                      <LoadingOutlined
+                        spin
+                        style={{ fontSize: 24, color: '#999' }}
+                      />
+                    </S.InboxSpinner>
+                  )}
+                  {messages
+                    .slice()
+                    .reverse()
+                    .map((msg, idx) => {
+                      const isAgent =
+                        (msg.user?.id && msg.user?.id === currentUserId) ||
+                        (!msg.user && msg.sender === InboxSender.Agent);
+                      return (
+                        <React.Fragment key={msg.id || idx}>
+                          {isAgent ? (
+                            <S.MessageRowUser>
+                              {msg.type === InboxMessageType.Image &&
+                              msg.metadata?.fileUrl ? (
+                                <S.AgentMessageContainer>
                                   <S.TimeWithIconContainer
                                     onMouseEnter={() =>
                                       setHoveredMessageId(msg.id)
@@ -1190,7 +1105,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                                       )}
                                     </S.MessageTime>
                                   </S.TimeWithIconContainer>
-                                  <S.NoteBubbleRight
+                                  <S.MessageImage
                                     onMouseEnter={() =>
                                       setHoveredMessageId(msg.id)
                                     }
@@ -1200,45 +1115,122 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                                       }
                                     }}
                                   >
-                                    {msg.content}
-                                  </S.NoteBubbleRight>
-                                </S.NoteRow>
-                                <S.NoteMeta>
-                                  Admin left this private note
-                                </S.NoteMeta>
-                              </S.NoteContainer>
-                            ) : (
-                              <S.AgentMessageContainer>
-                                <S.TimeWithIconContainer
-                                  onMouseEnter={() =>
-                                    setHoveredMessageId(msg.id)
-                                  }
-                                  onMouseLeave={() => {
-                                    if (!contextMenu.visible) {
-                                      setHoveredMessageId(null);
-                                    }
-                                  }}
-                                >
-                                  {hoveredMessageId === msg.id ? (
-                                    <S.MessageHoverIconNearTime
-                                      onClick={(e) => handleIconClick(e, msg)}
+                                    <Image
+                                      src={msg.metadata.fileUrl}
+                                      alt="image"
+                                      preview={true}
+                                      onLoad={() => {
+                                        setPendingImageLoads((prev) => {
+                                          const next = Math.max(prev - 1, 0);
+                                          if (next === 0) {
+                                            scrollToBottom();
+                                          }
+                                          return next;
+                                        });
+                                        if (pendingImageScroll) {
+                                          setPendingImageScroll(false);
+                                        }
+                                      }}
+                                    />
+                                  </S.MessageImage>
+                                </S.AgentMessageContainer>
+                              ) : msg.type === InboxMessageType.Note ? (
+                                <S.NoteContainer>
+                                  <S.NoteRow>
+                                    <S.TimeWithIconContainer
+                                      onMouseEnter={() =>
+                                        setHoveredMessageId(msg.id)
+                                      }
+                                      onMouseLeave={() => {
+                                        if (!contextMenu.visible) {
+                                          setHoveredMessageId(null);
+                                        }
+                                      }}
                                     >
-                                      <img src={icBar} alt="menu" />
-                                    </S.MessageHoverIconNearTime>
-                                  ) : (
-                                    <S.MessageHoverIconPlaceholder />
-                                  )}
-                                  <S.MessageTime>
-                                    {formatTime(msg.createdAt)}
-                                    {msg.status ===
-                                      InboxMessageStatus.Sending && (
-                                      <LoadingOutlined
-                                        style={{ marginLeft: 6, fontSize: 12 }}
-                                        spin
-                                      />
+                                      {hoveredMessageId === msg.id ? (
+                                        <S.MessageHoverIconNearTime
+                                          onClick={(e) => handleIconClick(e, msg)}
+                                        >
+                                          <img src={icBar} alt="menu" />
+                                        </S.MessageHoverIconNearTime>
+                                      ) : (
+                                        <S.MessageHoverIconPlaceholder />
+                                      )}
+                                      <S.MessageTime>
+                                        {formatTime(msg.createdAt)}
+                                        {msg.status ===
+                                          InboxMessageStatus.Sending && (
+                                          <LoadingOutlined
+                                            style={{
+                                              marginLeft: 6,
+                                              fontSize: 12,
+                                            }}
+                                            spin
+                                          />
+                                        )}
+                                        {msg.status ===
+                                          InboxMessageStatus.Failed && (
+                                          <Tooltip title="Send failed">
+                                            <CloseCircleTwoTone
+                                              twoToneColor="#ff4d4f"
+                                              style={{
+                                                marginLeft: 6,
+                                                fontSize: 12,
+                                              }}
+                                            />
+                                          </Tooltip>
+                                        )}
+                                      </S.MessageTime>
+                                    </S.TimeWithIconContainer>
+                                    <S.NoteBubbleRight
+                                      onMouseEnter={() =>
+                                        setHoveredMessageId(msg.id)
+                                      }
+                                      onMouseLeave={() => {
+                                        if (!contextMenu.visible) {
+                                          setHoveredMessageId(null);
+                                        }
+                                      }}
+                                    >
+                                      {msg.content}
+                                    </S.NoteBubbleRight>
+                                  </S.NoteRow>
+                                  <S.NoteMeta>
+                                    Admin left this private note
+                                  </S.NoteMeta>
+                                </S.NoteContainer>
+                              ) : (
+                                <S.AgentMessageContainer>
+                                  <S.TimeWithIconContainer
+                                    onMouseEnter={() =>
+                                      setHoveredMessageId(msg.id)
+                                    }
+                                    onMouseLeave={() => {
+                                      if (!contextMenu.visible) {
+                                        setHoveredMessageId(null);
+                                      }
+                                    }}
+                                  >
+                                    {hoveredMessageId === msg.id ? (
+                                      <S.MessageHoverIconNearTime
+                                        onClick={(e) => handleIconClick(e, msg)}
+                                      >
+                                        <img src={icBar} alt="menu" />
+                                      </S.MessageHoverIconNearTime>
+                                    ) : (
+                                      <S.MessageHoverIconPlaceholder />
                                     )}
-                                    {msg.status ===
-                                      InboxMessageStatus.Failed && (
+                                    <S.MessageTime>
+                                      {formatTime(msg.createdAt)}
+                                      {msg.status ===
+                                        InboxMessageStatus.Sending && (
+                                        <LoadingOutlined
+                                          style={{ marginLeft: 6, fontSize: 12 }}
+                                          spin
+                                        />
+                                      )}
+                                      {msg.status ===
+                                        InboxMessageStatus.Failed && (
                                       <Tooltip title="Send failed">
                                         <CloseCircleTwoTone
                                           twoToneColor="#ff4d4f"
@@ -1365,100 +1357,105 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                       </React.Fragment>
                     );
                   })}
-              </>
+                </>
+              )}
+              <div ref={messageEndRef} />
+              {showNewMessageNotice && (
+                <S.NewMessageNoticeButton onClick={scrollToBottom}>
+                  <p>{t('inboxDetail.haveNewMessage')}</p>
+                  <img
+                    src={icArrowDown}
+                    alt="arrow down"
+                    className="arrow-icon"
+                  />
+                </S.NewMessageNoticeButton>
+              )}
+            </S.MessageContainer>
+            {/* Overlay tab content */}
+            {activeTab && (
+              <S.TabOverlay $tabtype={activeTab}>
+                {renderTabContent()}
+              </S.TabOverlay>
             )}
-            <div ref={messageEndRef} />
-            {showNewMessageNotice && (
-              <S.NewMessageNoticeButton onClick={scrollToBottom}>
-                <p>{t('inboxDetail.haveNewMessage')}</p>
-                <img
-                  src={icArrowDown}
-                  alt="arrow down"
-                  className="arrow-icon"
+          </S.MainContent>
+
+          {/* Guest is typing indicator */}
+          {guestTyping && (
+            <S.TypingIndicator>
+              {t('inboxDetail.guestIsTyping')}
+            </S.TypingIndicator>
+          )}
+
+          <S.Footer>
+            <S.ActionIcons>
+              <S.IconProps isActive={false}>
+                <Image src={undo} preview={false} />
+                {t('inboxDetail.reply')}
+              </S.IconProps>
+              <S.IconProps
+                isActive={activeTab === 'Edit'}
+                onClick={() => handleTabClick('Edit')}
+              >
+                <Image
+                  src={activeTab === 'Edit' ? editBlue : edit}
+                  preview={false}
                 />
-              </S.NewMessageNoticeButton>
-            )}
-          </S.MessageContainer>
-        </S.MainContent>
+                {t('messageInput.edit')}
+              </S.IconProps>
+              <S.IconProps
+                isActive={activeTab === 'Note'}
+                onClick={() => handleTabClick('Note')}
+              >
+                <Image
+                  src={activeTab === 'Note' ? noteBlue : note}
+                  preview={false}
+                />
+                {t('messageInput.note')}
+              </S.IconProps>
+              <S.IconProps
+                isActive={activeTab === 'Reminder'}
+                onClick={() => handleTabClick('Reminder')}
+              >
+                <Image
+                  src={activeTab === 'Reminder' ? ringBlue : ring}
+                  preview={false}
+                />
+                {t('messageInput.reminder')}
+              </S.IconProps>
+              <S.IconProps
+                isActive={activeTab === 'Shortcuts'}
+                onClick={() => handleTabClick('Shortcuts')}
+              >
+                <Image
+                  src={activeTab === 'Shortcuts' ? shorcutBlue : shortCut}
+                  preview={false}
+                />
+                {t('inboxDetail.shortcuts')}
+              </S.IconProps>
+              <S.IconProps
+                isActive={activeTab === 'Knowledge Base'}
+                onClick={() => handleTabClick('Knowledge Base')}
+              >
+                <Image
+                  src={activeTab === 'Knowledge Base' ? tagBlue : tag}
+                  preview={false}
+                />
+                {t('inboxDetail.knowledgeBase')}
+              </S.IconProps>
+            </S.ActionIcons>
 
-        {renderTabContent()}
-
-        {/* Guest is typing indicator */}
-        {guestTyping && (
-          <S.TypingIndicator>
-            {t('inboxDetail.guestIsTyping')}
-          </S.TypingIndicator>
-        )}
-
-        <S.Footer>
-          <S.ActionIcons>
-            <S.IconProps isActive={false}>
-              <Image src={undo} preview={false} />
-              {t('inboxDetail.reply')}
-            </S.IconProps>
-            <S.IconProps
-              isActive={activeTab === 'Edit'}
-              onClick={() => handleTabClick('Edit')}
-            >
-              <Image
-                src={activeTab === 'Edit' ? editBlue : edit}
-                preview={false}
-              />
-              {t('messageInput.edit')}
-            </S.IconProps>
-            <S.IconProps
-              isActive={activeTab === 'Note'}
-              onClick={() => handleTabClick('Note')}
-            >
-              <Image
-                src={activeTab === 'Note' ? noteBlue : note}
-                preview={false}
-              />
-              {t('messageInput.note')}
-            </S.IconProps>
-            <S.IconProps
-              isActive={activeTab === 'Reminder'}
-              onClick={() => handleTabClick('Reminder')}
-            >
-              <Image
-                src={activeTab === 'Reminder' ? ringBlue : ring}
-                preview={false}
-              />
-              {t('messageInput.reminder')}
-            </S.IconProps>
-            <S.IconProps
-              isActive={activeTab === 'Shortcuts'}
-              onClick={() => handleTabClick('Shortcuts')}
-            >
-              <Image
-                src={activeTab === 'Shortcuts' ? shorcutBlue : shortCut}
-                preview={false}
-              />
-              {t('inboxDetail.shortcuts')}
-            </S.IconProps>
-            <S.IconProps
-              isActive={activeTab === 'Knowledge Base'}
-              onClick={() => handleTabClick('Knowledge Base')}
-            >
-              <Image
-                src={activeTab === 'Knowledge Base' ? tagBlue : tag}
-                preview={false}
-              />
-              {t('inboxDetail.knowledgeBase')}
-            </S.IconProps>
-          </S.ActionIcons>
-
-          <MessageInput
-            activeTab={activeTab}
-            selectedReminder={selectedReminder}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            setActiveTab={setActiveTab}
-            setSelectedReminder={setSelectedReminder}
-            onSendMessage={handleSendMessage}
-          />
-        </S.Footer>
-      </S.Container>
+            <MessageInput
+              activeTab={activeTab}
+              selectedReminder={selectedReminder}
+              inputValue={inputValue}
+              setInputValue={setInputValue}
+              setActiveTab={setActiveTab}
+              setSelectedReminder={setSelectedReminder}
+              onSendMessage={handleSendMessage}
+            />
+          </S.Footer>
+        </S.Container>
+      </>
     );
   },
 );
