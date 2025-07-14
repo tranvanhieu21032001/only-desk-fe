@@ -31,7 +31,8 @@ export const contactDetailsQuery = graphql`
           employees
         }
         context {
-          country
+          countryCode
+          countryName
           city
           latitude
           longitude

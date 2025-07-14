@@ -8,15 +8,38 @@ export const ContactsContainer = styled.section`
   width: 100%;
   height: 100%;
   padding: 12px;
-
   background-color: ${(props) => props?.theme?.colors?.newtralLightest};
 `;
 
-export const BreadcrumbContainer = styled.div`
-  padding-top: 12px;
+export const ScrollArea = styled.div`
+  height: calc(100vh - 90px);
+  overflow-y: auto;
+  overflow-x: hidden;
 
-  @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    padding-top: 0px;
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 9px;
+  }
+
+  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
+    height: calc(100vh - 52px);
+  }
+
+  @media ${(props) => props?.theme?.breakpoints?.smMax} {
+    height: calc(100vh - 52px);
+  }
+`;
+
+export const BreadcrumbContainer = styled.div<{ $scrolled: boolean }>`
+  padding-top: 12px;
+  box-shadow: ${({ $scrolled }) =>
+    $scrolled ? `0px 2px 3px 0px rgba(10, 13, 20, 0.08)` : 'none'};
+  @media ${({ theme }) => theme?.breakpoints?.lgMax} {
+    padding-top: 0;
+  }
+  section {
+    margin-bottom: unset !important;
+    padding-bottom: 12px;
   }
 `;
 
@@ -152,23 +175,7 @@ export const FilterAction = styled.div<{ $isRemove?: boolean }>`
   }
 `;
 
-export const ContactContainerWrap = styled(Row)`
-  height: calc(100vh - 220px);
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 4px;
-    height: 9px;
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.mdMax} {
-    height: calc(100vh - 280px);
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.smMax} {
-    height: calc(100vh - 330px);
-  }
-`;
+export const ContactContainerWrap = styled(Row)``;
 
 export const ImageUpload = styled.div<{ $isLoading?: boolean }>`
   position: relative;
@@ -230,7 +237,7 @@ export const WrappIcon = styled.div`
   display: flex;
   width: 27px;
   height: 27px;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #ffffff;
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
@@ -268,11 +275,8 @@ export const OnlineIcon = styled.img`
   z-index: 2;
 `;
 
-
-
 export const WrappButton = styled.div`
   display: flex;
   gap: 12px;
   align-items: flex-end;
 `;
-

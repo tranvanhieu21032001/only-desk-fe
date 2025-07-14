@@ -13,6 +13,7 @@ import contactsReducer from '@/modules/contacts/store/features/contacts';
 import inboxReducer from '@/modules/inbox/store/features/inbox';
 import helpdeskCategorySlice from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import helpdeskArticlesReducer from '@/modules/knowledge-base/store/helpdeskArticleSlice'
+import operatorsReducer from '@/modules/settings/store/features/operators'
 
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
@@ -40,6 +41,7 @@ export const store = configureStore({
 
     auth: authReducer,
     contacts: contactsReducer,
+    operators: operatorsReducer,
     helpdeskArticles : helpdeskArticlesReducer,
     helpdeskCategory: helpdeskCategorySlice,
     inbox: inboxReducer,

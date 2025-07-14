@@ -17,7 +17,8 @@ export const contactsQuery = graphql`
             company
           }
           context {
-            country
+            countryCode
+            countryName
             city
             timezone
             language

@@ -73,12 +73,36 @@ type WorkspaceTypeEdge {
   node: Workspace!
 }
 
+type WorkspaceMember implements Node {
+  id: ID!
+  user: User
+  workspace: Workspace
+  role: WorkspaceMemberRole
+  status: WorkspaceMemberStatus
+  createdAt: DateTime
+  updatedAt: DateTime
+  rawId: String!
+}
+
+"""Status of a workspace member"""
+enum WorkspaceMemberStatus {
+  PENDING
+  APRROVED
+  REJECTED
+}
+
+type WorkspaceMemberTypeEdge {
+  cursor: String!
+  node: WorkspaceMember!
+}
+
 type Message implements Node {
   id: ID!
   conversationId: ID!
   content: String!
   sender: MessageSender!
   user: User
+  replyTo: Message
   type: MessageTypeEnum
   status: MessageStatus!
   metadata: JSON
@@ -123,7 +147,8 @@ type MessageConnection {
 
 type ContactContext {
   ip: String
-  country: String
+  countryCode: String
+  countryName: String
   city: String
   region: String
   latitude: Float
@@ -162,6 +187,7 @@ type Contact implements Node {
   notes: String
   isOnline: Boolean!
   lastActivityAt: DateTime
+  lastConversations: [Conversation!]
   createdAt: DateTime
   updatedAt: DateTime
   rawId: String!
@@ -198,6 +224,7 @@ type Conversation implements Node {
   closedAt: DateTime
   unreadCount: Int
   latestMessage: Message
+  replyTo: Message
   rawId: String!
 }
 
@@ -268,6 +295,7 @@ type HelpDeskArticleTypeEdge {
 type Query {
   me: User
   workspaces: [Workspace!]!
+  operators: [WorkspaceMember!]!
   conversations(first: Float, after: String, last: Float, before: String): ConversationConnection!
   messages(conversationId: ID!, first: Float, after: String, last: Float, before: String): MessageConnection!
   contacts(args: PaginationArgs!): ContactPagination!

@@ -11,6 +11,7 @@ import Typography from '@/shared/components/common/Typography';
 import * as S from './PrivateNotepad.styles';
 
 import icPrivateNodepads from '@/assets/icons/contact/ic-private-notepads.svg';
+import empty from '@/assets/images/contact/img-contact-empty.png';
 
 function PrivateNotepad() {
   const { t } = useTranslation('contacts');
@@ -21,9 +22,12 @@ function PrivateNotepad() {
   const renderNotes = useMemo(() => {
     if (isDetails && !contactDetails?.notes) {
       return (
-        <Typography color={themeColors?.primary} margin="8px 0 0 0">
-          {t('contact-profile.this-is-content')}
-        </Typography>
+        <S.EmptyWrap>
+          <Image src={empty} width={120} height={120} preview={false} />
+          <Typography color={themeColors.primary} margin="8px 0 0 0">
+            {t('contact-profile.no-data-added')}
+          </Typography>
+        </S.EmptyWrap>
       );
     }
 

@@ -1,5 +1,5 @@
 import { ReactSVG } from 'react-svg';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Col, Form, Image, Skeleton, Spin } from 'antd';
@@ -60,6 +60,8 @@ function ContactDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
@@ -131,6 +133,16 @@ function ContactDetails() {
     form,
     locationPath,
   ]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onScroll = () => setIsScrolled(el.scrollTop > 0);
+
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   function handleFilterContact() {}
 
@@ -246,205 +258,216 @@ function ContactDetails() {
 
   return (
     <S.ContactsContainer>
-      <S.BreadcrumbContainer>
+      <S.BreadcrumbContainer $scrolled={isScrolled}>
         <Breadcrumb items={breadcrumbContactDetails} />
       </S.BreadcrumbContainer>
-      <Form form={form} onFinish={handleEditContactProfile}>
-        <S.ContactContainer>
-          {isLoading ? (
-            <S.ContactInfoWrap>
-              <Skeleton.Avatar
-                active
-                style={{
-                  height: 90,
-                  width: 90,
-                }}
-              />
-
-              <S.ContactInfo>
-                <Skeleton.Input
+      <S.ScrollArea ref={scrollRef}>
+        <Form form={form} onFinish={handleEditContactProfile}>
+          <S.ContactContainer>
+            {isLoading ? (
+              <S.ContactInfoWrap>
+                <Skeleton.Avatar
                   active
                   style={{
-                    height: '32px',
-                    width: '100%',
-                    minWidth: '300px',
+                    height: 90,
+                    width: 90,
                   }}
                 />
-                <Skeleton.Input
-                  active
-                  style={{
-                    height: '23px',
-                    width: '100px',
-                    minWidth: '100px',
-                  }}
-                />
-              </S.ContactInfo>
-            </S.ContactInfoWrap>
-          ) : (
-            <S.ContactInfoWrap>
-              <S.Avatar>
-                <UploadImage
-                  onParams={setParams}
-                  currentForm={form}
-                  fieldName="avatar"
-                  maxCount={1}
-                  handleUpdateAvatarInformation={handleUpdateAvatarInformation}
-                  content={
-                    <S.ImageUpload $isLoading={params?.isLoading || false}>
-                      <Form.Item name="avatar">
-                        <Image
-                          src={
-                            form?.getFieldValue('avatar') ||
-                            contactDetails?.avatar ||
-                            icAvatarDefault
-                          }
-                          preview={false}
-                          alt="Avatar"
-                          width={90}
-                          height={90}
-                          onError={(e) =>
-                            (e.currentTarget.src = icAvatarDefault)
-                          }
-                        />
-                      </Form.Item>
 
-                      {params?.isLoading && (
-                        <>
-                          <Spin
-                            indicator={
-                              <LoadingOutlined style={{ fontSize: 48 }} spin />
+                <S.ContactInfo>
+                  <Skeleton.Input
+                    active
+                    style={{
+                      height: '32px',
+                      width: '100%',
+                      minWidth: '300px',
+                    }}
+                  />
+                  <Skeleton.Input
+                    active
+                    style={{
+                      height: '23px',
+                      width: '100px',
+                      minWidth: '100px',
+                    }}
+                  />
+                </S.ContactInfo>
+              </S.ContactInfoWrap>
+            ) : (
+              <S.ContactInfoWrap>
+                <S.Avatar>
+                  <UploadImage
+                    onParams={setParams}
+                    currentForm={form}
+                    fieldName="avatar"
+                    maxCount={1}
+                    handleUpdateAvatarInformation={
+                      handleUpdateAvatarInformation
+                    }
+                    content={
+                      <S.ImageUpload $isLoading={params?.isLoading || false}>
+                        <Form.Item name="avatar">
+                          <Image
+                            src={
+                              form?.getFieldValue('avatar') ||
+                              contactDetails?.avatar ||
+                              icAvatarDefault
+                            }
+                            preview={false}
+                            alt="Avatar"
+                            width={90}
+                            height={90}
+                            onError={(e) =>
+                              (e.currentTarget.src = icAvatarDefault)
                             }
                           />
-                          <Typography
-                            fontWeight={fontWeight?.semiBold}
-                            color={themeColors?.successDark}
-                          >
-                            {params?.progressPercent}%
-                          </Typography>
-                        </>
-                      )}
-                    </S.ImageUpload>
+                        </Form.Item>
+
+                        {params?.isLoading && (
+                          <>
+                            <Spin
+                              indicator={
+                                <LoadingOutlined
+                                  style={{ fontSize: 48 }}
+                                  spin
+                                />
+                              }
+                            />
+                            <Typography
+                              fontWeight={fontWeight?.semiBold}
+                              color={themeColors?.successDark}
+                            >
+                              {params?.progressPercent}%
+                            </Typography>
+                          </>
+                        )}
+                      </S.ImageUpload>
+                    }
+                  />
+                  {/* Overlay icons */}
+                  {/* <S.FlagIcon src={flagIcon} alt="Flag" /> */}
+                  {flagIcon && (
+                    <S.WrappIcon>
+                      <S.FlagIcon src={flagIcon} />
+                    </S.WrappIcon>
+                  )}
+
+                  {contactDetails?.isOnline && (
+                    <S.OnlineIcon src={icOnline} alt="Online" />
+                  )}
+                </S.Avatar>
+
+                <S.ContactInfo>
+                  <Typography variant="h3" fontWeight={fontWeight?.semiBold}>
+                    {contactDetails?.name}
+                  </Typography>
+                  {contactDetails?.lastActivityAt && (
+                    <Typography margin="2px 0 0 0">
+                      Last active: {format(contactDetails?.lastActivityAt)}
+                    </Typography>
+                  )}
+                </S.ContactInfo>
+              </S.ContactInfoWrap>
+            )}
+
+            {isDetails ? (
+              <S.FilterPopoverWrap>
+                <S.ButtonFilter
+                  width="fit-content"
+                  onClick={handleSendMessage}
+                  iconPosition="left"
+                  icon={
+                    <Image
+                      src={icSendMessage}
+                      preview={false}
+                      width={15}
+                      height={18}
+                    />
+                  }
+                >
+                  <Typography fontWeight={fontWeight?.semiBold}>
+                    {t('contact-profile.send-a-message')}
+                  </Typography>
+                </S.ButtonFilter>
+                <S.ButtonFilter
+                  width="fit-content"
+                  onClick={handleConversation}
+                  iconPosition="left"
+                  icon={
+                    <Image
+                      src={icConversation}
+                      preview={false}
+                      width={15}
+                      height={18}
+                    />
+                  }
+                >
+                  <Typography fontWeight={fontWeight?.semiBold}>
+                    {t('contact-profile.new-conversation')}
+                  </Typography>
+                </S.ButtonFilter>
+                <S.ButtonFilter
+                  width="fit-content"
+                  onClick={handleCall}
+                  iconPosition="left"
+                  icon={
+                    <Image
+                      src={icPhone}
+                      preview={false}
+                      width={15}
+                      height={18}
+                    />
+                  }
+                >
+                  <Typography fontWeight={fontWeight?.semiBold}>
+                    {t('contact-profile.start-a-call')}
+                  </Typography>
+                </S.ButtonFilter>
+                <PopoverAction
+                  content={renderActionFilter()}
+                  placement="bottomRight"
+                  btnContent={
+                    <S.ButtonAction
+                      width="fit-content"
+                      onClick={handleFilterContact}
+                      iconPosition="left"
+                    >
+                      <ReactSVG src={icActionRemove} width={20} height={20} />
+                    </S.ButtonAction>
                   }
                 />
-                {/* Overlay icons */}
-                {/* <S.FlagIcon src={flagIcon} alt="Flag" /> */}
-                {flagIcon && (
-                  <S.WrappIcon>
-                    <S.FlagIcon src={flagIcon} />
-                  </S.WrappIcon>
-                )}
+              </S.FilterPopoverWrap>
+            ) : (
+              <S.FilterPopoverWrap>
+                <Button type="primary" onClick={form.submit}>
+                  {t('contact-profile.save')}
+                </Button>
+              </S.FilterPopoverWrap>
+            )}
+          </S.ContactContainer>
 
-                {contactDetails?.isOnline && (
-                  <S.OnlineIcon src={icOnline} alt="Online" />
-                )}
-              </S.Avatar>
-
-              <S.ContactInfo>
-                <Typography variant="h3" fontWeight={fontWeight?.semiBold}>
-                  {contactDetails?.name}
-                </Typography>
-                {contactDetails?.lastActivityAt && (
-                  <Typography margin="2px 0 0 0">
-                    Last active: {format(contactDetails?.lastActivityAt)}
-                  </Typography>
-                )}
-              </S.ContactInfo>
-            </S.ContactInfoWrap>
-          )}
-
-          {isDetails ? (
-            <S.FilterPopoverWrap>
-              <S.ButtonFilter
-                width="fit-content"
-                onClick={handleSendMessage}
-                iconPosition="left"
-                icon={
-                  <Image
-                    src={icSendMessage}
-                    preview={false}
-                    width={15}
-                    height={18}
-                  />
-                }
-              >
-                <Typography fontWeight={fontWeight?.semiBold}>
-                  {t('contact-profile.send-a-message')}
-                </Typography>
-              </S.ButtonFilter>
-              <S.ButtonFilter
-                width="fit-content"
-                onClick={handleConversation}
-                iconPosition="left"
-                icon={
-                  <Image
-                    src={icConversation}
-                    preview={false}
-                    width={15}
-                    height={18}
-                  />
-                }
-              >
-                <Typography fontWeight={fontWeight?.semiBold}>
-                  {t('contact-profile.new-conversation')}
-                </Typography>
-              </S.ButtonFilter>
-              <S.ButtonFilter
-                width="fit-content"
-                onClick={handleCall}
-                iconPosition="left"
-                icon={
-                  <Image src={icPhone} preview={false} width={15} height={18} />
-                }
-              >
-                <Typography fontWeight={fontWeight?.semiBold}>
-                  {t('contact-profile.start-a-call')}
-                </Typography>
-              </S.ButtonFilter>
-              <PopoverAction
-                content={renderActionFilter()}
-                placement="bottomRight"
-                btnContent={
-                  <S.ButtonAction
-                    width="fit-content"
-                    onClick={handleFilterContact}
-                    iconPosition="left"
-                  >
-                    <ReactSVG src={icActionRemove} width={20} height={20} />
-                  </S.ButtonAction>
-                }
-              />
-            </S.FilterPopoverWrap>
-          ) : (
-            <S.FilterPopoverWrap>
-              <Button type="primary" onClick={form.submit}>
-                {t('contact-profile.save')}
-              </Button>
-            </S.FilterPopoverWrap>
-          )}
-        </S.ContactContainer>
-
-        <S.ContactContainerWrap gutter={[10, 10]} justify="space-between">
-          <Col xs={24} lg={10} xl={6}>
-            <Map />
-            <ContactInformation />
-            <Segments />
-            <Company />
-          </Col>
-          <Col xs={24} lg={14} xl={12}>
-            <Data form={form} />
-            <Conversation isLoading={isLoading} />
-            {/* <PageVisitedRecently isLoading={isLoading} /> */}
-            {/* <Campaign isLoading={isLoading} /> */}
-            <PrivateNotepad />
-          </Col>
-          <Col xs={24} xl={6}>
-            <LastReportedLocation isLoading={isLoading} />
-            {/* <RecentEvent isLoading={isLoading} /> */}
-            {/* <RatingScore isLoading={isLoading} /> */}
-          </Col>
-        </S.ContactContainerWrap>
-      </Form>
-
+          <S.ContactContainerWrap gutter={[10, 10]} justify="space-between">
+            <Col xs={24} lg={10} xl={6}>
+              <Map />
+              <ContactInformation />
+              <Segments />
+              <Company />
+            </Col>
+            <Col xs={24} lg={14} xl={12}>
+              <Data form={form} />
+              <Conversation isLoading={isLoading} />
+              {/* <PageVisitedRecently isLoading={isLoading} /> */}
+              {/* <Campaign isLoading={isLoading} /> */}
+              <PrivateNotepad />
+            </Col>
+            <Col xs={24} xl={6}>
+              <LastReportedLocation isLoading={isLoading} />
+              {/* <RecentEvent isLoading={isLoading} /> */}
+              {/* <RatingScore isLoading={isLoading} /> */}
+            </Col>
+          </S.ContactContainerWrap>
+        </Form>
+      </S.ScrollArea>
       <Modal
         isOpen={isRemoveModalOpen}
         onClose={() => setIsRemoveModalOpen(false)}
@@ -458,8 +481,7 @@ function ContactDetails() {
                 {t('contact-profile.confirm-delete-title')}
               </Typography>
               <Typography color="#5B5B5B">
-                {contactDetails?.email ?? '-'}
-                {` ${t('contact-profile.and-its-data')}`}
+                {t('contact-profile.confirm-delete-desc')}
               </Typography>
             </div>
           </div>
