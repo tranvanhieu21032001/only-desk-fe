@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d4ac8dba0446a859817447299b80f927>>
+ * @generated SignedSource<<cf3a50cb98618237eba49caf73cd5c3f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -36,6 +36,12 @@ export type ConversationListQuery$data = {
         readonly updatedAt: any | null | undefined;
       };
     }>;
+    readonly pageInfo: {
+      readonly endCursor: string | null | undefined;
+      readonly hasNextPage: boolean;
+      readonly hasPreviousPage: boolean;
+      readonly startCursor: string | null | undefined;
+    };
   };
 };
 export type ConversationListQuery = {
@@ -47,88 +53,127 @@ const node: ConcreteRequest = (function(){
 var v0 = {
   "alias": null,
   "args": null,
-  "kind": "ScalarField",
-  "name": "cursor",
+  "concreteType": "PageInfo",
+  "kind": "LinkedField",
+  "name": "pageInfo",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasNextPage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasPreviousPage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "startCursor",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "endCursor",
+      "storageKey": null
+    }
+  ],
   "storageKey": null
 },
 v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "cursor",
   "storageKey": null
 },
 v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "avatar",
+  "name": "id",
   "storageKey": null
 },
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
+  "name": "avatar",
   "storageKey": null
 },
 v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "isOnline",
+  "name": "name",
   "storageKey": null
 },
 v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "subject",
+  "name": "isOnline",
   "storageKey": null
 },
 v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "metadata",
+  "name": "subject",
   "storageKey": null
 },
 v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "createdAt",
+  "name": "metadata",
   "storageKey": null
 },
 v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "updatedAt",
+  "name": "createdAt",
   "storageKey": null
 },
 v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "lastActivityAt",
+  "name": "updatedAt",
   "storageKey": null
 },
 v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "closedAt",
+  "name": "lastActivityAt",
   "storageKey": null
 },
 v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "unreadCount",
+  "name": "closedAt",
   "storageKey": null
 },
 v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "unreadCount",
+  "storageKey": null
+},
+v13 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -136,11 +181,11 @@ v12 = {
   "name": "assignedTo",
   "plural": false,
   "selections": [
-    (v1/*: any*/)
+    (v2/*: any*/)
   ],
   "storageKey": null
 },
-v13 = {
+v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -162,6 +207,7 @@ return {
         "name": "conversations",
         "plural": false,
         "selections": [
+          (v0/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -170,7 +216,7 @@ return {
             "name": "edges",
             "plural": true,
             "selections": [
-              (v0/*: any*/),
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -179,7 +225,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
+                  (v2/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -188,13 +234,12 @@ return {
                     "name": "contact",
                     "plural": false,
                     "selections": [
-                      (v2/*: any*/),
                       (v3/*: any*/),
-                      (v4/*: any*/)
+                      (v4/*: any*/),
+                      (v5/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v5/*: any*/),
                   (v6/*: any*/),
                   (v7/*: any*/),
                   (v8/*: any*/),
@@ -202,6 +247,7 @@ return {
                   (v10/*: any*/),
                   (v11/*: any*/),
                   (v12/*: any*/),
+                  (v13/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -210,7 +256,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v13/*: any*/)
+                      (v14/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -241,6 +287,7 @@ return {
         "name": "conversations",
         "plural": false,
         "selections": [
+          (v0/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -249,7 +296,7 @@ return {
             "name": "edges",
             "plural": true,
             "selections": [
-              (v0/*: any*/),
+              (v1/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -258,7 +305,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
+                  (v2/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -267,14 +314,13 @@ return {
                     "name": "contact",
                     "plural": false,
                     "selections": [
-                      (v2/*: any*/),
                       (v3/*: any*/),
                       (v4/*: any*/),
-                      (v1/*: any*/)
+                      (v5/*: any*/),
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v5/*: any*/),
                   (v6/*: any*/),
                   (v7/*: any*/),
                   (v8/*: any*/),
@@ -282,6 +328,7 @@ return {
                   (v10/*: any*/),
                   (v11/*: any*/),
                   (v12/*: any*/),
+                  (v13/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -290,8 +337,8 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v13/*: any*/),
-                      (v1/*: any*/)
+                      (v14/*: any*/),
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -307,16 +354,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "310595c0213a4137e6d6d702be212fe2",
+    "cacheID": "c75a20a955866d4b7b274d3315a1c0cd",
     "id": null,
     "metadata": {},
     "name": "ConversationListQuery",
     "operationKind": "query",
-    "text": "query ConversationListQuery {\n  conversations {\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListQuery {\n  conversations {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "79d623ef124668695fed737072e91b53";
+(node as any).hash = "5a445b62f2b51f5e00a01307e312a06d";
 
 export default node;

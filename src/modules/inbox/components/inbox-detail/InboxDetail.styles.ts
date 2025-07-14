@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { BellOutlined } from '@ant-design/icons';
+import { createGlobalStyle } from 'styled-components';
 
 interface IconProps {
   isActive?: boolean;
@@ -8,11 +9,20 @@ interface MessageContainerProps {
   isSidebarOpen: boolean;
 }
 
+export const GlobalStyle = createGlobalStyle`
+  html, body, #root {
+    height: 100%;
+    overflow: hidden;
+  }
+`;
+
 export const Container = styled.div`
-  position: relative;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
   background: #fafafa;
 `;
 
@@ -188,10 +198,47 @@ export const ToggleSidebarButton = styled.div`
   }
 `;
 
-export const MainContent = styled.div`
+export const MainContent = styled.div<{ $hasOverlay?: boolean }>`
+  position: relative;
   flex: 1;
+  min-height: 0;
   display: flex;
-  overflow: hidden;
+  flex-direction: column;
+  overflow: ${({ $hasOverlay }) => ($hasOverlay ? 'hidden' : 'auto')};
+`;
+
+export const TabOverlay = styled.div<{ $tabtype?: string }>`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  width: 100%;
+  z-index: 20;
+  background: ${({ $tabtype }) =>
+    $tabtype === 'Edit' || $tabtype === 'Note' ? 'transparent' : '#fff'};
+  box-shadow: ${({ $tabtype }) =>
+    $tabtype === 'Edit' || $tabtype === 'Note'
+      ? 'none'
+      : '0 2px 8px rgba(0,0,0,0.08)'};
+  max-height: calc(40vh);
+  overflow-y: auto;
+  margin-bottom: 0;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .TabTitle {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+    border-bottom: 1px solid #eee;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
 `;
 
 export const MessageContainer = styled.div<MessageContainerProps>`
@@ -607,19 +654,17 @@ export const ContextMenuItem = styled.div<{ danger?: boolean }>`
   padding: 8px 12px;
   cursor: pointer;
   font-size: 14px;
-  color: ${props => props.danger ? '#ff4d4f' : '#333'};
-  
+  color: ${(props) => (props.danger ? '#ff4d4f' : '#333')};
+
   &:hover {
-    background: ${props => props.danger ? '#fff2f0' : '#f5f5f5'};
+    background: ${(props) => (props.danger ? '#fff2f0' : '#f5f5f5')};
   }
-  
+
   img {
     width: 16px;
     height: 16px;
   }
 `;
-
-
 
 export const TimeWithIconContainer = styled.div`
   display: flex;
@@ -638,12 +683,12 @@ export const MessageHoverIconNearTime = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &:hover {
     opacity: 1;
     background: rgba(0, 0, 0, 0.05);
   }
-  
+
   img {
     width: 16px;
     height: 16px;
@@ -727,4 +772,3 @@ export const InboxSpinner = styled.div`
   position: sticky;
   top: 0;
 `;
-
