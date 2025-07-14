@@ -13,6 +13,7 @@ export interface UserInforInterface {
 
 export interface WorkspaceInterface {
   id: string;
+  rawId: string;
   logo: string;
   name: string;
   websiteID: string;
