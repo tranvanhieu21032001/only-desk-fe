@@ -1,12 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Col, Image, Skeleton } from 'antd';
+import { Col, Form, Image, Skeleton } from 'antd';
 
 import Button from '@/shared/components/common/Button';
 import Modal from '@/shared/components/common/Modal';
-import Input from '@/shared/components/common/Input';
-import Select from '@/shared/components/common/Select';
-
-// import { mockOperators } from '@/core/settings/options';
 import avatarDefault from '@/assets/images/avatar-default.png';
 
 import * as S from './WorkspaceOperatorTeams.styles';
@@ -25,10 +21,22 @@ import iconGoogle from '@/assets/icons/setting/ic-google.svg';
 import iconApple from '@/assets/icons/setting/ic-apple-operator.svg';
 import iconCheckDefault from '@/assets/icons/setting/ic-tick-white.svg';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
-import { fetchOperators } from '@/modules/settings/store/features/operators';
-import Cookies from 'js-cookie';
+import {
+  addOperatorToWorkspace,
+  fetchOperators,
+  Operator,
+  removeOperatorFromWorkspace,
+  updateOperatorInWorkspace,
+} from '@/modules/settings/store/features/operators';
+import { RootState } from '@/core/store';
+import { useTranslation } from 'react-i18next';
+import AddOperatorModal from './modal/AddOperatorModal';
+import RemoveOperatorModal from './modal/RemoveOperatorModal';
+import EditOperatorModal from './modal/EditOperatorModal';
 
 const WorkspaceOperatorTeams = () => {
+  const { t } = useTranslation('settingWorkspace');
+  const [form] = Form.useForm();
   // const [isPublic, setIsPublic] = useState(true);
   // const [disableConditions] = useState(false);
   const dispatch = useAppDispatch();
@@ -37,11 +45,13 @@ const WorkspaceOperatorTeams = () => {
     dispatch(fetchOperators());
   }, [dispatch]);
 
-  console.log('operators', operators);
-  const { userInfo } = useAppSelector((state) => state.auth);
+  const { userInfo, currentWorkspace } = useAppSelector(
+    (state: RootState) => state.auth,
+  );
   const dataSource = useMemo(() => {
     return operators.map((op) => ({
       id: op.id,
+      rawId: op.rawId,
       email: op.user.email,
       name: `${op.user.firstName} ${op.user.lastName}`.trim(),
       role: op.role,
@@ -56,17 +66,72 @@ const WorkspaceOperatorTeams = () => {
   const [isOpenAddOperatorStep, setIsOpenAddOperatorStep] = useState(false);
   const [isOpenEditOperator, setIsOpenEditOperator] = useState(false);
   const [isOpenLeaveWorkspace, setIsOpenLeaveWorkspace] = useState(false);
+
+  const [selectedOperator, setSelectedOperator] = useState<Operator | null>(
+    null,
+  );
   const [isOpenRemoveOperator, setIsOpenRemoveOperator] = useState(false);
   const [authStep, setAuthStep] = useState<
     'select' | 'password' | 'google' | 'apple' | '2fa'
   >('select');
+
+  const [addForm] = Form.useForm();
+  const [editForm] = Form.useForm();
+  useEffect(() => {
+    if (!isOpenAddOperator) {
+      addForm.resetFields();
+    }
+  }, [isOpenAddOperator]);
+
+  // const [email, setEmail] = useState('');
+  // const [role, setRole] = useState<string | undefined>(undefined);
   const [password, setPassword] = useState('');
   const [twoFA, setTwoFA] = useState(['', '', '', '', '', '']);
+  const handleFinish = async (values: { email: string; role: string }) => {
+    await dispatch(
+      addOperatorToWorkspace({
+        workspaceId: currentWorkspace?.rawId,
+        email: values.email,
+        role: values.role,
+        t,
+      }),
+    ).unwrap();
 
+    setIsOpenAddOperator(false);
+    addForm.resetFields();
+  };
+
+  const openRemoveModal = (op: Operator) => {
+    setSelectedOperator(op);
+    setIsOpenRemoveOperator(true);
+  };
+  const handleEditFinish = async (values: {
+    email: string;
+    role: string;
+    status: string;
+  }) => {
+    try {
+      await dispatch(
+        updateOperatorInWorkspace({
+          workspaceId: currentWorkspace.rawId,
+          memberId: selectedOperator.rawId,
+          role: values.role.toLowerCase(),
+          status: values.status.toLowerCase(),
+          t,
+        }),
+      ).unwrap();
+
+      message.success(t('operators.update-success'));
+      setIsOpenEditOperator(false);
+      editForm.resetFields();
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <S.AccountInformationContainer>
       <div style={{ padding: 16 }}>
-        <S.BoxTitle>Operator & Teams</S.BoxTitle>
+        <S.BoxTitle>{t('operators.operator-teams')}</S.BoxTitle>
         {/* <S.Box>
           <S.BoxRow>
             <img src={iconCheck} alt="" />
@@ -112,7 +177,7 @@ const WorkspaceOperatorTeams = () => {
         </S.Box> */}
         <S.Box>
           <S.FlexRowBetween>
-            <S.BoxSubTitle>Operators</S.BoxSubTitle>
+            <S.BoxSubTitle>{t('operators.operators')}</S.BoxSubTitle>
             <S.OperatorBoxRow>
               {/* <Button type="default" onClick={() => setIsOpenEmptyModal(true)}>
                 Empty Last Active
@@ -130,14 +195,14 @@ const WorkspaceOperatorTeams = () => {
                 }
                 iconPosition="left"
               >
-                Add Operator
+                {t('operators.add-operator')}
               </Button>
             </S.OperatorBoxRow>
           </S.FlexRowBetween>
           {isLoading ? (
             <>
               {[1, 2, 3].map((key) => (
-                <S.OperatorRow key={key}>
+                <S.OperatorRow $hasBorder={false} key={key}>
                   <Skeleton.Avatar active size="large" />
                   <Col flex="auto">
                     <Skeleton paragraph={{ rows: 1 }} active />
@@ -156,12 +221,14 @@ const WorkspaceOperatorTeams = () => {
                   alt={op.name}
                 />
 
-                <Col flex="auto">
+                <Col>
                   <S.OperatorName>
                     {op.name} {op.isYou && <S.OperatorYou>(you)</S.OperatorYou>}
                   </S.OperatorName>
                   <S.OperatorRole $isOwner={op.role === 'ADMIN'}>
-                    {op.role === 'ADMIN' ? 'Admin' : 'Member'}
+                    {op.role === 'ADMIN'
+                      ? t('operators.admin')
+                      : t('operators.member')}
                   </S.OperatorRole>
                 </Col>
 
@@ -169,12 +236,14 @@ const WorkspaceOperatorTeams = () => {
                   {op.status === 'APRROVED' ? (
                     <S.StatusActive>
                       <img src={iconCheck} alt="" />
-                      Active
+                      {t('operators.active')}
                     </S.StatusActive>
                   ) : (
                     <S.StatusInvited>
                       <img src={iconInvited} alt="" />
-                      {op.status === 'PENDING' ? 'Invited' : 'Rejected'}
+                      {op.status === 'PENDING'
+                        ? t('operators.invited')
+                        : t('operators.rejected')}
                     </S.StatusInvited>
                   )}
                 </Col>
@@ -185,11 +254,14 @@ const WorkspaceOperatorTeams = () => {
                   <img
                     src={iconEdit}
                     alt=""
-                    onClick={() => setIsOpenEditOperator(true)}
+                    onClick={() => {
+                      setSelectedOperator(op);
+                      setIsOpenEditOperator(true);
+                    }}
                   />
 
                   <S.OperatorBoxIcon>
-                    {op.role === 'Owner' ? (
+                    {op.role === 'ADMIN' ? (
                       <S.OperatorIcon>
                         <img
                           src={iconLogout}
@@ -201,7 +273,7 @@ const WorkspaceOperatorTeams = () => {
                       <img
                         src={iconDelete}
                         alt=""
-                        onClick={() => setIsOpenRemoveOperator(true)}
+                        onClick={() => openRemoveModal(op)}
                       />
                     )}
                   </S.OperatorBoxIcon>
@@ -249,29 +321,60 @@ const WorkspaceOperatorTeams = () => {
         </S.ModalEmpty>
       </Modal>
 
-      <Modal
+      <AddOperatorModal
         isOpen={isOpenAddOperator}
-        title="Add Operator"
-        description="Please insert modal description here."
         onClose={() => setIsOpenAddOperator(false)}
+        isLoading={isLoading}
+        form={addForm}
+        handleFinish={handleFinish}
+        t={t}
+      />
+
+      <EditOperatorModal
+        isOpen={isOpenEditOperator}
+        onClose={() => setIsOpenEditOperator(false)}
+        isLoading={isLoading}
+        form={editForm}
+        handleFinish={handleEditFinish}
+        operator={selectedOperator}
+        t={t}
+      />
+
+      <RemoveOperatorModal
+        isOpen={isOpenRemoveOperator}
+        onClose={() => setIsOpenRemoveOperator(false)}
+        isLoading={isLoading}
+        onConfirm={() => {
+          if (!selectedOperator) return;
+          dispatch(
+            removeOperatorFromWorkspace({
+              workspaceId: currentWorkspace.rawId,
+              memberId: selectedOperator.rawId,
+              t,
+            }),
+          ).then(() => setIsOpenRemoveOperator(false));
+        }}
+        t={t}
+      />
+
+      {/* <Modal
+        isOpen={isOpenEditOperator}
+        title="Edit Operator"
+        description="Please insert modal description here."
+        onClose={() => setIsOpenEditOperator(false)}
         footer={
           <S.ModalEmptyFooter>
-            <Button type="default" onClick={() => setIsOpenAddOperator(false)}>
+            <Button type="default" onClick={() => setIsOpenEditOperator(false)}>
               Cancel
             </Button>
             <Button
               type="primary"
               width="180px"
               onClick={() => {
-                setIsOpenAddOperatorStep(true);
-                setIsOpenAddOperator(false);
+                setIsOpenEditOperator(false);
               }}
-              icon={
-                <Image src={addHeader} preview={false} width={20} height={20} />
-              }
-              iconPosition="left"
             >
-              Add Operator
+              Save change
             </Button>
           </S.ModalEmptyFooter>
         }
@@ -298,7 +401,7 @@ const WorkspaceOperatorTeams = () => {
             placeholder="Enter operator job title"
           />
         </S.ModalAddOperatorSelect>
-      </Modal>
+      </Modal> */}
 
       <Modal
         width={700}
@@ -515,52 +618,6 @@ const WorkspaceOperatorTeams = () => {
       </Modal>
 
       <Modal
-        isOpen={isOpenEditOperator}
-        title="Edit Operator"
-        description="Please insert modal description here."
-        onClose={() => setIsOpenEditOperator(false)}
-        footer={
-          <S.ModalEmptyFooter>
-            <Button type="default" onClick={() => setIsOpenEditOperator(false)}>
-              Cancel
-            </Button>
-            <Button
-              type="primary"
-              width="180px"
-              onClick={() => {
-                setIsOpenEditOperator(false);
-              }}
-            >
-              Save change
-            </Button>
-          </S.ModalEmptyFooter>
-        }
-      >
-        <S.ModalAddOperatorSelect>
-          <Select
-            label="Operator role"
-            isRequired
-            colorLabel="#111"
-            placeholder="Choose operator role"
-            options={[
-              { label: 'Owner', value: 'owner' },
-              { label: 'Member', value: 'member' },
-            ]}
-          />
-          <Input
-            label="Operator email"
-            isRequired
-            placeholder="Enter email to send invite to"
-            type="email"
-          />
-          <Input
-            label="Operator job title"
-            placeholder="Enter operator job title"
-          />
-        </S.ModalAddOperatorSelect>
-      </Modal>
-
-      <Modal
         isOpen={isOpenLeaveWorkspace}
         onClose={() => setIsOpenLeaveWorkspace(false)}
         hideHeader={true}
@@ -591,7 +648,7 @@ const WorkspaceOperatorTeams = () => {
         </S.ModalEmpty>
       </Modal>
 
-      <Modal
+      {/* <Modal
         isOpen={isOpenRemoveOperator}
         onClose={() => setIsOpenRemoveOperator(false)}
         hideHeader={true}
@@ -606,7 +663,17 @@ const WorkspaceOperatorTeams = () => {
             <Button
               type="danger"
               width="180px"
-              onClick={() => setIsOpenRemoveOperator(false)}
+              isLoading={isLoading}
+              onClick={() => {
+                if (!selectedOperator) return;
+                dispatch(
+                  removeOperatorFromWorkspace({
+                    workspaceId: currentWorkspace.rawId,
+                    memberId: selectedOperator.rawId,
+                    t,
+                  }),
+                ).then(() => setIsOpenRemoveOperator(false));
+              }}
             >
               Remove Operator
             </Button>
@@ -622,7 +689,7 @@ const WorkspaceOperatorTeams = () => {
             </span>
           </S.ModalEmptyColumn>
         </S.ModalEmpty>
-      </Modal>
+      </Modal> */}
     </S.AccountInformationContainer>
   );
 };

@@ -17,6 +17,7 @@ export const TableWrap = styled(Table)<{ $isWidth: string | number }>`
   table {
     border-radius: 0px;
   }
+  overflow-y: auto;
 
   .ant-table-header {
     border-radius: 0 !important;

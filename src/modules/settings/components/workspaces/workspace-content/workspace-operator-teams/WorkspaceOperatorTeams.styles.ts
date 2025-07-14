@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import { Form } from 'antd';
+import styled, { css } from 'styled-components';
 
 export const AccountInformationContainer = styled.section`
   height: calc(100vh - 80px);
@@ -107,15 +108,20 @@ export const FlexRowBetween = styled.div`
   align-items: center;
   border-bottom: 1px solid #ccc;
 `;
-
-export const OperatorRow = styled.div<{ $hasBorder?: boolean }>`
-  display: flex;
+export const OperatorRow = styled.div<{ $hasBorder: boolean }>`
+  display: grid;
+  grid-template-columns: 48px 2fr 1fr 2fr 0.5fr;
   align-items: center;
-  gap:8px;
-  padding: 16px 0;
+  column-gap: 8px;
+  padding: 12px 0;
   border-bottom: ${({ $hasBorder }) =>
-    $hasBorder ? '1px solid #eee' : 'none'};
+    $hasBorder ? '1px solid #f0f0f0' : 'none'};
+
+  @media ${({ theme }) => theme?.breakpoints?.mdMax} {
+    grid-template-columns: 36px 2fr 1fr 2fr 0.8fr;
+  }
 `;
+
 
 export const OperatorAvatar = styled.img`
   width: 48px;
@@ -185,6 +191,7 @@ export const StatusInvited = styled.div`
 
 export const OperatorEmail = styled.div`
   padding: 0 50px;
+  width: 400px;
 `;
 
 export const ActionsWrapper = styled.div`
@@ -519,7 +526,7 @@ export const FlexBetween = styled.div`
 export const PasswordInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  border: 1px solid #E5E6EB;
+  border: 1px solid #e5e6eb;
   border-radius: 8px;
   padding: 8px;
   gap: 8px;
@@ -527,4 +534,50 @@ export const PasswordInputWrapper = styled.div`
 
 export const RequiredAsterisk = styled.span`
   color: red;
+`;
+
+export const FormItem = styled(Form.Item)<{
+  $margin?: string;
+  $isRememberMe?: boolean;
+}>`
+  ${({ $margin }) =>
+    $margin &&
+    css`
+      margin: ${$margin} !important;
+    `}
+
+  ${({ $isRememberMe }) =>
+    $isRememberMe &&
+    css`
+      margin: 0 !important;
+
+      .ant-form-item-control-input-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .ant-checkbox-label {
+          display: none;
+        }
+      }
+    `}
+`;
+
+export const FormWrap = styled(Form)`
+  display: flex;
+  flex-direction: column;
+  .ant-row {
+    display: unset !important;
+  }
+    .ant-form-item .ant-form-item-label >label{
+    float:left;
+    display: flex;
+    flex-direction: row-reverse;
+    }
+
+  && .ant-form-item-label > label::after {
+    content: none !important;
+    display: none !important;
+  }
+}
 `;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f185bdfd6c7f7935748a529c93c8f4e9>>
+ * @generated SignedSource<<0b49267f9ad017f716cd5bbbbb406be1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,6 +18,7 @@ export type WorkspaceInfoQuery$data = {
     readonly logo: string | null | undefined;
     readonly metadata: any | null | undefined;
     readonly name: string;
+    readonly rawId: string;
     readonly websiteID: string;
     readonly websiteUrl: string;
   }>;
@@ -42,6 +43,13 @@ var v0 = [
         "args": null,
         "kind": "ScalarField",
         "name": "id",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "rawId",
         "storageKey": null
       },
       {
@@ -115,16 +123,16 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "35b32769c28784963887e2b5d13741fc",
+    "cacheID": "88e71166d3afb7662111a8ae59055aa7",
     "id": null,
     "metadata": {},
     "name": "WorkspaceInfoQuery",
     "operationKind": "query",
-    "text": "query WorkspaceInfoQuery {\n  workspaces {\n    id\n    name\n    websiteID\n    websiteUrl\n    logo\n    contactEmail\n    contactPhone\n    metadata\n  }\n}\n"
+    "text": "query WorkspaceInfoQuery {\n  workspaces {\n    id\n    rawId\n    name\n    websiteID\n    websiteUrl\n    logo\n    contactEmail\n    contactPhone\n    metadata\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "4218a01e7c88085dd535127e895cee03";
+(node as any).hash = "6775fe7115412da8f2ea9843a9bc2892";
 
 export default node;

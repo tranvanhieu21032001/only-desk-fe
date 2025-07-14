@@ -4,6 +4,7 @@ export const workspaceInfoQuery = graphql`
   query WorkspaceInfoQuery {
     workspaces {
       id
+      rawId
       name
       websiteID
       websiteUrl

@@ -116,7 +116,7 @@ function Table({
         bordered
         scroll={{
           x: '800px',
-          y: `calc(100vh - ${hasPagination ? '270px' : '210px'})`,
+          // y: `calc(100vh - ${hasPagination ? '270px' : '210px'})`,
         }}
         pagination={false}
         summary={summary}

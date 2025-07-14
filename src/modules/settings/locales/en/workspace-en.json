@@ -9,7 +9,6 @@
     "data-limits-legal": "Data & Limits & Legal",
     "danger-zone": "Danger zone"
   },
-
   "workspace-information": {
     "workspace-information": "Workspace information",
     "general-information": "General information",
@@ -33,7 +32,6 @@
     "enter-instagram": "Enter your Instagram username",
     "automatically-saved": "Automatically saved",
     "update-workspace-information-success": "Update workspace information successfully",
-
     "account-information": "Account Information",
     "personal-details": "Personal Details",
     "first-name": "First Name",
@@ -57,10 +55,8 @@
     "looking-to-remove": "Looking to remove your account?",
     "delete-account": "Delete account",
     "disable-two-factor-authentication": "Disable Two Factor Authentication",
-
     "update-image-workspace-success": "Update image workspace successfully"
   },
-
   "setup-integrations": {
     "setup-integrations": "Setup & Integrations",
     "website-id": "Website ID",
@@ -71,5 +67,42 @@
     "chatbox": "Chatbox",
     "chatbox-setup-instructions": "Chatbox setup instructions",
     "see-all-integrations": "See all integrations"
+  },
+    "operators": {
+    "operator-teams": "Operator & Teams",
+    "operators": "Operators",
+    "add-operator": "Add operator",
+    "operator-role": "Operator role",
+    "choose-role": "Choose operator role",
+    "operator-email": "Operator email",
+    "enter-email": "Enter email to send invite to",
+    "please-choose-role": "Please choose a role",
+    "please-enter-email": "Please enter operator email",
+    "email-invalid": "Invalid email",
+    "active": "Active",
+    "invited": "Invited",
+    "rejected": "Rejected",
+    "admin": "Admin",
+    "member": "Member",
+    "update-success": "Update operator successfully",
+    "update-failed": "Failed to update operator",
+    "desc": "Please insert modal description here.",
+    "remove-operator": "Remove operator",
+    "remove-confirm-title": "Are you sure you want to remove this operator?",
+    "remove-confirm-desc": "This operator will no longer be able to access the workspace.",
+     "edit-title": "Edit Operator",
+    "edit-desc": "Update operator details.",
+    "save": "Save Changes",
+    "role-label": "Operator Role",
+    "role-placeholder": "Choose operator role",
+    "status-label": "Operator Status",
+    "status-placeholder": "Choose operator status",
+    "please-choose-status": "Please choose a status",
+    "email-label": "Operator Email",
+    "email-placeholder": "Enter operator email",
+    "invite-success":"Add operator successfully"
+  },
+  "common": {
+    "cancel": "Cancel"
   }
 }
