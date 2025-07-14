@@ -18,7 +18,7 @@ import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import { fetchConversations } from '../../store/features/inbox';
 
 import { Conversation } from '../../interfaces/inbox';
-import { getConversationList } from '../../api/inbox.api';
+import { fetchConversationsRelay } from '../../api/fetchConversationsRelay';
 
 import * as S from './InboxList.styles';
 
@@ -81,12 +81,25 @@ const ConversationList = () => {
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
 
+  const decodeGlobalId = (globalId: string): string => {
+    try {
+      const decoded = atob(globalId);
+      const parts = decoded.split(':');
+      return parts[1] || globalId;
+    } catch {
+      return globalId;
+    }
+  };
+
   const workspaceId = useSelector(selectCurrentWorkspaceId);
+  const rawWorkspaceId = workspaceId ? decodeGlobalId(workspaceId) : null;
   const dispatch = useAppDispatch();
   const { conversations, loading } = useAppSelector((state) => state.inbox);
   const currentConversations = workspaceId
     ? conversations[workspaceId] || []
     : [];
+
+  const [customFilterName, setCustomFilterName] = useState('');
 
   // Fetch initial conversation list (only when mounting or changing workspace)
   useEffect(() => {
@@ -114,14 +127,9 @@ const ConversationList = () => {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
     try {
-      const currentPage = Math.ceil(conversationEdges.length / 10) + 1;
-      const response = await getConversationList(
-        workspaceId || '',
-        currentPage,
-        10,
-      );
+      const response = await fetchConversationsRelay(workspaceId || '', 10, lastCursor);
       setConversationEdges((prev) => [...prev, ...response.data]);
-      setLastCursor(response.hasNextPage ? String(currentPage + 1) : null);
+      setLastCursor(response.hasNextPage ? response.endCursor : null);
       setHasMore(response.hasNextPage);
     } catch (error) {
       console.error('Error loading more conversations:', error);
@@ -205,7 +213,7 @@ const ConversationList = () => {
   };
 
   const handleConversationClick = (conversationId: string) => {
-    navigate(`?workspaceId=${workspaceId}&conversationId=${conversationId}`);
+    navigate(`?conversationId=${conversationId}`);
   };
 
   const renderSkeleton = () => (

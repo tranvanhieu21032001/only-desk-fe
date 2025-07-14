@@ -478,6 +478,29 @@ export const FilterSearchInput = styled.input`
 export const FilterDropdownList = styled.div`
   max-height: 180px;
   overflow-y: auto;
+
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 2px;
+    transition: background 0.3s ease;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+  }
 `;
 
 export const FilterDropdownItem = styled.div`
@@ -756,6 +779,29 @@ export const ConversationListWrapper = styled.div`
   flex: 1;
   overflow-y: auto;
   min-height: 0;
+
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+    transition: background 0.3s ease;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: ${(props) => props.theme.colors.primary};
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${(props) => props.theme.colors.primary};
+  }
 `;
 
 export const LoadingMore = styled.div`

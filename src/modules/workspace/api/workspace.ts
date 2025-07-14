@@ -17,6 +17,16 @@ const endpointAuth = {
   CURRENT_WORKSPACE: `${prefixAuth}/users/current-workspace`,
 };
 
+const decodeGlobalId = (globalId: string): string => {
+  try {
+    const decoded = atob(globalId);
+    const parts = decoded.split(':');
+    return parts[1] || globalId; 
+  } catch {
+    return globalId; 
+  }
+};
+
 const handleCreateWorkspaceApi = async (
   values: any,
   t: TFunction,
@@ -45,8 +55,10 @@ const handleSwitchWorkspaceApi = async (
   setIsLoading(true);
   store.dispatch(actionSetGlobalLoading(true));
   try {
+    const rawWorkspaceId = decodeGlobalId(workspaceId);
+    
     const response = await patchRequest(endpointAuth?.CURRENT_WORKSPACE, {
-      data: { workspaceId },
+      data: { workspaceId: rawWorkspaceId },
       messageSuccess: t('create-workspace.switch-success'),
     });
 

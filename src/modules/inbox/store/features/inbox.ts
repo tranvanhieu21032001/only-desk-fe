@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Conversation } from '../../interfaces/inbox';
-import { getConversationList } from '../../api/inbox.api';
+import { fetchConversationsRelay } from '../../api/fetchConversationsRelay';
 
 interface InboxState {
   conversations: Record<string, Conversation[]>;
@@ -18,7 +18,7 @@ export const fetchConversations = createAsyncThunk(
   'inbox/fetchConversations',
   async (workspaceId: string, { rejectWithValue }) => {
     try {
-      const response = await getConversationList(workspaceId, 1, 10);
+      const response = await fetchConversationsRelay(workspaceId, 10, null);
       return { workspaceId, data: response.data };
     } catch (error: any) {
       return rejectWithValue(error.message || 'Error fetching conversations');
