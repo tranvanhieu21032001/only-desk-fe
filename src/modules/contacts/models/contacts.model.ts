@@ -25,7 +25,8 @@ export interface ContactInterface {
     [key: string]: any;
   };
   context: {
-    country: string;
+    countryName: string;
+    countryCode: string;
     city: string;
     language: string;
   };

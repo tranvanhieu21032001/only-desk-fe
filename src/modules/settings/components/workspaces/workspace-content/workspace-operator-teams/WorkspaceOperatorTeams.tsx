@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { Col, Image } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
+import { Col, Image, Skeleton } from 'antd';
 
 import Button from '@/shared/components/common/Button';
 import Modal from '@/shared/components/common/Modal';
 import Input from '@/shared/components/common/Input';
 import Select from '@/shared/components/common/Select';
 
-import { mockOperators } from '@/core/settings/options';
+// import { mockOperators } from '@/core/settings/options';
+import avatarDefault from '@/assets/images/avatar-default.png';
 
 import * as S from './WorkspaceOperatorTeams.styles';
 
@@ -23,10 +24,33 @@ import icon2FA from '@/assets/icons/setting/ic-2fa.svg';
 import iconGoogle from '@/assets/icons/setting/ic-google.svg';
 import iconApple from '@/assets/icons/setting/ic-apple-operator.svg';
 import iconCheckDefault from '@/assets/icons/setting/ic-tick-white.svg';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks';
+import { fetchOperators } from '@/modules/settings/store/features/operators';
+import Cookies from 'js-cookie';
 
 const WorkspaceOperatorTeams = () => {
-  const [isPublic, setIsPublic] = useState(true);
-  const [disableConditions] = useState(false);
+  // const [isPublic, setIsPublic] = useState(true);
+  // const [disableConditions] = useState(false);
+  const dispatch = useAppDispatch();
+  const { operators, isLoading } = useAppSelector((state) => state.operators);
+  useEffect(() => {
+    dispatch(fetchOperators());
+  }, [dispatch]);
+
+  console.log('operators', operators);
+  const { userInfo } = useAppSelector((state) => state.auth);
+  const dataSource = useMemo(() => {
+    return operators.map((op) => ({
+      id: op.id,
+      email: op.user.email,
+      name: `${op.user.firstName} ${op.user.lastName}`.trim(),
+      role: op.role === 'ADMIN' ? 'Owner' : op.role,
+      status: op.status === 'APRROVED' ? 'Active' : 'Invited',
+      avatar: op.user.avatar,
+      isYou: userInfo?.email === op.user.email,
+    }));
+  }, [operators]);
+
   const [isOpenEmptyModal, setIsOpenEmptyModal] = useState(false);
   const [isOpenAddOperator, setIsOpenAddOperator] = useState(false);
   const [isOpenAddOperatorStep, setIsOpenAddOperatorStep] = useState(false);
@@ -43,13 +67,13 @@ const WorkspaceOperatorTeams = () => {
     <S.AccountInformationContainer>
       <div style={{ padding: 16 }}>
         <S.BoxTitle>Operator & Teams</S.BoxTitle>
-        <S.Box>
+        {/* <S.Box>
           <S.BoxRow>
             <img src={iconCheck} alt="" />
             <span>Support is Online as at least one operator is online</span>
           </S.BoxRow>
-        </S.Box>
-        <S.Box>
+        </S.Box> */}
+        {/* <S.Box>
           <S.BoxRowOptions>
             <S.BoxSubTitle>Options</S.BoxSubTitle>
             <S.AccessSwitchWrapper>
@@ -85,14 +109,14 @@ const WorkspaceOperatorTeams = () => {
               </S.AccessSwitchWrapper>
             </S.FlexBetween>
           </S.BoxCol>
-        </S.Box>
+        </S.Box> */}
         <S.Box>
           <S.FlexRowBetween>
             <S.BoxSubTitle>Operators</S.BoxSubTitle>
             <S.OperatorBoxRow>
-              <Button type="default" onClick={() => setIsOpenEmptyModal(true)}>
+              {/* <Button type="default" onClick={() => setIsOpenEmptyModal(true)}>
                 Empty Last Active
-              </Button>
+              </Button> */}
               <Button
                 type="primary"
                 onClick={() => setIsOpenAddOperator(true)}
@@ -110,63 +134,81 @@ const WorkspaceOperatorTeams = () => {
               </Button>
             </S.OperatorBoxRow>
           </S.FlexRowBetween>
-          {mockOperators.map((op, idx) => (
-            <S.OperatorRow
-              key={op.email}
-              $hasBorder={idx !== mockOperators.length - 1}
-            >
-              <S.OperatorAvatar src={op.avatar} alt={op.name} />
-              <Col flex="auto">
-                <S.OperatorName>
-                  {op.name} {op.isYou && <S.OperatorYou>(you)</S.OperatorYou>}
-                </S.OperatorName>
-                <S.OperatorRole $isOwner={op.role === 'Owner'}>
-                  {op.role}
-                </S.OperatorRole>
-              </Col>
-              <Col>
-                {op.status === 'Active' ? (
-                  <S.StatusActive>
-                    <img src={iconCheck} alt="" />
-                    Active
-                  </S.StatusActive>
-                ) : (
-                  <S.StatusInvited>
-                    <img src={iconInvited} alt="" />
-                    Invited
-                  </S.StatusInvited>
-                )}
-              </Col>
-              <S.OperatorEmail>{op.email}</S.OperatorEmail>
-              <S.ActionsWrapper>
-                <img
-                  src={iconEdit}
-                  alt=""
-                  onClick={() => setIsOpenEditOperator(true)}
+          {isLoading ? (
+            <>
+              {[1, 2, 3].map((key) => (
+                <S.OperatorRow key={key}>
+                  <Skeleton.Avatar active size="large" />
+                  <Col flex="auto">
+                    <Skeleton paragraph={{ rows: 1 }} active />
+                  </Col>
+                </S.OperatorRow>
+              ))}
+            </>
+          ) : (
+            dataSource.map((op, idx) => (
+              <S.OperatorRow
+                key={op.id}
+                $hasBorder={idx !== dataSource.length - 1}
+              >
+                <S.OperatorAvatar
+                  src={op.avatar || avatarDefault}
+                  alt={op.name}
                 />
 
-                <S.OperatorBoxIcon>
-                  {op.role === 'Owner' ? (
-                    <S.OperatorIcon>
-                      <img
-                        src={iconLogout}
-                        alt=""
-                        onClick={() => setIsOpenLeaveWorkspace(true)}
-                      />
-                    </S.OperatorIcon>
+                <Col flex="auto">
+                  <S.OperatorName>
+                    {op.name} {op.isYou && <S.OperatorYou>(you)</S.OperatorYou>}
+                  </S.OperatorName>
+                  <S.OperatorRole $isOwner={op.role === 'Owner'}>
+                    {op.role}
+                  </S.OperatorRole>
+                </Col>
+
+                <Col>
+                  {op.status === 'Active' ? (
+                    <S.StatusActive>
+                      <img src={iconCheck} alt="" />
+                      Active
+                    </S.StatusActive>
                   ) : (
-                    <>
+                    <S.StatusInvited>
+                      <img src={iconInvited} alt="" />
+                      Invited
+                    </S.StatusInvited>
+                  )}
+                </Col>
+
+                <S.OperatorEmail>{op.email}</S.OperatorEmail>
+
+                <S.ActionsWrapper>
+                  <img
+                    src={iconEdit}
+                    alt=""
+                    onClick={() => setIsOpenEditOperator(true)}
+                  />
+
+                  <S.OperatorBoxIcon>
+                    {op.role === 'Owner' ? (
+                      <S.OperatorIcon>
+                        <img
+                          src={iconLogout}
+                          alt=""
+                          onClick={() => setIsOpenLeaveWorkspace(true)}
+                        />
+                      </S.OperatorIcon>
+                    ) : (
                       <img
                         src={iconDelete}
                         alt=""
                         onClick={() => setIsOpenRemoveOperator(true)}
                       />
-                    </>
-                  )}
-                </S.OperatorBoxIcon>
-              </S.ActionsWrapper>
-            </S.OperatorRow>
-          ))}
+                    )}
+                  </S.OperatorBoxIcon>
+                </S.ActionsWrapper>
+              </S.OperatorRow>
+            ))
+          )}
         </S.Box>
         <S.FooterSaved>
           <S.FooterSavedCheck>
@@ -474,7 +516,7 @@ const WorkspaceOperatorTeams = () => {
 
       <Modal
         isOpen={isOpenEditOperator}
-        title="Add Operator"
+        title="Edit Operator"
         description="Please insert modal description here."
         onClose={() => setIsOpenEditOperator(false)}
         footer={

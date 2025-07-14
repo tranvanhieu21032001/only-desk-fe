@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cfdeb0badcf16caac2d32ee8fd7aa703>>
+ * @generated SignedSource<<874d814f73089f467084bd644755322a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -29,7 +29,8 @@ export type ContactDetailsQuery$data = {
     readonly context?: {
       readonly browser: string | null | undefined;
       readonly city: string | null | undefined;
-      readonly country: string | null | undefined;
+      readonly countryCode: string | null | undefined;
+      readonly countryName: string | null | undefined;
       readonly language: string | null | undefined;
       readonly latitude: number | null | undefined;
       readonly longitude: number | null | undefined;
@@ -202,13 +203,6 @@ v19 = {
 v20 = {
   "alias": null,
   "args": null,
-  "kind": "ScalarField",
-  "name": "country",
-  "storageKey": null
-},
-v21 = {
-  "alias": null,
-  "args": null,
   "concreteType": "CompanyInfo",
   "kind": "LinkedField",
   "name": "companyInfo",
@@ -237,7 +231,13 @@ v21 = {
     },
     (v9/*: any*/),
     (v19/*: any*/),
-    (v20/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "country",
+      "storageKey": null
+    },
     {
       "alias": null,
       "args": null,
@@ -248,7 +248,7 @@ v21 = {
   ],
   "storageKey": null
 },
-v22 = {
+v21 = {
   "alias": null,
   "args": null,
   "concreteType": "ContactContext",
@@ -256,7 +256,20 @@ v22 = {
   "name": "context",
   "plural": false,
   "selections": [
-    (v20/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "countryCode",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "countryName",
+      "storageKey": null
+    },
     (v19/*: any*/),
     {
       "alias": null,
@@ -338,8 +351,8 @@ return {
               (v16/*: any*/),
               (v17/*: any*/),
               (v18/*: any*/),
-              (v21/*: any*/),
-              (v22/*: any*/)
+              (v20/*: any*/),
+              (v21/*: any*/)
             ],
             "type": "Contact",
             "abstractKey": null
@@ -392,8 +405,8 @@ return {
               (v16/*: any*/),
               (v17/*: any*/),
               (v18/*: any*/),
-              (v21/*: any*/),
-              (v22/*: any*/)
+              (v20/*: any*/),
+              (v21/*: any*/)
             ],
             "type": "Contact",
             "abstractKey": null
@@ -404,16 +417,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "acfab22d8d6b956972f760afb21dbaf8",
+    "cacheID": "556963616d16681f9f6f5c31a2c30cb7",
     "id": null,
     "metadata": {},
     "name": "ContactDetailsQuery",
     "operationKind": "query",
-    "text": "query ContactDetailsQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Contact {\n      id\n      rawId\n      name\n      email\n      phoneNumber\n      address\n      gender\n      website\n      notification\n      lastActivityAt\n      avatar\n      createdAt\n      updatedAt\n      isOnline\n      segments\n      notes\n      metadata\n      companyInfo {\n        company\n        jobTitle\n        jobRole\n        website\n        city\n        country\n        employees\n      }\n      context {\n        country\n        city\n        latitude\n        longitude\n        browser\n        os\n        timezone\n        language\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query ContactDetailsQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Contact {\n      id\n      rawId\n      name\n      email\n      phoneNumber\n      address\n      gender\n      website\n      notification\n      lastActivityAt\n      avatar\n      createdAt\n      updatedAt\n      isOnline\n      segments\n      notes\n      metadata\n      companyInfo {\n        company\n        jobTitle\n        jobRole\n        website\n        city\n        country\n        employees\n      }\n      context {\n        countryCode\n        countryName\n        city\n        latitude\n        longitude\n        browser\n        os\n        timezone\n        language\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "935454b170bdba6930e1ea08428cd372";
+(node as any).hash = "4a6e7088165da61aa24ff93b7ed36be1";
 
 export default node;

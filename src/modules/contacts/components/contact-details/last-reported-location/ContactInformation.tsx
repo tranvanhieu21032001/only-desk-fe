@@ -32,15 +32,13 @@ function LastReportedLocation({ isLoading }: ContactInformationProps) {
   const context = contactDetails?.context;
 
   const city = context?.city;
-  const country = context?.country;
+  const country = context?.countryName;
   const timezone = context?.timezone;
   const language = context?.language;
   const device = context?.os;
   const browser = context?.browser;
-
-  const countryCodeFromLang = language?.split('-')?.[1]?.toUpperCase();
   const flagIcon = flagList.find(
-    (item) => item.code === countryCodeFromLang,
+    (item) => item.code === context?.countryCode,
   )?.image;
 
   return (

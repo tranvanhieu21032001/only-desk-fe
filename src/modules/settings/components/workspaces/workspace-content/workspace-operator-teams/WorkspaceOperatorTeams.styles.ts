@@ -111,6 +111,7 @@ export const FlexRowBetween = styled.div`
 export const OperatorRow = styled.div<{ $hasBorder?: boolean }>`
   display: flex;
   align-items: center;
+  gap:8px;
   padding: 16px 0;
   border-bottom: ${({ $hasBorder }) =>
     $hasBorder ? '1px solid #eee' : 'none'};

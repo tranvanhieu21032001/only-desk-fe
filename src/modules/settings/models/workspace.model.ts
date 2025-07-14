@@ -16,3 +16,15 @@ export interface WorkspaceIntegrationsInterface {
   label: string;
   children?: IntegrationInterface[];
 }
+
+export interface OperatorInterface {
+  id: string;
+  rawId: string;
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  role: string;
+  status: string;
+}

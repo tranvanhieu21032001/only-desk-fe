@@ -113,15 +113,12 @@ function ContactTable() {
       minWidth: 200,
       width: 200,
       render: (record: ContactInterface) => {
-        const countryCode = record?.context?.language
-          ?.split('-')?.[1]
-          ?.toUpperCase();
         const flagIcon = flagList.find(
-          (item) => item.code === countryCode,
+          (item) => item.code === record?.context?.countryCode,
         )?.image;
 
         const city = record?.context?.city;
-        const country = record?.context?.country;
+        const country = record?.context?.countryName;
         const location = [city, country].filter(Boolean).join(', ') || '-';
 
         return (
@@ -269,8 +266,7 @@ function ContactTable() {
                 {t('contact-profile.confirm-delete-title')}
               </Typography>
               <Typography color="#5B5B5B">
-                {contactDetails?.email ?? '-'}{' '}
-                {t('contact-profile.and-its-data')}
+                {t('contact-profile.confirm-delete-desc')}
               </Typography>
             </div>
           </div>
