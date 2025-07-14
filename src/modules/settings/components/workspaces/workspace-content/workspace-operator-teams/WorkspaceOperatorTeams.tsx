@@ -44,8 +44,8 @@ const WorkspaceOperatorTeams = () => {
       id: op.id,
       email: op.user.email,
       name: `${op.user.firstName} ${op.user.lastName}`.trim(),
-      role: op.role === 'ADMIN' ? 'Owner' : op.role,
-      status: op.status === 'APRROVED' ? 'Active' : 'Invited',
+      role: op.role,
+      status: op.status,
       avatar: op.user.avatar,
       isYou: userInfo?.email === op.user.email,
     }));
@@ -160,13 +160,13 @@ const WorkspaceOperatorTeams = () => {
                   <S.OperatorName>
                     {op.name} {op.isYou && <S.OperatorYou>(you)</S.OperatorYou>}
                   </S.OperatorName>
-                  <S.OperatorRole $isOwner={op.role === 'Owner'}>
-                    {op.role}
+                  <S.OperatorRole $isOwner={op.role === 'ADMIN'}>
+                    {op.role === 'ADMIN' ? 'Admin' : 'Member'}
                   </S.OperatorRole>
                 </Col>
 
                 <Col>
-                  {op.status === 'Active' ? (
+                  {op.status === 'APRROVED' ? (
                     <S.StatusActive>
                       <img src={iconCheck} alt="" />
                       Active
@@ -174,7 +174,7 @@ const WorkspaceOperatorTeams = () => {
                   ) : (
                     <S.StatusInvited>
                       <img src={iconInvited} alt="" />
-                      Invited
+                      {op.status === 'PENDING' ? 'Invited' : 'Rejected'}
                     </S.StatusInvited>
                   )}
                 </Col>
@@ -210,12 +210,12 @@ const WorkspaceOperatorTeams = () => {
             ))
           )}
         </S.Box>
-        <S.FooterSaved>
+        {/* <S.FooterSaved>
           <S.FooterSavedCheck>
             <img src={iconCheck} alt="" />
             <span style={{ color: '#333' }}>Automatically saved</span>
           </S.FooterSavedCheck>
-        </S.FooterSaved>
+        </S.FooterSaved> */}
       </div>
 
       <Modal

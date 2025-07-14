@@ -261,7 +261,7 @@ function ContactDetails() {
       <S.BreadcrumbContainer $scrolled={isScrolled}>
         <Breadcrumb items={breadcrumbContactDetails} />
       </S.BreadcrumbContainer>
-      <S.ScrollArea ref={scrollRef}>
+      <S.ScrollArea ref={scrollRef} $showScroll={isScrolled}>
         <Form form={form} onFinish={handleEditContactProfile}>
           <S.ContactContainer>
             {isLoading ? (
