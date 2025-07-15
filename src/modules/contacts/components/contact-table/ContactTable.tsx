@@ -1,15 +1,14 @@
-import { ReactSVG } from 'react-svg';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Image } from 'antd';
-import { useEffect, useState } from 'react';
+import { ReactSVG } from 'react-svg';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import dayjs from 'dayjs';
 
 import { RootState } from '@/core/store';
 import { MAIN_ROUTES } from '@/core/routes/constants';
 import {
   actionUpdateContactDetails,
-  fetchContacts,
   handleRemoveContactAction,
 } from '../../store/features/contacts';
 import { ContactInterface } from '../../models/contacts.model';
@@ -27,13 +26,6 @@ import icAvatarDefault from '@/assets/images/avatar-default.png';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
 
-import {
-  KEY_PAGE,
-  KEY_PAGE_SIZE,
-  PAGE,
-  PAGE_SIZE_OPTIONS,
-} from '@/shared/constant/common';
-
 import flagList from '@/shared/helper/data/flagIcon';
 import Modal from '@/shared/components/common/Modal';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
@@ -43,39 +35,37 @@ function ContactTable() {
   const { t } = useTranslation('contacts');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [searchParams] = useSearchParams();
 
-  const { currentWorkspace } = useAppSelector((state: RootState) => state.auth);
-  const { isLoading, contacts, totalDocs, contactDetails } = useAppSelector(
+  const { contacts, totalDocs, isLoading, contactDetails } = useAppSelector(
     (state: RootState) => state.contacts,
   );
 
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
 
+  /** Handlers */
   function handleRemoveContact(record: ContactInterface) {
     dispatch(actionUpdateContactDetails(record));
     setIsRemoveModalOpen(true);
   }
 
   function handleConfirmRemove(idContact?: string) {
-    const workspaceId = currentWorkspace?.id;
-    const contactId = idContact || contactDetails?.rawId;
-
-    if (!workspaceId || !contactId) return;
+    if (!idContact) return;
 
     dispatch(
       handleRemoveContactAction({
-        workspaceId,
-        id: contactId,
+        id: idContact,
         t,
       }),
     );
 
     setIsRemoveModalOpen(false);
-    navigate('/contacts');
   }
 
-  /* ===== COLUMNS ===== */
+  function handleViewContactProfile(record: ContactInterface) {
+    dispatch(actionUpdateContactDetails(record));
+    navigate(MAIN_ROUTES.CONTACT_DETAILS.replace(':id', record.id));
+  }
+
   const columnsContactTable = [
     {
       title: t('table.fullName'),
@@ -213,26 +203,10 @@ function ContactTable() {
     onChange: (
       selectedRowKeys: React.Key[],
       selectedRows: ContactInterface[],
-    ) => console.log({ selectedRowKeys, selectedRows }),
+    ) => {
+      console.log({ selectedRowKeys, selectedRows });
+    },
   };
-
-  function handleViewContactProfile(record: ContactInterface) {
-    dispatch(actionUpdateContactDetails(record));
-    navigate(MAIN_ROUTES.CONTACT_DETAILS.replace(':id', record.id));
-  }
-
-  useEffect(() => {
-    const page = Number(searchParams.get(KEY_PAGE) || PAGE);
-    const pageSize = Number(
-      searchParams.get(KEY_PAGE_SIZE) || PAGE_SIZE_OPTIONS[0].value,
-    );
-    const offset = (page - 1) * pageSize;
-    dispatch(
-      fetchContacts({
-        offset,
-      }),
-    );
-  }, [searchParams, currentWorkspace?.id, dispatch]);
 
   return (
     <S.ContactTableContainer>
@@ -242,7 +216,7 @@ function ContactTable() {
         totalDocs={totalDocs || 0}
         rowSelection={rowSelection}
         loading={isLoading}
-        onRow={(record: any) => ({
+        onRow={(record: ContactInterface) => ({
           onClick: () => handleViewContactProfile(record),
           style: { cursor: 'pointer' },
         })}

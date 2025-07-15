@@ -1,6 +1,6 @@
-import { Image } from 'antd';
+import { Image, Skeleton } from 'antd';
 import { ReactSVG } from 'react-svg';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useCallback, useMemo, useState } from 'react';
 import { debounce, isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -48,53 +48,45 @@ function Contacts() {
   );
 
   const [keyword, setKeyword] = useState<string | null>(null);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const { visible: isModalFilter, toggle: handleTriggerModalFilter } =
     useModal();
   const { visible: isModalExport, toggle: handleExport } = useModal();
   const { visible: isModalImport, toggle: handleImport } = useModal();
-  const triggerSearch = useMemo(
-    () =>
-      debounce((kw: string | null, pageNumber: number) => {
-        if (!currentWorkspace) return;
 
-        dispatch(
-          fetchContacts({
-            keyword: kw,
-            offset:
-              pageNumber !== PAGE
-                ? (pageNumber - 1) * PAGE_SIZE + 1
-                : undefined,
-          }),
-        );
-      }, 600),
+  const triggerSearch = useCallback(
+    debounce((kw: string | null, pageNumber: number) => {
+      if (!currentWorkspace) return;
+      const offset = (pageNumber - 1) * PAGE_SIZE;
+      dispatch(fetchContacts({ keyword: kw, offset })).finally(() => {
+        setInitialLoading(false);
+      });
+    }, 600),
     [dispatch, currentWorkspace],
   );
 
   useEffect(() => () => triggerSearch.cancel(), [triggerSearch]);
 
   useEffect(() => {
-    if (currentWorkspace) {
-      triggerSearch(keyword, Number(page) || PAGE);
-    }
-  }, [currentWorkspace, page, triggerSearch]);
-  useEffect(() => {
     if (!currentWorkspace) return;
-    triggerSearch(keyword, PAGE);
-  }, [keyword, triggerSearch]);
+    setInitialLoading(true);
+    triggerSearch(keyword, Number(page) || PAGE);
+  }, [currentWorkspace, page, keyword, triggerSearch]);
 
   const renderContactContent = useMemo(() => {
-    if (isEmpty(contacts) && !isLoading) return <ContactEmpty />;
+    if (initialLoading || isLoading) {
+      return <Skeleton active paragraph={{ rows: 8 }} />;
+    }
+    if (isEmpty(contacts)) return <ContactEmpty />;
     return <ContactTable />;
-  }, [contacts, isLoading]);
+  }, [contacts, isLoading, initialLoading]);
 
   const handleSearchContact = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
     const kw = value.length ? value : null;
     setKeyword(kw);
   };
-
-  function handleFilterContact() {}
 
   function handleActionFilterContact(actionType: ActionFilterContactTypeEnums) {
     switch (actionType) {
@@ -134,6 +126,7 @@ function Contacts() {
             onChange={handleSearchContact}
           />
         </S.InputSearch>
+
         <S.FilterPopoverWrap>
           <S.ButtonFilter
             width="fit-content"
@@ -151,7 +144,7 @@ function Contacts() {
             btnContent={
               <S.ButtonAction
                 width="fit-content"
-                onClick={handleFilterContact}
+                onClick={() => {}}
                 iconPosition="left"
                 icon={
                   <Image
@@ -168,7 +161,9 @@ function Contacts() {
           />
         </S.FilterPopoverWrap>
       </S.FilterWrap>
+
       {renderContactContent}
+
       {isModalFilter && (
         <ContactAddFilter
           open={isModalFilter}
