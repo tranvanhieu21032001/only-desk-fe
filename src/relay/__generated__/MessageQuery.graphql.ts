@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7e02a95d271c7347ee708f089c9ed524>>
+ * @generated SignedSource<<0260e75e67156f81639f54b1f1d6787b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ConcreteRequest } from 'relay-runtime';
 export type MessageSender = "AGENT" | "GUEST" | "SYSTEM" | "%future added value";
 export type MessageStatus = "DELIVERED" | "FAILED" | "READ" | "SENT" | "%future added value";
-export type MessageTypeEnum = "FILE" | "IMAGE" | "NOTE" | "SYSTEM" | "TEXT" | "%future added value";
+export type MessageTypeEnum = "FILE" | "IMAGE" | "NOTE" | "RESOLVED" | "SYSTEM" | "TEXT" | "%future added value";
 export type MessageQuery$variables = {
   after?: string | null | undefined;
   before?: string | null | undefined;

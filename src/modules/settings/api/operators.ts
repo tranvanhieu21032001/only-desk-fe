@@ -5,9 +5,9 @@ import { TFunction } from 'i18next';
 const prefixBase = '';
 
 export const endpointOperatorsSetting = {
-  ADD_MEMBER_TO_WORKSPACE: `${prefixBase}/workspaces/:workspaceId/members`,
-  REMOVE_MEMBER_FROM_WORKSPACE: `${prefixBase}/workspaces/:workspaceId/members/:memberId`,
-  UPDATE_MEMBER_IN_WORKSPACE: `${prefixBase}/workspaces/:workspaceId/members/:memberId`,
+  ADD_MEMBER_TO_WORKSPACE: `${prefixBase}/workspaces/members`,
+  REMOVE_MEMBER_FROM_WORKSPACE: `${prefixBase}/workspaces/members/:memberId`,
+  UPDATE_MEMBER_IN_WORKSPACE: `${prefixBase}/workspaces/members/:memberId`,
 };
 
 function replacePathParams(path: string, params: Record<string, string>) {
@@ -18,28 +18,20 @@ function replacePathParams(path: string, params: Record<string, string>) {
 }
 
 export const addMemberToWorkspace = (
-  workspaceId: string,
   body: { email: string; role: string },
   t: TFunction,
 ) =>
-  postRequest(
-    replacePathParams(endpointOperatorsSetting.ADD_MEMBER_TO_WORKSPACE, {
-      workspaceId,
-    }),
-    {
-      data: body,
-      messageSuccess: t('operators.invite-success'),
-    },
-  );
+  postRequest(endpointOperatorsSetting.ADD_MEMBER_TO_WORKSPACE, {
+    data: body,
+    messageSuccess: t('operators.invite-success'),
+  });
 
 export const removeMemberFromWorkspace = (
-  workspaceId: string,
   memberId: string,
   t: TFunction,
 ) =>
   deleteRequest(
     replacePathParams(endpointOperatorsSetting.REMOVE_MEMBER_FROM_WORKSPACE, {
-      workspaceId,
       memberId,
     }),
     {
@@ -48,14 +40,12 @@ export const removeMemberFromWorkspace = (
   );
 
 export const updateMemberInWorkspace = (
-  workspaceId: string,
   memberId: string,
   body: { role?: string; status?: string },
   t: TFunction,
 ) =>
   patchRequest(
     replacePathParams(endpointOperatorsSetting.UPDATE_MEMBER_IN_WORKSPACE, {
-      workspaceId,
       memberId,
     }),
     {

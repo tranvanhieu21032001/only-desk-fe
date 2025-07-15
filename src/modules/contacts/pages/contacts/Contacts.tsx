@@ -1,6 +1,6 @@
 import { Image } from 'antd';
 import { ReactSVG } from 'react-svg';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { debounce, isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -39,7 +39,7 @@ function Contacts() {
       (item: objectHistoryInterface) => item?.key === KEY_PAGE,
     )?.value ||
     search.get(KEY_PAGE) ||
-    0;
+    PAGE;
 
   const { contacts, isLoading } = useAppSelector(
     (state: RootState) => state.contacts,
@@ -47,76 +47,82 @@ function Contacts() {
   const { currentWorkspace } = useAppSelector(
     (state: RootState) => state?.auth,
   );
+
+  const [keyword, setKeyword] = useState<string | null>(null);
+
   const { visible: isModalFilter, toggle: handleTriggerModalFilter } =
     useModal();
   const { visible: isModalExport, toggle: handleExport } = useModal();
   const { visible: isModalImport, toggle: handleImport } = useModal();
+  const triggerSearch = useMemo(
+    () =>
+      debounce((kw: string | null, pageNumber: number) => {
+        if (!currentWorkspace) return;
+
+        dispatch(
+          fetchContacts({
+            keyword: kw,
+            offset:
+              pageNumber !== PAGE
+                ? (pageNumber - 1) * PAGE_SIZE + 1
+                : undefined,
+          }),
+        );
+      }, 300),
+    [dispatch, currentWorkspace],
+  );
+
+  useEffect(() => () => triggerSearch.cancel(), [triggerSearch]);
 
   useEffect(() => {
     if (currentWorkspace) {
-      const payloads: any = {
-        workspaceId: currentWorkspace?.id,
-      };
-
-      if (page && page !== PAGE) {
-        payloads.offset = Number((page - 1) * PAGE_SIZE + 1);
-      }
-
-      dispatch(fetchContacts(payloads));
+      triggerSearch(keyword, Number(page) || PAGE);
     }
-  }, [currentWorkspace, page]);
+  }, [currentWorkspace, page, keyword, triggerSearch]);
 
   const renderContactContent = useMemo(() => {
     if (isEmpty(contacts) && !isLoading) {
       return <ContactEmpty />;
     }
     return <ContactTable />;
-  }, [contacts, currentWorkspace, isLoading]);
+  }, [contacts, isLoading]);
 
-  const handleSearchContact = debounce(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      e?.target?.value;
-    },
-    600,
-  );
+  const handleSearchContact = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim();
+    const kw = value.length ? value : null;
+    setKeyword(kw);
+    triggerSearch(kw, PAGE);
+  };
 
-  function handleFilterContact() {
-    //TODO handle later
-  }
+  function handleFilterContact() {}
 
   function handleActionFilterContact(actionType: ActionFilterContactTypeEnums) {
     switch (actionType) {
-      case ActionFilterContactTypeEnums?.IMPORT:
+      case ActionFilterContactTypeEnums.IMPORT:
         return handleImport();
-        return;
-      case ActionFilterContactTypeEnums?.EXPORT:
+      case ActionFilterContactTypeEnums.EXPORT:
         return handleExport();
-      case ActionFilterContactTypeEnums?.REMOVE:
-        //TODO handle later
+      case ActionFilterContactTypeEnums.REMOVE:
         return;
       default:
         break;
     }
   }
 
-  const renderActionFilter = () => {
-    return (
-      <S.FilterActionWrap>
-        {actionFilterOptions?.map((option: ActionFilterOptionsInterface) => (
-          <S.FilterAction
-            key={option?.key}
-            $isRemove={
-              option?.actionType === ActionFilterContactTypeEnums?.REMOVE
-            }
-            onClick={() => handleActionFilterContact(option?.actionType)}
-          >
-            <ReactSVG src={option?.icon} width={24} height={24} />
-            <Typography>{t(`filter.${option?.label}`)}</Typography>
-          </S.FilterAction>
-        ))}
-      </S.FilterActionWrap>
-    );
-  };
+  const renderActionFilter = () => (
+    <S.FilterActionWrap>
+      {actionFilterOptions.map((option: ActionFilterOptionsInterface) => (
+        <S.FilterAction
+          key={option.key}
+          $isRemove={option.actionType === ActionFilterContactTypeEnums.REMOVE}
+          onClick={() => handleActionFilterContact(option.actionType)}
+        >
+          <ReactSVG src={option.icon} width={24} height={24} />
+          <Typography>{t(`filter.${option.label}`)}</Typography>
+        </S.FilterAction>
+      ))}
+    </S.FilterActionWrap>
+  );
 
   return (
     <S.ContactsContainer>

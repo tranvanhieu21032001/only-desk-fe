@@ -1,8 +1,8 @@
 import { graphql } from 'react-relay';
 
 export const contactsQuery = graphql`
-  query ContactsQuery($args: PaginationArgs!) {
-    contacts(args: $args) {
+  query ContactsQuery($args: PaginationArgs!, $keyword: String) {
+    contacts(args: $args, keyword: $keyword) {
       edges {
         node {
           id

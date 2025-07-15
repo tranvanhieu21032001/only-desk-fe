@@ -92,7 +92,6 @@ const WorkspaceOperatorTeams = () => {
   const handleFinish = async (values: { email: string; role: string }) => {
     await dispatch(
       addOperatorToWorkspace({
-        workspaceId: currentWorkspace?.rawId,
         email: values.email,
         role: values.role,
         t,
@@ -115,7 +114,6 @@ const WorkspaceOperatorTeams = () => {
     try {
       await dispatch(
         updateOperatorInWorkspace({
-          workspaceId: currentWorkspace.rawId,
           memberId: selectedOperator.rawId,
           role: values.role.toLowerCase(),
           status: values.status.toLowerCase(),
@@ -349,7 +347,6 @@ const WorkspaceOperatorTeams = () => {
           if (!selectedOperator) return;
           dispatch(
             removeOperatorFromWorkspace({
-              workspaceId: currentWorkspace.rawId,
               memberId: selectedOperator.rawId,
               t,
             }),

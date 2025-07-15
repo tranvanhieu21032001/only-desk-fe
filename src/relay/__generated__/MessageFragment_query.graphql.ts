@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6858ab7d8d0cf75c0e22db91c1476e1c>>
+ * @generated SignedSource<<5ec0059444aea902b39e34305fbde719>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ReaderFragment } from 'relay-runtime';
 export type MessageSender = "AGENT" | "GUEST" | "SYSTEM" | "%future added value";
 export type MessageStatus = "DELIVERED" | "FAILED" | "READ" | "SENT" | "%future added value";
-export type MessageTypeEnum = "FILE" | "IMAGE" | "NOTE" | "SYSTEM" | "TEXT" | "%future added value";
+export type MessageTypeEnum = "FILE" | "IMAGE" | "NOTE" | "RESOLVED" | "SYSTEM" | "TEXT" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type MessageFragment_query$data = {
   readonly messages: {

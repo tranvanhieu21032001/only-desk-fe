@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0371218570a8f37ced32ff3f099a51ad>>
+ * @generated SignedSource<<b27c91fa4aaecfe35a1ae0d1a209ebec>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type WorkspaceMemberRole = "ADMIN" | "DEVELOPER" | "%future added value";
-export type WorkspaceMemberStatus = "APPROVED" | "PENDING" | "REJECTED" | "%future added value";
+export type WorkspaceMemberStatus = "APRROVED" | "PENDING" | "REJECTED" | "%future added value";
 export type OperatorsQuery$variables = Record<PropertyKey, never>;
 export type OperatorsQuery$data = {
   readonly operators: ReadonlyArray<{

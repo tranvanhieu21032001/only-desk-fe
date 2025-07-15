@@ -48,19 +48,18 @@ const createContact = createAsyncThunk(
 
 const fetchContacts = createAsyncThunk(
   'contacts/get-contacts',
-  async (values: { workspaceId: string; offset?: number }) => {
-    const { workspaceId, offset } = values;
+  async (values: { offset?: number; keyword?: string | null }) => {
+    const { offset, keyword } = values;
 
-    const results: any = await fetchQuery<ContactsQuery>(
+    const results = await fetchQuery<ContactsQuery>(
       relayEnvironment,
       contactsQuery,
       {
-        workspaceId: workspaceId,
-        args: { first: PAGE_SIZE, offset: offset || PAGE },
+        args: { first: PAGE_SIZE, offset: offset ?? PAGE },
+        keyword: keyword ?? null,
       },
       { fetchPolicy: 'network-only' },
     ).toPromise();
-
     return results?.contacts;
   },
 );

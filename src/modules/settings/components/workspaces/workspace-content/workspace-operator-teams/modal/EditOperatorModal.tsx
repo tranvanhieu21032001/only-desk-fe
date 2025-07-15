@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
-import Image from 'antd/es/image';
 import * as S from './modal.styles';
 import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
-import addHeader from '@/assets/icons/common/ic-add-header.svg';
 import Select from '@/shared/components/common/Select';
 import { Form } from 'antd';
 import Input from '@/shared/components/common/Input';
@@ -59,9 +57,6 @@ const EditOperatorModal = ({
             width="180px"
             isLoading={isLoading}
             onClick={() => form.submit()}
-            icon={
-              <Image src={addHeader} preview={false} width={20} height={20} />
-            }
             iconPosition="left"
           >
             {t('operators.save')}

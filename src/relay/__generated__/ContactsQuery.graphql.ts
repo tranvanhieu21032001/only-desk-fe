@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<aa4d54b1b379d1955bd1aa7974e6a65b>>
+ * @generated SignedSource<<7ae9971caef06297c1e01b86c3751996>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ export type PaginationArgs = {
 };
 export type ContactsQuery$variables = {
   args: PaginationArgs;
+  keyword?: string | null | undefined;
 };
 export type ContactsQuery$data = {
   readonly contacts: {
@@ -61,6 +62,11 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "args"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "keyword"
   }
 ],
 v1 = [
@@ -71,6 +77,11 @@ v1 = [
         "kind": "Variable",
         "name": "args",
         "variableName": "args"
+      },
+      {
+        "kind": "Variable",
+        "name": "keyword",
+        "variableName": "keyword"
       }
     ],
     "concreteType": "ContactPagination",
@@ -81,7 +92,7 @@ v1 = [
       {
         "alias": null,
         "args": null,
-        "concreteType": "ContactTypeEdge",
+        "concreteType": "ContactPaginationEdge",
         "kind": "LinkedField",
         "name": "edges",
         "plural": true,
@@ -288,16 +299,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "17b1898e4ff95475231681cf195d7a8f",
+    "cacheID": "dcc716ea58169ba3c0cc21fe08f6cdcf",
     "id": null,
     "metadata": {},
     "name": "ContactsQuery",
     "operationKind": "query",
-    "text": "query ContactsQuery(\n  $args: PaginationArgs!\n) {\n  contacts(args: $args) {\n    edges {\n      node {\n        id\n        name\n        email\n        address\n        rawId\n        segments\n        lastActivityAt\n        avatar\n        companyInfo {\n          company\n        }\n        context {\n          countryCode\n          countryName\n          city\n          timezone\n          language\n        }\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
+    "text": "query ContactsQuery(\n  $args: PaginationArgs!\n  $keyword: String\n) {\n  contacts(args: $args, keyword: $keyword) {\n    edges {\n      node {\n        id\n        name\n        email\n        address\n        rawId\n        segments\n        lastActivityAt\n        avatar\n        companyInfo {\n          company\n        }\n        context {\n          countryCode\n          countryName\n          city\n          timezone\n          language\n        }\n      }\n    }\n    totalCount\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "16ed6afaf717031f07086060cddf9f2b";
+(node as any).hash = "996e37cf2e2621e5e4a0916ba2c151df";
 
 export default node;
