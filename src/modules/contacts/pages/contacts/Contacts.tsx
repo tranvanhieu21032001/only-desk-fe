@@ -1,6 +1,6 @@
 import { Image, Skeleton } from 'antd';
 import { ReactSVG } from 'react-svg';
-import { useEffect, useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { debounce, isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -27,15 +27,18 @@ import * as S from './contacts.styles';
 
 import icFilter from '@/assets/icons/contact/ic-filter.svg';
 import icArrowDown from '@/assets/icons/contact/ic-arrow-down.svg';
+import { useRouter } from '@/shared/hooks/useRouter';
 
 function Contacts() {
   const { t } = useTranslation('contacts');
   const dispatch = useAppDispatch();
   const [search] = useSearchParams();
-  const { currentObjHistory } = useAppSelector((state) => state?.historyRoute);
+  const { replaceState } = useRouter();
+
+  const { currentObjHistory } = useAppSelector((state) => state.historyRoute);
   const page =
     (currentObjHistory || [])?.find(
-      (item: objectHistoryInterface) => item?.key === KEY_PAGE,
+      (item: objectHistoryInterface) => item.key === KEY_PAGE,
     )?.value ||
     search.get(KEY_PAGE) ||
     PAGE;
@@ -43,9 +46,7 @@ function Contacts() {
   const { contacts, isLoading } = useAppSelector(
     (state: RootState) => state.contacts,
   );
-  const { currentWorkspace } = useAppSelector(
-    (state: RootState) => state?.auth,
-  );
+  const { currentWorkspace } = useAppSelector((state: RootState) => state.auth);
 
   const [keyword, setKeyword] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -86,8 +87,9 @@ function Contacts() {
     const value = e.target.value.trim();
     const kw = value.length ? value : null;
     setKeyword(kw);
-  };
 
+    setTimeout(() => replaceState({ [KEY_PAGE]: 1 }), 500);
+  };
   function handleActionFilterContact(actionType: ActionFilterContactTypeEnums) {
     switch (actionType) {
       case ActionFilterContactTypeEnums.IMPORT:
@@ -138,6 +140,7 @@ function Contacts() {
           >
             <Typography>{t('filter.filter')}</Typography>
           </S.ButtonFilter>
+
           <PopoverAction
             content={renderActionFilter()}
             placement="bottomRight"
