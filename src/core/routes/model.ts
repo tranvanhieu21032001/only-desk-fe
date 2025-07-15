@@ -16,3 +16,11 @@ export interface RouterInterface {
 export interface RouterElementInterface extends RouterInterface {
   children?: RouterInterface[];
 }
+
+export interface BreadcrumbItem {
+  path: string;
+  breadcrumb: string[];
+  children?: BreadcrumbItem[];
+  icon?: string;
+  title?: string;
+}

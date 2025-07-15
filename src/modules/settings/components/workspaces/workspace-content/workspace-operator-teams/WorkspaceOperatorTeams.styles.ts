@@ -117,11 +117,10 @@ export const OperatorRow = styled.div<{ $hasBorder: boolean }>`
   border-bottom: ${({ $hasBorder }) =>
     $hasBorder ? '1px solid #f0f0f0' : 'none'};
 
-  @media ${({ theme }) => theme?.breakpoints?.mdMax} {
-    grid-template-columns: 36px 2fr 1fr 2fr 0.8fr;
+  @media (max-width: 768px) {
+    grid-template-columns: 36px 0.7fr 1fr 1fr 0.5fr;
   }
 `;
-
 
 export const OperatorAvatar = styled.img`
   width: 48px;
@@ -133,6 +132,7 @@ export const OperatorAvatar = styled.img`
 export const OperatorName = styled.div`
   font-weight: 600;
   padding-bottom: 10px;
+  min-width: 150px;
 `;
 
 export const OperatorYou = styled.span`
@@ -190,8 +190,7 @@ export const StatusInvited = styled.div`
 `;
 
 export const OperatorEmail = styled.div`
-  padding: 0 50px;
-  width: 400px;
+  padding: 0 20px;
 `;
 
 export const ActionsWrapper = styled.div`

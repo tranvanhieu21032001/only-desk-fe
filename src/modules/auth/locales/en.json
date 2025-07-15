@@ -17,12 +17,10 @@
   "sign-up": "Sign up",
   "back": "Back",
   "sign-in-success": "Sign in successfully",
-  "invite-success":"Team invitations sent successfully!",
-
+  "invite-success": "Team invitations sent successfully!",
   "language": {
     "english": "English"
   },
-
   "sign-up-form": {
     "start-for-free": "Start for free",
     "already-have-an-account": "Already have an account?",
@@ -48,7 +46,6 @@
     "password-not-match": "Password and confirm password do not match",
     "sign-up-success": "Sign up successfully"
   },
-
   "confirm-code": {
     "enter-confirmation-code": "Enter confirmation code",
     "we-sent": "We sent the code to",
@@ -59,9 +56,8 @@
     "get-a-new": "Get a new information",
     "confirmation-code": "Confirmation code successfully",
     "resend-confirmation-code": "Resend confirmation code successfully",
-    "go-to":"Go to your inbox, copy the code and paste it below to confirm your email"
+    "go-to": "Go to your inbox, copy the code and paste it below to confirm your email"
   },
-
   "your-name": {
     "whats-your-name": "Hi, What's your name?",
     "enter-your-name": "Enter your name",
@@ -69,7 +65,6 @@
     "your-name": "Your name",
     "continue": "Continue"
   },
-
   "website": {
     "whats-the-website": "What's the website address where you plan to use OnlyChat?",
     "enter-your-website": "Enter your website address",
@@ -78,11 +73,9 @@
     "continue": "Continue",
     "website-address-not-valid": "Website address is not valid"
   },
-
   "company-size": {
     "company-size": "What's your company size?"
   },
-
   "invite-your-team": {
     "invite-your-team": "Invite your team",
     "email-address": "Email address",
@@ -91,7 +84,6 @@
     "add-more-email": "Add more email",
     "copy-invite-link": "Copy invite link"
   },
-
   "chat-with-customer": {
     "where-do-you-chat-with-customer": "Where do you chat with customer?",
     "telegram": "Telegram",
@@ -100,7 +92,6 @@
     "sms": "SMS",
     "submit": "Submit"
   },
-
   "connect-onlychat": {
     "connect-onlychat-to-your-website": "Connect OnlyChat to your website",
     "connect-onlychat-manually": "Connect OnlyChat manually",
@@ -112,12 +103,10 @@
     "check-install-guide": "Check install guide",
     "connect": "Connect"
   },
-
   "activation": {
     "activation-product": "Activation product",
     "we-are-about": "We are about to activate OnlyChat for your organization"
   },
-
   "invite-modal": {
     "invite-your-developer": "Invite your developer",
     "invite-developer": "Invite Developer To Connect OnlyChat For You",
@@ -125,18 +114,76 @@
     "cancel": "Cancel",
     "send-invite-and-continue": "Send invite and continue"
   },
-
-  "forgot":{
-    "we-will":"We will send a recovery link to your inbox so that you can reset your password and access your account",
-    "recover-your-password":"Recover your password",
-    "please-enter-email":"Please enter your email",
-    "email":"Email",
-    "enter-your-email":"Enter your email",
-    "recovery-password":"Recovery password",
-    "return-to-sign-in":"Return to Sign In",
-    "create-new-password":"Create new password",
-    "save":"Save",
-    "a-password-reset":"A password reset link has been sent to your email address.",
-    "create-new-password-success":"Create new password successfully"
+  "forgot": {
+    "we-will": "We will send a recovery link to your inbox so that you can reset your password and access your account",
+    "recover-your-password": "Recover your password",
+    "please-enter-email": "Please enter your email",
+    "email": "Email",
+    "enter-your-email": "Enter your email",
+    "recovery-password": "Recovery password",
+    "return-to-sign-in": "Return to Sign In",
+    "create-new-password": "Create new password",
+    "save": "Save",
+    "a-password-reset": "A password reset link has been sent to your email address.",
+    "create-new-password-success": "Create new password successfully"
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "inbox": "Inbox",
+    "all_inbox": "All Inbox",
+    "spam_inbox": "Spam Inbox",
+    "assigned_to_me": "Assigned to Me",
+    "new_sub_inbox": "New Sub Inbox",
+    "visitors": "Visitors",
+    "contacts": "Contacts",
+    "contact_profile": "Profile",
+    "edit_profile": "Edit Profile",
+    "knowledge_base": "Knowledge Base",
+    "articles": "Articles",
+    "categories": "Categories",
+    "setting": "Setting",
+    "billing": "Billing",
+    "plan_subscriptions": "Plan & Subscriptions",
+    "change_plan": "Change Plan",
+    "card": "Card",
+    "invoices": "Invoices",
+    "account": "Account",
+    "chatbox": "Chatbox Settings",
+    "workspace": "Workspace Settings",
+    "mail": "Mail",
+    "kb_setting": "Knowledge Base Setting",
+    "knowledge_base_article":"Article",
+    "status_page": "Status Page",
+    "campaigns": "Campaigns",
+    "charts": "Charts",
+    "ai_chatbot": "AI Chatbot",
+    "chatbox_trigger": "Chatbox Trigger",
+    "answer_snippets": "Answer Snippets",
+    "web_content": "Web Content",
+    "inbox_messages": "Inbox Messages",
+    "account_settings": "Account Settings",
+    "integrations": "Integrations",
+    "guide": "Guide",
+    "help_center": "Help Center",
+    "workspace_information": "Workspace information",
+    "setup-integrations": "Setup & Integrations",
+    "operator-teams": "Operator & Teams",
+    "billing-settings": "Billing settings",
+    "team-transparency-log": "Team transparency log",
+    "danger-zone": "Danger zone",
+    "email":"Email Setting",
+    "emailbehavior": "Email behavior",
+    "emaildomain": "Email domain",
+    "emaildelivery": "Email delivery",
+    "chatbox_behavior": "Chatbox behavior",
+    "chatbox_apperance": "Chatbox apperance",
+    "chatbox_security": "Chatbox security",
+    "chatbox_restrictions": "Chatbox restrictions",
+    "push_notifications": "Push notifications",
+    "setup-knowledge-base": "Setup Knowledge Base",
+    "customize-knowledge-base": "Customize Knowledge Base",
+    "advanced-settings": "Advanced settings",
+    "plugins": "Plugins",
+    "all-plugins": "All plugins"
   }
 }

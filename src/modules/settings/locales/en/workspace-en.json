@@ -82,6 +82,7 @@
     "active": "Active",
     "invited": "Invited",
     "rejected": "Rejected",
+    "approved":"Approved",
     "admin": "Admin",
     "member": "Member",
     "update-success": "Update operator successfully",
