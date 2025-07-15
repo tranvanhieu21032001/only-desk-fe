@@ -24,15 +24,20 @@ export interface Operator {
 }
 
 interface OperatorsState {
-  isLoading: boolean;
+  isFetching: boolean;
+  isAdding: boolean;
+  isRemoving: boolean;
+  isUpdating: boolean;
   operators: Operator[];
 }
 
 const initialState: OperatorsState = {
-  isLoading: false,
+  isFetching: false,
+  isAdding: false,
+  isRemoving: false,
+  isUpdating: false,
   operators: [],
 };
-
 
 export const fetchOperators = createAsyncThunk('operators/fetch', async () => {
   const result = await fetchQuery<OperatorsQuery>(
@@ -48,12 +53,7 @@ export const fetchOperators = createAsyncThunk('operators/fetch', async () => {
 export const addOperatorToWorkspace = createAsyncThunk(
   'operators/add',
   async (
-    params: {
-      workspaceId: string;
-      email: string;
-      role: string;
-      t: TFunction;
-    },
+    params: { workspaceId: string; email: string; role: string; t: TFunction },
     { dispatch },
   ) => {
     const { workspaceId, email, role, t } = params;
@@ -99,7 +99,6 @@ export const updateOperatorInWorkspace = createAsyncThunk(
   },
 );
 
-
 const operatorsSlice = createSlice({
   name: 'operators',
   initialState,
@@ -107,47 +106,47 @@ const operatorsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchOperators.pending, (state) => {
-        state.isLoading = true;
+        state.isFetching = true;
       })
       .addCase(fetchOperators.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.operators = action.payload.map((op) => ({ ...op }));
+        state.isFetching = false;
+        state.operators = action.payload;
       })
       .addCase(fetchOperators.rejected, (state) => {
-        state.isLoading = false;
+        state.isFetching = false;
       });
 
     builder
       .addCase(addOperatorToWorkspace.pending, (state) => {
-        state.isLoading = true;
+        state.isAdding = true;
       })
       .addCase(addOperatorToWorkspace.fulfilled, (state) => {
-        state.isLoading = false;
+        state.isAdding = false;
       })
       .addCase(addOperatorToWorkspace.rejected, (state) => {
-        state.isLoading = false;
+        state.isAdding = false;
       });
 
     builder
       .addCase(removeOperatorFromWorkspace.pending, (state) => {
-        state.isLoading = true;
+        state.isRemoving = true;
       })
       .addCase(removeOperatorFromWorkspace.fulfilled, (state) => {
-        state.isLoading = false;
+        state.isRemoving = false;
       })
       .addCase(removeOperatorFromWorkspace.rejected, (state) => {
-        state.isLoading = false;
+        state.isRemoving = false;
       });
 
     builder
       .addCase(updateOperatorInWorkspace.pending, (state) => {
-        state.isLoading = true;
+        state.isUpdating = true;
       })
       .addCase(updateOperatorInWorkspace.fulfilled, (state) => {
-        state.isLoading = false;
+        state.isUpdating = false;
       })
       .addCase(updateOperatorInWorkspace.rejected, (state) => {
-        state.isLoading = false;
+        state.isUpdating = false;
       });
   },
 });

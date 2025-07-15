@@ -40,7 +40,7 @@ const WorkspaceOperatorTeams = () => {
   // const [isPublic, setIsPublic] = useState(true);
   // const [disableConditions] = useState(false);
   const dispatch = useAppDispatch();
-  const { operators, isLoading } = useAppSelector((state) => state.operators);
+  const { operators, isAdding, isFetching,isRemoving, isUpdating } = useAppSelector((state) => state.operators);
   useEffect(() => {
     dispatch(fetchOperators());
   }, [dispatch]);
@@ -53,7 +53,9 @@ const WorkspaceOperatorTeams = () => {
       id: op.id,
       rawId: op.rawId,
       email: op.user.email,
-      name: `${op.user.firstName} ${op.user.lastName}`.trim(),
+      name:
+        `${op.user?.firstName || ''} ${op.user?.lastName || ''}`.trim() ||
+        'No Name',
       role: op.role,
       status: op.status,
       avatar: op.user.avatar,
@@ -120,9 +122,8 @@ const WorkspaceOperatorTeams = () => {
           t,
         }),
       ).unwrap();
-
-      message.success(t('operators.update-success'));
       setIsOpenEditOperator(false);
+      message.success(t('operators.update-success'));
       editForm.resetFields();
     } catch (err) {
       console.error(err);
@@ -199,7 +200,7 @@ const WorkspaceOperatorTeams = () => {
               </Button>
             </S.OperatorBoxRow>
           </S.FlexRowBetween>
-          {isLoading ? (
+          {isFetching ? (
             <>
               {[1, 2, 3].map((key) => (
                 <S.OperatorRow $hasBorder={false} key={key}>
@@ -233,7 +234,7 @@ const WorkspaceOperatorTeams = () => {
                 </Col>
 
                 <Col>
-                  {op.status === 'APRROVED' ? (
+                  {op.status === 'APPROVED' ? (
                     <S.StatusActive>
                       <img src={iconCheck} alt="" />
                       {t('operators.active')}
@@ -324,7 +325,7 @@ const WorkspaceOperatorTeams = () => {
       <AddOperatorModal
         isOpen={isOpenAddOperator}
         onClose={() => setIsOpenAddOperator(false)}
-        isLoading={isLoading}
+        isLoading={isAdding}
         form={addForm}
         handleFinish={handleFinish}
         t={t}
@@ -333,7 +334,7 @@ const WorkspaceOperatorTeams = () => {
       <EditOperatorModal
         isOpen={isOpenEditOperator}
         onClose={() => setIsOpenEditOperator(false)}
-        isLoading={isLoading}
+        isLoading={isUpdating}
         form={editForm}
         handleFinish={handleEditFinish}
         operator={selectedOperator}
@@ -343,7 +344,7 @@ const WorkspaceOperatorTeams = () => {
       <RemoveOperatorModal
         isOpen={isOpenRemoveOperator}
         onClose={() => setIsOpenRemoveOperator(false)}
-        isLoading={isLoading}
+        isLoading={isRemoving}
         onConfirm={() => {
           if (!selectedOperator) return;
           dispatch(

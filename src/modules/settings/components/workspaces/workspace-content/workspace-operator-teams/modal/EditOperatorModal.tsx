@@ -36,10 +36,11 @@ const EditOperatorModal = ({
           operator.status === 'APPROVED'
             ? 'approved'
             : operator.status === 'PENDING'
-            ? 'pending'
-            : 'rejected',
+              ? 'pending'
+              : 'rejected',
       });
     }
+    console.log('operator', operator);
   }, [isOpen, operator, form]);
 
   return (
@@ -58,7 +59,9 @@ const EditOperatorModal = ({
             width="180px"
             isLoading={isLoading}
             onClick={() => form.submit()}
-            icon={<Image src={addHeader} preview={false} width={20} height={20} />}
+            icon={
+              <Image src={addHeader} preview={false} width={20} height={20} />
+            }
             iconPosition="left"
           >
             {t('operators.save')}
@@ -76,7 +79,9 @@ const EditOperatorModal = ({
         <Form.Item
           name="role"
           label={t('operators.role-label')}
-          rules={[{ required: true, message: t('operators.please-choose-role') }]}
+          rules={[
+            { required: true, message: t('operators.please-choose-role') },
+          ]}
         >
           <Select
             isRequired
@@ -93,7 +98,9 @@ const EditOperatorModal = ({
         <Form.Item
           name="status"
           label={t('operators.status-label')}
-          rules={[{ required: true, message: t('operators.please-choose-status') }]}
+          rules={[
+            { required: true, message: t('operators.please-choose-status') },
+          ]}
         >
           <Select
             isRequired
