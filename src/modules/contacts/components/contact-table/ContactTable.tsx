@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import { ReactSVG } from 'react-svg';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -228,15 +227,11 @@ function ContactTable() {
       searchParams.get(KEY_PAGE_SIZE) || PAGE_SIZE_OPTIONS[0].value,
     );
     const offset = (page - 1) * pageSize;
-
-    if (currentWorkspace?.id) {
-      dispatch(
-        fetchContacts({
-          workspaceId: currentWorkspace.id,
-          offset,
-        }),
-      );
-    }
+    dispatch(
+      fetchContacts({
+        offset,
+      }),
+    );
   }, [searchParams, currentWorkspace?.id, dispatch]);
 
   return (

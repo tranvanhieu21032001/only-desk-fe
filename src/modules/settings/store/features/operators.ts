@@ -10,6 +10,7 @@ import {
   removeMemberFromWorkspace,
   updateMemberInWorkspace,
 } from '../../api/operators';
+
 export interface Operator {
   id: string;
   rawId: string;
@@ -53,12 +54,11 @@ export const fetchOperators = createAsyncThunk('operators/fetch', async () => {
 export const addOperatorToWorkspace = createAsyncThunk(
   'operators/add',
   async (
-    params: { workspaceId: string; email: string; role: string; t: TFunction },
+    params: { email: string; role: string; t: TFunction },
     { dispatch },
   ) => {
-    const { workspaceId, email, role, t } = params;
-
-    await addMemberToWorkspace(workspaceId, { email, role }, t);
+    const { email, role, t } = params;
+    await addMemberToWorkspace({ email, role }, t);
     dispatch(fetchOperators());
     return { email };
   },
@@ -67,12 +67,11 @@ export const addOperatorToWorkspace = createAsyncThunk(
 export const removeOperatorFromWorkspace = createAsyncThunk(
   'operators/remove',
   async (
-    params: { workspaceId: string; memberId: string; t: TFunction },
+    params: { memberId: string; t: TFunction },
     { dispatch },
   ) => {
-    const { workspaceId, memberId, t } = params;
-
-    await removeMemberFromWorkspace(workspaceId, memberId, t);
+    const { memberId, t } = params;
+    await removeMemberFromWorkspace(memberId, t);
     dispatch(fetchOperators());
     return memberId;
   },
@@ -81,20 +80,12 @@ export const removeOperatorFromWorkspace = createAsyncThunk(
 export const updateOperatorInWorkspace = createAsyncThunk(
   'operators/update',
   async (
-    params: {
-      workspaceId: string;
-      memberId: string;
-      role?: string;
-      status?: string;
-      t: TFunction;
-    },
+    params: { memberId: string; role?: string; status?: string; t: TFunction },
     { dispatch },
   ) => {
-    const { workspaceId, memberId, role, status, t } = params;
-
-    await updateMemberInWorkspace(workspaceId, memberId, { role, status }, t);
+    const { memberId, role, status, t } = params;
+    await updateMemberInWorkspace(memberId, { role, status }, t);
     dispatch(fetchOperators());
-
     return memberId;
   },
 );
@@ -114,9 +105,7 @@ const operatorsSlice = createSlice({
       })
       .addCase(fetchOperators.rejected, (state) => {
         state.isFetching = false;
-      });
-
-    builder
+      })
       .addCase(addOperatorToWorkspace.pending, (state) => {
         state.isAdding = true;
       })
@@ -125,9 +114,7 @@ const operatorsSlice = createSlice({
       })
       .addCase(addOperatorToWorkspace.rejected, (state) => {
         state.isAdding = false;
-      });
-
-    builder
+      })
       .addCase(removeOperatorFromWorkspace.pending, (state) => {
         state.isRemoving = true;
       })
@@ -136,9 +123,7 @@ const operatorsSlice = createSlice({
       })
       .addCase(removeOperatorFromWorkspace.rejected, (state) => {
         state.isRemoving = false;
-      });
-
-    builder
+      })
       .addCase(updateOperatorInWorkspace.pending, (state) => {
         state.isUpdating = true;
       })

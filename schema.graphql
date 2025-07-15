@@ -125,6 +125,7 @@ enum MessageTypeEnum {
   IMAGE
   SYSTEM
   NOTE
+  RESOLVED
 }
 
 """Status of a message"""
@@ -199,15 +200,25 @@ enum ContactGender {
   FEMALE
 }
 
-type ContactTypeEdge {
+type ContactPaginationEdge {
   cursor: String!
   node: Contact!
 }
 
 type ContactPagination {
-  edges: [ContactTypeEdge!]!
+  edges: [ContactPaginationEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
+}
+
+type ContactTypeEdge {
+  cursor: String!
+  node: Contact!
+}
+
+type ContactConnection {
+  edges: [ContactTypeEdge!]!
+  pageInfo: PageInfo!
 }
 
 type Conversation implements Node {
@@ -215,7 +226,8 @@ type Conversation implements Node {
   contact: Contact
   assignedTo: User
   participants: [User!]
-  status: ConversationStatus!
+  resolved: Boolean
+  segments: [String!]
   subject: String
   metadata: JSON
   createdAt: DateTime
@@ -226,13 +238,6 @@ type Conversation implements Node {
   latestMessage: Message
   replyTo: Message
   rawId: String!
-}
-
-"""Status of a conversation"""
-enum ConversationStatus {
-  ACTIVE
-  CLOSED
-  PENDING
 }
 
 type ConversationTypeEdge {
@@ -256,7 +261,7 @@ type HelpDeskCategory implements Node {
   updatedAt: DateTime
 }
 
-type HelpDeskCategoryTypeEdge {
+type HelpDeskCategoryPaginationEdge {
   cursor: String!
   node: HelpDeskCategory!
 }
@@ -269,7 +274,7 @@ type HelpDeskCategorySection implements Node {
   updatedAt: DateTime
 }
 
-type HelpDeskCategorySectionTypeEdge {
+type HelpDeskCategorySectionPaginationEdge {
   cursor: String!
   node: HelpDeskCategorySection!
 }
@@ -287,7 +292,7 @@ type HelpDeskArticle implements Node {
   updatedAt: DateTime
 }
 
-type HelpDeskArticleTypeEdge {
+type HelpDeskArticlePaginationEdge {
   cursor: String!
   node: HelpDeskArticle!
 }
@@ -296,9 +301,10 @@ type Query {
   me: User
   workspaces: [Workspace!]!
   operators: [WorkspaceMember!]!
-  conversations(first: Float, after: String, last: Float, before: String): ConversationConnection!
+  conversations(assignedToMe: Boolean, first: Float, after: String, last: Float, before: String): ConversationConnection!
   messages(conversationId: ID!, first: Float, after: String, last: Float, before: String): MessageConnection!
-  contacts(args: PaginationArgs!): ContactPagination!
+  contacts(args: PaginationArgs!, keyword: String): ContactPagination!
+  liveContacts(first: Float, after: String, last: Float, before: String): ContactConnection!
   node(id: ID!): Node
 }
 
