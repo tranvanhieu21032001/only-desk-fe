@@ -117,19 +117,9 @@ interface Props {
 }
 
 const MainLayout: React.FC<Props> = React.memo(({ children }) => {
-  const mountTimestamp = useRef(Date.now());
+  // const mountTimestamp = useRef(Date.now());
   const renderCount = useRef(0);
   renderCount.current++;
-
-  useEffect(() => {
-    console.log('🏠 [MainLayout] Component MOUNTED:', {
-      mountTimestamp: mountTimestamp.current,
-      timestamp: new Date().toISOString(),
-    });
-
-    return () => {};
-  }, []);
-
   const { t } = useTranslation('layout');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -157,7 +147,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
     [window?.location?.pathname],
   );
 
-  const prevRoutePath = useRef<string>('');
+  // const prevRoutePath = useRef<string>('');
 
   const WORKSPACE_ID = useAppSelector(selectCurrentWorkspaceId);
   const USER_TOKEN = Cookies.get('_access_token');
