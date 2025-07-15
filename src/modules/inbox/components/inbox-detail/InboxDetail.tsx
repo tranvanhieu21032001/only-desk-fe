@@ -37,10 +37,10 @@ import ToastMessage from '@/shared/components/common/ToastMessage';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
-import { AgentMessage, GuestMessage } from './MessageComponents';
+import { OutgoingMessage } from './OutgoingMessage';
+import { IncomingMessage } from './IncomingMessage';
 import { InboxFooter } from './InboxFooter';
 import {
-  formatTime,
   resolveCurrentConversation,
   handleIconClickLogic,
   handleSendMessageLogic,
@@ -63,6 +63,7 @@ import iconReply from '@/assets/icons/inbox/ic-reply.svg';
 import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
+import { formatTime } from '@/shared/utils/time';
 
 interface InboxDetailProps {
   isSidebarOpen: boolean;
@@ -278,6 +279,16 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     const prevMessageCount = useRef(messages.length);
     const wasLoadingRef = useRef(false);
+    const justLoadedMore = useRef(false);
+
+    useEffect(() => {
+      if (isLoadingMoreMessages) {
+        justLoadedMore.current = true;
+      } else if (justLoadedMore.current) {
+        // Sau khi load more xong, chặn auto-scroll 1 lần
+        justLoadedMore.current = false;
+      }
+    }, [isLoadingMoreMessages]);
 
     useEffect(() => {
       if (messages.length === 0) return;
@@ -320,17 +331,19 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         const timeDifference = now.getTime() - messageTime.getTime();
         const isRecentMessage = timeDifference < 10000;
 
-        if (isRecentMessage && !isLoadingMoreMessages) {
-          if (wasAtBottom) {
-            setTimeout(() => {
-              scrollToShowNewMessage();
-            }, 0);
-            setShowNewMessageNotice(false);
-          } else {
-            setShowNewMessageNotice(true);
-          }
-        } else {
-          // 
+        // Chặn auto-scroll nếu vừa load more
+        if (justLoadedMore.current) {
+          setLastMessageId(newestId);
+          return;
+        }
+
+        if (isRecentMessage && !isLoadingMoreMessages && wasAtBottom) {
+          setTimeout(() => {
+            scrollToShowNewMessage();
+          }, 0);
+          setShowNewMessageNotice(false);
+        } else if (isRecentMessage && !isLoadingMoreMessages) {
+          setShowNewMessageNotice(true);
         }
       }
       setLastMessageId(newestId);
@@ -680,7 +693,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                       return (
                         <React.Fragment key={msg.id || idx}>
                           {isAgent ? (
-                            <AgentMessage
+                            <OutgoingMessage
                               msg={msg}
                               hoveredMessageId={hoveredMessageId}
                               contextMenu={contextMenu}
@@ -691,10 +704,10 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                               setPendingImageScroll={setPendingImageScroll}
                               setPendingImageLoads={setPendingImageLoads}
                               scrollToBottom={scrollToBottom}
-                              avatarAdmin={avatarAdmin}
+                              justLoadedMore={justLoadedMore.current}
                             />
                           ) : (
-                            <GuestMessage
+                            <IncomingMessage
                               msg={msg}
                               hoveredMessageId={hoveredMessageId}
                               contextMenu={contextMenu}
@@ -706,6 +719,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                               setPendingImageLoads={setPendingImageLoads}
                               scrollToBottom={scrollToBottom}
                               avatarAdmin={avatarAdmin}
+                              justLoadedMore={justLoadedMore.current}
                             />
                           )}
                         </React.Fragment>

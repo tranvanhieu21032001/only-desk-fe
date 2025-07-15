@@ -9,6 +9,7 @@ import { emitTypingStart, emitTypingStop } from '@/core/services/socket/socket';
 
 import { uploadFile } from '../../helpers/inbox.logic';
 import { InboxMessageType } from '@/modules/settings/helpers/enums/inbox.enums';
+import { INBOX_TABS } from '../../constants/inbox.constants';
 import * as S from './MessageInput.styles';
 
 import file from '@/assets/icons/common/ic-file.svg';
@@ -20,7 +21,6 @@ import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
 // import icCheck from '@/assets/icons/inbox/ic-check.svg';
 import icCloseImage from '@/assets/icons/inbox/ic-close-image.svg';
 import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
-import { INBOX_TABS } from '../../constants/inbox.constants';
 // import trash from '@/assets/icons/inbox/ic-trash.svg';
 
 interface MessageInputProps {
@@ -87,6 +87,14 @@ const MessageInput: React.FC<MessageInputProps> = ({
     };
   }, [debouncedTypingStart, debouncedTypingStop]);
 
+  const updateFilePreview = (id: string, updater: (item: FilePreview) => Partial<FilePreview>) => {
+    setFilePreviews(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, ...updater(item) } : item
+      )
+    );
+  };
+
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -116,43 +124,19 @@ const MessageInput: React.FC<MessageInputProps> = ({
       try {
         if (!previewItem.originFile) return;
         const res = await uploadFile(previewItem.originFile, (percent) => {
-          setFilePreviews((prev) =>
-            prev.map((item) =>
-              item.id === previewItem.id
-                ? { ...item, progress: percent }
-                : item,
-            ),
-          );
+          updateFilePreview(previewItem.id, () => ({ progress: percent }));
         });
         if (res?.fileUrl) {
-          setFilePreviews((prev) => {
-            const updated = prev.map((item) =>
-              item.id === previewItem.id
-                ? {
-                    ...item,
-                    fileUrl: res.fileUrl || '',
-                    uploading: false,
-                    progress: 100,
-                  }
-                : item,
-            );
-            return updated;
-          });
+          updateFilePreview(previewItem.id, () => ({
+            fileUrl: res.fileUrl || '',
+            uploading: false,
+            progress: 100,
+          }));
         } else {
-          setFilePreviews((prev) => {
-            const updated = prev.map((item) =>
-              item.id === previewItem.id ? { ...item, uploading: false } : item,
-            );
-            return updated;
-          });
+          updateFilePreview(previewItem.id, () => ({ uploading: false }));
         }
       } catch (err) {
-        setFilePreviews((prev) => {
-          const updated = prev.map((item) =>
-            item.id === previewItem.id ? { ...item, uploading: false } : item,
-          );
-          return updated;
-        });
+        updateFilePreview(previewItem.id, () => ({ uploading: false }));
       }
     });
 
@@ -197,6 +181,27 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
+
+  const TAB_ACTIONS = [
+    {
+      key: INBOX_TABS.EDIT,
+      icon: editWhite,
+      label: 'Edit',
+      tab: INBOX_TABS.EDIT,
+    },
+    {
+      key: INBOX_TABS.REMINDER,
+      icon: bellWhite,
+      label: 'Reminder',
+      tab: INBOX_TABS.REMINDER,
+    },
+    {
+      key: INBOX_TABS.NOTE,
+      icon: noteWhite,
+      label: 'Note',
+      tab: INBOX_TABS.NOTE,
+    },
+  ];
 
   return (
     <S.InputRow>
@@ -244,26 +249,14 @@ const MessageInput: React.FC<MessageInputProps> = ({
         </S.FilePreviewWrapper>
       )}
 
-      {inputValue && activeTab === INBOX_TABS.EDIT && (
-        <S.TokenBox>
-          <S.TokenIcon src={editWhite} alt="edit" />
-          Edit
-        </S.TokenBox>
-      )}
-
-      {inputValue && activeTab === INBOX_TABS.REMINDER && (
-        <S.TokenBox>
-          <S.TokenIcon src={bellWhite} alt="reminder" />
-          Reminder
-        </S.TokenBox>
-      )}
-
-      {inputValue && activeTab === INBOX_TABS.NOTE && (
-        <S.TokenBox>
-          <S.TokenIcon src={noteWhite} alt="note" />
-          Note
-        </S.TokenBox>
-      )}
+      {inputValue && TAB_ACTIONS.map(action => (
+        activeTab === action.tab && (
+          <S.TokenBox key={action.key}>
+            <S.TokenIcon src={action.icon} alt={action.label} />
+            {action.label}
+          </S.TokenBox>
+        )
+      ))}
 
       <S.InputWrapper>
         <S.Input

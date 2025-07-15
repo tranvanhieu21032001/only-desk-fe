@@ -100,6 +100,7 @@ export function useScrollHandler({
 
       addMessage(loadingMessage);
 
+      // Đo scrollHeight và scrollTop trước khi load
       const prevScrollHeight = container.scrollHeight;
       const prevScrollTop = container.scrollTop;
 
@@ -114,19 +115,17 @@ export function useScrollHandler({
         removeMessage(loadingMessageId);
       }
 
-      const maintainPosition = () => {
+      // Sau khi render xong, tính delta và set lại scrollTop
+      requestAnimationFrame(() => {
         if (!container) return;
         const newScrollHeight = container.scrollHeight;
-        const heightDifference = newScrollHeight - prevScrollHeight;
-        const newScrollTop = prevScrollTop + heightDifference;
-        container.scrollTop = newScrollTop;
-      };
-      requestAnimationFrame(() => {
-        requestAnimationFrame(maintainPosition);
+        const delta = newScrollHeight - prevScrollHeight;
+        container.scrollTop = prevScrollTop + delta;
       });
 
       setTimeout(() => {
         setIsLoadingMoreMessages(false);
+        setWasAtBottom(false);
       }, 100);
     }
   }, [

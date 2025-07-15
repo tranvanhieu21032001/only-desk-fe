@@ -122,6 +122,8 @@ export const MessageTime = styled.div`
   margin-right: 8px;
   color: #aaa;
   font-style: italic;
+  min-width: 48px; /* Đảm bảo chiều rộng tối thiểu cho time */
+  text-align: right;
 `;
 
 export const Footer = styled.div`
@@ -576,12 +578,11 @@ export const NoteBubbleRight = styled.div`
   color: #333;
   padding: 8px 12px;
   border-radius: 12px;
+  margin: 0 8px 0 0;
   margin-left: auto;
   margin-right: 8px;
-  max-width: 70%;
-  font-weight: 500;
   font-size: 15px;
-  display: inline-block;
+  line-height: 1.4;
   word-break: break-word;
   white-space: pre-wrap;
 `;

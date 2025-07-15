@@ -38,48 +38,70 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
   handleTabClick,
   INBOX_TABS,
 }) => {
+  const actions = [
+    {
+      key: 'Reply',
+      label: 'Reply',
+      icon: undo,
+      iconActive: undo,
+      isActive: false,
+      onClick: undefined,
+    },
+    {
+      key: INBOX_TABS.EDIT,
+      label: 'Edit',
+      icon: edit,
+      iconActive: editBlue,
+      isActive: activeTab === INBOX_TABS.EDIT,
+      onClick: () => handleTabClick(INBOX_TABS.EDIT),
+    },
+    {
+      key: INBOX_TABS.NOTE,
+      label: 'Note',
+      icon: note,
+      iconActive: noteBlue,
+      isActive: activeTab === INBOX_TABS.NOTE,
+      onClick: () => handleTabClick(INBOX_TABS.NOTE),
+    },
+    {
+      key: INBOX_TABS.REMINDER,
+      label: 'Reminder',
+      icon: ring,
+      iconActive: ringBlue,
+      isActive: activeTab === INBOX_TABS.REMINDER,
+      onClick: () => handleTabClick(INBOX_TABS.REMINDER),
+    },
+    {
+      key: INBOX_TABS.SHORTCUTS,
+      label: 'Shortcuts',
+      icon: shortCut,
+      iconActive: shorcutBlue,
+      isActive: activeTab === INBOX_TABS.SHORTCUTS,
+      onClick: () => handleTabClick(INBOX_TABS.SHORTCUTS),
+    },
+    {
+      key: INBOX_TABS.KNOWLEDGE_BASE,
+      label: 'Knowledge Base',
+      icon: tag,
+      iconActive: tagBlue,
+      isActive: activeTab === INBOX_TABS.KNOWLEDGE_BASE,
+      onClick: () => handleTabClick(INBOX_TABS.KNOWLEDGE_BASE),
+    },
+  ];
+
   return (
     <S.Footer>
       <S.ActionIcons>
-        <S.IconProps isActive={false}>
-          <Image src={undo} preview={false} />
-          Reply
-        </S.IconProps>
-        <S.IconProps
-          isActive={activeTab === INBOX_TABS.EDIT}
-          onClick={() => handleTabClick(INBOX_TABS.EDIT)}
-        >
-          <Image src={activeTab === INBOX_TABS.EDIT ? editBlue : edit} preview={false} />
-          Edit
-        </S.IconProps>
-        <S.IconProps
-          isActive={activeTab === INBOX_TABS.NOTE}
-          onClick={() => handleTabClick(INBOX_TABS.NOTE)}
-        >
-          <Image src={activeTab === INBOX_TABS.NOTE ? noteBlue : note} preview={false} />
-          Note
-        </S.IconProps>
-        <S.IconProps
-          isActive={activeTab === INBOX_TABS.REMINDER}
-          onClick={() => handleTabClick(INBOX_TABS.REMINDER)}
-        >
-          <Image src={activeTab === INBOX_TABS.REMINDER ? ringBlue : ring} preview={false} />
-          Reminder
-        </S.IconProps>
-        <S.IconProps
-          isActive={activeTab === INBOX_TABS.SHORTCUTS}
-          onClick={() => handleTabClick(INBOX_TABS.SHORTCUTS)}
-        >
-          <Image src={activeTab === INBOX_TABS.SHORTCUTS ? shorcutBlue : shortCut} preview={false} />
-          Shortcuts
-        </S.IconProps>
-        <S.IconProps
-          isActive={activeTab === INBOX_TABS.KNOWLEDGE_BASE}
-          onClick={() => handleTabClick(INBOX_TABS.KNOWLEDGE_BASE)}
-        >
-          <Image src={activeTab === INBOX_TABS.KNOWLEDGE_BASE ? tagBlue : tag} preview={false} />
-          Knowledge Base
-        </S.IconProps>
+        {actions.map(action => (
+          <S.IconProps
+            key={action.key}
+            isActive={action.isActive}
+            onClick={action.onClick}
+          >
+            <Image src={action.isActive ? action.iconActive : action.icon} preview={false} />
+            {action.label}
+          </S.IconProps>
+        ))}
       </S.ActionIcons>
       <MessageInput
         activeTab={activeTab}
