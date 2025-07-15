@@ -48,7 +48,7 @@ const createContact = createAsyncThunk(
 
 const fetchContacts = createAsyncThunk(
   'contacts/get-contacts',
-  async (values: { offset?: number; keyword?: string | null }) => {
+  async (values: { offset?: number; keyword?: string | null } = {}) => {
     const { offset, keyword } = values;
 
     const results = await fetchQuery<ContactsQuery>(
@@ -66,29 +66,19 @@ const fetchContacts = createAsyncThunk(
 
 const handleRemoveContactAction = createAsyncThunk(
   'contacts/remove-contact',
-  async (
-    values: {
-      workspaceId: string;
-      id: string;
-      t: TFunction;
-    },
-    { dispatch },
-  ) => {
-    const { workspaceId, id, t } = values;
-    const result = await deleteRequest(
-      endpointContact?.REMOVE_CONTACT?.replace(':id', id),
-      {
-        messageSuccess: t('remove-contact-success'),
-      },
+  async (values: { id: string; t: TFunction }, { dispatch }) => {
+    const { id, t } = values;
+
+    const ok = await deleteRequest(
+      endpointContact.REMOVE_CONTACT.replace(':id', id),
+      { messageSuccess: t('remove-contact-success') },
     );
 
-    if (result) {
-      await dispatch(fetchContacts({ workspaceId }));
-    }
-
-    return workspaceId;
+    if (ok) await dispatch(fetchContacts({}));
+    return id;
   },
 );
+
 const fetchDetailsContact = createAsyncThunk(
   'contacts/get-details-contact',
   async (values: { idContact: string }) => {
