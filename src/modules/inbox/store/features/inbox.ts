@@ -4,12 +4,14 @@ import { fetchConversationsRelay } from '../../api/fetchConversationsRelay';
 
 interface InboxState {
   conversations: Record<string, Conversation[]>;
+  selectedConversation: Conversation | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: InboxState = {
   conversations: {},
+  selectedConversation: null,
   loading: false,
   error: null,
 };
@@ -32,8 +34,15 @@ const inboxSlice = createSlice({
   reducers: {
     clearConversations(state) {
       state.conversations = {};
+      state.selectedConversation = null;
       state.loading = false;
       state.error = null;
+    },
+    setSelectedConversation(state, action) {
+      state.selectedConversation = action.payload;
+    },
+    clearSelectedConversation(state) {
+      state.selectedConversation = null;
     },
   },
   extraReducers: (builder) => {
@@ -53,5 +62,5 @@ const inboxSlice = createSlice({
   },
 });
 
-export const { clearConversations } = inboxSlice.actions;
+export const { clearConversations, setSelectedConversation, clearSelectedConversation } = inboxSlice.actions;
 export default inboxSlice.reducer;

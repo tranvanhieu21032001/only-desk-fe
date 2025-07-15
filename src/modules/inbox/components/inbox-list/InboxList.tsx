@@ -19,7 +19,7 @@ import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 import { filterOptions, filtersDropdown } from '@/core/settings/options';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import { fetchConversations } from '../../store/features/inbox';
+import { fetchConversations, setSelectedConversation } from '../../store/features/inbox';
 
 import { Conversation } from '../../interfaces/inbox';
 import { fetchConversationsRelay } from '../../api/fetchConversationsRelay';
@@ -140,7 +140,7 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
   const workspaceId = useSelector(selectCurrentWorkspaceId);
   const rawWorkspaceId = workspaceId ? decodeGlobalId(workspaceId) : null;
   const dispatch = useAppDispatch();
-  const { conversations, loading } = useAppSelector((state) => state.inbox);
+  const { conversations, loading, selectedConversation } = useAppSelector((state) => state.inbox);
   const currentConversations = workspaceId
     ? conversations[workspaceId] || []
     : [];
@@ -220,8 +220,45 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
 
   const handleConversationClick = (conversationId: string) => {
     const conversation = data.conversations.edges.find(edge => edge.node.id === conversationId)?.node;
-    if (onSelectConversation && conversation) {
-      onSelectConversation(conversation); // GỌI TRƯỚC navigate
+    if (conversation) {
+      // Create conversation object with full information
+      const conversationData: Conversation = {
+        id: conversation.id,
+        contact: {
+          id: conversation.id, // Use conversation id as temporary contact id
+          createdAt: conversation.createdAt || '',
+          updatedAt: conversation.updatedAt || '',
+          guestId: '',
+          name: conversation.contact?.name || 'Guest',
+          notification: true,
+          segments: [],
+          isOnline: conversation.contact?.isOnline || false,
+          lastActivityAt: conversation.lastActivityAt || '',
+          workspaceId: workspaceId || '',
+          avatar: conversation.contact?.avatar || '',
+        },
+        assignedTo: conversation.assignedTo?.id || null,
+        participants: [],
+        lastActivityAt: conversation.lastActivityAt || '',
+        latestMessage: {
+          id: conversation.id, // Use conversation id as temporary message id
+          content: conversation.latestMessage?.content || '',
+          sender: 'agent' as any,
+          createdAt: conversation.lastActivityAt || '',
+          updatedAt: conversation.lastActivityAt || '',
+          type: 'text' as any,
+          status: 'sent' as any,
+          user: null,
+        },
+      };
+
+      // Save to Redux
+      dispatch(setSelectedConversation(conversationData));
+
+      // Call callback if exists
+      if (onSelectConversation) {
+        onSelectConversation(conversation);
+      }
     }
     navigate(`?conversationId=${conversationId}`);
   };
