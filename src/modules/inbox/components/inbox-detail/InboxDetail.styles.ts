@@ -774,3 +774,16 @@ export const InboxSpinner = styled.div`
   position: sticky;
   top: 0;
 `;
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+`;

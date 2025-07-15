@@ -116,14 +116,11 @@ export function useScrollHandler({
 
       const maintainPosition = () => {
         if (!container) return;
-
         const newScrollHeight = container.scrollHeight;
         const heightDifference = newScrollHeight - prevScrollHeight;
         const newScrollTop = prevScrollTop + heightDifference;
-
         container.scrollTop = newScrollTop;
       };
-
       requestAnimationFrame(() => {
         requestAnimationFrame(maintainPosition);
       });

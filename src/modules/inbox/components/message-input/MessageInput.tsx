@@ -20,6 +20,7 @@ import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
 // import icCheck from '@/assets/icons/inbox/ic-check.svg';
 import icCloseImage from '@/assets/icons/inbox/ic-close-image.svg';
 import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
+import { INBOX_TABS } from '../../constants/inbox.constants';
 // import trash from '@/assets/icons/inbox/ic-trash.svg';
 
 interface MessageInputProps {
@@ -48,7 +49,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   selectedReminder,
   inputValue,
   setInputValue,
-  setActiveTab,
+  // setActiveTab,
   onSendMessage,
 }) => {
   const [searchParams] = useSearchParams();
@@ -185,7 +186,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
 
     if (inputValue.trim()) {
-      if (activeTab === 'Note') {
+      if (activeTab === INBOX_TABS.NOTE) {
         onSendMessage(inputValue, InboxMessageType.Note);
       } else {
         onSendMessage(inputValue, InboxMessageType.Text);
@@ -243,21 +244,21 @@ const MessageInput: React.FC<MessageInputProps> = ({
         </S.FilePreviewWrapper>
       )}
 
-      {inputValue && activeTab === 'Edit' && (
+      {inputValue && activeTab === INBOX_TABS.EDIT && (
         <S.TokenBox>
           <S.TokenIcon src={editWhite} alt="edit" />
           Edit
         </S.TokenBox>
       )}
 
-      {inputValue && activeTab === 'Reminder' && (
+      {inputValue && activeTab === INBOX_TABS.REMINDER && (
         <S.TokenBox>
           <S.TokenIcon src={bellWhite} alt="reminder" />
           Reminder
         </S.TokenBox>
       )}
 
-      {inputValue && activeTab === 'Note' && (
+      {inputValue && activeTab === INBOX_TABS.NOTE && (
         <S.TokenBox>
           <S.TokenIcon src={noteWhite} alt="note" />
           Note

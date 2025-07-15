@@ -6,17 +6,12 @@ import React, {
   useCallback,
   memo,
 } from 'react';
-import { Image, Tooltip, Skeleton } from 'antd';
+import { Image } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
-import { useAppDispatch } from '@/shared/hooks';
 import { toast } from 'react-toastify';
-import { LoadingOutlined, CloseCircleTwoTone } from '@ant-design/icons';
-
-import AvatarWithStatus from '../../../../shared/components/common/Avatar';
-import MessageInput from '../message-input/MessageInput';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import {
   sendAgentMessage,
@@ -25,13 +20,12 @@ import {
   listenUserTyping,
   offUserTyping,
 } from '../../../../core/services/socket/socket';
-
+import AvatarWithStatus from '../../../../shared/components/common/Avatar';
 import { Message } from '../../interfaces/inbox';
 import { useMessageList } from '../../hooks/useMessageList';
 import { useUser } from '@/core/context/UserContext';
 import { useScrollHandler } from '../../hooks/useScrollHandler';
 import {
-  InboxMessageStatus,
   InboxMessageType,
   InboxSender,
 } from '@/modules/settings/helpers/enums/inbox.enums';
@@ -41,7 +35,19 @@ import { useAppSelector } from '@/shared/hooks';
 import { ToastMessageType } from '@/shared/helper/enums/common';
 import ToastMessage from '@/shared/components/common/ToastMessage';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import { clearSelectedConversation } from '../../store/features/inbox';
+import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
+import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
+import { AgentMessage, GuestMessage } from './MessageComponents';
+import { InboxFooter } from './InboxFooter';
+import {
+  formatTime,
+  resolveCurrentConversation,
+  handleIconClickLogic,
+  handleSendMessageLogic,
+} from '../../helpers/inbox.logic';
+import RenderSkeleton from './RenderSkeleton';
+import ContextMenu from './ContextMenu';
+import TabContent from './TabContent';
 
 import * as S from './InboxDetail.styles';
 import { GlobalStyle } from './InboxDetail.styles';
@@ -52,25 +58,11 @@ import barOpen from '@/assets/icons/common/ic-bar-open.svg';
 import barClose from '@/assets/icons/common/ic-bar.svg';
 import flag from '@/assets/icons/common/ic-flag.svg';
 import defaultAvatar from '@/assets/images/avatar-default.png';
-import undo from '@/assets/icons/common/ic-undo.svg';
-import edit from '@/assets/icons/common/ic-edit.svg';
-import note from '@/assets/icons/common/ic-note.svg';
-import ring from '@/assets/icons/common/ic-ring.svg';
-import shortCut from '@/assets/icons/common/ic-short-cut.svg';
-import tag from '@/assets/icons/common/ic-tag.svg';
-import shorcutBlue from '@/assets/icons/inbox/ic-short-cut-blue.svg';
-import tagBlue from '@/assets/icons/inbox/ic-tag-blue.svg';
-import ringBlue from '@/assets/icons/inbox/ic-ring-blue.svg';
-import noteBlue from '@/assets/icons/inbox/ic-note-blue.svg';
-import editBlue from '@/assets/icons/inbox/ic-edit-blue.svg';
 import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
-import icBar from '@/assets/icons/common/ic-bar-column.svg';
 import iconReply from '@/assets/icons/inbox/ic-reply.svg';
 import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
-import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
-import { Conversation } from '../../interfaces/inbox';
 
 interface InboxDetailProps {
   isSidebarOpen: boolean;
@@ -82,9 +74,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar, conversation }) => {
     const renderCount = useRef(0);
     renderCount.current++;
-
-    // Add mount/unmount tracking
-    const mountTimestamp = useRef(Date.now());
 
     const { t } = useTranslation('inbox');
     const [searchParams] = useSearchParams();
@@ -138,7 +127,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const prevConversationIdRef = useRef<string | null>(null);
     const hasConversationChanged =
       prevConversationIdRef.current !== conversationId;
-    const isUnmountingRef = useRef(false);
 
     useEffect(() => {
       if (hasConversationChanged) {
@@ -156,15 +144,14 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const [guestTyping, setGuestTyping] = useState(false);
     const isSelfSendingRef = useRef(false);
     const [pendingImageScroll, setPendingImageScroll] = useState(false);
-    const [pendingImageLoads, setPendingImageLoads] = useState(0);
+    const [_pendingImageLoads, setPendingImageLoads] = useState(0);
     const [lastMessageId, setLastMessageId] = useState<string | null>(null);
     const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
-    const [shortcutsPage, setShortcutsPage] = useState(1);
+    const [_shortcutsPage, setShortcutsPage] = useState(1);
     const [shortcutsHasMore, setShortcutsHasMore] = useState(true);
     const [shortcutsLoading, setShortcutsLoading] = useState(false);
     const [shortcutsKeyword, setShortcutsKeyword] = useState('');
     const shortcutsListRef = useRef<HTMLDivElement>(null);
-    const messageRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
     const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(
       null,
     );
@@ -184,7 +171,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     const user = useUser();
     const currentUserId = user?.id;
-    const dispatch = useAppDispatch();
 
     const workspaceId = useSelector(selectCurrentWorkspaceId);
     const { conversations, selectedConversation } = useAppSelector(
@@ -195,76 +181,25 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       return workspaceId ? conversations[workspaceId] || [] : [];
     }, [workspaceId, conversations]);
 
-    const currentConversation = useMemo(() => {
-      // Priority: conversation from props
-      if (conversation) return conversation;
-
-      // Then priority: selectedConversation from Redux
-      if (
-        selectedConversation &&
-        selectedConversation.id === stableConversationId.current
-      ) {
-        return selectedConversation;
-      }
-
-      // Find in currentConversations
-      const foundInRedux = currentConversations.find(
-        (conv) => conv.id === stableConversationId.current,
-      );
-      if (foundInRedux) {
-        return foundInRedux;
-      }
-
-      // Fallback: create from messages
-      if (messages && messages.length > 0 && stableConversationId.current) {
-        const guestMessage = messages.find(
-          (msg) => msg.sender === InboxSender.Guest,
-        );
-        const latestMessage = messages[0];
-        return {
-          id: stableConversationId.current,
-          contact: {
-            id: guestMessage?.user?.id || '',
-            createdAt: '',
-            updatedAt: '',
-            guestId: '',
-            name: guestMessage?.user?.firstName
-              ? `${guestMessage.user.firstName} ${guestMessage.user.lastName || ''}`.trim()
-              : 'Guest',
-            notification: true,
-            segments: [],
-            isOnline: false,
-            lastActivityAt:
-              latestMessage?.createdAt || new Date().toISOString(),
-            workspaceId: workspaceId || '',
-            avatar: guestMessage?.user?.avatar || '',
-          },
-          assignedTo: null,
-          participants: [],
-          lastActivityAt: latestMessage?.createdAt || new Date().toISOString(),
-          latestMessage: latestMessage
-            ? {
-                id: latestMessage.id,
-                content: latestMessage.content,
-                sender: latestMessage.sender,
-                createdAt: latestMessage.createdAt,
-                updatedAt: latestMessage.updatedAt,
-                type: latestMessage.type,
-                status: latestMessage.status,
-                user: latestMessage.user,
-              }
-            : null,
-        } as Conversation;
-      }
-      return undefined;
-    }, [
+    const currentConversation = useMemo(
+      () =>
+        resolveCurrentConversation({
+          conversation: conversation ?? undefined,
+          selectedConversation: selectedConversation ?? undefined,
+          currentConversations,
+          stableConversationId: stableConversationId.current,
+          messages: messages as Message[],
+          workspaceId,
+        }),
+      [
       conversation,
       selectedConversation,
       currentConversations,
       stableConversationId.current,
       messages,
       workspaceId,
-    ]);
+      ],
+    );
 
     const messageEndRef = useRef<HTMLDivElement>(null);
     const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -327,7 +262,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           });
         }
       }
-    }, [loading, messages.length, stableConversationId.current]); // Use stable conversation ID
+    }, [loading, messages.length, stableConversationId.current]);
 
     // Check if user is at bottom (gắn event listener)
     useEffect(() => {
@@ -359,7 +294,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       if (justFinishedLoading && currentCount > previousCount) {
         wasLoadingRef.current = false;
         prevMessageCount.current = currentCount;
-
         const newestMessage = messages[0];
         setLastMessageId(newestMessage?.id);
         return;
@@ -384,10 +318,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         const now = new Date();
         const messageTime = new Date(newestMessage.createdAt);
         const timeDifference = now.getTime() - messageTime.getTime();
-        const isRecentMessage = timeDifference < 10000; // Within 10 seconds
+        const isRecentMessage = timeDifference < 10000;
 
-        // Only auto-scroll for recent messages (real-time incoming)
-        if (isRecentMessage) {
+        if (isRecentMessage && !isLoadingMoreMessages) {
           if (wasAtBottom) {
             setTimeout(() => {
               scrollToShowNewMessage();
@@ -397,7 +330,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             setShowNewMessageNotice(true);
           }
         } else {
-          //
+          // 
         }
       }
       setLastMessageId(newestId);
@@ -472,8 +405,8 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     const handleTabClick = (tab: string) => {
       setActiveTab(activeTab === tab ? null : tab);
-      if (tab === 'Edit') setInputValue('Hello');
-      if (tab === 'Note') setInputValue(' ');
+      if (tab === INBOX_TABS.EDIT) setInputValue(' ');
+      if (tab === INBOX_TABS.NOTE) setInputValue(' ');
     };
 
     const handleSendMessage = (
@@ -481,87 +414,23 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       type: InboxMessageType = InboxMessageType.Text,
       metadata: any = {},
     ) => {
-      if (
-        (!content.trim() && type === InboxMessageType.Text) ||
-        !rawConversationId
-      )
-        return;
-
-      const now = new Date();
-      const temp_id = uuidv4();
-      const sendTime = Date.now();
-      const newMessage: Message = {
-        id: temp_id,
-        content,
-        sender: InboxSender.Agent,
-        user:
-          currentUserId && user?.firstName && user?.lastName && user?.avatar
-            ? {
-                id: currentUserId,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                avatar: user.avatar,
-              }
-            : null,
-        type:
-          type === InboxMessageType.Image
-            ? InboxMessageType.Image
-            : type === InboxMessageType.Note
-              ? InboxMessageType.Note
-              : InboxMessageType.Text,
-        status: InboxMessageStatus.Sending,
-        createdAt: now.toISOString(),
-        updatedAt: now.toISOString(),
-        metadata,
-      };
-
       isSelfSendingRef.current = true;
-      addMessage(newMessage);
-
-      if (type === InboxMessageType.Image || type === InboxMessageType.Note) {
-        setTimeout(() => {
-          scrollToShowNewMessage();
-        }, 0);
-      }
-
-      if (type === InboxMessageType.Image) {
-        setPendingImageLoads((prev) => prev + 1);
-      }
-
-      sendAgentMessage(
-        {
-          conversationId: rawConversationId,
-          message: {
-            content,
-            type,
-            metadata,
-            temp_id,
-          },
-        },
-        (res: any) => {
-          const elapsedTime = Date.now() - sendTime;
-          const minLoadingTime = 500;
-          const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
-
-          setTimeout(() => {
-            if (res?.success && res?.messageId) {
-              removeMessage(temp_id);
-
-              const realMessage: Message = {
-                ...newMessage,
-                id: res.messageId,
-                status: InboxMessageStatus.Sent,
-              };
-              addMessage(realMessage);
-            } else {
-              updateMessage(temp_id, { status: InboxMessageStatus.Failed });
-            }
-          }, remainingTime);
-        },
-      );
-
-      setInputValue('');
-      setActiveTab(null);
+      handleSendMessageLogic({
+        content,
+        type,
+        metadata,
+        rawConversationId,
+        currentUserId,
+        user,
+        addMessage,
+        removeMessage,
+        updateMessage,
+        setPendingImageLoads,
+        scrollToShowNewMessage,
+        sendAgentMessage,
+        setInputValue,
+        setActiveTab,
+      });
     };
 
     // Fetch shortcuts
@@ -582,7 +451,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     // When clicking the Shortcuts tab or changing keywords
     useEffect(() => {
-      if (activeTab === 'Shortcuts') {
+      if (activeTab === INBOX_TABS.SHORTCUTS) {
         setShortcutsPage(1);
         fetchShortcuts(1, shortcutsKeyword);
       }
@@ -591,7 +460,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     // Scroll load more
     useEffect(() => {
-      if (activeTab !== 'Shortcuts') return;
+      if (activeTab !== INBOX_TABS.SHORTCUTS) return;
       const handleScroll = () => {
         const el = shortcutsListRef.current;
         if (!el || shortcutsLoading || !shortcutsHasMore) return;
@@ -611,18 +480,16 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       // eslint-disable-next-line
     }, [activeTab, shortcutsLoading, shortcutsHasMore, shortcutsKeyword]);
 
-    // When entering in input, if you are in the Shortcuts tab then search
     useEffect(() => {
-      if (activeTab === 'Shortcuts') {
+      if (activeTab === INBOX_TABS.SHORTCUTS) {
         setShortcutsKeyword(inputValue);
       }
       // eslint-disable-next-line
     }, [inputValue, activeTab]);
 
-    // When typing ! automatically switches to Shortcuts tab and search
     useEffect(() => {
       if (inputValue.startsWith('!')) {
-        setActiveTab('Shortcuts');
+        setActiveTab(INBOX_TABS.SHORTCUTS);
         setShortcutsKeyword(inputValue.slice(1));
       }
       // eslint-disable-next-line
@@ -631,21 +498,14 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     // Click outside to close active tab
     useEffect(() => {
       if (!activeTab) return;
-
       const handleClickOutside = (event: MouseEvent) => {
         const target = event.target as Node;
-
-        // If click is inside footer (input area), don't close tab
         if (footerRef.current && footerRef.current.contains(target)) {
           return;
         }
-
-        // If click is inside tab content panel, don't close tab
         if (target && (target as Element).closest('[data-tab-panel="true"]')) {
           return;
         }
-
-        // Close active tab
         setActiveTab(null);
       };
 
@@ -655,51 +515,14 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       };
     }, [activeTab]);
 
-    const MENU_WIDTH = 180;
-
     const handleIconClick = (e: React.MouseEvent, message: Message) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const rect = e.currentTarget.getBoundingClientRect();
-      const isAgent = message.sender === InboxSender.Agent;
-
-      let x, y;
-
-      if (isAgent) {
-        x = rect.left - MENU_WIDTH - 5;
-        y = rect.top;
-      } else {
-        x = rect.right + 5;
-        y = rect.top;
-      }
-
-      // Check horizontal bounds
-      if (x + MENU_WIDTH > window.innerWidth) {
-        x = window.innerWidth - MENU_WIDTH - 8;
-      }
-      if (x < 8) {
-        x = 8;
-      }
-
-      // Check vertical bounds
-      const menuHeight = isAgent ? 200 : 100; // Approximate height based on menu items
-      if (y + menuHeight > window.innerHeight) {
-        y = window.innerHeight - menuHeight - 8;
-      }
-      if (y < 8) {
-        y = 8;
-      }
-
-      setContextMenu({
-        x: x,
-        y: y,
-        visible: true,
+      handleIconClickLogic(
+        e,
         message,
-        messageId: message.id,
-      });
-
-      setHoveredMessageId(message.id);
+        setContextMenu,
+        setHoveredMessageId,
+        MENU_WIDTH,
+      );
     };
 
     const closeContextMenu = () => {
@@ -726,7 +549,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           toast(
             React.createElement(ToastMessage, {
               typeToast: ToastMessageType.SUCCESS,
-              message: 'Text copied to clipboard!',
+              message: t('inboxDetail.textCopiedToClipboard'),
             }),
           );
           closeContextMenu();
@@ -741,7 +564,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             toast.success(
               React.createElement(ToastMessage, {
                 typeToast: ToastMessageType.SUCCESS,
-                message: 'Text copied to clipboard!',
+                message: t('inboxDetail.textCopiedToClipboard'),
               }),
             );
             closeContextMenu();
@@ -749,7 +572,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             toast.error(
               React.createElement(ToastMessage, {
                 typeToast: ToastMessageType.ERROR,
-                message: 'Failed to copy text',
+                message: t('inboxDetail.failedToCopyTextDesc'),
               }),
             );
             closeContextMenu();
@@ -764,234 +587,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const handleDeleteMessage = () =>
       console.log('Delete message:', contextMenu.message?.id);
 
-    const renderTabContent = () => {
-      switch (activeTab) {
-        case 'Shortcuts':
-          return (
-            <S.TabPanel data-tab-panel="true">
-              <S.TabTitle>Shortcuts</S.TabTitle>
-              <S.ShortcutsList ref={shortcutsListRef}>
-                {shortcuts.map((item) => (
-                  <S.ShortcutsItem
-                    key={item.id}
-                    onClick={() => {
-                      setInputValue(item.message);
-                      setActiveTab(null);
-                    }}
-                  >
-                    <span>{item.shortcut}</span>
-                    <p>{item.message}</p>
-                  </S.ShortcutsItem>
-                ))}
-                {shortcutsLoading && (
-                  <S.NoShortcutsFound>
-                    <LoadingOutlined
-                      spin
-                      style={{ fontSize: 16, color: '#666' }}
-                    />
-                  </S.NoShortcutsFound>
-                )}
-                {!shortcutsLoading && shortcuts.length === 0 && (
-                  <S.NoShortcutsFound>No shortcuts found</S.NoShortcutsFound>
-                )}
-              </S.ShortcutsList>
-            </S.TabPanel>
-          );
-        case 'Note':
-          return null;
-        case 'Reminder':
-          return (
-            <S.TabPanel data-tab-panel="true">
-              <S.TabTitle>{t('inboxDetail.reminder')}</S.TabTitle>
-              <S.ShortcutItem>
-                <p>{t('inboxDetail.reminder1')}</p>
-              </S.ShortcutItem>
-              <S.ShortcutItem>
-                <p>{t('inboxDetail.reminder2')}</p>
-              </S.ShortcutItem>
-              <S.ShortcutItem
-                onClick={() => {
-                  const reminderText = '12:00 20/04/2025';
-                  setInputValue((prev) => prev + reminderText);
-                  setSelectedReminder('12:00 20/04/2025');
-                  setTimeout(() => {
-                    if (inputRef.current) {
-                      inputRef.current.focus();
-                      inputRef.current.selectionStart =
-                        inputRef.current.selectionEnd = (
-                          inputValue + reminderText
-                        ).length;
-                    }
-                  }, 0);
-                }}
-              >
-                <p>{t('inboxDetail.reminderTomorrow')}</p>
-              </S.ShortcutItem>
-            </S.TabPanel>
-          );
-        case 'Knowledge Base':
-          return (
-            <S.TabPanel data-tab-panel="true">
-              <S.TabTitle>{t('inboxDetail.knowledgeBase')}</S.TabTitle>
-              <S.ShortcutItem>
-                <S.KnowBaseItem>Women</S.KnowBaseItem>
-                <p>{t('inboxDetail.articleTitle1')}</p>
-              </S.ShortcutItem>
-              <S.ShortcutItem>
-                <S.KnowBaseItem>Women</S.KnowBaseItem>
-                <p>{t('inboxDetail.articleTitle2')}</p>
-              </S.ShortcutItem>
-            </S.TabPanel>
-          );
-        default:
-          return null;
-      }
-    };
-
-    const formatTime = (isoString: string) => {
-      if (!isoString) return '';
-      const date = new Date(isoString);
-      return date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      });
-    };
-
-    const renderSkeleton = () => (
-      <>
-        {[...Array(12)].map((_, i) =>
-          i % 2 === 1 ? (
-            <S.MessageRowUser key={i}>
-              <S.MessageBubbleRight>
-                <Skeleton.Input active size="small" style={{ width: 180 }} />
-              </S.MessageBubbleRight>
-              <S.MessageAvatarWrapper style={{ marginLeft: 8 }}>
-                <Skeleton.Avatar active size={40} />
-              </S.MessageAvatarWrapper>
-            </S.MessageRowUser>
-          ) : (
-            <S.MessageRow key={i}>
-              <S.MessageAvatarWrapper>
-                <Skeleton.Avatar active size={40} />
-              </S.MessageAvatarWrapper>
-              <S.MessageBubbleLeft>
-                <Skeleton.Input active size="small" style={{ width: 150 }} />
-              </S.MessageBubbleLeft>
-            </S.MessageRow>
-          ),
-        )}
-      </>
-    );
-
-    const renderContextMenu = () => {
-      if (!contextMenu.visible || !contextMenu.message) return null;
-
-      const isAgentMessage = contextMenu.message.sender === InboxSender.Agent;
-      const isImageMessage =
-        contextMenu.message.type === InboxMessageType.Image;
-
-      if (isImageMessage) {
-        return (
-          <S.ContextMenu
-            style={{
-              top: contextMenu.y,
-              left: contextMenu.x,
-              position: 'fixed',
-              width: MENU_WIDTH,
-              zIndex: 1000,
-            }}
-            onClick={(e) => e.stopPropagation()}
-            onMouseEnter={() => {
-              if (contextMenu.messageId) {
-                setHoveredMessageId(contextMenu.messageId);
-              }
-            }}
-            onMouseLeave={() => {
-              setHoveredMessageId(null);
-            }}
-          >
-            <S.ContextMenuItem onClick={handleReply}>
-              <img src={iconReply} alt="Reply" />
-              Reply
-            </S.ContextMenuItem>
-            <S.ContextMenuSeparator />
-            <S.ContextMenuItem onClick={handleDeleteMessage} danger>
-              <img src={iconDelete} alt="Delete" />
-              Delete
-            </S.ContextMenuItem>
-          </S.ContextMenu>
-        );
-      }
-
-      return (
-        <S.ContextMenu
-          style={{
-            top: contextMenu.y,
-            left: contextMenu.x,
-            position: 'fixed',
-            width: MENU_WIDTH,
-            zIndex: 1000,
-          }}
-          onClick={(e) => e.stopPropagation()}
-          onMouseEnter={() => {
-            if (contextMenu.messageId) {
-              setHoveredMessageId(contextMenu.messageId);
-            }
-          }}
-          onMouseLeave={() => {
-            setHoveredMessageId(null);
-          }}
-        >
-          <S.ContextMenuItem
-            style={{ borderBottom: '1px solid #eee' }}
-            onClick={handleReply}
-          >
-            <img src={iconReply} alt="Reply" />
-            Reply
-          </S.ContextMenuItem>
-
-          {!isImageMessage && (
-            <S.ContextMenuItem onClick={handleCopyText}>
-              <img src={iconCopy} alt="Copy" />
-              Copy text
-            </S.ContextMenuItem>
-          )}
-
-          {isAgentMessage && (
-            <>
-              {!isImageMessage && (
-                <S.ContextMenuItem onClick={handleEdit}>
-                  <img src={iconEdit} alt="Edit" />
-                  Edit
-                </S.ContextMenuItem>
-              )}
-              <S.ContextMenuSeparator />
-              <S.ContextMenuItem onClick={handleDeleteMessage} danger>
-                <img src={iconDelete} alt="Delete" />
-                Delete
-              </S.ContextMenuItem>
-            </>
-          )}
-        </S.ContextMenu>
-      );
-    };
-
-    const [barMenu, setBarMenu] = useState<{
-      visible: boolean;
-      x: number;
-      y: number;
-    }>({ visible: false, x: 0, y: 0 });
-    const barIconRef = useRef<HTMLImageElement>(null);
-
-    useEffect(() => {
-      if (barMenu.visible) {
-        const close = () => setBarMenu((prev) => ({ ...prev, visible: false }));
-        window.addEventListener('click', close);
-        return () => window.removeEventListener('click', close);
-      }
-    }, [barMenu.visible]);
-
     if (!conversationId) {
       return (
         <S.Container>
@@ -1001,29 +596,29 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     }
 
     const renderLoadingOverlay = () => (
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: 'rgba(255,255,255,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 10,
-        }}
-      >
+      <S.LoadingOverlay>
         <LoadingOutlined spin style={{ fontSize: 32, color: '#999' }} />
-      </div>
+      </S.LoadingOverlay>
     );
 
     return (
       <>
         <GlobalStyle />
         <S.Container>
-          {renderContextMenu()}
+          <ContextMenu
+            contextMenu={contextMenu}
+            handleReply={handleReply}
+            handleDeleteMessage={handleDeleteMessage}
+            handleCopyText={handleCopyText}
+            handleEdit={handleEdit}
+            setHoveredMessageId={setHoveredMessageId}
+            iconReply={iconReply}
+            iconDelete={iconDelete}
+            iconEdit={iconEdit}
+            iconCopy={iconCopy}
+            MENU_WIDTH={MENU_WIDTH}
+            t={t}
+          />
           <S.Header>
             <S.HeaderLeft>
               <AvatarWithStatus
@@ -1062,7 +657,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
               ref={messageContainerRef}
             >
               {messages.length === 0 && loading ? (
-                renderSkeleton()
+                <RenderSkeleton />
               ) : messages.length === 0 && !loading ? (
                 <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
               ) : (
@@ -1085,309 +680,33 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                       return (
                         <React.Fragment key={msg.id || idx}>
                           {isAgent ? (
-                            <S.MessageRowUser>
-                              {msg.type === InboxMessageType.Image &&
-                              msg.metadata?.fileUrl ? (
-                                <S.AgentMessageContainer>
-                                  <S.TimeWithIconContainer
-                                    onMouseEnter={() =>
-                                      setHoveredMessageId(msg.id)
-                                    }
-                                    onMouseLeave={() => {
-                                      if (!contextMenu.visible) {
-                                        setHoveredMessageId(null);
-                                      }
-                                    }}
-                                  >
-                                    {hoveredMessageId === msg.id ? (
-                                      <S.MessageHoverIconNearTime
-                                        onClick={(e) => handleIconClick(e, msg)}
-                                      >
-                                        <img src={icBar} alt="menu" />
-                                      </S.MessageHoverIconNearTime>
-                                    ) : (
-                                      <S.MessageHoverIconPlaceholder />
-                                    )}
-                                    <S.MessageTime>
-                                      {formatTime(msg.createdAt)}
-                                      {msg.status ===
-                                        InboxMessageStatus.Sending && (
-                                        <LoadingOutlined
-                                          style={{
-                                            marginLeft: 6,
-                                            fontSize: 12,
-                                          }}
-                                          spin
-                                        />
-                                      )}
-                                      {msg.status ===
-                                        InboxMessageStatus.Failed && (
-                                        <Tooltip title="Send failed">
-                                          <CloseCircleTwoTone
-                                            twoToneColor="#ff4d4f"
-                                            style={{
-                                              marginLeft: 6,
-                                              fontSize: 12,
-                                            }}
-                                          />
-                                        </Tooltip>
-                                      )}
-                                    </S.MessageTime>
-                                  </S.TimeWithIconContainer>
-                                  <S.MessageImage
-                                    onMouseEnter={() =>
-                                      setHoveredMessageId(msg.id)
-                                    }
-                                    onMouseLeave={() => {
-                                      if (!contextMenu.visible) {
-                                        setHoveredMessageId(null);
-                                      }
-                                    }}
-                                  >
-                                    <Image
-                                      src={msg.metadata.fileUrl}
-                                      alt="image"
-                                      preview={true}
-                                      onLoad={() => {
-                                        setPendingImageLoads((prev) => {
-                                          const next = Math.max(prev - 1, 0);
-                                          if (next === 0) {
-                                            scrollToBottom();
-                                          }
-                                          return next;
-                                        });
-                                        if (pendingImageScroll) {
-                                          setPendingImageScroll(false);
-                                        }
-                                      }}
-                                    />
-                                  </S.MessageImage>
-                                </S.AgentMessageContainer>
-                              ) : msg.type === InboxMessageType.Note ? (
-                                <S.NoteContainer>
-                                  <S.NoteRow>
-                                    <S.TimeWithIconContainer
-                                      onMouseEnter={() =>
-                                        setHoveredMessageId(msg.id)
-                                      }
-                                      onMouseLeave={() => {
-                                        if (!contextMenu.visible) {
-                                          setHoveredMessageId(null);
-                                        }
-                                      }}
-                                    >
-                                      {hoveredMessageId === msg.id ? (
-                                        <S.MessageHoverIconNearTime
-                                          onClick={(e) =>
-                                            handleIconClick(e, msg)
-                                          }
-                                        >
-                                          <img src={icBar} alt="menu" />
-                                        </S.MessageHoverIconNearTime>
-                                      ) : (
-                                        <S.MessageHoverIconPlaceholder />
-                                      )}
-                                      <S.MessageTime>
-                                        {formatTime(msg.createdAt)}
-                                        {msg.status ===
-                                          InboxMessageStatus.Sending && (
-                                          <LoadingOutlined
-                                            style={{
-                                              marginLeft: 6,
-                                              fontSize: 12,
-                                            }}
-                                            spin
-                                          />
-                                        )}
-                                        {msg.status ===
-                                          InboxMessageStatus.Failed && (
-                                          <Tooltip title="Send failed">
-                                            <CloseCircleTwoTone
-                                              twoToneColor="#ff4d4f"
-                                              style={{
-                                                marginLeft: 6,
-                                                fontSize: 12,
-                                              }}
-                                            />
-                                          </Tooltip>
-                                        )}
-                                      </S.MessageTime>
-                                    </S.TimeWithIconContainer>
-                                    <S.NoteBubbleRight
-                                      onMouseEnter={() =>
-                                        setHoveredMessageId(msg.id)
-                                      }
-                                      onMouseLeave={() => {
-                                        if (!contextMenu.visible) {
-                                          setHoveredMessageId(null);
-                                        }
-                                      }}
-                                    >
-                                      {msg.content}
-                                    </S.NoteBubbleRight>
-                                  </S.NoteRow>
-                                  <S.NoteMeta>
-                                    Admin left this private note
-                                  </S.NoteMeta>
-                                </S.NoteContainer>
-                              ) : (
-                                <S.AgentMessageContainer>
-                                  <S.TimeWithIconContainer
-                                    onMouseEnter={() =>
-                                      setHoveredMessageId(msg.id)
-                                    }
-                                    onMouseLeave={() => {
-                                      if (!contextMenu.visible) {
-                                        setHoveredMessageId(null);
-                                      }
-                                    }}
-                                  >
-                                    {hoveredMessageId === msg.id ? (
-                                      <S.MessageHoverIconNearTime
-                                        onClick={(e) => handleIconClick(e, msg)}
-                                      >
-                                        <img src={icBar} alt="menu" />
-                                      </S.MessageHoverIconNearTime>
-                                    ) : (
-                                      <S.MessageHoverIconPlaceholder />
-                                    )}
-                                    <S.MessageTime>
-                                      {formatTime(msg.createdAt)}
-                                      {msg.status ===
-                                        InboxMessageStatus.Sending && (
-                                        <LoadingOutlined
-                                          style={{
-                                            marginLeft: 6,
-                                            fontSize: 12,
-                                          }}
-                                          spin
-                                        />
-                                      )}
-                                      {msg.status ===
-                                        InboxMessageStatus.Failed && (
-                                        <Tooltip title="Send failed">
-                                          <CloseCircleTwoTone
-                                            twoToneColor="#ff4d4f"
-                                            style={{
-                                              marginLeft: 6,
-                                              fontSize: 12,
-                                            }}
-                                          />
-                                        </Tooltip>
-                                      )}
-                                    </S.MessageTime>
-                                  </S.TimeWithIconContainer>
-                                  <S.MessageBubbleRight
-                                    onMouseEnter={() =>
-                                      setHoveredMessageId(msg.id)
-                                    }
-                                    onMouseLeave={() => {
-                                      if (!contextMenu.visible) {
-                                        setHoveredMessageId(null);
-                                      }
-                                    }}
-                                  >
-                                    {msg.content}
-                                  </S.MessageBubbleRight>
-                                </S.AgentMessageContainer>
-                              )}
-                            </S.MessageRowUser>
+                            <AgentMessage
+                              msg={msg}
+                              hoveredMessageId={hoveredMessageId}
+                              contextMenu={contextMenu}
+                              handleIconClick={handleIconClick}
+                              setHoveredMessageId={setHoveredMessageId}
+                              formatTime={formatTime}
+                              pendingImageScroll={pendingImageScroll}
+                              setPendingImageScroll={setPendingImageScroll}
+                              setPendingImageLoads={setPendingImageLoads}
+                              scrollToBottom={scrollToBottom}
+                              avatarAdmin={avatarAdmin}
+                            />
                           ) : (
-                            <S.MessageRow>
-                              <S.MessageAvatarWrapper>
-                                <S.MessageAvatar
-                                  src={avatarAdmin}
-                                  alt={msg.user?.firstName}
-                                />
-                                <S.MessageColumnView>
-                                  <S.MessageSenderName>
-                                    {msg.user?.firstName || 'Guest'}
-                                  </S.MessageSenderName>
-                                  {msg.type === InboxMessageType.Image &&
-                                  msg.metadata?.fileUrl ? (
-                                    <S.MessageImageLeft
-                                      onMouseEnter={() =>
-                                        setHoveredMessageId(msg.id)
-                                      }
-                                      onMouseLeave={() => {
-                                        if (!contextMenu.visible) {
-                                          setHoveredMessageId(null);
-                                        }
-                                      }}
-                                    >
-                                      <Image
-                                        src={msg.metadata.fileUrl}
-                                        alt="image"
-                                        onLoad={() => {
-                                          setPendingImageLoads((prev) => {
-                                            const next = Math.max(prev - 1, 0);
-                                            if (next === 0) {
-                                              scrollToBottom();
-                                            }
-                                            return next;
-                                          });
-                                          if (pendingImageScroll) {
-                                            setPendingImageScroll(false);
-                                          }
-                                        }}
-                                        preview={true}
-                                      />
-                                    </S.MessageImageLeft>
-                                  ) : (
-                                    <S.GuestMessageContainer>
-                                      <S.MessageBubbleLeft
-                                        onMouseEnter={() =>
-                                          setHoveredMessageId(msg.id)
-                                        }
-                                        onMouseLeave={() => {
-                                          if (!contextMenu.visible) {
-                                            setHoveredMessageId(null);
-                                          }
-                                        }}
-                                      >
-                                        {msg.content}
-                                      </S.MessageBubbleLeft>
-                                    </S.GuestMessageContainer>
-                                  )}
-                                </S.MessageColumnView>
-                              </S.MessageAvatarWrapper>
-                              <S.TimeWithIconContainer
-                                onMouseEnter={() => setHoveredMessageId(msg.id)}
-                                onMouseLeave={() => {
-                                  if (!contextMenu.visible) {
-                                    setHoveredMessageId(null);
-                                  }
-                                }}
-                              >
-                                <S.MessageTime>
-                                  {formatTime(msg.createdAt)}
-                                  {msg.status ===
-                                    InboxMessageStatus.Sending && (
-                                    <LoadingOutlined
-                                      style={{ marginLeft: 6, fontSize: 12 }}
-                                      spin
-                                    />
-                                  )}
-                                  {msg.status === InboxMessageStatus.Failed && (
-                                    <Tooltip title="Send failed">
-                                      <CloseCircleTwoTone
-                                        twoToneColor="#ff4d4f"
-                                        style={{ marginLeft: 6, fontSize: 12 }}
-                                      />
-                                    </Tooltip>
-                                  )}
-                                </S.MessageTime>
-                                {hoveredMessageId === msg.id ? (
-                                  <S.MessageHoverIconNearTime
-                                    onClick={(e) => handleIconClick(e, msg)}
-                                  >
-                                    <img src={icBar} alt="menu" />
-                                  </S.MessageHoverIconNearTime>
-                                ) : (
-                                  <S.MessageHoverIconPlaceholder />
-                                )}
-                              </S.TimeWithIconContainer>
-                            </S.MessageRow>
+                            <GuestMessage
+                              msg={msg}
+                              hoveredMessageId={hoveredMessageId}
+                              contextMenu={contextMenu}
+                              handleIconClick={handleIconClick}
+                              setHoveredMessageId={setHoveredMessageId}
+                              formatTime={formatTime}
+                              pendingImageScroll={pendingImageScroll}
+                              setPendingImageScroll={setPendingImageScroll}
+                              setPendingImageLoads={setPendingImageLoads}
+                              scrollToBottom={scrollToBottom}
+                              avatarAdmin={avatarAdmin}
+                            />
                           )}
                         </React.Fragment>
                       );
@@ -1409,7 +728,19 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             </S.MessageContainer>
             {activeTab && (
               <S.TabOverlay $tabtype={activeTab}>
-                {renderTabContent()}
+                <TabContent
+                  activeTab={activeTab}
+                  INBOX_TABS={INBOX_TABS}
+                  shortcuts={shortcuts}
+                  shortcutsLoading={shortcutsLoading}
+                  shortcutsListRef={shortcutsListRef}
+                  setInputValue={setInputValue}
+                  setActiveTab={setActiveTab}
+                  inputRef={inputRef}
+                  inputValue={inputValue}
+                  setSelectedReminder={setSelectedReminder}
+                  t={t}
+                />
               </S.TabOverlay>
             )}
           </S.MainContent>
@@ -1421,74 +752,17 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             </S.TypingIndicator>
           )}
 
-          <S.Footer>
-            <S.ActionIcons>
-              <S.IconProps isActive={false}>
-                <Image src={undo} preview={false} />
-                {t('inboxDetail.reply')}
-              </S.IconProps>
-              <S.IconProps
-                isActive={activeTab === 'Edit'}
-                onClick={() => handleTabClick('Edit')}
-              >
-                <Image
-                  src={activeTab === 'Edit' ? editBlue : edit}
-                  preview={false}
-                />
-                {t('messageInput.edit')}
-              </S.IconProps>
-              <S.IconProps
-                isActive={activeTab === 'Note'}
-                onClick={() => handleTabClick('Note')}
-              >
-                <Image
-                  src={activeTab === 'Note' ? noteBlue : note}
-                  preview={false}
-                />
-                {t('messageInput.note')}
-              </S.IconProps>
-              <S.IconProps
-                isActive={activeTab === 'Reminder'}
-                onClick={() => handleTabClick('Reminder')}
-              >
-                <Image
-                  src={activeTab === 'Reminder' ? ringBlue : ring}
-                  preview={false}
-                />
-                {t('messageInput.reminder')}
-              </S.IconProps>
-              <S.IconProps
-                isActive={activeTab === 'Shortcuts'}
-                onClick={() => handleTabClick('Shortcuts')}
-              >
-                <Image
-                  src={activeTab === 'Shortcuts' ? shorcutBlue : shortCut}
-                  preview={false}
-                />
-                {t('inboxDetail.shortcuts')}
-              </S.IconProps>
-              <S.IconProps
-                isActive={activeTab === 'Knowledge Base'}
-                onClick={() => handleTabClick('Knowledge Base')}
-              >
-                <Image
-                  src={activeTab === 'Knowledge Base' ? tagBlue : tag}
-                  preview={false}
-                />
-                {t('inboxDetail.knowledgeBase')}
-              </S.IconProps>
-            </S.ActionIcons>
-
-            <MessageInput
+          <InboxFooter
               activeTab={activeTab}
+            setActiveTab={setActiveTab}
               selectedReminder={selectedReminder}
+            setSelectedReminder={setSelectedReminder}
               inputValue={inputValue}
               setInputValue={setInputValue}
-              setActiveTab={setActiveTab}
-              setSelectedReminder={setSelectedReminder}
               onSendMessage={handleSendMessage}
+            handleTabClick={handleTabClick}
+            INBOX_TABS={INBOX_TABS}
             />
-          </S.Footer>
         </S.Container>
       </>
     );
