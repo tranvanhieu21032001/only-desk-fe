@@ -1,4 +1,5 @@
 import { Image, Skeleton } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -100,7 +101,6 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
     conversationsRef
   );
 
-  // Khi mount hoặc khi activeConversationId thay đổi, truyền conversation object lên cha nếu có
   useEffect(() => {
     if (onSelectConversation && activeConversationId) {
       const conversation = data.conversations.edges.find(edge => edge.node.id === activeConversationId)?.node;
@@ -356,7 +356,6 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
       </S.SearchFilterWrapper>
 
       <S.ConversationListWrapper ref={conversationListWrapperRef}>
-        {isLoadingNext && renderSkeleton()}
         {data.conversations.edges.length === 0 && !isLoadingNext && (
           <S.AllDataLoaded>{t('inboxList.noConversationYet')}</S.AllDataLoaded>
         )}
@@ -434,6 +433,20 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
             </S.NotificationItem>
           );
         })}
+        {isLoadingNext && (
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            padding: '20px',
+            width: '100%'
+          }}>
+            <LoadingOutlined
+              spin
+              style={{ fontSize: 24, color: '#999' }}
+            />
+          </div>
+        )}
       </S.ConversationListWrapper>
 
       <Modal

@@ -163,8 +163,8 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
   hookCallCount.current++;
 
   if (stableConversationId.current !== conversationId) {
-    const wasNull = stableConversationId.current === null;
-    const becomingNull = conversationId === null;
+    // const wasNull = stableConversationId.current === null;
+    // const becomingNull = conversationId === null;
 
     stableConversationId.current = conversationId;
   }
@@ -175,8 +175,7 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
   );
 
   const loadedConversations = useRef(new Set<string>());
-  const isFirstTimeLoading =
-    !loadedConversations.current.has(rawConversationId);
+  // const isFirstTimeLoading = !loadedConversations.current.has(rawConversationId);
 
   const prevConversationId = useRef<string | null>(null);
   const renderCount = useRef(0);
@@ -218,7 +217,7 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
     }
   }, [rawConversationId]);
 
-  const { data, loadNext, hasNext, isLoadingNext, refetch } =
+  const { data, loadNext, hasNext, isLoadingNext } =
     usePaginationFragment<ConversationMessagesQuery, MessageFragment_query$key>(
       messageListFragment,
       queryData,

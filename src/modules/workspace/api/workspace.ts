@@ -48,7 +48,7 @@ const handleCreateWorkspaceApi = async (
 
 const handleSwitchWorkspaceApi = async (
   workspaceId: string,
-  t: TFunction,
+  _t: TFunction,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   onSuccess?: (token: string) => void,
 ) => {
