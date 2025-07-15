@@ -14,7 +14,6 @@ import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
 
 import { eventBus } from '@/core/event-bus';
-import { getFormattedTime } from '../../helpers/inbox.logic';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 import { filterOptions, filtersDropdown } from '@/core/settings/options';
@@ -22,7 +21,6 @@ import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import { fetchConversations, setSelectedConversation } from '../../store/features/inbox';
 
 import { Conversation } from '../../interfaces/inbox';
-import { fetchConversationsRelay } from '../../api/fetchConversationsRelay';
 
 import * as S from './InboxList.styles';
 
@@ -44,6 +42,7 @@ import add from '@/assets/icons/inbox/ic-add-circle.svg';
 import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
 import avatarDefault from '@/assets/images/avatar-default.png';
+import { getFormattedTime } from '@/shared/utils/time';
 
 type Props = {
   conversationsRef: ConversationListFragment_query$key;
@@ -79,13 +78,7 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
   const [conditionValues, setConditionValues] = useState<string[]>([]);
   const [isCustomFilterDropdownOpen, setIsCustomFilterDropdownOpen] =
     useState(false);
-  const [conversationEdges, setConversationEdges] = useState<Conversation[]>(
-    [],
-  );
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const conversationListWrapperRef = useRef<HTMLDivElement>(null);
-  const [lastCursor, setLastCursor] = useState<string | null>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
