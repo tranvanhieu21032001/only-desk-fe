@@ -187,9 +187,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const dispatch = useAppDispatch();
 
     const workspaceId = useSelector(selectCurrentWorkspaceId);
-    const { conversations, selectedConversation } = useAppSelector((state) => state.inbox);
-    
-
+    const { conversations, selectedConversation } = useAppSelector(
+      (state) => state.inbox,
+    );
 
     const currentConversations = useMemo(() => {
       return workspaceId ? conversations[workspaceId] || [] : [];
@@ -198,12 +198,15 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const currentConversation = useMemo(() => {
       // Priority: conversation from props
       if (conversation) return conversation;
-      
+
       // Then priority: selectedConversation from Redux
-      if (selectedConversation && selectedConversation.id === stableConversationId.current) {
+      if (
+        selectedConversation &&
+        selectedConversation.id === stableConversationId.current
+      ) {
         return selectedConversation;
       }
-      
+
       // Find in currentConversations
       const foundInRedux = currentConversations.find(
         (conv) => conv.id === stableConversationId.current,
@@ -211,7 +214,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       if (foundInRedux) {
         return foundInRedux;
       }
-      
+
       // Fallback: create from messages
       if (messages && messages.length > 0 && stableConversationId.current) {
         const guestMessage = messages.find(
@@ -302,15 +305,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
       prevStableConversationId.current = stableConversationId.current;
     }, [stableConversationId.current, conversationChanged]);
-
-    // Don't clear selectedConversation on unmount - let it persist
-    // useEffect(() => {
-    //   return () => {
-    //     isUnmountingRef.current = true;
-    //     console.log('🔍 [InboxDetail] Component unmounting - cleaning up selectedConversation');
-    //     dispatch(clearSelectedConversation());
-    //   };
-    // }, [dispatch]);
 
     const isFirstMessageLoad = useRef(true);
 
@@ -1024,8 +1018,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         <LoadingOutlined spin style={{ fontSize: 32, color: '#999' }} />
       </div>
     );
-
-
 
     return (
       <>
