@@ -11,6 +11,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
+import { useAppDispatch } from '@/shared/hooks';
 import { toast } from 'react-toastify';
 import { LoadingOutlined, CloseCircleTwoTone } from '@ant-design/icons';
 
@@ -40,6 +41,7 @@ import { useAppSelector } from '@/shared/hooks';
 import { ToastMessageType } from '@/shared/helper/enums/common';
 import ToastMessage from '@/shared/components/common/ToastMessage';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
+import { clearSelectedConversation } from '../../store/features/inbox';
 
 import * as S from './InboxDetail.styles';
 import { GlobalStyle } from './InboxDetail.styles';
@@ -136,6 +138,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const prevConversationIdRef = useRef<string | null>(null);
     const hasConversationChanged =
       prevConversationIdRef.current !== conversationId;
+    const isUnmountingRef = useRef(false);
 
     useEffect(() => {
       if (hasConversationChanged) {
@@ -181,22 +184,35 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     const user = useUser();
     const currentUserId = user?.id;
+    const dispatch = useAppDispatch();
 
     const workspaceId = useSelector(selectCurrentWorkspaceId);
-    const { conversations } = useAppSelector((state) => state.inbox);
+    const { conversations, selectedConversation } = useAppSelector((state) => state.inbox);
+    
+
 
     const currentConversations = useMemo(() => {
       return workspaceId ? conversations[workspaceId] || [] : [];
     }, [workspaceId, conversations]);
 
     const currentConversation = useMemo(() => {
+      // Priority: conversation from props
       if (conversation) return conversation;
+      
+      // Then priority: selectedConversation from Redux
+      if (selectedConversation && selectedConversation.id === stableConversationId.current) {
+        return selectedConversation;
+      }
+      
+      // Find in currentConversations
       const foundInRedux = currentConversations.find(
         (conv) => conv.id === stableConversationId.current,
       );
       if (foundInRedux) {
         return foundInRedux;
       }
+      
+      // Fallback: create from messages
       if (messages && messages.length > 0 && stableConversationId.current) {
         const guestMessage = messages.find(
           (msg) => msg.sender === InboxSender.Guest,
@@ -240,6 +256,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       return undefined;
     }, [
       conversation,
+      selectedConversation,
       currentConversations,
       stableConversationId.current,
       messages,
@@ -284,7 +301,16 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       isFirstMessageLoad.current = true;
 
       prevStableConversationId.current = stableConversationId.current;
-    }, [stableConversationId.current]);
+    }, [stableConversationId.current, conversationChanged]);
+
+    // Don't clear selectedConversation on unmount - let it persist
+    // useEffect(() => {
+    //   return () => {
+    //     isUnmountingRef.current = true;
+    //     console.log('🔍 [InboxDetail] Component unmounting - cleaning up selectedConversation');
+    //     dispatch(clearSelectedConversation());
+    //   };
+    // }, [dispatch]);
 
     const isFirstMessageLoad = useRef(true);
 
@@ -998,6 +1024,8 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         <LoadingOutlined spin style={{ fontSize: 32, color: '#999' }} />
       </div>
     );
+
+
 
     return (
       <>
