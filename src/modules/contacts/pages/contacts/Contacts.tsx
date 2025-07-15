@@ -33,7 +33,6 @@ function Contacts() {
   const dispatch = useAppDispatch();
   const [search] = useSearchParams();
   const { currentObjHistory } = useAppSelector((state) => state?.historyRoute);
-
   const page =
     (currentObjHistory || [])?.find(
       (item: objectHistoryInterface) => item?.key === KEY_PAGE,
@@ -68,7 +67,7 @@ function Contacts() {
                 : undefined,
           }),
         );
-      }, 300),
+      }, 600),
     [dispatch, currentWorkspace],
   );
 
@@ -78,12 +77,14 @@ function Contacts() {
     if (currentWorkspace) {
       triggerSearch(keyword, Number(page) || PAGE);
     }
-  }, [currentWorkspace, page, keyword, triggerSearch]);
+  }, [currentWorkspace, page, triggerSearch]);
+  useEffect(() => {
+    if (!currentWorkspace) return;
+    triggerSearch(keyword, PAGE);
+  }, [keyword, triggerSearch]);
 
   const renderContactContent = useMemo(() => {
-    if (isEmpty(contacts) && !isLoading) {
-      return <ContactEmpty />;
-    }
+    if (isEmpty(contacts) && !isLoading) return <ContactEmpty />;
     return <ContactTable />;
   }, [contacts, isLoading]);
 
@@ -91,7 +92,6 @@ function Contacts() {
     const value = e.target.value.trim();
     const kw = value.length ? value : null;
     setKeyword(kw);
-    triggerSearch(kw, PAGE);
   };
 
   function handleFilterContact() {}
