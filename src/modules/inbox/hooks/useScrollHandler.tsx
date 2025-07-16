@@ -8,45 +8,35 @@ import {
 import type { Message } from '../interfaces/inbox';
 
 export function useScrollHandler({
-  loadingMore,
+  isLoadingNext, // nhận từ relay
   hasNextPage,
   loadMore,
   pendingImageScroll,
   messageContainerRef,
   messageEndRef,
-  addMessage,
-  removeMessage,
 }: {
-  loadingMore: boolean;
+  isLoadingNext: boolean;
   hasNextPage: boolean;
   loadMore: () => Promise<void> | void;
   pendingImageScroll: boolean;
   messageContainerRef: React.RefObject<HTMLDivElement | null>;
   messageEndRef: React.RefObject<HTMLDivElement | null>;
-  addMessage: (message: Message) => void;
-  removeMessage: (messageId: string) => void;
 }) {
   const [wasAtBottom, setWasAtBottom] = useState(true);
   const [showNewMessageNotice, setShowNewMessageNotice] = useState(false);
-  const [isLoadingMoreMessages, setIsLoadingMoreMessages] = useState(false);
 
   // Check if user is at bottom
   const handleScroll = useCallback(() => {
     const container = messageContainerRef.current;
     if (!container) return;
-
-    if (isLoadingMoreMessages) {
-      return;
-    }
-
+    if (isLoadingNext) return;
     const isAtBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight <
-      10;
+      container.scrollHeight - container.scrollTop - container.clientHeight < 10;
     setWasAtBottom(isAtBottom);
     if (isAtBottom) {
       setShowNewMessageNotice(false);
     }
-  }, [messageContainerRef, isLoadingMoreMessages]);
+  }, [messageContainerRef, isLoadingNext]);
 
   const scrollToBottom = useCallback(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -56,86 +46,28 @@ export function useScrollHandler({
   const scrollToShowNewMessage = useCallback(() => {
     const container = messageContainerRef.current;
     if (!container) return;
-
-    if (isLoadingMoreMessages) {
-      return;
-    }
-
+    if (isLoadingNext) return;
     const currentScrollTop = container.scrollTop;
     const maxScrollTop = container.scrollHeight - container.clientHeight;
-
     const gentleScrollDistance = Math.min(60, maxScrollTop - currentScrollTop);
-
     if (gentleScrollDistance > 0) {
       const targetScrollTop = currentScrollTop + gentleScrollDistance;
-
       container.scrollTo({
         top: targetScrollTop,
         behavior: 'smooth',
       });
     }
-
     setShowNewMessageNotice(false);
-  }, [messageContainerRef, isLoadingMoreMessages]);
+  }, [messageContainerRef, isLoadingNext]);
 
   // Infinite scroll: load more messages when scroll to top
   const handleLoadMore = useCallback(async () => {
     const container = messageContainerRef.current;
     if (!container) return;
-
-    if (container.scrollTop <= 10 && hasNextPage && !loadingMore) {
-      setIsLoadingMoreMessages(true);
-
-      const loadingMessageId = `loading_${uuidv4()}`;
-      const loadingMessage: Message = {
-        id: loadingMessageId,
-        content: '',
-        sender: InboxSender.Guest,
-        type: InboxMessageType.Loading,
-        status: InboxMessageStatus.Sent,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        user: null,
-      };
-
-      addMessage(loadingMessage);
-
-      // Đo scrollHeight và scrollTop trước khi load
-      const prevScrollHeight = container.scrollHeight;
-      const prevScrollTop = container.scrollTop;
-
-      try {
-        const result = loadMore();
-        if (result instanceof Promise) {
-          await result;
-        }
-      } catch (error) {
-        console.error(' [Scroll] Error loading more messages:', error);
-      } finally {
-        removeMessage(loadingMessageId);
-      }
-
-      // Sau khi render xong, tính delta và set lại scrollTop
-      requestAnimationFrame(() => {
-        if (!container) return;
-        const newScrollHeight = container.scrollHeight;
-        const delta = newScrollHeight - prevScrollHeight;
-        container.scrollTop = prevScrollTop + delta;
-      });
-
-      setTimeout(() => {
-        setIsLoadingMoreMessages(false);
-        setWasAtBottom(false);
-      }, 100);
+    if (container.scrollTop <= 10 && hasNextPage && !isLoadingNext) {
+      await loadMore();
     }
-  }, [
-    hasNextPage,
-    loadingMore,
-    loadMore,
-    messageContainerRef,
-    addMessage,
-    removeMessage,
-  ]);
+  }, [hasNextPage, isLoadingNext, loadMore, messageContainerRef]);
 
   return {
     wasAtBottom,
@@ -146,6 +78,6 @@ export function useScrollHandler({
     handleLoadMore,
     scrollToBottom,
     scrollToShowNewMessage,
-    isLoadingMoreMessages,
+    isLoadingMoreMessages: isLoadingNext,
   };
 }

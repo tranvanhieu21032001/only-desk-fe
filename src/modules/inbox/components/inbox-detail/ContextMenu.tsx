@@ -24,6 +24,158 @@ interface ContextMenuProps {
   t: (key: string) => string;
 }
 
+interface MenuItem {
+  key: string;
+  icon?: string;
+  label?: string;
+  onClick?: () => void;
+  danger?: boolean;
+  style?: React.CSSProperties;
+  type?: 'separator' | 'item';
+}
+
+const getMenuItems = (
+  message: Message,
+  handlers: {
+    handleReply: () => void;
+    handleDeleteMessage: () => void;
+    handleCopyText: () => void;
+    handleEdit: () => void;
+  },
+  icons: {
+    iconReply: string;
+    iconDelete: string;
+    iconEdit: string;
+    iconCopy: string;
+  },
+  t: (key: string) => string
+): MenuItem[] => {
+  const isAgentMessage = message.sender === InboxSender.Agent;
+  const isGuestMessage = message.sender === InboxSender.Guest;
+  const isImageMessage = message.type === InboxMessageType.Image;
+  const isNoteMessage = message.type === InboxMessageType.Note;
+  const items: MenuItem[] = [];
+
+  switch (message.type) {
+    case InboxMessageType.Image:
+      items.push({
+        key: 'reply',
+        icon: icons.iconReply,
+        label: t('inboxDetail.reply'),
+        onClick: handlers.handleReply,
+        danger: false,
+        style: {},
+        type: 'item',
+      });
+      items.push({ key: 'separator', type: 'separator' });
+      items.push({
+        key: 'delete',
+        icon: icons.iconDelete,
+        label: t('inboxDetail.delete'),
+        onClick: handlers.handleDeleteMessage,
+        danger: true,
+        type: 'item',
+      });
+      break;
+    case InboxMessageType.Note:
+      if (isAgentMessage) {
+        items.push({
+          key: 'copy',
+          icon: icons.iconCopy,
+          label: t('inboxDetail.copyText'),
+          onClick: handlers.handleCopyText,
+          danger: false,
+          type: 'item',
+        });
+        items.push({
+          key: 'edit',
+          icon: icons.iconEdit,
+          label: t('inboxDetail.edit'),
+          onClick: handlers.handleEdit,
+          danger: false,
+          type: 'item',
+        });
+        items.push({ key: 'separator', type: 'separator' });
+        items.push({
+          key: 'delete',
+          icon: icons.iconDelete,
+          label: t('inboxDetail.delete'),
+          onClick: handlers.handleDeleteMessage,
+          danger: true,
+          type: 'item',
+        });
+      } else if (isGuestMessage) {
+        items.push({
+          key: 'copy',
+          icon: icons.iconCopy,
+          label: t('inboxDetail.copyText'),
+          onClick: handlers.handleCopyText,
+          danger: false,
+          type: 'item',
+        });
+      }
+      break;
+    case InboxMessageType.Text:
+    default:
+      if (isGuestMessage) {
+        items.push({
+          key: 'reply',
+          icon: icons.iconReply,
+          label: t('inboxDetail.reply'),
+          onClick: handlers.handleReply,
+          danger: false,
+          style: { borderBottom: '1px solid #eee' },
+          type: 'item',
+        });
+        items.push({
+          key: 'copy',
+          icon: icons.iconCopy,
+          label: t('inboxDetail.copyText'),
+          onClick: handlers.handleCopyText,
+          danger: false,
+          type: 'item',
+        });
+      } else if (isAgentMessage) {
+        items.push({
+          key: 'reply',
+          icon: icons.iconReply,
+          label: t('inboxDetail.reply'),
+          onClick: handlers.handleReply,
+          danger: false,
+          style: { borderBottom: '1px solid #eee' },
+          type: 'item',
+        });
+        items.push({
+          key: 'copy',
+          icon: icons.iconCopy,
+          label: t('inboxDetail.copyText'),
+          onClick: handlers.handleCopyText,
+          danger: false,
+          type: 'item',
+        });
+        items.push({
+          key: 'edit',
+          icon: icons.iconEdit,
+          label: t('inboxDetail.edit'),
+          onClick: handlers.handleEdit,
+          danger: false,
+          type: 'item',
+        });
+        items.push({ key: 'separator', type: 'separator' });
+        items.push({
+          key: 'delete',
+          icon: icons.iconDelete,
+          label: t('inboxDetail.delete'),
+          onClick: handlers.handleDeleteMessage,
+          danger: true,
+          type: 'item',
+        });
+      }
+      break;
+  }
+  return items;
+};
+
 const ContextMenu: React.FC<ContextMenuProps> = ({
   contextMenu,
   handleReply,
@@ -40,42 +192,12 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 }) => {
   if (!contextMenu.visible || !contextMenu.message) return null;
 
-  const isAgentMessage = contextMenu.message.sender === InboxSender.Agent;
-  const isImageMessage =
-    contextMenu.message.type === InboxMessageType.Image;
-
-  if (isImageMessage) {
-    return (
-      <S.ContextMenu
-        style={{
-          top: contextMenu.y,
-          left: contextMenu.x,
-          position: 'fixed',
-          width: MENU_WIDTH,
-          zIndex: 1000,
-        }}
-        onClick={(e) => e.stopPropagation()}
-        onMouseEnter={() => {
-          if (contextMenu.messageId) {
-            setHoveredMessageId(contextMenu.messageId);
-          }
-        }}
-        onMouseLeave={() => {
-          setHoveredMessageId(null);
-        }}
-      >
-        <S.ContextMenuItem onClick={handleReply}>
-          <img src={iconReply} alt="Reply" />
-          {t('inboxDetail.reply')}
-        </S.ContextMenuItem>
-        <S.ContextMenuSeparator />
-        <S.ContextMenuItem onClick={handleDeleteMessage} danger>
-          <img src={iconDelete} alt="Delete" />
-          {t('inboxDetail.delete')}
-        </S.ContextMenuItem>
-      </S.ContextMenu>
-    );
-  }
+  const menuItems = getMenuItems(
+    contextMenu.message,
+    { handleReply, handleDeleteMessage, handleCopyText, handleEdit },
+    { iconReply, iconDelete, iconEdit, iconCopy },
+    t
+  );
 
   return (
     <S.ContextMenu
@@ -86,7 +208,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         width: MENU_WIDTH,
         zIndex: 1000,
       }}
-      onClick={(e) => e.stopPropagation()}
+      onClick={e => e.stopPropagation()}
       onMouseEnter={() => {
         if (contextMenu.messageId) {
           setHoveredMessageId(contextMenu.messageId);
@@ -96,36 +218,22 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         setHoveredMessageId(null);
       }}
     >
-      <S.ContextMenuItem
-        style={{ borderBottom: '1px solid #eee' }}
-        onClick={handleReply}
-      >
-        <img src={iconReply} alt="Reply" />
-        {t('inboxDetail.reply')}
-      </S.ContextMenuItem>
-
-      {!isImageMessage && (
-        <S.ContextMenuItem onClick={handleCopyText}>
-          <img src={iconCopy} alt="Copy" />
-          {t('inboxDetail.copyText')}
-        </S.ContextMenuItem>
-      )}
-
-      {isAgentMessage && (
-        <>
-          {!isImageMessage && (
-            <S.ContextMenuItem onClick={handleEdit}>
-              <img src={iconEdit} alt="Edit" />
-              {t('inboxDetail.edit')}
-            </S.ContextMenuItem>
-          )}
-          <S.ContextMenuSeparator />
-          <S.ContextMenuItem onClick={handleDeleteMessage} danger>
-            <img src={iconDelete} alt="Delete" />
-            {t('inboxDetail.delete')}
+      {menuItems.map((item, idx) => {
+        if (item.type === 'separator') {
+          return <S.ContextMenuSeparator key={`sep-${idx}`} />;
+        }
+        return (
+          <S.ContextMenuItem
+            key={item.key}
+            onClick={item.onClick}
+            danger={item.danger}
+            style={item.style}
+          >
+            {item.icon && <img src={item.icon} alt={item.label} />}
+            {item.label}
           </S.ContextMenuItem>
-        </>
-      )}
+        );
+      })}
     </S.ContextMenu>
   );
 };
