@@ -216,14 +216,12 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       scrollToShowNewMessage,
       isLoadingMoreMessages,
     } = useScrollHandler({
-      loadingMore,
-      hasNextPage,
-      loadMore,
+      isLoadingNext: loadingMore, 
+      hasNextPage: hasNextPage,
+      loadMore, 
       pendingImageScroll,
       messageContainerRef,
       messageEndRef,
-      addMessage,
-      removeMessage,
     });
 
     const prevStableConversationId = useRef<string | null>(null);
@@ -254,7 +252,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       ) {
         const container = messageContainerRef.current;
         if (container) {
-          // Use requestAnimationFrame for smoother scroll
           requestAnimationFrame(() => {
             if (container) {
               container.scrollTop = container.scrollHeight;
