@@ -158,6 +158,7 @@
     "inactive": "Inactive",
     "confirm-delete-title": "Remove contact",
     "confirm-delete-desc":"Delete contact and all its data permanently?",
+    "confirm-delete-conctacts-des":"Delete the selected contacts and all their data permanently?",
     "and-its-data": "and its data will be permanently deleted.",
     "cancel": "Cancel",
     "remove": "Remove contact"

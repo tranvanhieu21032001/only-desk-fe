@@ -24,7 +24,7 @@ function PrivateNotepad() {
       return (
         <S.EmptyWrap>
           <Image src={empty} width={120} height={120} preview={false} />
-          <Typography color={themeColors.primary} margin="8px 0 0 0">
+          <Typography margin="8px 0 0 0">
             {t('contact-profile.no-data-added')}
           </Typography>
         </S.EmptyWrap>

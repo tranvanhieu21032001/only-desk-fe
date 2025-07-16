@@ -86,6 +86,7 @@
     "admin": "Admin",
     "member": "Member",
     "update-success": "Update operator successfully",
+    "remove-success":"Remove operator successfully",
     "update-failed": "Failed to update operator",
     "desc": "Please insert modal description here.",
     "remove-operator": "Remove operator",

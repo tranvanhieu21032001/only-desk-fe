@@ -31,7 +31,11 @@ import Modal from '@/shared/components/common/Modal';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import Button from '@/shared/components/common/Button';
 
-function ContactTable() {
+interface ContactTableProps {
+  onSelectedChange?: (ids: string[]) => void;
+}
+
+function ContactTable({ onSelectedChange }: ContactTableProps) {
   const { t } = useTranslation('contacts');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -53,7 +57,7 @@ function ContactTable() {
 
     dispatch(
       handleRemoveContactAction({
-        id: idContact,
+        ids: [idContact],
         t,
       }),
     );
@@ -174,7 +178,7 @@ function ContactTable() {
         <S.LocationColumn onClick={(e) => e.stopPropagation()}>
           <PopoverAction
             placement="bottomRight"
-            trigger="click"
+            trigger="hover"
             btnContent={
               <S.RemoveActionColumn>
                 <ReactSVG width={24} height={24} src={icActionRemove} />
@@ -200,11 +204,9 @@ function ContactTable() {
   ];
 
   const rowSelection = {
-    onChange: (
-      selectedRowKeys: React.Key[],
-      selectedRows: ContactInterface[],
-    ) => {
-      console.log({ selectedRowKeys, selectedRows });
+    onChange: (_keys: React.Key[], selectedRows: ContactInterface[]) => {
+      const rawIds = selectedRows.map((row) => row.rawId);
+      onSelectedChange?.(rawIds);
     },
   };
 

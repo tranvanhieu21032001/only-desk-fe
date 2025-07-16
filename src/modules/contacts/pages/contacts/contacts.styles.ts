@@ -76,3 +76,9 @@ export const FilterAction = styled.div<{ $isRemove?: boolean }>`
     }
   }
 `;
+
+export const WrappButton = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+`;

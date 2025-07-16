@@ -8,7 +8,10 @@ import { useSearchParams } from 'react-router-dom';
 import { RootState } from '@/core/store';
 import { KEY_PAGE, PAGE, PAGE_SIZE } from '@/shared/constant/common';
 import { objectHistoryInterface } from '@/core/model/common';
-import { fetchContacts } from '../../store/features/contacts';
+import {
+  fetchContacts,
+  handleRemoveContactAction,
+} from '../../store/features/contacts';
 import { actionFilterOptions } from '@/shared/helper/data/contacts';
 import { ActionFilterOptionsInterface } from '@/shared/model/contacts';
 import { useAppDispatch, useAppSelector, useModal } from '@/shared/hooks';
@@ -27,7 +30,12 @@ import * as S from './contacts.styles';
 
 import icFilter from '@/assets/icons/contact/ic-filter.svg';
 import icArrowDown from '@/assets/icons/contact/ic-arrow-down.svg';
+import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
+
 import { useRouter } from '@/shared/hooks/useRouter';
+import Modal from '@/shared/components/common/Modal';
+import fontWeight from '@/shared/styles/themes/default/fontWeight';
+import Button from '@/shared/components/common/Button';
 
 function Contacts() {
   const { t } = useTranslation('contacts');
@@ -55,6 +63,9 @@ function Contacts() {
     useModal();
   const { visible: isModalExport, toggle: handleExport } = useModal();
   const { visible: isModalImport, toggle: handleImport } = useModal();
+  const { visible: isRemoveModalOpen, toggle: toggleRemoveModal } = useModal();
+
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const triggerSearch = useCallback(
     debounce((kw: string | null, pageNumber: number) => {
@@ -80,16 +91,30 @@ function Contacts() {
       return <Skeleton active paragraph={{ rows: 8 }} />;
     }
     if (isEmpty(contacts)) return <ContactEmpty />;
-    return <ContactTable />;
+    return <ContactTable onSelectedChange={setSelectedIds} />;
   }, [contacts, isLoading, initialLoading]);
 
   const handleSearchContact = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
     const kw = value.length ? value : null;
     setKeyword(kw);
-
     setTimeout(() => replaceState({ [KEY_PAGE]: 1 }), 500);
   };
+
+  const handleBatchRemove = () => {
+    if (!selectedIds.length) return;
+
+    dispatch(
+      handleRemoveContactAction({
+        ids: selectedIds,
+        t,
+      }),
+    );
+
+    toggleRemoveModal();
+    setSelectedIds([]);
+  };
+
   function handleActionFilterContact(actionType: ActionFilterContactTypeEnums) {
     switch (actionType) {
       case ActionFilterContactTypeEnums.IMPORT:
@@ -97,7 +122,7 @@ function Contacts() {
       case ActionFilterContactTypeEnums.EXPORT:
         return handleExport();
       case ActionFilterContactTypeEnums.REMOVE:
-        return;
+        return toggleRemoveModal();
       default:
         break;
     }
@@ -119,70 +144,110 @@ function Contacts() {
   );
 
   return (
-    <S.ContactsContainer>
-      <S.FilterWrap>
-        <S.InputSearch>
-          <Input
-            prefix
-            placeholder={t('filter.search')}
-            onChange={handleSearchContact}
+    <>
+      <S.ContactsContainer>
+        <S.FilterWrap>
+          <S.InputSearch>
+            <Input
+              prefix
+              placeholder={t('filter.search')}
+              onChange={handleSearchContact}
+            />
+          </S.InputSearch>
+
+          <S.FilterPopoverWrap>
+            <S.ButtonFilter
+              width="fit-content"
+              onClick={handleTriggerModalFilter}
+              iconPosition="left"
+              icon={
+                <Image src={icFilter} preview={false} width={15} height={18} />
+              }
+            >
+              <Typography>{t('filter.filter')}</Typography>
+            </S.ButtonFilter>
+
+            <PopoverAction
+              content={renderActionFilter()}
+              placement="bottomRight"
+              btnContent={
+                <S.ButtonAction
+                  width="fit-content"
+                  iconPosition="left"
+                  icon={
+                    <Image
+                      src={icArrowDown}
+                      preview={false}
+                      width={20}
+                      height={20}
+                    />
+                  }
+                >
+                  <Typography>{t('filter.action')}</Typography>
+                </S.ButtonAction>
+              }
+            />
+          </S.FilterPopoverWrap>
+        </S.FilterWrap>
+
+        {renderContactContent}
+
+        {isModalFilter && (
+          <ContactAddFilter
+            open={isModalFilter}
+            onClose={handleTriggerModalFilter}
           />
-        </S.InputSearch>
+        )}
+        {isModalExport && (
+          <ModalConfirmExportDatabase
+            open={isModalExport}
+            onCancel={handleExport}
+          />
+        )}
+        {isModalImport && (
+          <ModalImportContact open={isModalImport} onCancel={handleImport} />
+        )}
+      </S.ContactsContainer>
 
-        <S.FilterPopoverWrap>
-          <S.ButtonFilter
-            width="fit-content"
-            onClick={handleTriggerModalFilter}
-            iconPosition="left"
-            icon={
-              <Image src={icFilter} preview={false} width={15} height={18} />
-            }
-          >
-            <Typography>{t('filter.filter')}</Typography>
-          </S.ButtonFilter>
-
-          <PopoverAction
-            content={renderActionFilter()}
-            placement="bottomRight"
-            btnContent={
-              <S.ButtonAction
-                width="fit-content"
-                onClick={() => {}}
-                iconPosition="left"
-                icon={
-                  <Image
-                    src={icArrowDown}
-                    preview={false}
-                    width={20}
-                    height={20}
-                  />
-                }
+      {isRemoveModalOpen && (
+        <Modal
+          isOpen={isRemoveModalOpen}
+          onClose={toggleRemoveModal}
+          hideHeader
+          width={440}
+          children={
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+              <ReactSVG src={icNoitify} />
+              <div>
+                <Typography
+                  fontWeight={fontWeight?.semiBold}
+                  margin="0 0 12px 0"
+                >
+                  {t('contact-profile.confirm-delete-title')}
+                </Typography>
+                <Typography color="#5B5B5B">
+                  {t('contact-profile.confirm-delete-conctacts-des')}
+                </Typography>
+              </div>
+            </div>
+          }
+          footer={
+            <S.WrappButton>
+              <Button onClick={toggleRemoveModal}>
+                {t('contact-profile.cancel')}
+              </Button>
+              <Button
+                type="danger"
+                disabled={!selectedIds.length}
+                onClick={handleBatchRemove}
               >
-                <Typography>{t('filter.action')}</Typography>
-              </S.ButtonAction>
-            }
-          />
-        </S.FilterPopoverWrap>
-      </S.FilterWrap>
-
-      {renderContactContent}
-
-      {isModalFilter && (
-        <ContactAddFilter
-          open={isModalFilter}
-          onClose={handleTriggerModalFilter}
+                {t('contact-profile.remove')}
+              </Button>
+            </S.WrappButton>
+          }
         />
       )}
-      {isModalExport && (
-        <ModalConfirmExportDatabase
-          open={isModalExport}
-          onCancel={handleExport}
-        />
-      )}
-      {isModalImport && (
-        <ModalImportContact open={isModalImport} onCancel={handleImport} />
-      )}
-    </S.ContactsContainer>
+    </>
   );
 }
 

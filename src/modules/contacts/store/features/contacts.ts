@@ -66,16 +66,16 @@ const fetchContacts = createAsyncThunk(
 
 const handleRemoveContactAction = createAsyncThunk(
   'contacts/remove-contact',
-  async (values: { id: string; t: TFunction }, { dispatch }) => {
-    const { id, t } = values;
+  async (values: { ids: string[]; t: TFunction }, { dispatch }) => {
+    const { ids, t } = values;
 
-    const ok = await deleteRequest(
-      endpointContact.REMOVE_CONTACT.replace(':id', id),
-      { messageSuccess: t('remove-contact-success') },
-    );
+    const ok = await deleteRequest(endpointContact.REMOVE_CONTACT, {
+      data: { contactIds: ids },
+      messageSuccess: t('remove-contact-success', { count: ids.length }),
+    });
 
-    if (ok) await dispatch(fetchContacts({}));
-    return id;
+    if (ok) await dispatch(fetchContacts({ offset: 0 }));
+    return ids;
   },
 );
 
