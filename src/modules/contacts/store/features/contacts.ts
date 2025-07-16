@@ -32,19 +32,18 @@ const initialState: ContactsInitialStateInterface = {
 
 const createContact = createAsyncThunk(
   'contacts/create-contact',
-  async (values: { email: string; name: string; t: TFunction }) => {
+  async (values: { email: string; name: string; t: TFunction }, { dispatch }) => {
     const { email, name, t } = values;
-    const results = await postRequest(endpointContact?.CREATE_CONTACT, {
-      data: {
-        ...(email && { email }),
-        ...(name && { name }),
-      },
+
+    const result = await postRequest(endpointContact.CREATE_CONTACT, {
+      data: { ...(email && { email }), ...(name && { name }) },
       messageSuccess: t('create-contact.create-contact-success'),
     });
-
-    return results;
+    await dispatch(fetchContacts({ offset: 0 }));
+    return result;
   },
 );
+
 
 const fetchContacts = createAsyncThunk(
   'contacts/get-contacts',
@@ -144,13 +143,13 @@ const slice = createSlice({
     });
     builder.addCase(createContact.fulfilled, (state, action: any) => {
       state.isLoading = false;
-      state.contacts = [
-        action.payload,
-        ...((state?.contacts?.length || 0) + 1 < PAGE_SIZE
-          ? state?.contacts || []
-          : (state?.contacts || [])?.slice(0, -1)),
-      ];
-      state.totalDocs = (state.totalDocs || 0) + 1;
+      // state.contacts = [
+      //   action.payload,
+      //   ...((state?.contacts?.length || 0) + 1 < PAGE_SIZE
+      //     ? state?.contacts || []
+      //     : (state?.contacts || [])?.slice(0, -1)),
+      // ];
+      // state.totalDocs = (state.totalDocs || 0) + 1;
     });
     builder.addCase(createContact.rejected, (state) => {
       state.isLoading = false;

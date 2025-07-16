@@ -128,20 +128,32 @@ function Contacts() {
     }
   }
 
-  const renderActionFilter = () => (
-    <S.FilterActionWrap>
-      {actionFilterOptions.map((option: ActionFilterOptionsInterface) => (
-        <S.FilterAction
-          key={option.key}
-          $isRemove={option.actionType === ActionFilterContactTypeEnums.REMOVE}
-          onClick={() => handleActionFilterContact(option.actionType)}
-        >
-          <ReactSVG src={option.icon} width={24} height={24} />
-          <Typography>{t(`filter.${option.label}`)}</Typography>
-        </S.FilterAction>
-      ))}
-    </S.FilterActionWrap>
-  );
+  const renderActionFilter = () => {
+    const filteredOptions = actionFilterOptions.filter(
+      (opt) =>
+        !(
+          opt.actionType === ActionFilterContactTypeEnums.REMOVE &&
+          !selectedIds.length
+        ),
+    );
+
+    return (
+      <S.FilterActionWrap>
+        {filteredOptions.map((option: ActionFilterOptionsInterface) => (
+          <S.FilterAction
+            key={option.key}
+            $isRemove={
+              option.actionType === ActionFilterContactTypeEnums.REMOVE
+            }
+            onClick={() => handleActionFilterContact(option.actionType)}
+          >
+            <ReactSVG src={option.icon} width={24} height={24} />
+            <Typography>{t(`filter.${option.label}`)}</Typography>
+          </S.FilterAction>
+        ))}
+      </S.FilterActionWrap>
+    );
+  };
 
   return (
     <>
