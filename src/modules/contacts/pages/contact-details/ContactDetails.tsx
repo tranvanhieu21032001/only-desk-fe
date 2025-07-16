@@ -223,8 +223,7 @@ function ContactDetails() {
   function handleConfirmRemove(idContact: string) {
     dispatch(
       handleRemoveContactAction({
-        workspaceId: currentWorkspace?.id as string,
-        id: idContact,
+        ids: [idContact],
         t: t,
       }),
     );

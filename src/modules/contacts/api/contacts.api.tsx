@@ -10,7 +10,7 @@ const prefixContact: string = '';
 
 const endpointContact = {
   CREATE_CONTACT: `${prefixContact}/contacts`,
-  REMOVE_CONTACT: `${prefixContact}/contacts/:id`,
+  REMOVE_CONTACT: `${prefixContact}/contacts`,
   UPDATE_CONTACT: `${prefixContact}/contacts/:id`,
 };
 
