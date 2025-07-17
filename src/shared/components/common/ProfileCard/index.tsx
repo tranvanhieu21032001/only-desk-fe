@@ -8,38 +8,35 @@ import flagList from '@/shared/helper/data/flagIcon';
 import { listenUserStatus, offUserStatus } from '@/core/services/socket/socket';
 
 interface ProfileCardProps {
-  id?: string;
-  avatarSrc?: string;
-  avatarWidth?: number;
-  avatarHeight?: number;
+  contactId?: string;
+  userId?: string;
+  avatarSize?: number;
   name?: string;
   email?: string;
-  lastActiveFontSize?: number;
-  lastActiveItalic?: boolean;
+  lastActiveStyle?: React.CSSProperties;
 }
 
 const ProfileCard = ({
-  id,
-  avatarSrc,
-  avatarWidth,
-  avatarHeight,
+  contactId,
+  userId,
+  avatarSize = 40,
   name,
   email,
-  lastActiveFontSize,
-  lastActiveItalic,
+  lastActiveStyle,
 }: ProfileCardProps) => {
   const [isOnline, setIsOnline] = useState(false);
   const [lastSeen, setLastSeen] = useState<string | null>(null);
-  const [type, setType] = useState<'user' | 'contact' | null>(null);
 
   const dispatch = useAppDispatch();
   const { contactDetails } = useAppSelector((state) => state.contacts);
 
   useEffect(() => {
-    if (type === 'contact' && id) {
-      dispatch(fetchDetailsContact({ idContact: id }));
+    if (contactId) {
+      dispatch(fetchDetailsContact({ idContact: contactId }));
+    } else if (userId) {
+      //handle fetch userDetail
     }
-  }, [type, id, dispatch]);
+  }, [contactId, userId, dispatch]);
 
   useEffect(() => {
     const handleStatus = (data: {
@@ -48,13 +45,10 @@ const ProfileCard = ({
       isOnline: boolean;
       lastActivityAt?: string | Date;
     }) => {
-      if (data.userId === id) {
-        setType('user');
-      } else if (data.contactId === id) {
-        setType('contact');
-      } else {
-        return;
-      }
+      // const isTarget =
+      //   (contactId && data.contactId === contactId) ||
+      //   (userId && data.userId === userId);
+      // if (!isTarget) return;
 
       setIsOnline(data.isOnline);
       if (!data.isOnline && data.lastActivityAt) {
@@ -64,20 +58,14 @@ const ProfileCard = ({
 
     listenUserStatus(handleStatus);
     return () => offUserStatus(handleStatus);
-  }, [id]);
+  }, [contactId, userId]);
 
-  // ✅ Lấy dữ liệu từ contactDetails nếu là contact
-  const avatar = type === 'contact'
+  const avatar = contactId
     ? contactDetails?.avatar || defaultAvatar
-    : avatarSrc || defaultAvatar;
+    : defaultAvatar;
 
-  const displayName = type === 'contact'
-    ? contactDetails?.name
-    : name;
-
-  const displayEmail = type === 'contact'
-    ? contactDetails?.email
-    : email;
+  const displayName = contactId ? contactDetails?.name : name;
+  const displayEmail = contactId ? contactDetails?.email : email;
 
   const flagIcon = flagList.find(
     (item) => item.code === contactDetails?.context?.countryCode,
@@ -89,8 +77,8 @@ const ProfileCard = ({
         <S.Avatar
           src={avatar}
           alt="Avatar"
-          width={avatarWidth}
-          height={avatarHeight}
+          width={avatarSize}
+          height={avatarSize}
         />
         {flagIcon && (
           <S.WrappIcon>
@@ -106,7 +94,7 @@ const ProfileCard = ({
         </S.NameRow>
         <S.Email>{displayEmail}</S.Email>
         {!isOnline && lastSeen && (
-          <S.LastActive fontSize={lastActiveFontSize} italic={lastActiveItalic}>
+          <S.LastActive style={lastActiveStyle}>
             Last active: {lastSeen}
           </S.LastActive>
         )}

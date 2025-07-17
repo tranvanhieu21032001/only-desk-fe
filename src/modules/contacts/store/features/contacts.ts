@@ -32,10 +32,7 @@ const initialState: ContactsInitialStateInterface = {
 
 const createContact = createAsyncThunk(
   'contacts/create-contact',
-  async (
-    values: { email: string; name: string; t: TFunction },
-    { dispatch },
-  ) => {
+  async (values: { email: string; name: string; t: TFunction }, { dispatch }) => {
     const { email, name, t } = values;
 
     const result = await postRequest(endpointContact.CREATE_CONTACT, {
@@ -46,6 +43,7 @@ const createContact = createAsyncThunk(
     return result;
   },
 );
+
 
 const fetchContacts = createAsyncThunk(
   'contacts/get-contacts',
@@ -84,7 +82,6 @@ const fetchDetailsContact = createAsyncThunk(
   'contacts/get-details-contact',
   async (values: { idContact: string }) => {
     const { idContact } = values;
-    console.log('idContact', idContact);
 
     const results = await fetchQuery<ContactDetailsQuery>(
       relayEnvironment,

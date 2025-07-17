@@ -6,12 +6,10 @@ import {
 
 export interface Contact {
   id: string;
-  rawId: string;
   createdAt: string;
   updatedAt: string;
   guestId: string;
   name: string;
-  email: string;
   notification: boolean;
   segments: string[];
   isOnline: boolean;
