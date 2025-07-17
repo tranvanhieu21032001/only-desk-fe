@@ -47,8 +47,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
 
   /** Handlers */
-  function handleRemoveContact(record: ContactInterface) {
-    dispatch(actionUpdateContactDetails(record));
+  function handleRemoveContact() {
     setIsRemoveModalOpen(true);
   }
 
