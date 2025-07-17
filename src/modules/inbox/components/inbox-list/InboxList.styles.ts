@@ -249,6 +249,7 @@ export const MenuItem = styled.div`
   color: ${(props) => props?.theme?.colors?.primary};
   cursor: pointer;
   gap: 8px;
+  outline: none;
 
   img {
     width: 16px;
@@ -257,6 +258,14 @@ export const MenuItem = styled.div`
 
   &.delete {
     color: ${(props) => props?.theme?.colors?.errorDark};
+  }
+
+  &:active {
+    background: #eee;
+  }
+
+  &:focus {
+    outline: 2px solid #1976d2;
   }
 `;
 

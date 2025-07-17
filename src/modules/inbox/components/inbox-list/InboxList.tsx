@@ -1,24 +1,31 @@
-import { Image, Skeleton } from 'antd';
+import { Image } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
+import { usePaginationFragment } from 'react-relay';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
+import { getFormattedTime } from '@/shared/utils/time';
+import { decodeGlobalId } from '@/shared/utils/decode';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
-import { usePaginationFragment } from 'react-relay';
 import { conversationListFragment } from '@/relay/ConversationListFragment';
 import type { ConversationListFragment_query$key } from '@/relay/__generated__/ConversationListFragment_query.graphql';
-
 import AvatarWithStatus from '@/shared/components/common/Avatar';
 import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
-
 import { eventBus } from '@/core/event-bus';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 import { filterOptions, filtersDropdown } from '@/core/settings/options';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import { fetchConversations, setSelectedConversation } from '../../store/features/inbox';
+import {
+  fetchConversations,
+  setSelectedConversation,
+  updateConversationUnreadCount,
+} from '../../store/features/inbox';
+import { openConversation } from '@/core/services/socket/socket';
+import { deleteConversation } from '../../api/inbox.api';
 
 import { Conversation } from '../../interfaces/inbox';
 
@@ -31,8 +38,8 @@ import arrowDown from '@/assets/icons/common/ic-arrow-down.svg';
 import barColumn from '@/assets/icons/common/ic-bar-column.svg';
 import check from '@/assets/icons/common/ic-check-black.svg';
 import unreadIcon from '@/assets/icons/common/ic-unread.svg';
-import copyIcon from '@/assets/icons/common/ic-copy-link.svg';
-import blockIcon from '@/assets/icons/common/ic-user-block.svg';
+// import copyIcon from '@/assets/icons/common/ic-copy-link.svg';
+// import blockIcon from '@/assets/icons/common/ic-user-block.svg';
 import deleteIcon from '@/assets/icons/common/ic-delete-red.svg';
 import flag from '@/assets/icons/common/ic-flag.svg';
 import addHeader from '@/assets/icons/common/ic-add-header.svg';
@@ -42,14 +49,16 @@ import add from '@/assets/icons/inbox/ic-add-circle.svg';
 import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
 import avatarDefault from '@/assets/images/avatar-default.png';
-import { getFormattedTime } from '@/shared/utils/time';
 
 type Props = {
   conversationsRef: ConversationListFragment_query$key;
   onSelectConversation?: (conversation: any) => void;
 };
 
-const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversation }) => {
+const ConversationList: React.FC<Props> = ({
+  conversationsRef,
+  onSelectConversation,
+}) => {
   const { t } = useTranslation('inbox');
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [isAllDropdownOpen, setIsAllDropdownOpen] = useState(false);
@@ -67,7 +76,7 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
   const [filterSearchTerm, setFilterSearchTerm] = useState('');
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [isMainFilterDropdownOpen, setIsMainFilterDropdownOpen] =
-    useState(false);
+  useState(false);
   const [isConditionDropdownOpen, setIsConditionDropdownOpen] = useState(false);
   const [selectedCondition, setSelectedCondition] = useState<string | null>(
     null,
@@ -77,26 +86,24 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
   const [selectedOption, setSelectedOption] = useState('Beauty');
   const [conditionValues, setConditionValues] = useState<string[]>([]);
   const [isCustomFilterDropdownOpen, setIsCustomFilterDropdownOpen] =
-    useState(false);
+  useState(false);
+  const menuDropdownRef = useRef<HTMLDivElement>(null);
   const conversationListWrapperRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
 
   // Relay pagination
-  const {
-    data,
-    loadNext,
-    hasNext,
-    isLoadingNext,
-  } = usePaginationFragment(
+  const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment(
     conversationListFragment,
-    conversationsRef
+    conversationsRef,
   );
 
   useEffect(() => {
     if (onSelectConversation && activeConversationId) {
-      const conversation = data.conversations.edges.find(edge => edge.node.id === activeConversationId)?.node;
+      const conversation = data.conversations.edges.find(
+        (edge) => edge.node.id === activeConversationId,
+      )?.node;
       if (conversation) {
         onSelectConversation(conversation);
       }
@@ -118,27 +125,13 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
     };
     wrapper.addEventListener('scroll', handleScroll);
     return () => wrapper.removeEventListener('scroll', handleScroll);
-  }, [hasNext, isLoadingNext, loadNext]);
-
-  const decodeGlobalId = (globalId: string): string => {
-    try {
-      const decoded = atob(globalId);
-      const parts = decoded.split(':');
-      return parts[1] || globalId;
-    } catch {
-      return globalId;
-    }
-  };
+  }, [hasNext, isLoadingNext, loadNext]);  
 
   const workspaceId = useSelector(selectCurrentWorkspaceId);
-  const rawWorkspaceId = workspaceId ? decodeGlobalId(workspaceId) : null;
   const dispatch = useAppDispatch();
-  const { conversations, loading, selectedConversation } = useAppSelector((state) => state.inbox);
-  const currentConversations = workspaceId
-    ? conversations[workspaceId] || []
-    : [];
-
-  const [customFilterName, setCustomFilterName] = useState('');
+  const { conversations } = useAppSelector(
+    (state) => state.inbox,
+  );
 
   // Listen for workspace changes
   useEffect(() => {
@@ -166,11 +159,17 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
     setIsFilterDropdownOpen(false);
   };
 
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
 
-      if (menuRef.current && !menuRef.current.contains(target)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(target) &&
+        menuDropdownRef.current &&
+        !menuDropdownRef.current.contains(target)
+      ) {
         setActiveMenu(null);
       }
 
@@ -197,9 +196,33 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
     setActiveMenu(activeMenu === index ? null : index);
   };
 
-  const handleMenuItemClick = (_action: string, e: React.MouseEvent) => {
+  const handleMenuItemClick = async (
+    action: string,
+    e: React.MouseEvent,
+    conversationId?: string,
+  ) => {
     e.stopPropagation();
     setActiveMenu(null);
+
+    if (action === 'delete' && conversationId) {
+      try {
+        const realId = decodeGlobalId(conversationId);
+        await deleteConversation(realId);
+        if (workspaceId) {
+          dispatch(fetchConversations(workspaceId));
+        }
+      } catch (err) {
+        //
+      }
+    }
+
+    if (action === 'unread' && conversationId) {
+      const rawConversationId = decodeGlobalId(conversationId);
+      openConversation(rawConversationId);
+      if (workspaceId) {
+        dispatch(updateConversationUnreadCount({ workspaceId, conversationId, unreadCount: 0 }));
+      }
+    }
   };
 
   const handleSelectFilter = (filter: string) => {
@@ -212,13 +235,14 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
   };
 
   const handleConversationClick = (conversationId: string) => {
-    const conversation = data.conversations.edges.find(edge => edge.node.id === conversationId)?.node;
+    const conversation = data.conversations.edges.find(
+      (edge) => edge.node.id === conversationId,
+    )?.node;
     if (conversation) {
-      // Create conversation object with full information
       const conversationData: Conversation = {
         id: conversation.id,
         contact: {
-          id: conversation.id, // Use conversation id as temporary contact id
+          id: conversation.id,
           createdAt: conversation.createdAt || '',
           updatedAt: conversation.updatedAt || '',
           guestId: '',
@@ -234,7 +258,7 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
         participants: [],
         lastActivityAt: conversation.lastActivityAt || '',
         latestMessage: {
-          id: conversation.id, // Use conversation id as temporary message id
+          id: conversation.id,
           content: conversation.latestMessage?.content || '',
           sender: 'agent' as any,
           createdAt: conversation.lastActivityAt || '',
@@ -244,37 +268,13 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
           user: null,
         },
       };
-
-      // Save to Redux
       dispatch(setSelectedConversation(conversationData));
-
-      // Call callback if exists
       if (onSelectConversation) {
         onSelectConversation(conversation);
       }
     }
     navigate(`?conversationId=${conversationId}`);
   };
-
-  const renderSkeleton = () => (
-    <>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <S.NotificationItem key={i}>
-          <S.Avatar>
-            <Skeleton.Avatar active size={40} />
-          </S.Avatar>
-          <S.Content>
-            <Skeleton.Input active size="small" style={{ width: 100 }} />
-            <Skeleton.Input
-              active
-              size="small"
-              style={{ width: 200, marginTop: 8 }}
-            />
-          </S.Content>
-        </S.NotificationItem>
-      ))}
-    </>
-  );
 
   return (
     <S.Container>
@@ -419,26 +419,30 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
                 <S.BarIcon onClick={(e) => handleMenuClick(index, e)}>
                   <Image src={barColumn} preview={false} />
                 </S.BarIcon>
-                {conversation.unreadCount ? (
+                {Number(conversation.unreadCount) > 0 && (
                   <S.Badge>{conversation.unreadCount}</S.Badge>
-                ) : (
-                  <></>
                 )}
                 {activeMenu === index && (
-                  <S.MenuDropdown isOpen={true}>
+                  <S.MenuDropdown
+                    ref={menuDropdownRef}
+                    isOpen={true}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <S.MenuItem
                       onClick={(e) => handleMenuItemClick('resolve', e)}
                     >
                       <Image src={check} preview={false} />
                       Mark as resolved
                     </S.MenuItem>
-                    <S.MenuItem
-                      onClick={(e) => handleMenuItemClick('unread', e)}
-                    >
-                      <Image src={unreadIcon} preview={false} />
-                      Mark as unread
-                    </S.MenuItem>
-                    <S.MenuItem
+                    {Number(conversation.unreadCount) > 0 && (
+                      <S.MenuItem
+                        onClick={(e) => handleMenuItemClick('unread', e, conversation.id)}
+                      >
+                        <Image src={unreadIcon} preview={false} />
+                        Mark as unread
+                      </S.MenuItem>
+                    )}
+                    {/* <S.MenuItem
                       onClick={(e) => handleMenuItemClick('copy', e)}
                     >
                       <Image src={copyIcon} preview={false} />
@@ -449,10 +453,14 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
                     >
                       <Image src={blockIcon} preview={false} />
                       Block Admin 3
-                    </S.MenuItem>
+                    </S.MenuItem> */}
                     <S.MenuItem
+                      tabIndex={0}
+                      role="button"
                       className="delete"
-                      onClick={(e) => handleMenuItemClick('delete', e)}
+                      onClick={(e) =>
+                        handleMenuItemClick('delete', e, conversation.id)
+                      }
                     >
                       <Image src={deleteIcon} preview={false} />
                       Delete conversation
@@ -464,17 +472,16 @@ const ConversationList: React.FC<Props> = ({ conversationsRef, onSelectConversat
           );
         })}
         {isLoadingNext && (
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            padding: '20px',
-            width: '100%'
-          }}>
-            <LoadingOutlined
-              spin
-              style={{ fontSize: 24, color: '#999' }}
-            />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '20px',
+              width: '100%',
+            }}
+          >
+            <LoadingOutlined spin style={{ fontSize: 24, color: '#999' }} />
           </div>
         )}
       </S.ConversationListWrapper>

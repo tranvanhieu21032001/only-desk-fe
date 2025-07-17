@@ -1,5 +1,6 @@
 import { TFunction } from 'i18next';
 
+import { decodeGlobalId } from '@/shared/utils/decode';
 import { postRequest } from '@/core/services/requests';
 import { patchRequest } from '@/core/services/requests/patchRequest';
 import {
@@ -15,16 +16,6 @@ const prefixAuth: string = '';
 const endpointAuth = {
   WORKSPACE: `${prefixAuth}/workspaces`,
   CURRENT_WORKSPACE: `${prefixAuth}/users/current-workspace`,
-};
-
-const decodeGlobalId = (globalId: string): string => {
-  try {
-    const decoded = atob(globalId);
-    const parts = decoded.split(':');
-    return parts[1] || globalId; 
-  } catch {
-    return globalId; 
-  }
 };
 
 const handleCreateWorkspaceApi = async (

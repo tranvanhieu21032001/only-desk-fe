@@ -3,16 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { InboxMessageType, InboxMessageStatus, InboxSender } from '@/modules/settings/helpers/enums/inbox.enums';
 import { Message, Conversation } from '../interfaces/inbox';
 
-export const decodeGlobalId = (globalId: string): string => {
-  try {
-    const decoded = atob(globalId);
-    const parts = decoded.split(':');
-    return parts[1] || globalId;
-  } catch {
-    return globalId;
-  }
-};
-
 export function createAgentMessage({
   content,
   type = InboxMessageType.Text,

@@ -157,7 +157,6 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
                 {children}
               </S.MessageImageLeft>
             ) : (
-              // Sửa đoạn này: time và bubble nằm cùng 1 hàng
               <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
                 {children}
                 <MessageTimeWithIcon
