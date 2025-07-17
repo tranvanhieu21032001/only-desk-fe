@@ -4,7 +4,7 @@ interface IconProps {
   isActive?: boolean;
 }
 interface MessageContainerProps {
-  isSidebarOpen: boolean;
+  $isSidebarOpen: boolean;
 }
 
 export const Container = styled.div`
@@ -189,7 +189,7 @@ export const MainContent = styled.div`
 `;
 
 export const MessageContainer = styled.div<MessageContainerProps>`
-  flex: ${({ isSidebarOpen }) => (isSidebarOpen ? 2 : 1)};
+  flex: ${({ $isSidebarOpen }) => ($isSidebarOpen ? 2 : 1)};
   padding: 16px;
   overflow-y: auto;
   background: #fafafa;

@@ -22,14 +22,14 @@ export const FlagIcon = styled.img`
   background: #fff;
 `;
 
-export const Status = styled.div<{ online?: boolean }>`
+export const Status = styled.div<{ $online?: boolean }>`
   position: absolute;
   right: -2px;
   top: 26px;
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: ${({ online }) => (online ? "#4CAF50" : "#ccc")};
+  background: ${({ $online }) => ($online ? "#4CAF50" : "#ccc")};
   border: 2px solid #fff;
 `;
 

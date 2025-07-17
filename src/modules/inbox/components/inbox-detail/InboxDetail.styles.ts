@@ -3,10 +3,10 @@ import { BellOutlined } from '@ant-design/icons';
 import { createGlobalStyle } from 'styled-components';
 
 interface IconProps {
-  isActive?: boolean;
+  $isActive?: boolean;
 }
 interface MessageContainerProps {
-  isSidebarOpen: boolean;
+  $isSidebarOpen: boolean;
 }
 
 export const GlobalStyle = createGlobalStyle`
@@ -244,7 +244,7 @@ export const TabOverlay = styled.div<{ $tabtype?: string }>`
 `;
 
 export const MessageContainer = styled.div<MessageContainerProps>`
-  flex: ${({ isSidebarOpen }) => (isSidebarOpen ? 2 : 1)};
+  flex: ${({ $isSidebarOpen  }) => ($isSidebarOpen  ? 2 : 1)};
   padding: 16px 2px 16px 16px;
   overflow-y: auto;
   background: #fafafa;
@@ -358,7 +358,7 @@ export const IconProps = styled.div<IconProps>`
   gap: 5px;
   font-size: 12px;
   line-height: 20px;
-  color: ${({ isActive }) => (isActive ? '#1e2f97' : '#aaa')};
+  color: ${({ $isActive }) => ($isActive ? '#1e2f97' : '#aaa')};
   position: relative;
   padding: 0 12px;
 

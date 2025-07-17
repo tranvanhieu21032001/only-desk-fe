@@ -58,7 +58,7 @@ export const SearchIcon = styled.div`
   }
 `;
 
-export const Button = styled.button<{ active?: boolean }>`
+export const Button = styled.button<{ $active?: boolean }>`
   flex-shrink: 0;
   width: max-content;
   padding: 8px 16px;
@@ -67,9 +67,9 @@ export const Button = styled.button<{ active?: boolean }>`
   font-size: ${(props) => props?.theme?.fontSize?.base};
   line-height: 23px;
   color: ${(props) => props?.theme?.colors?.primary};
-  border: ${({ active, theme }) =>
-    active ? `1px solid ${theme.colors.borderDark}` : '1px solid #ccc'};
-  background: ${(props) => props?.theme?.colors?.newtralLightest};
+  border: ${({ $active, theme }) =>
+    $active ? `1px solid ${theme.colors.borderDark}` : '1px solid #ccc'};
+  background: ${({ $active, theme }) => ($active ? theme.colors.primary : theme.colors.newtralLightest)};
   cursor: pointer;
 
   img,
@@ -124,7 +124,7 @@ export const ButtonModalDropdown = styled.button`
   }
 `;
 
-export const NotificationItem = styled.div<{ active?: boolean }>`
+export const NotificationItem = styled.div<{ $active?: boolean }>`
   display: flex;
   align-items: center;
   padding: 12px;
@@ -136,8 +136,8 @@ export const NotificationItem = styled.div<{ active?: boolean }>`
     background-color: ${(props) => props?.theme?.colors?.newtralLighter};
   }
 
-  ${({ active }) =>
-    active &&
+  ${({ $active }) =>
+    $active &&
     `
       background-color: #EDF1F8 !important;
     `}

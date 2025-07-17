@@ -1,7 +1,9 @@
 import React from 'react';
-import * as S from './InboxDetail.styles';
+
 import { Message } from '../../interfaces/inbox';
 import { InboxMessageType, InboxSender } from '@/modules/settings/helpers/enums/inbox.enums';
+
+import * as S from './InboxDetail.styles';
 
 interface ContextMenuProps {
   contextMenu: {
@@ -50,130 +52,84 @@ const getMenuItems = (
   },
   t: (key: string) => string
 ): MenuItem[] => {
-  const isAgentMessage = message.sender === InboxSender.Agent;
-  const isGuestMessage = message.sender === InboxSender.Guest;
+  const isOwner = message.sender === InboxSender.Agent;
   const isImageMessage = message.type === InboxMessageType.Image;
   const isNoteMessage = message.type === InboxMessageType.Note;
-  const items: MenuItem[] = [];
+  const isTextMessage = message.type === InboxMessageType.Text;
+  const isCopyTextSupported = isNoteMessage || isTextMessage;
 
-  switch (message.type) {
-    case InboxMessageType.Image:
-      items.push({
-        key: 'reply',
-        icon: icons.iconReply,
-        label: t('inboxDetail.reply'),
-        onClick: handlers.handleReply,
-        danger: false,
-        style: {},
-        type: 'item',
-      });
-      items.push({ key: 'separator', type: 'separator' });
-      items.push({
-        key: 'delete',
-        icon: icons.iconDelete,
-        label: t('inboxDetail.delete'),
-        onClick: handlers.handleDeleteMessage,
-        danger: true,
-        type: 'item',
-      });
-      break;
-    case InboxMessageType.Note:
-      if (isAgentMessage) {
-        items.push({
-          key: 'copy',
-          icon: icons.iconCopy,
-          label: t('inboxDetail.copyText'),
-          onClick: handlers.handleCopyText,
-          danger: false,
-          type: 'item',
-        });
-        items.push({
-          key: 'edit',
-          icon: icons.iconEdit,
-          label: t('inboxDetail.edit'),
-          onClick: handlers.handleEdit,
-          danger: false,
-          type: 'item',
-        });
-        items.push({ key: 'separator', type: 'separator' });
-        items.push({
-          key: 'delete',
-          icon: icons.iconDelete,
-          label: t('inboxDetail.delete'),
-          onClick: handlers.handleDeleteMessage,
-          danger: true,
-          type: 'item',
-        });
-      } else if (isGuestMessage) {
-        items.push({
-          key: 'copy',
-          icon: icons.iconCopy,
-          label: t('inboxDetail.copyText'),
-          onClick: handlers.handleCopyText,
-          danger: false,
-          type: 'item',
-        });
-      }
-      break;
-    case InboxMessageType.Text:
-    default:
-      if (isGuestMessage) {
-        items.push({
-          key: 'reply',
-          icon: icons.iconReply,
-          label: t('inboxDetail.reply'),
-          onClick: handlers.handleReply,
-          danger: false,
-          style: { borderBottom: '1px solid #eee' },
-          type: 'item',
-        });
-        items.push({
-          key: 'copy',
-          icon: icons.iconCopy,
-          label: t('inboxDetail.copyText'),
-          onClick: handlers.handleCopyText,
-          danger: false,
-          type: 'item',
-        });
-      } else if (isAgentMessage) {
-        items.push({
-          key: 'reply',
-          icon: icons.iconReply,
-          label: t('inboxDetail.reply'),
-          onClick: handlers.handleReply,
-          danger: false,
-          style: { borderBottom: '1px solid #eee' },
-          type: 'item',
-        });
-        items.push({
-          key: 'copy',
-          icon: icons.iconCopy,
-          label: t('inboxDetail.copyText'),
-          onClick: handlers.handleCopyText,
-          danger: false,
-          type: 'item',
-        });
-        items.push({
-          key: 'edit',
-          icon: icons.iconEdit,
-          label: t('inboxDetail.edit'),
-          onClick: handlers.handleEdit,
-          danger: false,
-          type: 'item',
-        });
-        items.push({ key: 'separator', type: 'separator' });
-        items.push({
-          key: 'delete',
-          icon: icons.iconDelete,
-          label: t('inboxDetail.delete'),
-          onClick: handlers.handleDeleteMessage,
-          danger: true,
-          type: 'item',
-        });
-      }
-      break;
+  let menus: MenuItem[] = [];
+
+  if (isImageMessage) {
+    menus.push({
+      key: 'reply',
+      icon: icons.iconReply,
+      label: t('inboxDetail.reply'),
+      onClick: handlers.handleReply,
+      danger: false,
+      type: 'item',
+    });
+    menus.push({
+      key: 'copy',
+      icon: icons.iconCopy,
+      label: t('inboxDetail.copyText'),
+      onClick: handlers.handleCopyText,
+      danger: false,
+      type: 'item',
+    });
+    return menus;
   }
-  return items;
+
+  // Reply (not for Note)
+  if (!isNoteMessage) {
+    menus.push({
+      key: 'reply',
+      icon: icons.iconReply,
+      label: t('inboxDetail.reply'),
+      onClick: handlers.handleReply,
+      danger: false,
+      type: 'item',
+    });
+  }
+
+  // Copy
+  if (isCopyTextSupported) {
+    menus.push({
+      key: 'copy',
+      icon: icons.iconCopy,
+      label: t('inboxDetail.copyText'),
+      onClick: handlers.handleCopyText,
+      danger: false,
+      type: 'item',
+    });
+  }
+
+  // Edit (only owner, and only for Note or Text)
+  if (isOwner && (isNoteMessage || isTextMessage)) {
+    menus.push({
+      key: 'edit',
+      icon: icons.iconEdit,
+      label: t('inboxDetail.edit'),
+      onClick: handlers.handleEdit,
+      danger: false,
+      type: 'item',
+    });
+  }
+
+  // Separator + Delete (only owner)
+  if (isOwner && menus.length > 0) {
+    menus.push({ key: 'separator', type: 'separator' });
+    menus.push({
+      key: 'delete',
+      icon: icons.iconDelete,
+      label: t('inboxDetail.delete'),
+      onClick: handlers.handleDeleteMessage,
+      danger: true,
+      type: 'item',
+    });
+  }
+
+  return menus;
 };
 
 const ContextMenu: React.FC<ContextMenuProps> = ({

@@ -6,7 +6,7 @@ import Button from '../../Button';
 import Search from '../search/Main';
 import AvatarWithStatus from '../../Avatar';
 import CreateConversationModal from '../../Modal';
-import { useAppDispatch, useAppSelector, useModal } from '@/shared/hooks';
+import { useAppDispatch, useModal } from '@/shared/hooks';
 import ModalAddContact from '@/modules/contacts/components/modal-add-contact/ModalAddContact';
 
 import {
@@ -32,13 +32,13 @@ import closeCircle from '@/assets/icons/common/ic-close-circle.svg';
 import conversation from '@/assets/icons/common/ic-conversation.svg';
 import bellBlue from '@/assets/icons/common/ic-notification-blue.svg';
 import { createContact } from '@/modules/contacts/store/features/contacts';
+import { ReactSVG } from 'react-svg';
 
 const Header: React.FC = () => {
   const { t } = useTranslation('inbox');
 
   const { title } = useTitle();
   const dispatch = useAppDispatch();
-  const { currentWorkspace } = useAppSelector((state) => state.auth);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -188,15 +188,15 @@ const Header: React.FC = () => {
                 setDropdownOpen(false);
               }}
             >
-              <Image src={conversation} alt="conversation" preview={false} />
+              <ReactSVG src={conversation} />
               {t('header.createConversation')}
             </S.DropdownItem>
             <S.DropdownItem onClick={handleOpenModalAddContact}>
-              <Image src={icAddContact} alt="contact" preview={false} />
+              <ReactSVG src={icAddContact} />
               {t('header.addNewContact')}
             </S.DropdownItem>
             <S.DropdownItem>
-              <Image src={team} alt="team" preview={false} />
+              <ReactSVG src={team} />
               {t('header.inviteTeamMembers')}
             </S.DropdownItem>
           </S.DropdownMenu>
@@ -211,7 +211,7 @@ const Header: React.FC = () => {
             <Button
               type="primary"
               width="207px"
-              icon={<Image src={addCircle} preview={false} />}
+              icon={<ReactSVG src={addCircle} />}
               iconPosition="left"
             >
               Create Conversation
