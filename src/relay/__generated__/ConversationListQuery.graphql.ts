@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cf3a50cb98618237eba49caf73cd5c3f>>
+ * @generated SignedSource<<51a445d03f2423bce422afad5d5302bc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,8 +21,10 @@ export type ConversationListQuery$data = {
         readonly closedAt: any | null | undefined;
         readonly contact: {
           readonly avatar: string | null | undefined;
+          readonly email: string | null | undefined;
           readonly isOnline: boolean;
           readonly name: string;
+          readonly rawId: string;
         } | null | undefined;
         readonly createdAt: any | null | undefined;
         readonly id: string;
@@ -121,59 +123,73 @@ v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "isOnline",
+  "name": "email",
   "storageKey": null
 },
 v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "subject",
+  "name": "isOnline",
   "storageKey": null
 },
 v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "metadata",
+  "name": "rawId",
   "storageKey": null
 },
 v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "createdAt",
+  "name": "subject",
   "storageKey": null
 },
 v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "updatedAt",
+  "name": "metadata",
   "storageKey": null
 },
 v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "lastActivityAt",
+  "name": "createdAt",
   "storageKey": null
 },
 v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "closedAt",
+  "name": "updatedAt",
   "storageKey": null
 },
 v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "unreadCount",
+  "name": "lastActivityAt",
   "storageKey": null
 },
 v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "closedAt",
+  "storageKey": null
+},
+v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "unreadCount",
+  "storageKey": null
+},
+v15 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -185,7 +201,7 @@ v13 = {
   ],
   "storageKey": null
 },
-v14 = {
+v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -236,18 +252,20 @@ return {
                     "selections": [
                       (v3/*: any*/),
                       (v4/*: any*/),
-                      (v5/*: any*/)
+                      (v5/*: any*/),
+                      (v6/*: any*/),
+                      (v7/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v6/*: any*/),
-                  (v7/*: any*/),
                   (v8/*: any*/),
                   (v9/*: any*/),
                   (v10/*: any*/),
                   (v11/*: any*/),
                   (v12/*: any*/),
                   (v13/*: any*/),
+                  (v14/*: any*/),
+                  (v15/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -256,7 +274,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v14/*: any*/)
+                      (v16/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -317,18 +335,20 @@ return {
                       (v3/*: any*/),
                       (v4/*: any*/),
                       (v5/*: any*/),
+                      (v6/*: any*/),
+                      (v7/*: any*/),
                       (v2/*: any*/)
                     ],
                     "storageKey": null
                   },
-                  (v6/*: any*/),
-                  (v7/*: any*/),
                   (v8/*: any*/),
                   (v9/*: any*/),
                   (v10/*: any*/),
                   (v11/*: any*/),
                   (v12/*: any*/),
                   (v13/*: any*/),
+                  (v14/*: any*/),
+                  (v15/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -337,7 +357,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v14/*: any*/),
+                      (v16/*: any*/),
                       (v2/*: any*/)
                     ],
                     "storageKey": null
@@ -354,16 +374,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c75a20a955866d4b7b274d3315a1c0cd",
+    "cacheID": "6b7488fe87d20eb2e48097304d348563",
     "id": null,
     "metadata": {},
     "name": "ConversationListQuery",
     "operationKind": "query",
-    "text": "query ConversationListQuery {\n  conversations {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListQuery {\n  conversations {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          email\n          isOnline\n          rawId\n          id\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "5a445b62f2b51f5e00a01307e312a06d";
+(node as any).hash = "4126cb4eef442a9136647275b429228a";
 
 export default node;

@@ -16,11 +16,16 @@ export const fetchConversationsRelay = async (
 ): Promise<ConversationListResponse> => {
   const variables: any = {};
 
-  const data: any = await fetchQuery(environment, conversationListQuery, variables).toPromise();
+  const data: any = await fetchQuery(
+    environment,
+    conversationListQuery,
+    variables,
+  ).toPromise();
 
   const edges = data?.conversations?.edges || [];
   const conversations: Conversation[] = edges.map((edge: any) => {
     const node = edge.node;
+
     return {
       id: node.id,
       contact: {
@@ -28,6 +33,7 @@ export const fetchConversationsRelay = async (
         createdAt: '',
         updatedAt: '',
         guestId: '',
+        rawId: node.contact?.rawId,
         name: node.contact?.name || 'Guest',
         notification: true,
         segments: [],
@@ -35,6 +41,7 @@ export const fetchConversationsRelay = async (
         lastActivityAt: node.updatedAt,
         workspaceId,
         avatar: node.contact?.avatar || '',
+        email: node.contact?.email || '',
       },
       assignedTo: node.assignedTo?.id || null,
       participants: [],
@@ -52,10 +59,13 @@ export const fetchConversationsRelay = async (
     } as Conversation;
   });
 
-  const pageInfo = data?.conversations?.pageInfo || { hasNextPage: false, endCursor: null };
+  const pageInfo = data?.conversations?.pageInfo || {
+    hasNextPage: false,
+    endCursor: null,
+  };
   return {
     data: conversations,
     hasNextPage: pageInfo.hasNextPage,
     endCursor: pageInfo.endCursor,
   };
-}; 
+};
