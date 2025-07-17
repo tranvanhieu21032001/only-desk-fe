@@ -47,6 +47,7 @@ export interface Conversation {
   lastActivityAt: string;
   latestMessage: Message;
   unreadGuestCount?: number;
+  unreadCount?: number;
 }
 
 export interface ConversationListResponse {

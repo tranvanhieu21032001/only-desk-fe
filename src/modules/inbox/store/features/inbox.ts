@@ -44,6 +44,16 @@ const inboxSlice = createSlice({
     clearSelectedConversation(state) {
       state.selectedConversation = null;
     },
+    updateConversationUnreadCount(state, action) {
+      const { workspaceId, conversationId, unreadCount } = action.payload;
+      const conversations = state.conversations[workspaceId];
+      if (conversations) {
+        const conv = conversations.find(c => c.id === conversationId);
+        if (conv) {
+          conv.unreadCount = unreadCount;
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -62,5 +72,5 @@ const inboxSlice = createSlice({
   },
 });
 
-export const { clearConversations, setSelectedConversation, clearSelectedConversation } = inboxSlice.actions;
+export const { clearConversations, setSelectedConversation, clearSelectedConversation, updateConversationUnreadCount } = inboxSlice.actions;
 export default inboxSlice.reducer;

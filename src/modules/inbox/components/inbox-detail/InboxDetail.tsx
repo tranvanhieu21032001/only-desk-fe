@@ -40,6 +40,8 @@ import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
 import { OutgoingMessage } from './OutgoingMessage';
 import { IncomingMessage } from './IncomingMessage';
 import { InboxFooter } from './InboxFooter';
+import { formatTime } from '@/shared/utils/time';
+import { decodeGlobalId } from '@/shared/utils/decode';
 import {
   resolveCurrentConversation,
   handleIconClickLogic,
@@ -63,7 +65,6 @@ import iconReply from '@/assets/icons/inbox/ic-reply.svg';
 import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
-import { formatTime } from '@/shared/utils/time';
 
 interface InboxDetailProps {
   isSidebarOpen: boolean;
@@ -105,17 +106,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       updateMessage,
       removeMessage,
     } = useMessageList({ conversationId: stableConversationId.current });
-
-    // Memoize decode function (stable)
-    const decodeGlobalId = useCallback((globalId: string): string => {
-      try {
-        const decoded = atob(globalId);
-        const parts = decoded.split(':');
-        return parts[1] || globalId;
-      } catch {
-        return globalId;
-      }
-    }, []);
 
     const rawConversationId = useMemo(
       () =>

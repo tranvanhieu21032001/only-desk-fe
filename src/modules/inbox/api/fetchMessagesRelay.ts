@@ -1,4 +1,6 @@
 import { fetchQuery } from 'react-relay';
+
+import { decodeGlobalId } from '@/shared/utils/decode';
 import environment from '@/relay/RelayEnvironment';
 import { messageQuery } from '@/relay/MessageQuery';
 import { Message } from '../interfaces/inbox';
@@ -13,16 +15,6 @@ interface MessageListResponse {
   hasNextPage: boolean;
   endCursor: string | null;
 }
-
-const decodeGlobalId = (globalId: string): string => {
-  try {
-    const decoded = atob(globalId);
-    const parts = decoded.split(':');
-    return parts[1] || globalId; 
-  } catch {
-    return globalId; 
-  }
-};
 
 const mapSender = (sender: string): InboxSender =>
   sender === 'GUEST' ? InboxSender.Guest : InboxSender.Agent;

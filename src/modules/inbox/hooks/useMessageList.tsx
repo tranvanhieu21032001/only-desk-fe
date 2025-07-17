@@ -20,6 +20,7 @@ import type { ConversationMessagesQuery } from '@/relay/__generated__/Conversati
 import type { MessageFragment_query$key } from '@/relay/__generated__/MessageFragment_query.graphql';
 import environment from '@/relay/RelayEnvironment';
 import { useUser } from '@/core/context/UserContext';
+import { decodeGlobalId } from '@/shared/utils/decode';
 
 interface UseMessageListProps {
   conversationId: string | null;
@@ -55,16 +56,6 @@ function isValidMessage(msg: Message): boolean {
   }
   return false;
 }
-
-const decodeGlobalId = (globalId: string): string => {
-  try {
-    const decoded = atob(globalId);
-    const parts = decoded.split(':');
-    return parts[1] || globalId;
-  } catch {
-    return globalId;
-  }
-};
 
 const mapSender = (sender: string): InboxSender => {
   if (!sender) {
