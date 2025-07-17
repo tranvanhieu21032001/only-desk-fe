@@ -95,7 +95,7 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
         {actions.map(action => (
           <S.IconProps
             key={action.key}
-            isActive={action.isActive}
+            $isActive={action.isActive}
             onClick={action.onClick}
           >
             <Image src={action.isActive ? action.iconActive : action.icon} preview={false} />

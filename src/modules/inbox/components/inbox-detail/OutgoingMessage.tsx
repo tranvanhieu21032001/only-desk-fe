@@ -32,7 +32,6 @@ export const OutgoingMessage: React.FC<OutgoingMessageProps> = ({
   scrollToBottom,
   justLoadedMore,
 }) => {
-  const hovered = hoveredMessageId === msg.id;
   const onHoverEnter = () => setHoveredMessageId(msg.id);
   const onHoverLeave = () => {
     if (!contextMenu.visible) setHoveredMessageId(null);

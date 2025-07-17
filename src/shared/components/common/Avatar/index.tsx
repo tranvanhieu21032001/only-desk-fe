@@ -19,7 +19,7 @@ const AvatarWithStatus = ({
         <S.AvatarWrapper>
             <S.Avatar src={avatarSrc} alt="Avatar" />
             {flagSrc && <S.FlagIcon src={flagSrc} />}
-            <S.Status online={isOnline} />
+            <S.Status $online={isOnline} />
             {(tooltipStatus || tooltipLastActive) && (
                 <S.CustomTooltip>
                     {tooltipStatus && <S.TooltipStatus>{tooltipStatus}</S.TooltipStatus>}

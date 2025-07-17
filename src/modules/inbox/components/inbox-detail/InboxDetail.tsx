@@ -3,7 +3,6 @@ import React, {
   useState,
   useEffect,
   useMemo,
-  useCallback,
   memo,
 } from 'react';
 import { Image } from 'antd';
@@ -29,7 +28,7 @@ import {
   InboxMessageType,
   InboxSender,
 } from '@/modules/settings/helpers/enums/inbox.enums';
-import { getShortcutsList } from '@/modules/settings/api/chatbox';
+import { getShortcutsList } from '@/modules/inbox/api/inbox.api';
 import type { Shortcut } from '@/modules/settings/models/chatbox.model';
 import { useAppSelector } from '@/shared/hooks';
 import { ToastMessageType } from '@/shared/helper/enums/common';
@@ -136,7 +135,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const isSelfSendingRef = useRef(false);
     const [pendingImageScroll, setPendingImageScroll] = useState(false);
     const [_pendingImageLoads, setPendingImageLoads] = useState(0);
-    const [lastMessageId, setLastMessageId] = useState<string | null>(null);
     const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
     const [_shortcutsPage, setShortcutsPage] = useState(1);
     const [shortcutsHasMore, setShortcutsHasMore] = useState(true);
@@ -197,14 +195,12 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     // Use custom scroll hook
     const {
-      wasAtBottom,
       showNewMessageNotice,
-      setShowNewMessageNotice,
-      handleScroll,
-      handleLoadMore,
       scrollToBottom,
       scrollToShowNewMessage,
       isLoadingMoreMessages,
+      setWasAtBottom,
+      setShowNewMessageNotice,
     } = useScrollHandler({
       isLoadingNext: loadingMore, 
       hasNextPage: hasNextPage,
@@ -212,136 +208,10 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       pendingImageScroll,
       messageContainerRef,
       messageEndRef,
+      messages: messages as any[],
+      loading,
+      stableConversationId: stableConversationId.current,
     });
-
-    const prevStableConversationId = useRef<string | null>(null);
-    const conversationChanged =
-      prevStableConversationId.current !== stableConversationId.current;
-
-    useEffect(() => {
-      if (!conversationChanged || !stableConversationId.current) return;
-
-      setLastMessageId(null);
-      setGuestTyping(false);
-      setActiveTab(null);
-
-      isFirstMessageLoad.current = true;
-
-      prevStableConversationId.current = stableConversationId.current;
-    }, [stableConversationId.current, conversationChanged]);
-
-    const isFirstMessageLoad = useRef(true);
-
-    // Optimize initial scroll to prevent flash
-    useEffect(() => {
-      if (
-        !loading &&
-        messages.length > 0 &&
-        isFirstMessageLoad.current &&
-        stableConversationId.current
-      ) {
-        const container = messageContainerRef.current;
-        if (container) {
-          requestAnimationFrame(() => {
-            if (container) {
-              container.scrollTop = container.scrollHeight;
-              isFirstMessageLoad.current = false;
-            }
-          });
-        }
-      }
-    }, [loading, messages.length, stableConversationId.current]);
-
-    // Check if user is at bottom (gắn event listener)
-    useEffect(() => {
-      const container = messageContainerRef.current;
-      if (!container) return;
-      container.addEventListener('scroll', handleScroll);
-      container.addEventListener('scroll', handleLoadMore);
-      return () => {
-        container.removeEventListener('scroll', handleScroll);
-        container.removeEventListener('scroll', handleLoadMore);
-      };
-    }, [handleScroll, handleLoadMore]);
-
-    const prevMessageCount = useRef(messages.length);
-    const wasLoadingRef = useRef(false);
-    const justLoadedMore = useRef(false);
-
-    useEffect(() => {
-      if (isLoadingMoreMessages) {
-        justLoadedMore.current = true;
-      } else if (justLoadedMore.current) {
-        // Sau khi load more xong, chặn auto-scroll 1 lần
-        justLoadedMore.current = false;
-      }
-    }, [isLoadingMoreMessages]);
-
-    useEffect(() => {
-      if (messages.length === 0) return;
-
-      if (isLoadingMoreMessages) {
-        wasLoadingRef.current = true;
-        return;
-      }
-      const currentCount = messages.length;
-      const previousCount = prevMessageCount.current;
-      const justFinishedLoading =
-        wasLoadingRef.current && !isLoadingMoreMessages;
-
-      if (justFinishedLoading && currentCount > previousCount) {
-        wasLoadingRef.current = false;
-        prevMessageCount.current = currentCount;
-        const newestMessage = messages[0];
-        setLastMessageId(newestMessage?.id);
-        return;
-      }
-
-      if (!isLoadingMoreMessages) {
-        wasLoadingRef.current = false;
-      }
-
-      prevMessageCount.current = currentCount;
-
-      const newestMessage = messages[0];
-      const newestId = newestMessage?.id;
-
-      // Skip auto-scroll logic during initial conversation load
-      if (!lastMessageId) {
-        setLastMessageId(newestId);
-        return;
-      }
-
-      if (newestId !== lastMessageId) {
-        const now = new Date();
-        const messageTime = new Date(newestMessage.createdAt);
-        const timeDifference = now.getTime() - messageTime.getTime();
-        const isRecentMessage = timeDifference < 10000;
-
-        // Chặn auto-scroll nếu vừa load more
-        if (justLoadedMore.current) {
-          setLastMessageId(newestId);
-          return;
-        }
-
-        if (isRecentMessage && !isLoadingMoreMessages && wasAtBottom) {
-          setTimeout(() => {
-            scrollToShowNewMessage();
-          }, 0);
-          setShowNewMessageNotice(false);
-        } else if (isRecentMessage && !isLoadingMoreMessages) {
-          setShowNewMessageNotice(true);
-        }
-      }
-      setLastMessageId(newestId);
-    }, [
-      messages,
-      wasAtBottom,
-      scrollToShowNewMessage,
-      setShowNewMessageNotice,
-      lastMessageId,
-      isLoadingMoreMessages,
-    ]);
 
     const prevConversationId = useRef<string | null>(null);
     const isFirstMount = useRef(true);
@@ -431,29 +301,24 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         setInputValue,
         setActiveTab,
       });
-    };
-
-    // Fetch shortcuts
-    const fetchShortcuts = async (page = 1, keyword = '') => {
-      setShortcutsLoading(true);
-      try {
-        const res = await getShortcutsList({ page, limit: 10, keyword });
-        if (page === 1) {
-          setShortcuts(res.data || []);
-        } else {
-          setShortcuts((prev) => [...prev, ...(res.data || [])]);
-        }
-        setShortcutsHasMore(res.hasNextPage);
-      } finally {
-        setShortcutsLoading(false);
+      // Scroll đến bottom thật sự (dù render reverse)
+      if (messageContainerRef.current) {
+        messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
       }
+      setWasAtBottom(true);
+      setShowNewMessageNotice(false);
     };
 
-    // When clicking the Shortcuts tab or changing keywords
     useEffect(() => {
       if (activeTab === INBOX_TABS.SHORTCUTS) {
         setShortcutsPage(1);
-        fetchShortcuts(1, shortcutsKeyword);
+        setShortcutsLoading(true);
+        getShortcutsList({ page: 1, limit: 10, keyword: shortcutsKeyword })
+          .then(res => {
+            setShortcuts(res.data || []);
+            setShortcutsHasMore(res.hasNextPage);
+          })
+          .finally(() => setShortcutsLoading(false));
       }
       // eslint-disable-next-line
     }, [activeTab, shortcutsKeyword]);
@@ -467,7 +332,13 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         if (el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {
           setShortcutsPage((prev) => {
             const next = prev + 1;
-            fetchShortcuts(next, shortcutsKeyword);
+            setShortcutsLoading(true);
+            getShortcutsList({ page: next, limit: 10, keyword: shortcutsKeyword })
+              .then(res => {
+                setShortcuts(prevShortcuts => [...prevShortcuts, ...(res.data || [])]);
+                setShortcutsHasMore(res.hasNextPage);
+              })
+              .finally(() => setShortcutsLoading(false));
             return next;
           });
         }
@@ -652,10 +523,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             $hasOverlay={!!activeTab}
             style={{ position: 'relative' }}
           >
-            <S.MessageContainer
-              isSidebarOpen={isSidebarOpen}
-              ref={messageContainerRef}
-            >
+            <S.MessageContainer $isSidebarOpen={isSidebarOpen} ref={messageContainerRef}>
               {messages.length === 0 && loading ? (
                 <RenderSkeleton />
               ) : messages.length === 0 && !loading ? (
@@ -691,7 +559,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                               setPendingImageScroll={setPendingImageScroll}
                               setPendingImageLoads={setPendingImageLoads}
                               scrollToBottom={scrollToBottom}
-                              justLoadedMore={justLoadedMore.current}
+                              justLoadedMore={false}
                             />
                           ) : (
                             <IncomingMessage
@@ -706,7 +574,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                               setPendingImageLoads={setPendingImageLoads}
                               scrollToBottom={scrollToBottom}
                               avatarAdmin={avatarAdmin}
-                              justLoadedMore={justLoadedMore.current}
+                              justLoadedMore={false}
                             />
                           )}
                         </React.Fragment>

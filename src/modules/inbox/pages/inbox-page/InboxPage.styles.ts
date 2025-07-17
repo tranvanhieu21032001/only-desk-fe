@@ -59,8 +59,8 @@ export const Sidebar = styled.div`
   transition: all 0.3s;
 `;
 
-export const InboxDetailWrapper = styled.div<{ isSidebarOpen: boolean }>`
-  flex: ${({ isSidebarOpen }) => (isSidebarOpen ? 2 : 1)};
+export const InboxDetailWrapper = styled.div<{ $isSidebarOpen: boolean }>`
+  flex: ${({ $isSidebarOpen }) => ($isSidebarOpen ? 2 : 1)};
   height: 100%;
   transition: all 0.3s;
   display: flex;

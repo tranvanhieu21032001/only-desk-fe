@@ -150,12 +150,24 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
               {msg.user?.firstName || 'Guest'}
             </S.MessageSenderName>
             {msg.type === InboxMessageType.Image ? (
-              <S.MessageImageLeft
-                onMouseEnter={onHoverEnter}
-                onMouseLeave={onHoverLeave}
-              >
-                {children}
-              </S.MessageImageLeft>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
+                <S.MessageImageLeft
+                  onMouseEnter={onHoverEnter}
+                  onMouseLeave={onHoverLeave}
+                >
+                  {children}
+                </S.MessageImageLeft>
+                <MessageTimeWithIcon
+                  hovered={hovered}
+                  onMenuClick={onMenuClick}
+                  onHoverEnter={onHoverEnter}
+                  onHoverLeave={onHoverLeave}
+                  createdAt={msg.createdAt}
+                  status={msg.status}
+                  formatTime={formatTime}
+                  rightIcon={false}
+                />
+              </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
                 {children}

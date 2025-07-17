@@ -288,7 +288,7 @@ const ConversationList: React.FC<Props> = ({
 
         <S.FilterRef ref={customFilterRef}>
           <S.Button
-            active={isCustomFilterDropdownOpen}
+            $active={isCustomFilterDropdownOpen}
             onClick={() => {
               setIsCustomFilterDropdownOpen((prev) => !prev);
               setIsAllDropdownOpen(false);
@@ -394,7 +394,7 @@ const ConversationList: React.FC<Props> = ({
           return (
             <S.NotificationItem
               key={conversation.id}
-              active={conversation.id === activeConversationId}
+              $active={conversation.id === activeConversationId}
               onClick={() => handleConversationClick(conversation.id)}
             >
               <S.Avatar>

@@ -65,16 +65,10 @@ const mapSender = (sender: string): InboxSender => {
   const senderLower = sender.toString().toLowerCase();
 
   const isGuest =
-    senderLower === 'guest' ||
-    senderLower === 'user' ||
-    senderLower === 'customer' ||
-    senderLower === 'visitor';
+    senderLower === 'guest'
 
   const isAgent =
-    senderLower === 'agent' ||
-    senderLower === 'admin' ||
-    senderLower === 'support' ||
-    senderLower === 'staff';
+    senderLower === 'agent'
 
   let result: InboxSender;
   if (isGuest) {
@@ -99,28 +93,17 @@ const mapType = (type: string): InboxMessageType => {
   let result: InboxMessageType;
 
   if (
-    typeUpper === 'IMAGE' ||
-    typeLower === 'image' ||
-    typeUpper === 'IMG' ||
-    typeLower === 'img' ||
-    typeUpper === 'PHOTO' ||
-    typeLower === 'photo'
+    typeLower === 'image'
   ) {
     result = InboxMessageType.Image;
   } else if (
-    typeUpper === 'NOTE' ||
-    typeLower === 'note' ||
-    typeUpper === 'PRIVATE' ||
-    typeLower === 'private'
+    typeLower === 'note'
   ) {
     result = InboxMessageType.Note;
-  } else if (typeUpper === 'LOADING' || typeLower === 'loading') {
+  } else if (typeLower === 'loading') {
     result = InboxMessageType.Loading;
   } else if (
-    typeUpper === 'TEXT' ||
-    typeLower === 'text' ||
-    typeUpper === 'MESSAGE' ||
-    typeLower === 'message'
+    typeLower === 'text'
   ) {
     result = InboxMessageType.Text;
   } else {
@@ -366,13 +349,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
 
   useEffect(() => {
     const handleNewMessage = (rawData: any) => {
-      if (rawData?.type === 'important' || Math.random() < 0.1) {
-        console.log(
-          '📨 [EventBus] Message received for conversation:',
-          rawConversationId,
-        );
-      }
-
       let msg: Message;
       try {
         if (rawData.id && rawData.content !== undefined && rawData.sender) {
@@ -453,12 +429,7 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
     (messageId: string, updates: Partial<Message>) => {
       commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
         const messageRecord = store.get(messageId);
-
-        if (!messageRecord) {
-          console.warn('Message not found in store:', messageId);
-          return;
-        }
-
+        if (!messageRecord) return;
         if (updates.content !== undefined) {
           messageRecord.setValue(updates.content, 'content');
         }
@@ -526,12 +497,7 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
           'MessageFragment_messages',
           { conversationId: rawConversationId },
         );
-
-        if (!connection) {
-          console.warn('Connection not found for removing message');
-          return;
-        }
-
+        if (!connection) return;
         ConnectionHandler.deleteNode(connection, messageId);
         store.delete(messageId);
       });

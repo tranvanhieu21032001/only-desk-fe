@@ -97,7 +97,7 @@ const DetailSkeleton = () => {
 
       {/* Messages Area - Skeleton Only */}
       <DetailS.MainContent>
-        <DetailS.MessageContainer isSidebarOpen={isSidebarOpen}>
+        <DetailS.MessageContainer $isSidebarOpen={isSidebarOpen}>
           {/* Message skeletons */}
           {[1, 2, 3, 4, 5].map((i) => (
             <S.SkeletonMessageRow key={i} $isAgent={i % 2 === 0}>
@@ -183,7 +183,7 @@ const MainInbox: React.FC = () => {
           </Splitter.Panel>
 
           <Splitter.Panel>
-            <S.InboxDetailWrapper isSidebarOpen={isSidebarOpen}>
+            <S.InboxDetailWrapper $isSidebarOpen={isSidebarOpen}>
               <Suspense fallback={<DetailSkeleton />}>
                 <InboxDetail
                   isSidebarOpen={isSidebarOpen}
