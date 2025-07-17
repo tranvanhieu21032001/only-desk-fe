@@ -50,6 +50,7 @@ const createContact = createAsyncThunk(
   },
 );
 
+
 const fetchContacts = createAsyncThunk(
   'contacts/get-contacts',
   async (values: { offset?: number; keyword?: string | null } = {}) => {
