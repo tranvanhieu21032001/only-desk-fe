@@ -30,7 +30,7 @@ export const WrappIcon = styled.div`
   top: 0;
   left: 0;
   display: flex;
-  width:16px;
+  width: 16px;
   height: 16px;
   border: 1px solid #ffffff;
   align-items: center;
@@ -48,6 +48,7 @@ export const FlagIcon = styled.div<FlagIconProps>`
   background-color: white;
   z-index: 2;
 `;
+
 export const Status = styled.div<{ isOnline?: boolean }>`
   position: absolute;
   right: 2px;
@@ -85,10 +86,9 @@ export const Email = styled.div`
   line-height: 20px;
 `;
 
-export const LastActive = styled.div<{ fontSize?: number; italic?: boolean }>`
-  font-size: ${({ fontSize }) => (fontSize ? `${fontSize}px` : '10px')};
+export const LastActive = styled.div`
+  font-size: 10px;
   color: #5c5c5c;
   font-weight: 400;
   line-height: 20px;
-  ${({ italic }) => italic && 'font-style: italic;'}
 `;

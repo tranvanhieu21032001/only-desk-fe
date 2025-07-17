@@ -44,7 +44,7 @@ export const EVENTBUS_SOCKET_DISCONNECT = 'socket-disconnect';
 export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
 export const EVENTBUS_INBOX_MESSAGE = 'inbox-message';
 export const EVENTBUS_USER_TYPING = 'user-typing';
-export const EVENTBUS_USER_STATUS = 'EVENTBUS_USER_STATUS';
+export const EVENTBUS_USER_STATUS = 'eventbus_user_status';
 
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
 

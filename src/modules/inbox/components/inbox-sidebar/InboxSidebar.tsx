@@ -1,5 +1,5 @@
 import { Image } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ProfilePreviewModal from '../profile-preview-modal/ProfilePreviewModal';
@@ -44,12 +44,6 @@ import userPlus from '@/assets/icons/inbox/ic-user-plus.svg';
 import closeRed from '@/assets/icons/inbox/ic-close-red.svg';
 import add from '@/assets/icons/inbox/ic-add.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
-import { useAppDispatch, useAppSelector } from '@/shared/hooks';
-import { RootState } from '@/core/store';
-import {
-  fetchContacts,
-  fetchDetailsContact,
-} from '@/modules/contacts/store/features/contacts';
 
 const InboxSidebar = () => {
   const { t } = useTranslation('inbox');
@@ -62,10 +56,7 @@ const InboxSidebar = () => {
     useState(false);
   const [participantEmail, setParticipantEmail] = useState('');
   const [participants, setParticipants] = useState<string[]>([]);
-  const [openQuickJump, setOpenQuickJump] = useState<{
-    image: boolean;
-    conversation: boolean;
-  }>({ image: false, conversation: false });
+  const [openQuickJump, setOpenQuickJump] = useState<{ image: boolean; conversation: boolean }>({ image: false, conversation: false });
 
   const handleSelect = (option: string) => {
     setSelected(option);
@@ -88,26 +79,32 @@ const InboxSidebar = () => {
     setIsAddParticipantModalOpen(false);
     setParticipantEmail('');
   };
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchContacts({ offset: 0 }));
-  }, []);
-
-  const { selectedConversation } = useAppSelector((state) => state.inbox);
-  const { contacts } = useAppSelector(
-    (state: RootState) => state.contacts,
-  );
 
   return (
     <S.Container>
-      <ProfileCard
-        id={selectedConversation?.contact?.id}
-        avatarSrc={selectedConversation?.contact?.avatar}
-        name={selectedConversation?.contact?.name || 'no name'}
-        email="sophia@alignui.com"
-        lastActiveItalic
-        lastActiveFontSize={12}
-      />
+      <ProfileCard contactId={"Q29udGFjdDo2ODZlMTc0MzljM2YyZTI3ZmQ0MjExNWM="} avatarSize={60}/>
+      {/* <S.ProfileSection>
+        <AvatarWithStatus
+          avatarSrc={defaultAvatar}
+          flagSrc={flag}
+          isOnline={true}
+          tooltipStatus="Sophia Williams is away"
+          tooltipLastActive="Last active: Sep 2025"
+        />
+        <S.ProfileInfo>
+          <S.NameRow>
+            <S.Name>Sophia Williams</S.Name>
+            <Image src={verify} preview={false} />
+          </S.NameRow>
+          <S.Email>sophia@alignui.com</S.Email>
+        </S.ProfileInfo>
+        <S.HoverArea>
+          <S.ActionIcons>
+            <Image src={copy} preview={false} />
+            <Image src={edit} preview={false} />
+          </S.ActionIcons>
+        </S.HoverArea>
+      </S.ProfileSection> */}
 
       <S.countryCenter onClick={() => setShowModal(true)}>
         {t('inboxSidebar.viewProfile')}
@@ -134,12 +131,8 @@ const InboxSidebar = () => {
                 </S.ProfileSection>
 
                 <S.PanelItem>
-                  <S.PanelP>
-                    {t('inboxSidebar.createdDate')}: 19/04/2024
-                  </S.PanelP>
-                  <S.PanelP>
-                    {t('inboxSidebar.lastActive')}: 5 hour ago
-                  </S.PanelP>
+                  <S.PanelP>{t('inboxSidebar.createdDate')}: 19/04/2024</S.PanelP>
+                  <S.PanelP>{t('inboxSidebar.lastActive')}: 5 hour ago</S.PanelP>
                 </S.PanelItem>
               </S.PanelColumn>
             </S.PanelHeader>
@@ -382,8 +375,7 @@ const InboxSidebar = () => {
               <Image src={chorme} preview={false} /> Chrome on Win10
             </S.Field>
             <S.Field>
-              <Image src={cloud} preview={false} /> 190:029:29:918:0ee Da Nang
-              Viet...
+              <Image src={cloud} preview={false} /> 190:029:29:918:0ee Da Nang Viet...
             </S.Field>
           </S.SectionContent>
         )}
@@ -464,67 +456,28 @@ const InboxSidebar = () => {
         {openCollapse && (
           <S.SectionContent>
             {/* Shared image files */}
-            <S.Field
-              style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-              onClick={() =>
-                setOpenQuickJump((prev) => ({ ...prev, image: !prev.image }))
-              }
-            >
-              <Image src={image} preview={false} />{' '}
-              {t('inboxSidebar.sharedImageFiles')}
+            <S.Field style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setOpenQuickJump(prev => ({ ...prev, image: !prev.image }))}>
+              <Image src={image} preview={false} /> {t('inboxSidebar.sharedImageFiles')}
               <img
                 src={arrDown}
                 alt="toggle"
-                style={{
-                  marginLeft: 'auto',
-                  transform: openQuickJump.image
-                    ? 'rotate(180deg)'
-                    : 'rotate(0deg)',
-                  transition: 'transform 0.2s',
-                }}
+                style={{ marginLeft: 'auto', transform: openQuickJump.image ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
               />
             </S.Field>
             {openQuickJump.image && (
-              <S.QuickJumpDropdownText>
-                No images were shared.
-              </S.QuickJumpDropdownText>
+              <S.QuickJumpDropdownText>No images were shared.</S.QuickJumpDropdownText>
             )}
             {/* Other conversation */}
-            <S.Field
-              style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-              onClick={() =>
-                setOpenQuickJump((prev) => ({
-                  ...prev,
-                  conversation: !prev.conversation,
-                }))
-              }
-            >
-              <Image src={message} preview={false} />{' '}
-              {t('inboxSidebar.otherConversation')}
+            <S.Field style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setOpenQuickJump(prev => ({ ...prev, conversation: !prev.conversation }))}>
+              <Image src={message} preview={false} /> {t('inboxSidebar.otherConversation')}
               <img
                 src={arrDown}
                 alt="toggle"
-                style={{
-                  marginLeft: 'auto',
-                  transform: openQuickJump.conversation
-                    ? 'rotate(180deg)'
-                    : 'rotate(0deg)',
-                  transition: 'transform 0.2s',
-                }}
+                style={{ marginLeft: 'auto', transform: openQuickJump.conversation ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
               />
             </S.Field>
             {openQuickJump.conversation && (
-              <S.QuickJumpDropdownText>
-                No images were shared.
-              </S.QuickJumpDropdownText>
+              <S.QuickJumpDropdownText>No images were shared.</S.QuickJumpDropdownText>
             )}
           </S.SectionContent>
         )}
@@ -574,7 +527,9 @@ const InboxSidebar = () => {
                 </S.DataLinkWrapper>
               </S.DataValue>
             </S.DataRow>
-            <S.countryCenter>{t('inboxSidebar.add')}</S.countryCenter>
+            <S.countryCenter>
+              {t('inboxSidebar.add')}
+            </S.countryCenter>
           </S.SectionContent>
         )}
       </Collapse>

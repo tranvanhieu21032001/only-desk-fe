@@ -1,45 +1,104 @@
 import { useEffect, useState } from 'react';
+import { Skeleton } from 'antd';
 import * as S from './profile-card.styles';
 import defaultAvatar from '@/assets/images/avatar-default.png';
 import { format } from 'timeago.js';
-import { fetchDetailsContact } from '@/modules/contacts/store/features/contacts';
-import { useAppDispatch, useAppSelector } from '@/shared/hooks';
+import {
+  fetchContactProfileCard,
+  fetchUserProfileCard,
+} from '@/modules/contacts/store/features/contacts';
+import { useAppDispatch } from '@/shared/hooks';
 import flagList from '@/shared/helper/data/flagIcon';
 import { listenUserStatus, offUserStatus } from '@/core/services/socket/socket';
 
-interface ProfileCardProps {
-  id?: string;
-  avatarSrc?: string;
-  avatarWidth?: number;
-  avatarHeight?: number;
+interface ContactProfile {
   name?: string;
   email?: string;
-  lastActiveFontSize?: number;
-  lastActiveItalic?: boolean;
+  avatar?: string;
+  context?: {
+    countryCode?: string;
+  };
+}
+
+interface UserProfile {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  avatar?: string;
+}
+
+interface ProfileCardProps {
+  contactId?: string;
+  userId?: string;
+  avatarSize?: number;
+  name?: string;
+  email?: string;
+  avatarUrl?: string;
+  countryCode?: string;
+  flagSrc?: string;
+  lastActiveStyle?: React.CSSProperties;
+  hiddenInfo?: boolean;
 }
 
 const ProfileCard = ({
-  id,
-  avatarSrc,
-  avatarWidth,
-  avatarHeight,
+  contactId,
+  userId,
+  avatarSize = 40,
   name,
   email,
-  lastActiveFontSize,
-  lastActiveItalic,
+  avatarUrl,
+  countryCode,
+  flagSrc,
+  lastActiveStyle,
+  hiddenInfo = false,
 }: ProfileCardProps) => {
-  const [isOnline, setIsOnline] = useState(false);
-  const [lastSeen, setLastSeen] = useState<string | null>(null);
-  const [type, setType] = useState<'user' | 'contact' | null>(null);
-
   const dispatch = useAppDispatch();
-  const { contactDetails } = useAppSelector((state) => state.contacts);
+
+  const [isOnline, setIsOnline] = useState(false);
+  const [lastActive, setLastActive] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [fetchedData, setFetchedData] = useState<{
+    name?: string;
+    email?: string;
+    avatar?: string;
+    countryCode?: string;
+  }>({});
+
+  const isDataMissing = !name && !email && !avatarUrl;
 
   useEffect(() => {
-    if (type === 'contact' && id) {
-      dispatch(fetchDetailsContact({ idContact: id }));
-    }
-  }, [type, id, dispatch]);
+    if (!isDataMissing) return;
+
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        if (contactId) {
+          const res = await dispatch(fetchContactProfileCard({ id: contactId }));
+          const data = res.payload as ContactProfile;
+          setFetchedData({
+            name: data?.name,
+            email: data?.email,
+            avatar: data?.avatar,
+            countryCode: data?.context?.countryCode,
+          });
+        } else if (userId) {
+          const res = await dispatch(fetchUserProfileCard({ id: userId }));
+          const data = res.payload as UserProfile;
+          setFetchedData({
+            name: `${data?.firstName ?? ''} ${data?.lastName ?? ''}`.trim(),
+            email: data?.email,
+            avatar: data?.avatar,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [contactId, userId, isDataMissing, dispatch]);
 
   useEffect(() => {
     const handleStatus = (data: {
@@ -48,69 +107,76 @@ const ProfileCard = ({
       isOnline: boolean;
       lastActivityAt?: string | Date;
     }) => {
-      if (data.userId === id) {
-        setType('user');
-      } else if (data.contactId === id) {
-        setType('contact');
-      } else {
-        return;
-      }
+      const isTarget =
+        (contactId && data.contactId === contactId) ||
+        (userId && data.userId === userId);
+
+      if (!isTarget) return;
 
       setIsOnline(data.isOnline);
+
       if (!data.isOnline && data.lastActivityAt) {
-        setLastSeen(format(new Date(data.lastActivityAt)));
+        setLastActive(format(new Date(data.lastActivityAt)));
       }
     };
 
     listenUserStatus(handleStatus);
     return () => offUserStatus(handleStatus);
-  }, [id]);
+  }, [contactId, userId]);
 
-  // ✅ Lấy dữ liệu từ contactDetails nếu là contact
-  const avatar = type === 'contact'
-    ? contactDetails?.avatar || defaultAvatar
-    : avatarSrc || defaultAvatar;
-
-  const displayName = type === 'contact'
-    ? contactDetails?.name
-    : name;
-
-  const displayEmail = type === 'contact'
-    ? contactDetails?.email
-    : email;
-
-  const flagIcon = flagList.find(
-    (item) => item.code === contactDetails?.context?.countryCode,
-  )?.image;
+  const avatar = avatarUrl || fetchedData.avatar || defaultAvatar;
+  const displayName = name || fetchedData.name || '';
+  const displayEmail = email || fetchedData.email || '';
+  const flagIcon =
+    flagSrc ||
+    flagList.find(
+      (item) => item.code === (countryCode || fetchedData.countryCode),
+    )?.image || null;
 
   return (
     <S.ProfileSection>
-      <S.AvatarWrapper>
-        <S.Avatar
-          src={avatar}
-          alt="Avatar"
-          width={avatarWidth}
-          height={avatarHeight}
-        />
-        {flagIcon && (
-          <S.WrappIcon>
-            <S.FlagIcon src={flagIcon} />
-          </S.WrappIcon>
-        )}
-        {isOnline && <S.Status isOnline />}
-      </S.AvatarWrapper>
+      {isLoading ? (
+        <>
+          <Skeleton.Avatar active size={avatarSize} shape="circle" />
+          {!hiddenInfo && (
+            <div style={{ marginLeft: 12, flex: 1 }}>
+              <Skeleton.Input active size="small" style={{ width: 120, marginBottom: 6 }} />
+              <Skeleton.Input active size="small" style={{ width: 160 }} />
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <S.AvatarWrapper>
+            <S.Avatar
+              src={avatar}
+              alt="Avatar"
+              width={avatarSize}
+              height={avatarSize}
+            />
+            {flagIcon && (
+              <S.WrappIcon>
+                <S.FlagIcon src={flagIcon} />
+              </S.WrappIcon>
+            )}
+            {isOnline && <S.Status isOnline />}
+          </S.AvatarWrapper>
 
-      <S.ProfileInfo>
-        <S.NameRow>
-          <S.Name>{displayName}</S.Name>
-        </S.NameRow>
-        <S.Email>{displayEmail}</S.Email>
-        {!isOnline && lastSeen && (
-          <S.LastActive fontSize={lastActiveFontSize} italic={lastActiveItalic}>
-            Last active: {lastSeen}
-          </S.LastActive>
-        )}
-      </S.ProfileInfo>
+          {!hiddenInfo && (
+            <S.ProfileInfo>
+              <S.NameRow>
+                <S.Name>{displayName}</S.Name>
+              </S.NameRow>
+              <S.Email>{displayEmail}</S.Email>
+              {!isOnline && lastActive && (
+                <S.LastActive style={lastActiveStyle}>
+                  Last active: {lastActive}
+                </S.LastActive>
+              )}
+            </S.ProfileInfo>
+          )}
+        </>
+      )}
     </S.ProfileSection>
   );
 };

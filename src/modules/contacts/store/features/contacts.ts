@@ -1,5 +1,4 @@
 import { TFunction } from 'i18next';
-import { fetchQuery } from 'relay-runtime';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import {
@@ -11,9 +10,14 @@ import { contactsQuery } from '@/relay/ContactsQuery';
 import relayEnvironment from '@/relay/RelayEnvironment';
 import { endpointContact } from '../../api/contacts.api';
 import { contactDetailsQuery } from '@/relay/ContactDetailsQuery';
+import { userProfileCardQuery } from '@/relay/UserProfileCardQuery';
+import { contactProfileCardQuery } from '@/relay/ContactProfileCardQuery';
 import { deleteRequest, postRequest } from '@/core/services/requests';
 import { ContactsQuery } from '@/relay/__generated__/ContactsQuery.graphql';
 import { ContactDetailsQuery } from '@/relay/__generated__/ContactDetailsQuery.graphql';
+import { UserProfileCardQuery } from '@/relay/__generated__/UserProfileCardQuery.graphql';
+import { ContactProfileCardQuery } from '@/relay/__generated__/ContactProfileCardQuery.graphql';
+import { fetchQuery } from 'react-relay';
 
 const initialState: ContactsInitialStateInterface = {
   isLoading: false,
@@ -28,14 +32,13 @@ const initialState: ContactsInitialStateInterface = {
   contactDetails: null,
   isDetails: true,
   metadata: [],
+  userProfile: null,
+  contactProfile: null,
 };
 
 const createContact = createAsyncThunk(
   'contacts/create-contact',
-  async (
-    values: { email: string; name: string; t: TFunction },
-    { dispatch },
-  ) => {
+  async (values: { email: string; name: string; t: TFunction }, { dispatch }) => {
     const { email, name, t } = values;
 
     const result = await postRequest(endpointContact.CREATE_CONTACT, {
@@ -84,7 +87,6 @@ const fetchDetailsContact = createAsyncThunk(
   'contacts/get-details-contact',
   async (values: { idContact: string }) => {
     const { idContact } = values;
-    console.log('idContact', idContact);
 
     const results = await fetchQuery<ContactDetailsQuery>(
       relayEnvironment,
@@ -96,6 +98,38 @@ const fetchDetailsContact = createAsyncThunk(
     ).toPromise();
 
     return results?.node || {};
+  },
+);
+
+const fetchUserProfileCard = createAsyncThunk(
+  'contacts/fetch-user-profile-card',
+  async (values: { id: string }) => {
+    const { id } = values;
+
+    const results = await fetchQuery<UserProfileCardQuery>(
+      relayEnvironment,
+      userProfileCardQuery,
+      { id },
+      { fetchPolicy: 'network-only' },
+    ).toPromise();
+
+    return results?.node || null;
+  },
+);
+
+const fetchContactProfileCard = createAsyncThunk(
+  'contacts/fetch-contact-profile-card',
+  async (values: { id: string }) => {
+    const { id } = values;
+
+    const results = await fetchQuery<ContactProfileCardQuery>(
+      relayEnvironment,
+      contactProfileCardQuery,
+      { id },
+      { fetchPolicy: 'network-only' },
+    ).toPromise();
+
+    return results?.node || null;
   },
 );
 
@@ -115,7 +149,7 @@ const slice = createSlice({
   },
 
   extraReducers: (builder) => {
-    //Get contacts
+    // Get contacts
     builder.addCase(fetchContacts.pending, (state) => {
       state.isLoading = true;
     });
@@ -125,10 +159,9 @@ const slice = createSlice({
 
       state.isLoading = false;
       state.contacts =
-        edges?.map((contact: { node: ContactInterface }) => contact?.node) ||
-        [];
+        edges?.map((contact: { node: ContactInterface }) => contact?.node) || [];
       state.totalDocs = action.payload?.totalCount || 0;
-      state.pageInfo = action.payload?.pageInfo || {
+      state.pageInfo = {
         hasNextPage: pageInfo?.hasNextPage || false,
         hasPreviousPage: pageInfo?.hasPreviousPage || false,
         startCursor: pageInfo?.startCursor || '',
@@ -140,42 +173,30 @@ const slice = createSlice({
       state.contacts = [];
     });
 
-    //Create contact
+    // Create contact
     builder.addCase(createContact.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(createContact.fulfilled, (state, action: any) => {
+    builder.addCase(createContact.fulfilled, (state) => {
       state.isLoading = false;
-      // state.contacts = [
-      //   action.payload,
-      //   ...((state?.contacts?.length || 0) + 1 < PAGE_SIZE
-      //     ? state?.contacts || []
-      //     : (state?.contacts || [])?.slice(0, -1)),
-      // ];
-      // state.totalDocs = (state.totalDocs || 0) + 1;
     });
     builder.addCase(createContact.rejected, (state) => {
       state.isLoading = false;
       state.contacts = [];
     });
 
-    //Remove contact
+    // Remove contact
     builder.addCase(handleRemoveContactAction.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(
-      handleRemoveContactAction.fulfilled,
-      (state, action: any) => {
-        state.isLoading = false;
-        state.totalDocs =
-          action.payload?.totalDocs === 0 ? 0 : action.payload?.totalDocs - 1;
-      },
-    );
+    builder.addCase(handleRemoveContactAction.fulfilled, (state) => {
+      state.isLoading = false;
+    });
     builder.addCase(handleRemoveContactAction.rejected, (state) => {
       state.isLoading = false;
     });
 
-    //Get details contact
+    // Get details contact
     builder.addCase(fetchDetailsContact.pending, (state) => {
       state.isLoading = true;
     });
@@ -187,6 +208,32 @@ const slice = createSlice({
       state.isLoading = false;
       state.contactDetails = null;
     });
+
+    // User Profile
+    builder.addCase(fetchUserProfileCard.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchUserProfileCard.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.userProfile = action.payload;
+    });
+    builder.addCase(fetchUserProfileCard.rejected, (state) => {
+      state.isLoading = false;
+      state.userProfile = null;
+    });
+
+    // Contact Profile
+    builder.addCase(fetchContactProfileCard.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchContactProfileCard.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.contactProfile = action.payload;
+    });
+    builder.addCase(fetchContactProfileCard.rejected, (state) => {
+      state.isLoading = false;
+      state.contactProfile = null;
+    });
   },
 });
 
@@ -195,11 +242,14 @@ export const {
   actionUpdateIsLoading,
   actionUpdateContactDetails,
 } = slice.actions;
+
 export {
   createContact,
   fetchContacts,
   handleRemoveContactAction,
   fetchDetailsContact,
+  fetchUserProfileCard,
+  fetchContactProfileCard,
 };
 
 export default slice.reducer;

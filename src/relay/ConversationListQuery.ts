@@ -16,10 +16,8 @@ export const conversationListQuery = graphql`
           contact {
             avatar
             name
-            email
             isOnline
-            rawId
-          } 
+          }
           subject
           metadata
           createdAt
