@@ -37,12 +37,14 @@ export const SOCKET_EVENT_SEND_MESSAGE = 'send_message';
 export const SOCKET_EVENT_TYPING_START = 'typing_start';
 export const SOCKET_EVENT_TYPING_STOP = 'typing_stop';
 export const SOCKET_EVENT_USER_TYPING = 'user_typing';
+export const SOCKET_EVENT_USER_STATUS = 'user_status';
 
 export const EVENTBUS_SOCKET_CONNECT = 'socket-connect';
 export const EVENTBUS_SOCKET_DISCONNECT = 'socket-disconnect';
 export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
 export const EVENTBUS_INBOX_MESSAGE = 'inbox-message';
 export const EVENTBUS_USER_TYPING = 'user-typing';
+export const EVENTBUS_USER_STATUS = 'eventbus_user_status';
 
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
 

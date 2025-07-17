@@ -43,6 +43,7 @@ import tagsBlue from '@/assets/icons/common/ic-tags-blue.svg';
 import userPlus from '@/assets/icons/inbox/ic-user-plus.svg';
 import closeRed from '@/assets/icons/inbox/ic-close-red.svg';
 import add from '@/assets/icons/inbox/ic-add.svg';
+import ProfileCard from '@/shared/components/common/ProfileCard';
 
 const InboxSidebar = () => {
   const { t } = useTranslation('inbox');
@@ -81,7 +82,8 @@ const InboxSidebar = () => {
 
   return (
     <S.Container>
-      <S.ProfileSection>
+      <ProfileCard contactId={"Q29udGFjdDo2ODZlMTc0MzljM2YyZTI3ZmQ0MjExNWM="} avatarSize={60}/>
+      {/* <S.ProfileSection>
         <AvatarWithStatus
           avatarSrc={defaultAvatar}
           flagSrc={flag}
@@ -102,7 +104,7 @@ const InboxSidebar = () => {
             <Image src={edit} preview={false} />
           </S.ActionIcons>
         </S.HoverArea>
-      </S.ProfileSection>
+      </S.ProfileSection> */}
 
       <S.countryCenter onClick={() => setShowModal(true)}>
         {t('inboxSidebar.viewProfile')}

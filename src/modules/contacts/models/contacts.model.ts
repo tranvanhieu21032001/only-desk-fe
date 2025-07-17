@@ -14,6 +14,8 @@ export interface ContactsInitialStateInterface {
     key: string;
     value: string;
   }[];
+  userProfile: any | null;
+  contactProfile: any | null;
 }
 
 export interface ContactInterface {
