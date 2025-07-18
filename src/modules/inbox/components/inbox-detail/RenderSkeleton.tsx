@@ -1,10 +1,9 @@
 import React from 'react';
 import { Skeleton } from 'antd';
-import * as S from './InboxDetail.styles';
 
-interface RenderSkeletonProps {
-  count?: number;
-}
+import { RenderSkeletonProps } from '../../interfaces/inbox';
+
+import * as S from './InboxDetail.styles';
 
 const RenderSkeleton: React.FC<RenderSkeletonProps> = ({ count = 12 }) => (
   <>

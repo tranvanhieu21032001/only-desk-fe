@@ -13,7 +13,6 @@ export function useScrollHandler({
   isLoadingNext: boolean;
   hasNextPage: boolean;
   loadMore: () => Promise<void> | void;
-  pendingImageScroll: boolean;
   messageContainerRef: React.RefObject<HTMLDivElement | null>;
   messageEndRef: React.RefObject<HTMLDivElement | null>;
   messages: any[];
@@ -25,7 +24,7 @@ export function useScrollHandler({
   const [lastMessageId, setLastMessageId] = useState<string | null>(null);
   const prevMessageCount = useRef(messages.length);
   const wasLoadingRef = useRef(false);
-  const justLoadedMore = useRef(false);
+  const justLoadedMoreRef = useRef(false);
   const isFirstMessageLoad = useRef(true);
   const prevStableConversationId = useRef<string | null>(null);
 
@@ -71,6 +70,30 @@ export function useScrollHandler({
     }
   }, [messageContainerRef, isLoadingNext]);
 
+  // Infinite scroll: load more messages when scroll to top
+  const handleLoadMore = useCallback(async () => {
+    const container = messageContainerRef.current;
+    if (!container) return;
+    if (container.scrollTop <= 100 && hasNextPage && !isLoadingNext) {
+      await loadMore();
+    }
+  }, [hasNextPage, isLoadingNext, loadMore, messageContainerRef]);
+
+  const handleAllScroll = useCallback((...args: any[]) => {
+    handleScroll();
+    handleLoadMore();
+  }, [handleScroll, handleLoadMore]);
+
+  // Attach scroll listener
+  useEffect(() => {
+    const container = messageContainerRef.current;
+    if (!container) return;
+    container.addEventListener('scroll', handleAllScroll);
+    return () => {
+      container.removeEventListener('scroll', handleAllScroll);
+    };
+  }, [handleAllScroll, messageContainerRef]);
+
   const scrollToBottom = useCallback(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     setShowNewMessageNotice(false);
@@ -93,34 +116,13 @@ export function useScrollHandler({
     setShowNewMessageNotice(false);
   }, [messageContainerRef, isLoadingNext]);
 
-  // Infinite scroll: load more messages when scroll to top
-  const handleLoadMore = useCallback(async () => {
-    const container = messageContainerRef.current;
-    if (!container) return;
-    if (container.scrollTop <= 10 && hasNextPage && !isLoadingNext) {
-      await loadMore();
-    }
-  }, [hasNextPage, isLoadingNext, loadMore, messageContainerRef]);
-
-  // Attach scroll listeners
-  useEffect(() => {
-    const container = messageContainerRef.current;
-    if (!container) return;
-    container.addEventListener('scroll', handleScroll);
-    container.addEventListener('scroll', handleLoadMore);
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-      container.removeEventListener('scroll', handleLoadMore);
-    };
-  }, [handleScroll, handleLoadMore, messageContainerRef]);
-
-  // Auto scroll and show new message notice
-  useEffect(() => {
+  // Helper: kiểm tra và xử lý khi có message mới
+  const handleNewMessageEffect = useCallback(() => {
     if (messages.length === 0) return;
     if (isLoadingNext) {
-      justLoadedMore.current = true;
-    } else if (justLoadedMore.current) {
-      justLoadedMore.current = false;
+      justLoadedMoreRef.current = true;
+    } else if (justLoadedMoreRef.current) {
+      justLoadedMoreRef.current = false;
     }
     const currentCount = messages.length;
     const previousCount = prevMessageCount.current;
@@ -147,7 +149,7 @@ export function useScrollHandler({
       const messageTime = new Date(newestMessage.createdAt);
       const timeDifference = now.getTime() - messageTime.getTime();
       const isRecentMessage = timeDifference < 10000;
-      if (justLoadedMore.current) {
+      if (justLoadedMoreRef.current) {
         setLastMessageId(newestId);
         return;
       }
@@ -161,7 +163,11 @@ export function useScrollHandler({
       }
     }
     setLastMessageId(newestId);
-  }, [messages, wasAtBottom, scrollToShowNewMessage, setShowNewMessageNotice, lastMessageId, isLoadingNext]);
+  }, [messages, wasAtBottom, scrollToShowNewMessage, lastMessageId, isLoadingNext]);
+
+  useEffect(() => {
+    handleNewMessageEffect();
+  }, [handleNewMessageEffect]);
 
   return {
     wasAtBottom,

@@ -1,20 +1,9 @@
 import React from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
-import * as S from './InboxDetail.styles';
 
-interface TabContentProps {
-  activeTab: string | null;
-  INBOX_TABS: Record<string, string>;
-  shortcuts: any[];
-  shortcutsLoading: boolean;
-  shortcutsListRef: React.RefObject<HTMLDivElement | null>;
-  setInputValue: (val: string | ((prev: string) => string)) => void;
-  setActiveTab: (tab: string | null) => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-  inputValue: string;
-  setSelectedReminder: (val: string | null) => void;
-  t: (key: string) => string;
-}
+import { TabContentProps } from '../../interfaces/inbox';
+
+import * as S from './InboxDetail.styles';
 
 const TabContent: React.FC<TabContentProps> = ({
   activeTab,

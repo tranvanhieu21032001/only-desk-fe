@@ -1,11 +1,12 @@
 import { useEffect, useCallback, useMemo, useRef } from 'react';
+import { RecordSourceSelectorProxy } from 'relay-runtime';
 import {
   commitLocalUpdate,
   ConnectionHandler,
   useLazyLoadQuery,
   usePaginationFragment,
 } from 'react-relay';
-import { RecordSourceSelectorProxy } from 'relay-runtime';
+
 import { messageListFragment } from '@/relay/MessageFragment';
 import { conversationMessagesQuery } from '@/relay/ConversationMessagesQuery';
 import { Message } from '../interfaces/inbox';
@@ -21,125 +22,59 @@ import type { MessageFragment_query$key } from '@/relay/__generated__/MessageFra
 import environment from '@/relay/RelayEnvironment';
 import { useUser } from '@/core/context/UserContext';
 import { decodeGlobalId } from '@/shared/utils/decode';
+import { MESSAGE_LIMIT } from '../constants/inbox.constants';
 
 interface UseMessageListProps {
   conversationId: string | null;
 }
 
-const MESSAGE_LIMIT = 20;
-
-const EMPTY_RESULT = {
-  messages: [],
-  loading: false,
-  loadingMore: false,
-  error: null,
-  hasNextPage: false,
-  loadMore: () => {},
-  addMessage: () => {},
-  updateMessage: () => {},
-  removeMessage: () => {},
-} as const;
-
-function isValidMessage(msg: Message): boolean {
-  if (!msg || !msg.type) return false;
-  if (
-    msg.type === InboxMessageType.Text ||
-    msg.type === InboxMessageType.Note
-  ) {
-    return !!msg.content && msg.content.trim() !== '';
-  }
-  if (msg.type === InboxMessageType.Image) {
-    return !!msg.metadata?.fileUrl;
-  }
-  if (msg.type === InboxMessageType.Loading) {
-    return true;
-  }
-  return false;
-}
-
-const mapSender = (sender: string): InboxSender => {
+function mapSender(sender: string): InboxSender {
   if (!sender) {
     return InboxSender.Guest;
   }
-
   const senderLower = sender.toString().toLowerCase();
+  if (senderLower === 'guest') return InboxSender.Guest;
+  if (senderLower === 'agent') return InboxSender.Agent;
+  return InboxSender.Guest;
+}
 
-  const isGuest =
-    senderLower === 'guest'
-
-  const isAgent =
-    senderLower === 'agent'
-
-  let result: InboxSender;
-  if (isGuest) {
-    result = InboxSender.Guest;
-  } else if (isAgent) {
-    result = InboxSender.Agent;
-  } else {
-    result = InboxSender.Guest;
-  }
-
-  return result;
-};
-
-const mapType = (type: string): InboxMessageType => {
-  if (!type) {
-    return InboxMessageType.Text;
-  }
-
-  const typeUpper = type.toString().toUpperCase();
+function mapType(type: string): InboxMessageType {
+  if (!type) return InboxMessageType.Text;
   const typeLower = type.toString().toLowerCase();
+  if (typeLower === 'image') return InboxMessageType.Image;
+  if (typeLower === 'note') return InboxMessageType.Note;
+  if (typeLower === 'loading') return InboxMessageType.Loading;
+  if (typeLower === 'text') return InboxMessageType.Text;
+  return InboxMessageType.Text;
+}
 
-  let result: InboxMessageType;
-
-  if (
-    typeLower === 'image'
-  ) {
-    result = InboxMessageType.Image;
-  } else if (
-    typeLower === 'note'
-  ) {
-    result = InboxMessageType.Note;
-  } else if (typeLower === 'loading') {
-    result = InboxMessageType.Loading;
-  } else if (
-    typeLower === 'text'
-  ) {
-    result = InboxMessageType.Text;
-  } else {
-    result = InboxMessageType.Text;
-  }
-
-  return result;
-};
-
-const mapStatus = (status: string): InboxMessageStatus => {
+function mapStatus(status: string): InboxMessageStatus {
   switch (status) {
-    case 'FAILED':
-      return InboxMessageStatus.Failed;
-    case 'SENDING':
-      return InboxMessageStatus.Sending;
-    default:
-      return InboxMessageStatus.Sent;
+    case 'FAILED': return InboxMessageStatus.Failed;
+    case 'SENDING': return InboxMessageStatus.Sending;
+    default: return InboxMessageStatus.Sent;
   }
-};
+}
 
 export function useMessageList({ conversationId }: UseMessageListProps) {
   const user = useUser();
   const currentUserId = user?.id;
-
   if (!conversationId) {
-    return EMPTY_RESULT;
+    return {
+      messages: [],
+      loading: false,
+      loadingMore: false,
+      error: null,
+      hasNextPage: false,
+      loadMore: () => {},
+      addMessage: () => {},
+      updateMessage: () => {},
+      removeMessage: () => {},
+    };
   }
 
   const stableConversationId = useRef<string | null>(null);
-  const hookCallCount = useRef(0);
-  hookCallCount.current++;
-
   if (stableConversationId.current !== conversationId) {
-    // const wasNull = stableConversationId.current === null;
-    // const becomingNull = conversationId === null;
-
     stableConversationId.current = conversationId;
   }
 
@@ -147,18 +82,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
     () => decodeGlobalId(stableConversationId.current!),
     [stableConversationId.current],
   );
-
-  const loadedConversations = useRef(new Set<string>());
-  // const isFirstTimeLoading = !loadedConversations.current.has(rawConversationId);
-
-  const prevConversationId = useRef<string | null>(null);
-  const renderCount = useRef(0);
-
-  if (prevConversationId.current !== rawConversationId) {
-    renderCount.current++;
-
-    prevConversationId.current = rawConversationId;
-  }
 
   const queryVariables = useMemo(
     () => ({
@@ -169,14 +92,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
     [rawConversationId],
   );
 
-  const lastQueryKey = useRef<string>('');
-  const currentQueryKey = JSON.stringify(queryVariables);
-  const shouldQuery = lastQueryKey.current !== currentQueryKey;
-
-  if (shouldQuery) {
-    lastQueryKey.current = currentQueryKey;
-  }
-
   const queryData = useLazyLoadQuery<ConversationMessagesQuery>(
     conversationMessagesQuery,
     queryVariables,
@@ -184,12 +99,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
       fetchPolicy: 'store-or-network',
     },
   );
-
-  useEffect(() => {
-    if (!loadedConversations.current.has(rawConversationId)) {
-      loadedConversations.current.add(rawConversationId);
-    }
-  }, [rawConversationId]);
 
   const { data, loadNext, hasNext, isLoadingNext } =
     usePaginationFragment<ConversationMessagesQuery, MessageFragment_query$key>(
@@ -201,7 +110,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
     data?.messages?.edges
       ?.map((edge: any) => {
         const node = edge.node;
-
         let parsedMetadata = node.metadata;
         if (typeof node.metadata === 'string') {
           try {
@@ -210,7 +118,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
             parsedMetadata = undefined;
           }
         }
-
         const message = {
           id: node.id,
           content: node.content,
@@ -229,35 +136,28 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
           type: mapType(node.type),
           status: mapStatus(node.status),
         };
-
         return message;
       })
-      .filter(isValidMessage) || [];
+      || [];
 
-  // Stabilize callback functions
   const loadMore = useCallback(() => {
     if (hasNext && !isLoadingNext) {
       loadNext(MESSAGE_LIMIT);
     }
   }, [hasNext, isLoadingNext, loadNext]);
 
-  // Function to add message to Relay store (stabilized)
   const addMessageToStore = useCallback(
     (msg: Message, conversationId: string) => {
       commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
         const root = store.getRoot();
-
         const connection = ConnectionHandler.getConnection(
           root,
           'MessageFragment_messages',
           { conversationId },
         );
-
         if (!connection) {
           return;
         }
-
-        // Create a new message record
         const messageRecord = store.create(msg.id, 'Message');
         messageRecord.setValue(msg.id, 'id');
         messageRecord.setValue(msg.content, 'content');
@@ -267,12 +167,10 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
         messageRecord.setValue(msg.type, 'type');
         messageRecord.setValue(msg.status, 'status');
         messageRecord.setValue(conversationId, 'conversationId');
-
         if (msg.metadata) {
           const metadataString = JSON.stringify(msg.metadata);
           messageRecord.setValue(metadataString, 'metadata');
         }
-
         if (msg.user) {
           const userRecord = store.create(`user_${msg.user.id}`, 'User');
           userRecord.setValue(msg.user.id, 'id');
@@ -281,14 +179,12 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
           userRecord.setValue(msg.user.avatar, 'avatar');
           messageRecord.setLinkedRecord(userRecord, 'user');
         }
-
         const edge = ConnectionHandler.createEdge(
           store,
           connection,
           messageRecord,
           'MessageTypeEdge',
         );
-
         ConnectionHandler.insertEdgeBefore(connection, edge);
       });
     },
@@ -299,17 +195,14 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
     (msg: Message, conversationId: string) => {
       commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
         const root = store.getRoot();
-
         const connection = ConnectionHandler.getConnection(
           root,
           'MessageFragment_messages',
           { conversationId },
         );
-
         if (!connection) {
           return;
         }
-
         const messageRecord = store.create(msg.id, 'Message');
         messageRecord.setValue(msg.id, 'id');
         messageRecord.setValue(msg.content, 'content');
@@ -319,12 +212,10 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
         messageRecord.setValue(msg.type, 'type');
         messageRecord.setValue(msg.status, 'status');
         messageRecord.setValue(conversationId, 'conversationId');
-
         if (msg.metadata) {
           const metadataString = JSON.stringify(msg.metadata);
           messageRecord.setValue(metadataString, 'metadata');
         }
-
         if (msg.user) {
           const userRecord = store.create(`user_${msg.user.id}`, 'User');
           userRecord.setValue(msg.user.id, 'id');
@@ -333,14 +224,12 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
           userRecord.setValue(msg.user.avatar, 'avatar');
           messageRecord.setLinkedRecord(userRecord, 'user');
         }
-
         const edge = ConnectionHandler.createEdge(
           store,
           connection,
           messageRecord,
           'MessageTypeEdge',
         );
-
         ConnectionHandler.insertEdgeAfter(connection, edge);
       });
     },
@@ -356,22 +245,8 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
         } else if (rawData.message) {
           msg = rawData.message as Message;
         } else {
-          const senderValue =
-            rawData.sender ||
-            rawData.from ||
-            rawData.author ||
-            rawData.userType ||
-            rawData.senderType ||
-            'GUEST';
-
-          const typeValue =
-            rawData.type ||
-            rawData.messageType ||
-            rawData.msgType ||
-            rawData.kind ||
-            rawData.category ||
-            'TEXT';
-
+          const senderValue = rawData.sender || 'GUEST';
+          const typeValue = rawData.type || 'TEXT';
           msg = {
             id: rawData.id || rawData.messageId || Date.now().toString(),
             content: rawData.content || rawData.text || '',
@@ -390,22 +265,15 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
       } catch (error) {
         return;
       }
-
-      if (!isValidMessage(msg)) {
-        return;
-      }
-
       const isOwnMessage =
         msg.sender === InboxSender.Agent &&
         msg.user?.id &&
         currentUserId &&
         msg.user.id === currentUserId;
-
       if (!isOwnMessage) {
         addMessageToStore(msg, rawConversationId);
       }
     };
-
     eventBus.on(EVENTBUS_INBOX_MESSAGE, handleNewMessage);
     return () => {
       eventBus.off(EVENTBUS_INBOX_MESSAGE, handleNewMessage);
@@ -414,8 +282,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
 
   const addMessage = useCallback(
     (msg: Message) => {
-      if (!isValidMessage(msg)) return;
-
       if (msg.type === InboxMessageType.Loading) {
         addMessageToEndOfStore(msg, rawConversationId);
       } else {
@@ -448,7 +314,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
         if (updates.status !== undefined) {
           messageRecord.setValue(updates.status, 'status');
         }
-
         if (updates.metadata !== undefined) {
           if (updates.metadata) {
             messageRecord.setValue(
@@ -459,13 +324,11 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
             messageRecord.setValue(null, 'metadata');
           }
         }
-
         if (updates.user !== undefined) {
           if (updates.user) {
             const userRecord =
               store.get(`user_${updates.user.id}`) ||
               store.create(`user_${updates.user.id}`, 'User');
-
             userRecord.setValue(updates.user.id, 'id');
             if (updates.user.firstName !== undefined) {
               userRecord.setValue(updates.user.firstName, 'firstName');
@@ -476,7 +339,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
             if (updates.user.avatar !== undefined) {
               userRecord.setValue(updates.user.avatar, 'avatar');
             }
-
             messageRecord.setLinkedRecord(userRecord, 'user');
           } else {
             messageRecord.setValue(null, 'user');
@@ -491,7 +353,6 @@ export function useMessageList({ conversationId }: UseMessageListProps) {
     (messageId: string) => {
       commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
         const root = store.getRoot();
-
         const connection = ConnectionHandler.getConnection(
           root,
           'MessageFragment_messages',
