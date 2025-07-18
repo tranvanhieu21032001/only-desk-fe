@@ -1,110 +1,12 @@
 import React from 'react';
-import { Image, Tooltip } from 'antd';
-import { LoadingOutlined, CloseCircleTwoTone } from '@ant-design/icons';
+import { Image } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
-import {
-  InboxMessageStatus,
-  InboxMessageType,
-} from '@/modules/settings/helpers/enums/inbox.enums';
-import { Message } from '../../interfaces/inbox';
+import { InboxMessageType } from '@/modules/settings/helpers/enums/inbox.enums';
+import { MessageBaseItemProps } from '../../interfaces/inbox';
+import MessageTimeWithIcon from './MessageTimeWithIcon';
 
 import * as S from './InboxDetail.styles';
-
-import icBarColumn from '@/assets/icons/common/ic-bar-column.svg';
-
-interface MessageBaseItemProps {
-  msg: Message;
-  hoveredMessageId: string | null;
-  contextMenu: any;
-  handleIconClick: (e: React.MouseEvent, message: Message) => void;
-  setHoveredMessageId: (id: string | null) => void;
-  formatTime: (date: string) => string;
-  pendingImageScroll: boolean;
-  setPendingImageScroll: (v: boolean) => void;
-  setPendingImageLoads: React.Dispatch<React.SetStateAction<number>>;
-  scrollToBottom: () => void;
-  justLoadedMore: boolean;
-  children: React.ReactNode;
-  isIncoming?: boolean;
-  avatarAdmin?: string;
-}
-
-interface MessageTimeWithIconProps {
-  hovered: boolean;
-  onMenuClick: (e: React.MouseEvent) => void;
-  onHoverEnter: () => void;
-  onHoverLeave: () => void;
-  createdAt: string;
-  status: InboxMessageStatus;
-  formatTime: (date: string) => string;
-  rightIcon?: boolean;
-}
-
-const MessageTimeWithIcon: React.FC<MessageTimeWithIconProps> = ({
-  hovered,
-  onMenuClick,
-  onHoverEnter,
-  onHoverLeave,
-  createdAt,
-  status,
-  formatTime,
-  rightIcon = false,
-}) => (
-  <S.TimeWithIconContainer
-    onMouseEnter={onHoverEnter}
-    onMouseLeave={onHoverLeave}
-  >
-    {rightIcon ? (
-      <>
-        {hovered ? (
-          <S.MessageHoverIconNearTime onClick={onMenuClick}>
-            <img src={icBarColumn} alt="menu" />
-          </S.MessageHoverIconNearTime>
-        ) : (
-          <S.MessageHoverIconPlaceholder />
-        )}
-        <S.MessageTime style={{ marginRight: 0, marginLeft: 8 }}>
-          {formatTime(createdAt)}
-          {status === InboxMessageStatus.Sending && (
-            <LoadingOutlined style={{ marginLeft: 6, fontSize: 12 }} spin />
-          )}
-          {status === InboxMessageStatus.Failed && (
-            <Tooltip title="Send failed">
-              <CloseCircleTwoTone
-                twoToneColor="#ff4d4f"
-                style={{ marginLeft: 6, fontSize: 12 }}
-              />
-            </Tooltip>
-          )}
-        </S.MessageTime>
-      </>
-    ) : (
-      <>
-        <S.MessageTime>
-          {formatTime(createdAt)}
-          {status === InboxMessageStatus.Sending && (
-            <LoadingOutlined style={{ marginLeft: 6, fontSize: 12 }} spin />
-          )}
-          {status === InboxMessageStatus.Failed && (
-            <Tooltip title="Send failed">
-              <CloseCircleTwoTone
-                twoToneColor="#ff4d4f"
-                style={{ marginLeft: 6, fontSize: 12 }}
-              />
-            </Tooltip>
-          )}
-        </S.MessageTime>
-        {hovered ? (
-          <S.MessageHoverIconNearTime onClick={onMenuClick}>
-            <img src={icBarColumn} alt="menu" />
-          </S.MessageHoverIconNearTime>
-        ) : (
-          <S.MessageHoverIconPlaceholder />
-        )}
-      </>
-    )}
-  </S.TimeWithIconContainer>
-);
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -118,8 +20,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   setPendingImageLoads,
   scrollToBottom,
   justLoadedMore,
-  children,
-  isIncoming = false,
+  isOwner,
   avatarAdmin,
 }) => {
   const hovered = hoveredMessageId === msg.id;
@@ -133,14 +34,113 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   const handleImageLoad = () => {
     setPendingImageLoads((prev) => {
       const next = Math.max(prev - 1, 0);
-      if (next === 0 && !justLoadedMore) scrollToBottom();
+      if (next === 0 && justLoadedMore) scrollToBottom();
       return next;
     });
     if (pendingImageScroll) setPendingImageScroll(false);
   };
 
-  // Render layout based on incoming/outgoing
-  if (isIncoming) {
+  const NoteMeta = () => <S.NoteMeta>Admin left this private note</S.NoteMeta>;
+
+  // Common props for MessageTimeWithIcon
+  const timeWithIconProps = {
+    isOwner,
+    hovered,
+    onMenuClick,
+    onHoverEnter,
+    onHoverLeave,
+    createdAt: msg.createdAt,
+    status: msg.status,
+    formatTime,
+    rightIcon: isOwner,
+  };
+
+  function renderContent() {
+    switch (msg.type) {
+      case InboxMessageType.Text:
+        return (
+          <S.MessageBubbleRight
+            style={{ background: isOwner ? '#e6f4ff' : '#f5f5f5', color: '#222' }}
+            onMouseEnter={onHoverEnter}
+            onMouseLeave={onHoverLeave}
+          >
+            {msg.content}
+          </S.MessageBubbleRight>
+        );
+      case InboxMessageType.Note:
+        return (
+          <S.NoteContainer
+            onMouseEnter={onHoverEnter}
+            onMouseLeave={onHoverLeave}
+          >
+            <S.NoteRow>
+              <S.NoteBubbleRight>{msg.content}</S.NoteBubbleRight>
+            </S.NoteRow>
+            <NoteMeta />
+          </S.NoteContainer>
+        );
+      case InboxMessageType.Image:
+        if (!msg.metadata?.fileUrl) return null;
+        return isOwner ? (
+          <S.MessageImage>
+            <Image
+              src={msg.metadata.fileUrl}
+              alt="image"
+              onLoad={handleImageLoad}
+              preview={true}
+            />
+          </S.MessageImage>
+        ) : (
+          <S.MessageImageLeft
+            onMouseEnter={onHoverEnter}
+            onMouseLeave={onHoverLeave}
+          >
+            <Image
+              src={msg.metadata.fileUrl}
+              alt="image"
+              onLoad={handleImageLoad}
+              preview={true}
+            />
+          </S.MessageImageLeft>
+        );
+      case InboxMessageType.Loading:
+        return (
+          <S.MessageTypeLoading>
+            <LoadingOutlined spin style={{ fontSize: 24, color: '#999' }} />
+          </S.MessageTypeLoading>
+        );
+      default:
+        return null;
+    }
+  }
+
+  // Only show timeWithIcon if not loading
+  let timeWithIcon: React.ReactNode = null;
+  if (msg.type !== InboxMessageType.Loading) {
+    timeWithIcon = (
+      <MessageTimeWithIcon
+        {...timeWithIconProps}
+        style={
+          msg.type === InboxMessageType.Note ? { marginTop: 4 } : undefined
+        }
+      />
+    );
+  }
+
+  if (msg.type === InboxMessageType.Loading) {
+    return <>{renderContent()}</>;
+  }
+
+  if (isOwner) {
+    return (
+      <S.MessageRowUser>
+        <S.AgentMessageContainer>
+          {timeWithIcon}
+          {renderContent()}
+        </S.AgentMessageContainer>
+      </S.MessageRowUser>
+    );
+  } else {
     return (
       <S.MessageRow>
         <S.MessageAvatarWrapper>
@@ -149,67 +149,13 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             <S.MessageSenderName>
               {msg.user?.firstName || 'Guest'}
             </S.MessageSenderName>
-            {msg.type === InboxMessageType.Image ? (
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
-                <S.MessageImageLeft
-                  onMouseEnter={onHoverEnter}
-                  onMouseLeave={onHoverLeave}
-                >
-                  {children}
-                </S.MessageImageLeft>
-                <MessageTimeWithIcon
-                  hovered={hovered}
-                  onMenuClick={onMenuClick}
-                  onHoverEnter={onHoverEnter}
-                  onHoverLeave={onHoverLeave}
-                  createdAt={msg.createdAt}
-                  status={msg.status}
-                  formatTime={formatTime}
-                  rightIcon={false}
-                />
-              </div>
-            ) : (
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
-                {children}
-                <MessageTimeWithIcon
-                  hovered={hovered}
-                  onMenuClick={onMenuClick}
-                  onHoverEnter={onHoverEnter}
-                  onHoverLeave={onHoverLeave}
-                  createdAt={msg.createdAt}
-                  status={msg.status}
-                  formatTime={formatTime}
-                  rightIcon={false}
-                />
-              </div>
-            )}
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
+              {renderContent()}
+              {timeWithIcon}
+            </div>
           </S.MessageColumnView>
         </S.MessageAvatarWrapper>
       </S.MessageRow>
     );
-  } else {
-    return (
-      <S.MessageRowUser>
-        <S.AgentMessageContainer>
-          <MessageTimeWithIcon
-            hovered={hovered}
-            onMenuClick={onMenuClick}
-            onHoverEnter={onHoverEnter}
-            onHoverLeave={onHoverLeave}
-            createdAt={msg.createdAt}
-            status={msg.status}
-            formatTime={formatTime}
-            rightIcon={true}
-          />
-          {msg.type === InboxMessageType.Image ? (
-            <S.MessageImage>
-              {children}
-            </S.MessageImage>
-          ) : (
-            children
-          )}
-        </S.AgentMessageContainer>
-      </S.MessageRowUser>
-    );
   }
-}; 
+};

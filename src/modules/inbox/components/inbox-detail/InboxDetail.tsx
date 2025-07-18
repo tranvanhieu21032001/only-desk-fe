@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useMemo,
-  memo,
-} from 'react';
+import React, { useRef, useState, useEffect, useMemo, memo } from 'react';
 import { Image } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -20,13 +14,14 @@ import {
   offUserTyping,
 } from '../../../../core/services/socket/socket';
 import AvatarWithStatus from '../../../../shared/components/common/Avatar';
-import { Message } from '../../interfaces/inbox';
+import { InboxDetailProps, Message } from '../../interfaces/inbox';
 import { useMessageList } from '../../hooks/useMessageList';
 import { useUser } from '@/core/context/UserContext';
 import { useScrollHandler } from '../../hooks/useScrollHandler';
 import {
   InboxMessageType,
   InboxSender,
+  InboxMessageStatus,
 } from '@/modules/settings/helpers/enums/inbox.enums';
 import { getShortcutsList } from '@/modules/inbox/api/inbox.api';
 import type { Shortcut } from '@/modules/settings/models/chatbox.model';
@@ -36,8 +31,7 @@ import ToastMessage from '@/shared/components/common/ToastMessage';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
-import { OutgoingMessage } from './OutgoingMessage';
-import { IncomingMessage } from './IncomingMessage';
+import { ChatMessageItem } from './ChatMessageItem';
 import { InboxFooter } from './InboxFooter';
 import { formatTime } from '@/shared/utils/time';
 import { decodeGlobalId } from '@/shared/utils/decode';
@@ -65,33 +59,16 @@ import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
 
-interface InboxDetailProps {
-  isSidebarOpen: boolean;
-  toggleSidebar: () => void;
-  conversation?: any;
-}
+
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar, conversation }) => {
-    const renderCount = useRef(0);
-    renderCount.current++;
-
     const { t } = useTranslation('inbox');
     const [searchParams] = useSearchParams();
     const conversationId = searchParams.get('conversationId');
-
-    const prevUrlRef = useRef<string>('');
-    const currentUrl = window.location.href;
-    if (prevUrlRef.current !== currentUrl) {
-      prevUrlRef.current = currentUrl;
-    }
-
     const stableConversationId = useRef<string | null>(null);
 
     if (stableConversationId.current !== conversationId) {
-      const now = Date.now();
-      if (!stableConversationId.current || now % 1000 < 100) {
-      }
       stableConversationId.current = conversationId;
     }
 
@@ -181,12 +158,12 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           workspaceId,
         }),
       [
-      conversation,
-      selectedConversation,
-      currentConversations,
-      stableConversationId.current,
-      messages,
-      workspaceId,
+        conversation,
+        selectedConversation,
+        currentConversations,
+        stableConversationId.current,
+        messages,
+        workspaceId,
       ],
     );
 
@@ -202,10 +179,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       setWasAtBottom,
       setShowNewMessageNotice,
     } = useScrollHandler({
-      isLoadingNext: loadingMore, 
+      isLoadingNext: loadingMore,
       hasNextPage: hasNextPage,
-      loadMore, 
-      pendingImageScroll,
+      loadMore,
       messageContainerRef,
       messageEndRef,
       messages: messages as any[],
@@ -301,9 +277,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         setInputValue,
         setActiveTab,
       });
-      // Scroll đến bottom thật sự (dù render reverse)
       if (messageContainerRef.current) {
-        messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+        messageContainerRef.current.scrollTop =
+          messageContainerRef.current.scrollHeight;
       }
       setWasAtBottom(true);
       setShowNewMessageNotice(false);
@@ -314,7 +290,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         setShortcutsPage(1);
         setShortcutsLoading(true);
         getShortcutsList({ page: 1, limit: 10, keyword: shortcutsKeyword })
-          .then(res => {
+          .then((res) => {
             setShortcuts(res.data || []);
             setShortcutsHasMore(res.hasNextPage);
           })
@@ -333,9 +309,16 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           setShortcutsPage((prev) => {
             const next = prev + 1;
             setShortcutsLoading(true);
-            getShortcutsList({ page: next, limit: 10, keyword: shortcutsKeyword })
-              .then(res => {
-                setShortcuts(prevShortcuts => [...prevShortcuts, ...(res.data || [])]);
+            getShortcutsList({
+              page: next,
+              limit: 10,
+              keyword: shortcutsKeyword,
+            })
+              .then((res) => {
+                setShortcuts((prevShortcuts) => [
+                  ...prevShortcuts,
+                  ...(res.data || []),
+                ]);
                 setShortcutsHasMore(res.hasNextPage);
               })
               .finally(() => setShortcutsLoading(false));
@@ -385,6 +368,18 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }, [activeTab]);
+
+    const LOADING_MESSAGE = {
+      id: 'loading-message',
+      type: InboxMessageType.Loading,
+      content: '',
+      sender: InboxSender.Guest,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      status: InboxMessageStatus.Sending,
+      user: null,
+      metadata: undefined,
+    };
 
     const handleIconClick = (e: React.MouseEvent, message: Message) => {
       handleIconClickLogic(
@@ -523,63 +518,46 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             $hasOverlay={!!activeTab}
             style={{ position: 'relative' }}
           >
-            <S.MessageContainer $isSidebarOpen={isSidebarOpen} ref={messageContainerRef}>
+            <S.MessageContainer
+              $isSidebarOpen={isSidebarOpen}
+              ref={messageContainerRef}
+            >
               {messages.length === 0 && loading ? (
                 <RenderSkeleton />
               ) : messages.length === 0 && !loading ? (
                 <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
               ) : (
                 <>
-                  {isLoadingMoreMessages && (
-                    <S.InboxSpinner>
-                      <LoadingOutlined
-                        spin
-                        style={{ fontSize: 24, color: '#999' }}
-                      />
-                    </S.InboxSpinner>
-                  )}
-                  {messages
-                    .slice()
-                    .reverse()
-                    .map((msg, idx) => {
+                  {(() => {
+                    let displayMessages = messages.slice().reverse();
+                    if (isLoadingMoreMessages) {
+                      displayMessages = [LOADING_MESSAGE, ...displayMessages];
+                    }
+                    return displayMessages.map((msg, idx) => {
                       const isAgent =
                         (msg.user?.id && msg.user?.id === currentUserId) ||
                         (!msg.user && msg.sender === InboxSender.Agent);
                       return (
                         <React.Fragment key={msg.id || idx}>
-                          {isAgent ? (
-                            <OutgoingMessage
-                              msg={msg}
-                              hoveredMessageId={hoveredMessageId}
-                              contextMenu={contextMenu}
-                              handleIconClick={handleIconClick}
-                              setHoveredMessageId={setHoveredMessageId}
-                              formatTime={formatTime}
-                              pendingImageScroll={pendingImageScroll}
-                              setPendingImageScroll={setPendingImageScroll}
-                              setPendingImageLoads={setPendingImageLoads}
-                              scrollToBottom={scrollToBottom}
-                              justLoadedMore={false}
-                            />
-                          ) : (
-                            <IncomingMessage
-                              msg={msg}
-                              hoveredMessageId={hoveredMessageId}
-                              contextMenu={contextMenu}
-                              handleIconClick={handleIconClick}
-                              setHoveredMessageId={setHoveredMessageId}
-                              formatTime={formatTime}
-                              pendingImageScroll={pendingImageScroll}
-                              setPendingImageScroll={setPendingImageScroll}
-                              setPendingImageLoads={setPendingImageLoads}
-                              scrollToBottom={scrollToBottom}
-                              avatarAdmin={avatarAdmin}
-                              justLoadedMore={false}
-                            />
-                          )}
+                          <ChatMessageItem
+                            msg={msg}
+                            hoveredMessageId={hoveredMessageId}
+                            contextMenu={contextMenu}
+                            handleIconClick={handleIconClick}
+                            setHoveredMessageId={setHoveredMessageId}
+                            formatTime={formatTime}
+                            pendingImageScroll={pendingImageScroll}
+                            setPendingImageScroll={setPendingImageScroll}
+                            setPendingImageLoads={setPendingImageLoads}
+                            scrollToBottom={scrollToBottom}
+                            justLoadedMore={false}
+                            isOwner={isAgent}
+                            avatarAdmin={isAgent ? undefined : avatarAdmin}
+                          />
                         </React.Fragment>
                       );
-                    })}
+                    });
+                  })()}
                 </>
               )}
               <div ref={messageEndRef} />
@@ -622,16 +600,16 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           )}
 
           <InboxFooter
-              activeTab={activeTab}
+            activeTab={activeTab}
             setActiveTab={setActiveTab}
-              selectedReminder={selectedReminder}
+            selectedReminder={selectedReminder}
             setSelectedReminder={setSelectedReminder}
-              inputValue={inputValue}
-              setInputValue={setInputValue}
-              onSendMessage={handleSendMessage}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            onSendMessage={handleSendMessage}
             handleTabClick={handleTabClick}
             INBOX_TABS={INBOX_TABS}
-            />
+          />
         </S.Container>
       </>
     );

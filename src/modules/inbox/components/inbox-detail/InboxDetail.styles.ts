@@ -244,7 +244,7 @@ export const TabOverlay = styled.div<{ $tabtype?: string }>`
 `;
 
 export const MessageContainer = styled.div<MessageContainerProps>`
-  flex: ${({ $isSidebarOpen  }) => ($isSidebarOpen  ? 2 : 1)};
+  flex: ${({ $isSidebarOpen }) => ($isSidebarOpen ? 2 : 1)};
   padding: 16px 2px 16px 16px;
   overflow-y: auto;
   background: #fafafa;
@@ -704,6 +704,18 @@ export const MessageHoverIconPlaceholder = styled.div`
   /* Invisible placeholder to reserve space */
 `;
 
+export const MessageTypeLoading = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 5px;      
+  overflow: visible;
+  background: none;
+  flex-shrink: 0;        
+  margin-top: 8px;       
+`;
+
 export const ContextMenuSeparator = styled.div`
   height: 1px;
   background-color: #f0f0f0;
@@ -782,7 +794,7 @@ export const LoadingOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;

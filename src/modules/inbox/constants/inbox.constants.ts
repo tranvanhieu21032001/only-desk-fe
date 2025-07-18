@@ -7,3 +7,5 @@ export const INBOX_TABS = {
 };
 
 export const MENU_WIDTH = 180;
+
+export const MESSAGE_LIMIT = 20;

@@ -63,3 +63,72 @@ export interface MessageListResponse {
   page: number;
   hasNextPage: boolean;
 }
+
+export interface InboxDetailProps {
+  isSidebarOpen: boolean;
+  toggleSidebar: () => void;
+  conversation?: any;
+}
+
+export interface MessageBaseItemProps {
+  msg: Message;
+  hoveredMessageId: string | null;
+  contextMenu: any;
+  handleIconClick: (e: React.MouseEvent, message: Message) => void;
+  setHoveredMessageId: (id: string | null) => void;
+  formatTime: (date: string) => string;
+  pendingImageScroll: boolean;
+  setPendingImageScroll: (v: boolean) => void;
+  setPendingImageLoads: React.Dispatch<React.SetStateAction<number>>;
+  scrollToBottom: () => void;
+  justLoadedMore: boolean;
+  isOwner: boolean;
+  avatarAdmin?: string;
+}
+
+export interface MessageTimeWithIconProps {
+  isOwner: boolean;
+  hovered: boolean;
+  onMenuClick: (e: React.MouseEvent) => void;
+  onHoverEnter: () => void;
+  onHoverLeave: () => void;
+  createdAt: string;
+  status: InboxMessageStatus;
+  formatTime: (date: string) => string;
+  rightIcon?: boolean;
+  style?: React.CSSProperties;
+}
+
+export interface TabContentProps {
+  activeTab: string | null;
+  INBOX_TABS: Record<string, string>;
+  shortcuts: any[];
+  shortcutsLoading: boolean;
+  shortcutsListRef: React.RefObject<HTMLDivElement | null>;
+  setInputValue: (val: string | ((prev: string) => string)) => void;
+  setActiveTab: (tab: string | null) => void;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  inputValue: string;
+  setSelectedReminder: (val: string | null) => void;
+  t: (key: string) => string;
+}
+
+export interface RenderSkeletonProps {
+  count?: number;
+}
+
+export interface ChatMessageItemProps {
+  msg: Message;
+  hoveredMessageId: string | null;
+  contextMenu: any;
+  handleIconClick: (e: React.MouseEvent, message: Message) => void;
+  setHoveredMessageId: (id: string | null) => void;
+  formatTime: (date: string) => string;
+  pendingImageScroll: boolean;
+  setPendingImageScroll: (v: boolean) => void;
+  setPendingImageLoads: React.Dispatch<React.SetStateAction<number>>;
+  scrollToBottom: () => void;
+  justLoadedMore: boolean;
+  isOwner: boolean;
+  avatarAdmin?: string;
+}
