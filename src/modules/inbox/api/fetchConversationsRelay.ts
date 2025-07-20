@@ -24,11 +24,12 @@ export const fetchConversationsRelay = async (
     return {
       id: node.id,
       contact: {
-        id: '',
+        id: node.contact?.id,
         createdAt: '',
         updatedAt: '',
         guestId: '',
         name: node.contact?.name || 'Guest',
+        email: node.contact?.email || '',
         notification: true,
         segments: [],
         isOnline: node.contact?.isOnline ?? false,

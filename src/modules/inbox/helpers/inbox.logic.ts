@@ -1,6 +1,10 @@
 import { constants } from '@/core/settings';
 import { v4 as uuidv4 } from 'uuid';
-import { InboxMessageType, InboxMessageStatus, InboxSender } from '@/modules/settings/helpers/enums/inbox.enums';
+import {
+  InboxMessageType,
+  InboxMessageStatus,
+  InboxSender,
+} from '@/modules/settings/helpers/enums/inbox.enums';
 import { Message, Conversation } from '../interfaces/inbox';
 
 export function createAgentMessage({
@@ -27,6 +31,7 @@ export function createAgentMessage({
           firstName: user.firstName,
           lastName: user.lastName,
           avatar: user.avatar,
+          email: user.email
         }
       : null,
     type,
@@ -116,6 +121,7 @@ export function resolveCurrentConversation({
         name: guestMessage?.user?.firstName
           ? `${guestMessage.user.firstName} ${guestMessage.user.lastName || ''}`.trim()
           : 'Guest',
+        email: guestMessage?.user?.email,
         notification: true,
         segments: [],
         isOnline: false,
@@ -248,14 +254,15 @@ export function handleSendMessageLogic({
             firstName: user.firstName,
             lastName: user.lastName,
             avatar: user.avatar,
+            email:user.email,
           }
         : null,
     type:
       type === InboxMessageType.Image
         ? InboxMessageType.Image
         : type === InboxMessageType.Note
-        ? InboxMessageType.Note
-        : InboxMessageType.Text,
+          ? InboxMessageType.Note
+          : InboxMessageType.Text,
     status: InboxMessageStatus.Sending,
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),

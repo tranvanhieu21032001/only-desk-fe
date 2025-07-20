@@ -26,6 +26,7 @@ import barOpen from '@/assets/icons/common/ic-bar-open.svg';
 import barClose from '@/assets/icons/common/ic-bar.svg';
 import flag from '@/assets/icons/common/ic-flag.svg';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
+import ProfileCard from '@/shared/components/common/ProfileCard';
 
 const queryRef = loadQuery<ConversationListPaginationQueryType>(
   RelayEnvironment,
@@ -69,12 +70,12 @@ const DetailSkeleton = () => {
       {/* Header - Real UI component */}
       <DetailS.Header>
         <DetailS.HeaderLeft>
-          <AvatarWithStatus
-            avatarSrc={
-              selectedConversation?.contact?.avatar || avatarAdmin
-            }
-            flagSrc={flag}
-            isOnline={true}
+          <ProfileCard
+            contactId={selectedConversation?.contact?.id}
+            name={selectedConversation?.contact?.name || DEFAULT_FULL_NAME}
+            avatarUrl={selectedConversation?.contact?.avatar}
+            countryCode={selectedConversation?.contact?.countryCode}
+            hiddenInfo
           />
           <DetailS.Info>
             <DetailS.Name>

@@ -36,6 +36,7 @@ interface ProfileCardProps {
   avatarUrl?: string;
   countryCode?: string;
   flagSrc?: string;
+  flagSize?: number;
   lastActiveStyle?: React.CSSProperties;
   hiddenInfo?: boolean;
 }
@@ -49,6 +50,7 @@ const ProfileCard = ({
   avatarUrl,
   countryCode,
   flagSrc,
+  flagSize = 14,
   lastActiveStyle,
   hiddenInfo = false,
 }: ProfileCardProps) => {
@@ -64,7 +66,7 @@ const ProfileCard = ({
     countryCode?: string;
   }>({});
 
-  const isDataMissing = !name && !email && !avatarUrl;
+  const isDataMissing = !name;
 
   useEffect(() => {
     if (!isDataMissing) return;
@@ -73,7 +75,9 @@ const ProfileCard = ({
       try {
         setIsLoading(true);
         if (contactId) {
-          const res = await dispatch(fetchContactProfileCard({ id: contactId }));
+          const res = await dispatch(
+            fetchContactProfileCard({ id: contactId }),
+          );
           const data = res.payload as ContactProfile;
           setFetchedData({
             name: data?.name,
@@ -131,7 +135,8 @@ const ProfileCard = ({
     flagSrc ||
     flagList.find(
       (item) => item.code === (countryCode || fetchedData.countryCode),
-    )?.image || null;
+    )?.image ||
+    null;
 
   return (
     <S.ProfileSection>
@@ -140,7 +145,11 @@ const ProfileCard = ({
           <Skeleton.Avatar active size={avatarSize} shape="circle" />
           {!hiddenInfo && (
             <div style={{ marginLeft: 12, flex: 1 }}>
-              <Skeleton.Input active size="small" style={{ width: 120, marginBottom: 6 }} />
+              <Skeleton.Input
+                active
+                size="small"
+                style={{ width: 120, marginBottom: 6 }}
+              />
               <Skeleton.Input active size="small" style={{ width: 160 }} />
             </div>
           )}
@@ -155,7 +164,7 @@ const ProfileCard = ({
               height={avatarSize}
             />
             {flagIcon && (
-              <S.WrappIcon>
+              <S.WrappIcon width={flagSize} height={flagSize}>
                 <S.FlagIcon src={flagIcon} />
               </S.WrappIcon>
             )}

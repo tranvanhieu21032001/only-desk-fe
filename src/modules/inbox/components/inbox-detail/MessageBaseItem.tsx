@@ -7,6 +7,7 @@ import { MessageBaseItemProps } from '../../interfaces/inbox';
 import MessageTimeWithIcon from './MessageTimeWithIcon';
 
 import * as S from './InboxDetail.styles';
+import ProfileCard from '@/shared/components/common/ProfileCard';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -22,6 +23,10 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   justLoadedMore,
   isOwner,
   avatarAdmin,
+  avatar,
+  name,
+  contactId,
+  countryCode
 }) => {
   const hovered = hoveredMessageId === msg.id;
   const onHoverEnter = () => setHoveredMessageId(msg.id);
@@ -144,7 +149,16 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     return (
       <S.MessageRow>
         <S.MessageAvatarWrapper>
-          <S.MessageAvatar src={avatarAdmin} alt={msg.user?.firstName} />
+          <ProfileCard
+            contactId={contactId}
+            name={name}
+            avatarUrl={avatar}
+            countryCode={countryCode}
+            hiddenInfo
+            avatarSize={32}
+            flagSize={12}
+          />
+          {/* <S.MessageAvatar src={avatarAdmin} alt={msg.user?.firstName} /> */}
           <S.MessageColumnView>
             <S.MessageSenderName>
               {msg.user?.firstName || 'Guest'}

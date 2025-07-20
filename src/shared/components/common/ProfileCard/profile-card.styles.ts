@@ -3,7 +3,7 @@ import styled from 'styled-components';
 /* ---------- layout container ---------- */
 export const ProfileSection = styled.div`
   display: flex;
-  align-items: center;
+  // align-items: center;
   gap: 12px;
   position: relative;
 `;
@@ -25,13 +25,18 @@ interface FlagIconProps {
   src: string;
 }
 
-export const WrappIcon = styled.div`
+export const WrappIcon = styled.div<{
+  width?: number | string;
+  height?: number | string;
+}>`
   position: absolute;
-  top: 0;
-  left: 0;
+  top: -2px;
+  left: -2px;
   display: flex;
-  width: 16px;
-  height: 16px;
+  width: ${({ width }) =>
+    typeof width === 'number' ? `${width}px` : width || '16px'};
+  height: ${({ height }) =>
+    typeof height === 'number' ? `${height}px` : height || '16px'};
   border: 1px solid #ffffff;
   align-items: center;
   justify-content: center;

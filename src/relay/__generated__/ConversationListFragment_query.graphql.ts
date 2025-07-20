@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<77af8d46f0e29aadab2b29caad0fd9e4>>
+ * @generated SignedSource<<dca51cde71150ab7aca7effb4fb9db3e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,6 +21,11 @@ export type ConversationListFragment_query$data = {
         readonly closedAt: any | null | undefined;
         readonly contact: {
           readonly avatar: string | null | undefined;
+          readonly context: {
+            readonly countryCode: string | null | undefined;
+          } | null | undefined;
+          readonly email: string | null | undefined;
+          readonly id: string;
           readonly isOnline: boolean;
           readonly name: string;
         } | null | undefined;
@@ -184,6 +189,32 @@ return {
                       "kind": "ScalarField",
                       "name": "isOnline",
                       "storageKey": null
+                    },
+                    (v1/*: any*/),
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "email",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "concreteType": "ContactContext",
+                      "kind": "LinkedField",
+                      "name": "context",
+                      "plural": false,
+                      "selections": [
+                        {
+                          "alias": null,
+                          "args": null,
+                          "kind": "ScalarField",
+                          "name": "countryCode",
+                          "storageKey": null
+                        }
+                      ],
+                      "storageKey": null
                     }
                   ],
                   "storageKey": null
@@ -289,6 +320,6 @@ return {
 };
 })();
 
-(node as any).hash = "6f316388c02003d4cd7067e361447013";
+(node as any).hash = "6f828cd5caed42d1e06e2741ed2a60cb";
 
 export default node;

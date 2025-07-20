@@ -44,6 +44,7 @@ import userPlus from '@/assets/icons/inbox/ic-user-plus.svg';
 import closeRed from '@/assets/icons/inbox/ic-close-red.svg';
 import add from '@/assets/icons/inbox/ic-add.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
+import { useAppSelector } from '@/shared/hooks';
 
 const InboxSidebar = () => {
   const { t } = useTranslation('inbox');
@@ -56,7 +57,11 @@ const InboxSidebar = () => {
     useState(false);
   const [participantEmail, setParticipantEmail] = useState('');
   const [participants, setParticipants] = useState<string[]>([]);
-  const [openQuickJump, setOpenQuickJump] = useState<{ image: boolean; conversation: boolean }>({ image: false, conversation: false });
+  const [openQuickJump, setOpenQuickJump] = useState<{
+    image: boolean;
+    conversation: boolean;
+  }>({ image: false, conversation: false });
+  const { selectedConversation } = useAppSelector((state) => state.inbox);
 
   const handleSelect = (option: string) => {
     setSelected(option);
@@ -82,7 +87,14 @@ const InboxSidebar = () => {
 
   return (
     <S.Container>
-      <ProfileCard contactId={"Q29udGFjdDo2ODZlMTc0MzljM2YyZTI3ZmQ0MjExNWM="} avatarSize={60}/>
+      <ProfileCard
+        contactId={selectedConversation?.contact?.id}
+        avatarSize={60}
+        email={selectedConversation?.contact?.email}
+        name={selectedConversation?.contact?.name || ''}
+        avatarUrl={selectedConversation?.contact?.avatar}
+        countryCode={selectedConversation?.contact?.countryCode}
+      />
       {/* <S.ProfileSection>
         <AvatarWithStatus
           avatarSrc={defaultAvatar}

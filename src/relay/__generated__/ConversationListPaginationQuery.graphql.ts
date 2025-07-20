@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1d3417a3eb9092f2038c8faee5421b85>>
+ * @generated SignedSource<<af55d221f4190652719d82cbf569742e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -162,7 +162,32 @@ return {
                         "name": "isOnline",
                         "storageKey": null
                       },
-                      (v2/*: any*/)
+                      (v2/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "email",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "ContactContext",
+                        "kind": "LinkedField",
+                        "name": "context",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "countryCode",
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      }
                     ],
                     "storageKey": null
                   },
@@ -274,16 +299,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "85f3d420cb87eadb7f17bda23090a95f",
+    "cacheID": "22dd85a6651b7bdb34456b5ff434edea",
     "id": null,
     "metadata": {},
     "name": "ConversationListPaginationQuery",
     "operationKind": "query",
-    "text": "query ConversationListPaginationQuery(\n  $after: String\n  $first: Float = 10\n) {\n  ...ConversationListFragment_query_2HEEH6\n}\n\nfragment ConversationListFragment_query_2HEEH6 on Query {\n  conversations(first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListPaginationQuery(\n  $after: String\n  $first: Float = 10\n) {\n  ...ConversationListFragment_query_2HEEH6\n}\n\nfragment ConversationListFragment_query_2HEEH6 on Query {\n  conversations(first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6f316388c02003d4cd7067e361447013";
+(node as any).hash = "6f828cd5caed42d1e06e2741ed2a60cb";
 
 export default node;

@@ -10,12 +10,14 @@ export interface Contact {
   updatedAt: string;
   guestId: string;
   name: string;
+  email: string;
   notification: boolean;
   segments: string[];
   isOnline: boolean;
   lastActivityAt: string;
   workspaceId: string;
   avatar?: string;
+  countryCode?:string;
 }
 
 export interface User {
@@ -23,6 +25,7 @@ export interface User {
   firstName: string;
   lastName: string;
   avatar: string;
+  email:string;
 }
 
 export interface Message {
@@ -84,6 +87,10 @@ export interface MessageBaseItemProps {
   justLoadedMore: boolean;
   isOwner: boolean;
   avatarAdmin?: string;
+  contactId?: string;
+  avatar?:string;
+  name?:string;
+  countryCode?:string;
 }
 
 export interface MessageTimeWithIconProps {
@@ -131,4 +138,8 @@ export interface ChatMessageItemProps {
   justLoadedMore: boolean;
   isOwner: boolean;
   avatarAdmin?: string;
+  contactId?: string;
+  avatar?:string;
+  name?:string;
+  countryCode?:string;
 }
