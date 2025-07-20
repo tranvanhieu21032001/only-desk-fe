@@ -58,6 +58,7 @@ import iconReply from '@/assets/icons/inbox/ic-reply.svg';
 import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
+import ProfileCard from '@/shared/components/common/ProfileCard';
 
 
 
@@ -487,12 +488,12 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           />
           <S.Header>
             <S.HeaderLeft>
-              <AvatarWithStatus
-                avatarSrc={
-                  currentConversation?.contact?.avatar || defaultAvatar
-                }
-                flagSrc={flag}
-                isOnline={true}
+              <ProfileCard
+                contactId={currentConversation?.contact?.id}
+                name={currentConversation?.contact?.name || DEFAULT_FULL_NAME}
+                avatarUrl={currentConversation?.contact?.avatar}
+                countryCode={currentConversation?.contact?.countryCode}
+                hiddenInfo
               />
               <S.Info>
                 <S.Name>
@@ -553,6 +554,10 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                             justLoadedMore={false}
                             isOwner={isAgent}
                             avatarAdmin={isAgent ? undefined : avatarAdmin}
+                            contactId={currentConversation?.contact?.id}
+                            name={currentConversation?.contact?.name}
+                            avatar={currentConversation?.contact?.avatar}
+                            countryCode={currentConversation?.contact?.countryCode}
                           />
                         </React.Fragment>
                       );

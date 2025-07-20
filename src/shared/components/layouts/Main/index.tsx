@@ -111,6 +111,7 @@ import {
 } from '@/modules/auth/store/selectors';
 import webStorageClient from '@/shared/utils/webStorageClient';
 import { updateRelayEnvironment } from '@/relay/RelayEnvironment';
+import ProfileCard from '../../common/ProfileCard';
 
 interface Props {
   children: React.ReactNode;
@@ -866,36 +867,23 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
     [t, handleClickChildrenMenu, routePath],
   );
 
+  console.log('userInfo', userInfo);
+  
   // Stabilize renderProfiles to prevent re-creation
   const renderProfiles = useMemo(
     () => (
       <S.PopoverContent>
-        <S.ProfilesWrap>
-          <AvatarWithStatus
-            avatarSrc={userInfo?.avatar || icDefaultAvatar}
-            flagSrc={flag}
-            isOnline={true}
+        <ProfileCard
+            avatarUrl={userInfo?.avatar || icDefaultAvatar}
+            avatarSize={40}
+            userId={userInfo?.id}
+            name={
+              userInfo?.firstName
+                ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
+                : DEFAULT_FULL_NAME
+            }
+            email={userInfo?.email}
           />
-          <S.ProfilesInfo>
-            <S.ProfilesName>
-              <Typography>
-                {userInfo?.firstName
-                  ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
-                  : DEFAULT_FULL_NAME}
-              </Typography>
-
-              <Image src={icVector} preview={false} width={13} height={13} />
-            </S.ProfilesName>
-            <Typography>{userInfo?.email || DEFAULT_EMAIL}</Typography>
-          </S.ProfilesInfo>
-          <S.ProfileDetail
-            onClick={handleProfileDetail}
-            src={icArrowRight}
-            preview={false}
-            width={16}
-            height={16}
-          />
-        </S.ProfilesWrap>
 
         <S.Line />
         <S.PopoverLabelWrap>
@@ -1030,10 +1018,16 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
             rootClassName="profile-popover"
           >
             <S.Profiles>
-              <AvatarWithStatus
-                avatarSrc={userInfo?.avatar || icDefaultAvatar}
-                flagSrc={flag}
-                isOnline={true}
+              <ProfileCard
+                avatarUrl={userInfo?.avatar || icDefaultAvatar}
+                avatarSize={40}
+                userId={userInfo?.id}
+                name={
+                  userInfo?.firstName
+                    ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
+                    : DEFAULT_FULL_NAME
+                }
+                hiddenInfo
               />
             </S.Profiles>
           </Popover>

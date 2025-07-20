@@ -11,7 +11,6 @@ import { decodeGlobalId } from '@/shared/utils/decode';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import { conversationListFragment } from '@/relay/ConversationListFragment';
 import type { ConversationListFragment_query$key } from '@/relay/__generated__/ConversationListFragment_query.graphql';
-import AvatarWithStatus from '@/shared/components/common/Avatar';
 import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
 import { eventBus } from '@/core/event-bus';
@@ -41,7 +40,6 @@ import unreadIcon from '@/assets/icons/common/ic-unread.svg';
 // import copyIcon from '@/assets/icons/common/ic-copy-link.svg';
 // import blockIcon from '@/assets/icons/common/ic-user-block.svg';
 import deleteIcon from '@/assets/icons/common/ic-delete-red.svg';
-import flag from '@/assets/icons/common/ic-flag.svg';
 import addHeader from '@/assets/icons/common/ic-add-header.svg';
 import message from '@/assets/icons/inbox/ic-message.svg';
 import close from '@/assets/icons/inbox/ic-close-circle.svg';
@@ -49,6 +47,7 @@ import add from '@/assets/icons/inbox/ic-add-circle.svg';
 import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
 import avatarDefault from '@/assets/images/avatar-default.png';
+import ProfileCard from '@/shared/components/common/ProfileCard';
 
 type Props = {
   conversationsRef: ConversationListFragment_query$key;
@@ -242,17 +241,19 @@ const ConversationList: React.FC<Props> = ({
       const conversationData: Conversation = {
         id: conversation.id,
         contact: {
-          id: conversation.id,
+          id: conversation.contact?.id || '',
           createdAt: conversation.createdAt || '',
           updatedAt: conversation.updatedAt || '',
           guestId: '',
           name: conversation.contact?.name || 'Guest',
+          email: conversation.contact?.email || '',
           notification: true,
           segments: [],
           isOnline: conversation.contact?.isOnline || false,
           lastActivityAt: conversation.lastActivityAt || '',
           workspaceId: workspaceId || '',
           avatar: conversation.contact?.avatar || '',
+          countryCode: conversation?.contact?.context?.countryCode || ''
         },
         assignedTo: conversation.assignedTo?.id || null,
         participants: [],
@@ -398,10 +399,12 @@ const ConversationList: React.FC<Props> = ({
               onClick={() => handleConversationClick(conversation.id)}
             >
               <S.Avatar>
-                <AvatarWithStatus
-                  avatarSrc={conversation.contact?.avatar || avatarDefault}
-                  isOnline={conversation.contact?.isOnline || false}
-                  flagSrc={flag}
+                <ProfileCard
+                  contactId={conversation.contact?.id}
+                  avatarUrl={conversation.contact?.avatar || avatarDefault}
+                  name={conversation.contact?.name}
+                  countryCode={conversation.contact?.context?.countryCode ||''}
+                  hiddenInfo
                 />
               </S.Avatar>
               <S.Content>

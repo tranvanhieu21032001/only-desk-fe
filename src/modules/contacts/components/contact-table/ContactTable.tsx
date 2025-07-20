@@ -30,6 +30,7 @@ import flagList from '@/shared/helper/data/flagIcon';
 import Modal from '@/shared/components/common/Modal';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import Button from '@/shared/components/common/Button';
+import ProfileCard from '@/shared/components/common/ProfileCard';
 
 interface ContactTableProps {
   onSelectedChange?: (ids: string[]) => void;
@@ -79,12 +80,13 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
       fixed: 'left',
       render: (record: ContactInterface) => (
         <S.FullNameColumn>
-          <Image
-            preview={false}
-            width={40}
-            height={40}
-            src={record?.avatar || icAvatarDefault}
-            onError={(e) => (e.currentTarget.src = icAvatarDefault)}
+          <ProfileCard
+            avatarUrl={record?.avatar || icAvatarDefault}
+            avatarSize={40}
+            contactId={record?.id}
+            name={record?.name}
+            hiddenInfo
+            countryCode={record?.context?.countryCode}
           />
           <Typography>{record?.name || '-'}</Typography>
         </S.FullNameColumn>

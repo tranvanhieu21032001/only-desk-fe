@@ -14,6 +14,8 @@ export const conversationListQuery = graphql`
         node {
           id
           contact {
+            id
+            email
             avatar
             name
             isOnline

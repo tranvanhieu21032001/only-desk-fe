@@ -17,7 +17,17 @@ export const conversationListFragment = graphql`
         cursor
         node {
           id
-          contact { avatar name isOnline }
+          contact {
+            avatar
+            name
+            isOnline
+            id
+            name
+            email
+            context {
+              countryCode
+            }
+          }
           subject
           metadata
           createdAt
@@ -25,8 +35,12 @@ export const conversationListFragment = graphql`
           lastActivityAt
           closedAt
           unreadCount
-          assignedTo { id }
-          latestMessage { content }
+          assignedTo {
+            id
+          }
+          latestMessage {
+            content
+          }
         }
       }
     }
