@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dca51cde71150ab7aca7effb4fb9db3e>>
+ * @generated SignedSource<<2a679dec6b32a5ea950873424aad9dfe>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,6 +28,7 @@ export type ConversationListFragment_query$data = {
           readonly id: string;
           readonly isOnline: boolean;
           readonly name: string;
+          readonly rawId: string;
         } | null | undefined;
         readonly createdAt: any | null | undefined;
         readonly id: string;
@@ -36,6 +37,7 @@ export type ConversationListFragment_query$data = {
           readonly content: string;
         } | null | undefined;
         readonly metadata: any | null | undefined;
+        readonly rawId: string;
         readonly subject: string | null | undefined;
         readonly unreadCount: number | null | undefined;
         readonly updatedAt: any | null | undefined;
@@ -64,6 +66,13 @@ v1 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "rawId",
   "storageKey": null
 };
 return {
@@ -161,6 +170,7 @@ return {
               "plural": false,
               "selections": [
                 (v1/*: any*/),
+                (v2/*: any*/),
                 {
                   "alias": null,
                   "args": null,
@@ -191,6 +201,7 @@ return {
                       "storageKey": null
                     },
                     (v1/*: any*/),
+                    (v2/*: any*/),
                     {
                       "alias": null,
                       "args": null,
@@ -320,6 +331,6 @@ return {
 };
 })();
 
-(node as any).hash = "6f828cd5caed42d1e06e2741ed2a60cb";
+(node as any).hash = "30bd40576eccca1cf481850d4cf61acf";
 
 export default node;

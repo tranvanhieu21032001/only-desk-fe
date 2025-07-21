@@ -42,6 +42,12 @@ export const SectionContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
+  .ant-select{
+  height:40px;
+  .ant-select-selector{
+  min-height: 40px;
+  }
+  }
 `;
 
 export const Field = styled.div`
@@ -82,6 +88,9 @@ export const DataRow = styled.div`
   cursor: pointer;
   align-items: center;
   gap: 8px;
+  .ant-form-item{
+  margin-bottom:0px;
+  }
 `;
 
 export const DataLabel = styled.div`
@@ -253,7 +262,7 @@ export const DropdownHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 4px 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #fff;
@@ -301,6 +310,12 @@ export const DropdownItem = styled.div<{ selected?: boolean }>`
   &:hover {
     background: #f5f5f5;
   }
+  .body-text-small{
+    line-height: 14px
+  }
+    .body-text-small{
+       line-height: 14px
+    }
 `;
 
 export const TagsWrapper = styled.div`
@@ -688,4 +703,46 @@ export const QuickJumpDropdownText = styled.div`
   font-style: italic;
   margin-left: 32px;
   margin-bottom: 8px;
+`;
+
+export const OptionContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const Avatar = styled.img`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+`;
+
+export const PlaceholderAvatar = styled.div`
+  width: 32px;
+  height: 32px;
+  background-color: #ccc;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+
+export const EmptyWrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width:100%;
+`;
+
+export const TagWrap = styled.div`
+  margin-bottom: 8px;
+`;
+
+
+export const WrapperButton = styled.div`
+  margin-top: 24px;
 `;

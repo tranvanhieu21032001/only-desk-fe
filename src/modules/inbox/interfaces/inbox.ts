@@ -6,6 +6,7 @@ import {
 
 export interface Contact {
   id: string;
+  rawId: string;
   createdAt: string;
   updatedAt: string;
   guestId: string;
@@ -44,6 +45,7 @@ export interface Message {
 
 export interface Conversation {
   id: string;
+  rawId: string;
   contact: Contact;
   assignedTo: null | string;
   participants: string[];
