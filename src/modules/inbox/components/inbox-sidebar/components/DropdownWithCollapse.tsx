@@ -5,17 +5,24 @@ import userCheck from '@/assets/icons/common/ic-user-check.svg';
 import arrDown from '@/assets/icons/common/ic-arrow-down.svg';
 import Collapse from '@/shared/components/common/Collapse';
 import defaultAvatar from '@/assets/images/avatar-default.png';
-import { Contact } from '@/modules/inbox/interfaces/inbox';
 import Typography from '@/shared/components/common/Typography';
 
+interface DropdownOption {
+  id: string;
+  rawId: string;
+  name: string;
+  avatar?: string;
+  email?: string;
+}
 
 interface DropdownWithCollapseProps {
   openDropdown: boolean;
   setOpenDropdown: (open: boolean) => void;
-  selected: Contact | null;
-  options: Contact[];
-  handleSelect: (option: Contact) => void;
+  selected: DropdownOption | null;
+  options: DropdownOption[];
+  handleSelect: (option: DropdownOption) => void;
 }
+
 const DropdownWithCollapse: React.FC<DropdownWithCollapseProps> = ({
   openDropdown,
   setOpenDropdown,
@@ -23,7 +30,6 @@ const DropdownWithCollapse: React.FC<DropdownWithCollapseProps> = ({
   options,
   handleSelect,
 }) => {
-    
   return (
     <Collapse title="Main Information">
       <S.DropdownWrapper>
@@ -31,6 +37,7 @@ const DropdownWithCollapse: React.FC<DropdownWithCollapseProps> = ({
           <S.UserIcon>
             <Image src={userCheck} preview={false} />
           </S.UserIcon>
+
           <S.DropdownHeader onClick={() => setOpenDropdown(!openDropdown)}>
             <span>{selected?.name || 'Unnamed'}</span>
             <S.ArrowIcon isOpen={openDropdown}>
@@ -48,14 +55,15 @@ const DropdownWithCollapse: React.FC<DropdownWithCollapseProps> = ({
                 selected={selected?.id === option.id}
               >
                 <S.OptionContent>
-                  {option.avatar ? (
-                    <S.Avatar src={option.avatar} alt="avatar" />
-                  ) : (
-                      <S.Avatar src={defaultAvatar} alt="avatar" />
-                  )}
+                  <S.Avatar
+                    src={option.avatar || defaultAvatar}
+                    alt="avatar"
+                  />
                   <div>
                     <Typography>{option.name || 'Unnamed'}</Typography>
-                  <Typography variant='body-text-small'>  {option.email && <small>{option.email}</small>}</Typography>
+                    <Typography variant="body-text-small">
+                      <small>{option.email || ''}</small>
+                    </Typography>
                   </div>
                 </S.OptionContent>
               </S.DropdownItem>

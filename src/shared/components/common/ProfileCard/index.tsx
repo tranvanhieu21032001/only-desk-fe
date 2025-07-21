@@ -39,6 +39,7 @@ interface ProfileCardProps {
   flagSize?: number;
   lastActiveStyle?: React.CSSProperties;
   hiddenInfo?: boolean;
+  hiddenLastActive?: boolean;
 }
 
 const ProfileCard = ({
@@ -53,6 +54,7 @@ const ProfileCard = ({
   flagSize = 14,
   lastActiveStyle,
   hiddenInfo = false,
+  hiddenLastActive = false,
 }: ProfileCardProps) => {
   const dispatch = useAppDispatch();
 
@@ -129,8 +131,8 @@ const ProfileCard = ({
   }, [contactId, userId]);
 
   const avatar = avatarUrl || fetchedData.avatar || defaultAvatar;
-  const displayName = name || fetchedData.name || '';
-  const displayEmail = email || fetchedData.email || '';
+  const displayName = name?.trim() || fetchedData.name?.trim() || '';
+  const displayEmail = email?.trim() || fetchedData.email?.trim() || '';
   const flagIcon =
     flagSrc ||
     flagList.find(
@@ -177,7 +179,8 @@ const ProfileCard = ({
                 <S.Name>{displayName}</S.Name>
               </S.NameRow>
               <S.Email>{displayEmail}</S.Email>
-              {!isOnline && lastActive && (
+
+              {!isOnline && lastActive && !hiddenLastActive && (
                 <S.LastActive style={lastActiveStyle}>
                   Last active: {lastActive}
                 </S.LastActive>

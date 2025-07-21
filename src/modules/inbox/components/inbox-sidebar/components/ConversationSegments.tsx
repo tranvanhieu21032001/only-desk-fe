@@ -3,7 +3,6 @@ import { Form } from 'antd';
 
 import Collapse from '@/shared/components/common/Collapse';
 import Select from '@/shared/components/common/Select';
-import Typography from '@/shared/components/common/Typography';
 
 import * as S from '../InboxSidebar.styles';
 
@@ -11,12 +10,14 @@ interface ConversationSegmentsProps {
   t: (key: string) => string;
   openCollapse: boolean;
   segment: string[];
+  onChangeSegment: (value: string[]) => void;
 }
 
 const ConversationSegments: React.FC<ConversationSegmentsProps> = ({
   t,
   openCollapse,
   segment,
+  onChangeSegment,
 }) => {
   const mergedTags = Array.from(new Set([...segment]));
 
@@ -36,6 +37,8 @@ const ConversationSegments: React.FC<ConversationSegmentsProps> = ({
               placeholder={t('inboxSidebar.select-segments')}
               tokenSeparators={[',']}
               options={selectOptions}
+              value={segment}
+              onChange={(value) => onChangeSegment(value)}
             />
           </Form.Item>
         </S.SectionContent>

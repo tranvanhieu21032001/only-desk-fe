@@ -68,7 +68,7 @@ export const Participant = styled.div`
   font-size: 13px;
   color: #333;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 `;
 
@@ -294,11 +294,12 @@ export const DropdownList = styled.div`
   top: 100%;
   left: 0;
   right: 0;
+  max-height:300px;
+  overflow-y:auto;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   margin-top: 4px;
-  overflow: hidden;
   z-index: 10;
 `;
 
@@ -636,7 +637,6 @@ export const LastSectionImage = styled.div`
 export const CompanyRow = styled.div`
   display: flex;
   gap: 10px;
-  align-items: center;
   width: 100%;
 `;
 
@@ -661,7 +661,6 @@ export const PanelSectionEnd = styled.div`
   border-radius: 8px;
   border: 1px solid #eee;
   width: 300px;
-  height: 247px;
 `;
 
 export const PanelSectionColumn = styled.div`
@@ -669,12 +668,11 @@ export const PanelSectionColumn = styled.div`
   border-radius: 8px;
   border: 1px solid #eee;
   background-color: #fef1d7;
-  height: 149px;
 `;
 
 export const PanelSectionNotepad = styled.div`
   margin-top: 20px;
-  height: 247px;
+  width:100%;
 `;
 
 export const ParticipantP = styled.p`

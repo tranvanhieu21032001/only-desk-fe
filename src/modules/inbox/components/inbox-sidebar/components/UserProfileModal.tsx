@@ -1,9 +1,9 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import AvatarWithStatus from '@/shared/components/common/Avatar';
-
-
 import * as S from '../InboxSidebar.styles';
+
 import chorme from '@/assets/icons/common/ic-chorme.svg';
 import defaultAvatar from '@/assets/images/avatar-default.png';
 import flag from '@/assets/icons/common/ic-flag.svg';
@@ -18,43 +18,110 @@ import flagAmerica from '@/assets/icons/common/ic-flag-america.svg';
 import company from '@/assets/icons/common/ic-company.svg';
 import noteBlue from '@/assets/icons/common/ic-note-blue.svg';
 import tagsBlue from '@/assets/icons/common/ic-tags-blue.svg';
+
 import ProfilePreviewModal from '../../profile-preview-modal/ProfilePreviewModal';
+import ProfileCard from '@/shared/components/common/ProfileCard';
+import { listenUserStatus, offUserStatus } from '@/core/services/socket/socket';
+import { format } from 'timeago.js';
+import dayjs from 'dayjs';
+import LastReportedLocationBody from '@/shared/components/common/ReportedLocation/LastReportedLocationBody';
+import { useAppSelector } from '@/shared/hooks';
+import CompanyInfoBody from '@/shared/components/common/CompanyInfoBody/CompanyInfoBody';
+import TextArea from '@/shared/components/common/TextArea';
+import Typography from '@/shared/components/common/Typography';
+import empty from '@/assets/images/contact/img-contact-empty.png';
+import SegmentsBody from '@/shared/components/common/SegmentsBody/SegmentsBody';
 interface UserProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  selectedConversation: any;
 }
 
-const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) => {
-  const { t } = useTranslation();
+const UserProfileModal: React.FC<UserProfileModalProps> = ({
+  isOpen,
+  onClose,
+  selectedConversation,
+}) => {
+  const { t } = useTranslation('inbox');
+  const [isOnline, setIsOnline] = useState(false);
+  const [lastActive, setLastActive] = useState<string | null>(null);
+  const { contactDetails, isLoading } = useAppSelector(
+    (state) => state.contacts,
+  );
+
+  console.log('contactDetails', contactDetails);
+  const renderNotes = useMemo(() => {
+    if (!contactDetails?.notes) {
+      return (
+        <S.EmptyWrap>
+          <Image src={empty} width={120} height={120} preview={false} />
+          <Typography margin="8px 0 0 0">
+            {t('contact-profile.no-data-added')}
+          </Typography>
+        </S.EmptyWrap>
+      );
+    }
+
+    return (
+      <TextArea
+        disabled={true}
+        placeholder={t('contact-profile.enter-notes')}
+      />
+    );
+  }, [contactDetails?.notes]);
+
+  useEffect(() => {
+    const contactId = selectedConversation?.contact?.id;
+    if (!contactId) return;
+
+    const handleStatus = (data: {
+      contactId?: string;
+      isOnline: boolean;
+      lastActivityAt?: string | Date;
+    }) => {
+      if (data.contactId !== contactId) return;
+      setIsOnline(data.isOnline);
+
+      if (!data.isOnline && data.lastActivityAt) {
+        setLastActive(format(new Date(data.lastActivityAt)));
+      }
+    };
+
+    listenUserStatus(handleStatus);
+    return () => offUserStatus(handleStatus);
+  }, [selectedConversation]);
 
   return (
-    <ProfilePreviewModal isOpen={isOpen} onClose={onClose}>
+    <ProfilePreviewModal isOpen={isOpen} onClose={onClose}  redirectUrl={`/contacts/${selectedConversation?.contact?.id}`}>
       <S.PanelWrapper>
-        {/* Header */}
         <S.PanelHeader>
           <S.PanelColumn>
-            <S.ProfileSection>
-              <AvatarWithStatus
-                avatarSrc={defaultAvatar}
-                flagSrc={flag}
-                isOnline={true}
-              />
-              <S.ProfileInfo>
-                <S.NameRow>
-                  <S.Name>Sophia Williams</S.Name>
-                </S.NameRow>
-                <S.Email>sophia@alignui.com</S.Email>
-              </S.ProfileInfo>
-            </S.ProfileSection>
-
+            <ProfileCard
+              contactId={selectedConversation?.contact?.id}
+              avatarSize={40}
+              email={selectedConversation?.contact?.email}
+              name={selectedConversation?.contact?.name || ''}
+              avatarUrl={selectedConversation?.contact?.avatar}
+              countryCode={selectedConversation?.contact?.countryCode}
+              hiddenLastActive
+            />
             <S.PanelItem>
-              <S.PanelP>{t('inboxSidebar.createdDate')}: 19/04/2024</S.PanelP>
-              <S.PanelP>{t('inboxSidebar.lastActive')}: 5 hour ago</S.PanelP>
+              <S.PanelP>
+                {t('inboxSidebar.createdDate')}:{' '}
+                {selectedConversation?.contact.createdAt &&
+                  dayjs(selectedConversation.contact.createdAt).format(
+                    'MM/DD/YYYY',
+                  )}
+              </S.PanelP>
+              {!isOnline && lastActive && (
+                <S.PanelP>
+                  {t('inboxSidebar.lastActive')}: {lastActive}
+                </S.PanelP>
+              )}
             </S.PanelItem>
           </S.PanelColumn>
         </S.PanelHeader>
 
-        {/* Conversation */}
         <S.PanelSection>
           <S.SectionHeading>
             <S.SectionWidth>
@@ -62,7 +129,6 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) 
               Conversation
               <Image src={badge} preview={false} />
             </S.SectionWidth>
-
             <S.SectionButton>
               <Image src={addBlue} preview={false} />
               New Conversation
@@ -85,8 +151,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) 
           </S.SectionCompan>
         </S.PanelSection>
 
-        {/* Page */}
-        <S.PanelSection>
+        {/* <S.PanelSection>
           <S.SectionHeading>
             <S.SectionWidth>
               <Image src={earthBlue} preview={false} />
@@ -119,7 +184,6 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) 
                   <Image src={cloudBlue} preview={false} />
                   MyBlog - Just another WordPress site
                 </S.SectionCloudOne>
-
                 <S.SectionCloudTwo>
                   6 hour ago
                   <Image src={screen} preview={false} />
@@ -127,9 +191,8 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) 
               </S.SectionCloudRow>
             ))}
           </div>
-        </S.PanelSection>
+        </S.PanelSection> */}
 
-        {/* Last Location */}
         <S.PanelSection>
           <S.SectionHeading>
             <S.SectionWidth>
@@ -137,26 +200,12 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) 
               Last Reported Location
             </S.SectionWidth>
           </S.SectionHeading>
-
-          <S.LastSection>
-            <S.LastSectionLeft>City, country</S.LastSectionLeft>
-            <S.LastSectionp>Da Nang, Vietnam</S.LastSectionp>
-          </S.LastSection>
-
-          <S.LastSection>
-            <S.LastSectionLeft>Local time</S.LastSectionLeft>
-            <S.LastSectionp>2:34pm <span>(UTC +7)</span></S.LastSectionp>
-          </S.LastSection>
-
-          <S.LastSection>
-            <S.LastSectionLeft>Languages</S.LastSectionLeft>
-            <S.LastSectionImage>
-              <Image src={flagAmerica} preview={false} />
-            </S.LastSectionImage>
-          </S.LastSection>
+          <LastReportedLocationBody
+            context={contactDetails?.context}
+            isLoading={isLoading}
+          />
         </S.PanelSection>
 
-        {/* Company Info */}
         <S.CompanyRow>
           <S.PanelSectionEnd>
             <S.SectionHeading>
@@ -166,13 +215,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) 
               </S.SectionWidth>
             </S.SectionHeading>
 
-            <S.CompanyP>Company</S.CompanyP>
-            <S.CompanyP>Job Title</S.CompanyP>
-            <S.CompanyP>Job Role</S.CompanyP>
-            <S.CompanyP>Website</S.CompanyP>
-            <S.CompanyP>City</S.CompanyP>
-            <S.CompanyP>Country</S.CompanyP>
-            <S.CompanyP>Employees</S.CompanyP>
+            <CompanyInfoBody isLoading={isLoading || false} isDetails={true} />
           </S.PanelSectionEnd>
 
           <S.PanelSectionNotepad>
@@ -184,9 +227,14 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) 
                 </S.SectionWidth>
               </S.SectionHeading>
 
-              <S.NoteBox>
-                This is a note. This is a note. This is a note. This is a note.
-              </S.NoteBox>
+              {contactDetails?.notes ? (
+                <S.NoteBox>{contactDetails.notes}</S.NoteBox>
+              ) : (
+                <S.EmptyWrap>
+                  <Image src={empty} width={80} height={80} preview={false} />
+                  <Typography margin="8px 0 0 0">No data</Typography>
+                </S.EmptyWrap>
+              )}
             </S.PanelSectionColumn>
 
             <S.PanelSection>
@@ -197,11 +245,13 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose }) 
                 </S.SectionWidth>
               </S.SectionHeading>
 
-              <S.TagsContainer>
-                <S.TagItem>Tag</S.TagItem>
-                <S.TagItem>Tag</S.TagItem>
-                <S.TagItem>Tag</S.TagItem>
-              </S.TagsContainer>
+              <SegmentsBody
+                isDetails={true}
+                segments={contactDetails?.segments || []}
+                isLoading={isLoading || false}
+                t={t}
+                emptySize={80}
+              />
             </S.PanelSection>
           </S.PanelSectionNotepad>
         </S.CompanyRow>

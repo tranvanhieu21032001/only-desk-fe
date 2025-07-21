@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Col, Form, Image, Input } from 'antd';
 
 import Collapse from '@/shared/components/common/Collapse';
@@ -10,9 +10,37 @@ import * as S from '../InboxSidebar.styles';
 interface VisitorsDataProps {
   t: (key: string) => string;
   openCollapse: boolean;
+  onChange: (metadata: { key: string; value: string }[]) => void;
 }
 
-const VisitorsData: React.FC<VisitorsDataProps> = ({ t, openCollapse }) => {
+const VisitorsData: React.FC<VisitorsDataProps> = ({ t, openCollapse, onChange }) => {
+  const form = Form.useFormInstance();
+  const previousMetadata = useRef<{ key: string; value: string }[]>([]);
+
+  useEffect(() => {
+    const initial = form.getFieldValue('metadata') || [];
+    previousMetadata.current = initial.filter(
+      (item: any) => item.key?.trim() && item.value?.trim()
+    );
+  }, []);
+
+  const handleUpdate = () => {
+    const allCurrent = form.getFieldValue('metadata') || [];
+
+    const currentValid = allCurrent.filter(
+      (item: any) => item.key?.trim() && item.value?.trim()
+    );
+
+    const prevValid = previousMetadata.current;
+
+    const hasChanged = JSON.stringify(currentValid) !== JSON.stringify(prevValid);
+
+    if (hasChanged) {
+      previousMetadata.current = currentValid;
+      onChange(currentValid);
+    }
+  };
+
   return (
     <Collapse title={t('inboxSidebar.visitorsData')}>
       {openCollapse && (
@@ -26,11 +54,9 @@ const VisitorsData: React.FC<VisitorsDataProps> = ({ t, openCollapse }) => {
                       <Form.Item
                         {...restField}
                         name={[name, 'key']}
-                        rules={[
-                          { required: true, message: t('inboxSidebar.keyRequired') },
-                        ]}
+                        rules={[{ required: true, message: t('inboxSidebar.keyRequired') }]}
                       >
-                        <Input placeholder={t('inboxSidebar.key')} />
+                        <Input placeholder="Key" onBlur={handleUpdate} />
                       </Form.Item>
                     </Col>
 
@@ -38,11 +64,9 @@ const VisitorsData: React.FC<VisitorsDataProps> = ({ t, openCollapse }) => {
                       <Form.Item
                         {...restField}
                         name={[name, 'value']}
-                        rules={[
-                          { required: true, message: t('inboxSidebar.valueRequired') },
-                        ]}
+                        rules={[{ required: true, message: t('inboxSidebar.valueRequired') }]}
                       >
-                        <Input placeholder={t('inboxSidebar.value')} />
+                        <Input placeholder="Value" onBlur={handleUpdate} />
                       </Form.Item>
                     </Col>
 
@@ -55,12 +79,30 @@ const VisitorsData: React.FC<VisitorsDataProps> = ({ t, openCollapse }) => {
                           const current = form.getFieldValue('metadata') || [];
                           const copied = current[name];
                           add({ key: copied?.key, value: copied?.value });
+
+                          setTimeout(() => {
+                            handleUpdate();
+                          }, 0);
                         }}
                       />
                       <Image
                         src={close}
                         preview={false}
-                        onClick={() => remove(name)}
+                        onClick={() => {
+                          const current = form.getFieldValue('metadata') || [];
+                          const removedItem = current[name];
+
+                          const isValid =
+                            removedItem?.key?.trim() && removedItem?.value?.trim();
+
+                          remove(name);
+
+                          if (isValid) {
+                            setTimeout(() => {
+                              handleUpdate();
+                            }, 0);
+                          }
+                        }}
                         style={{ cursor: 'pointer' }}
                       />
                     </Col>
