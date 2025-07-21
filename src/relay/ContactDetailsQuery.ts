@@ -20,7 +20,7 @@ export const contactDetailsQuery = graphql`
         isOnline
         segments
         notes
-        metadata
+        metadata 
         companyInfo {
           company
           jobTitle

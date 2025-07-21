@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useMemo, memo } from 'react';
 import { Image } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { LoadingOutlined } from '@ant-design/icons';
 
@@ -59,8 +59,7 @@ import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
-
-
+import { fetchContactByConversationId } from '../../store/features/conversation';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar, conversation }) => {
@@ -68,7 +67,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const [searchParams] = useSearchParams();
     const conversationId = searchParams.get('conversationId');
     const stableConversationId = useRef<string | null>(null);
-
+    const dispatch = useDispatch();
     if (stableConversationId.current !== conversationId) {
       stableConversationId.current = conversationId;
     }
@@ -167,6 +166,16 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         workspaceId,
       ],
     );
+
+
+    useEffect(() => {
+      if (currentConversation?.contact?.id === '' && currentConversation?.id) {
+        dispatch(fetchContactByConversationId(currentConversation.id));
+      }
+    }, [currentConversation?.id, currentConversation?.contact?.id, dispatch]);
+
+        const { contactByIdCoversation } = useAppSelector((state) => state.contactByIdConversation);
+    
 
     const messageEndRef = useRef<HTMLDivElement>(null);
     const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -488,7 +497,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           />
           <S.Header>
             <S.HeaderLeft>
-              <ProfileCard
+              {currentConversation?.contact?.id?<><ProfileCard
                 contactId={currentConversation?.contact?.id}
                 name={currentConversation?.contact?.name || DEFAULT_FULL_NAME}
                 avatarUrl={currentConversation?.contact?.avatar}
@@ -499,7 +508,18 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                 <S.Name>
                   {currentConversation?.contact?.name || DEFAULT_FULL_NAME}
                 </S.Name>
-              </S.Info>
+              </S.Info></>:<><ProfileCard
+                contactId={contactByIdCoversation?.contact.id}
+                name={contactByIdCoversation?.contact.name || DEFAULT_FULL_NAME}
+                avatarUrl={contactByIdCoversation?.contact.avatar}
+                countryCode={contactByIdCoversation?.contact.context.countryCode}
+                hiddenInfo
+              />
+              <S.Info>
+                <S.Name>
+                  {contactByIdCoversation?.contact.name || DEFAULT_FULL_NAME}
+                </S.Name>
+              </S.Info></>}
             </S.HeaderLeft>
             <S.HeaderRight>
               <S.MarkResolvedButton>
@@ -557,7 +577,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                             contactId={currentConversation?.contact?.id}
                             name={currentConversation?.contact?.name}
                             avatar={currentConversation?.contact?.avatar}
-                            countryCode={currentConversation?.contact?.countryCode}
+                            countryCode={
+                              currentConversation?.contact?.countryCode
+                            }
                           />
                         </React.Fragment>
                       );

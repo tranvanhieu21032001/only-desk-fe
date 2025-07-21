@@ -43,11 +43,11 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   selectedConversation,
 }) => {
   const { t } = useTranslation('inbox');
-  const [isOnline, setIsOnline] = useState(false);
-  const [lastActive, setLastActive] = useState<string | null>(null);
   const { contactDetails, isLoading } = useAppSelector(
     (state) => state.contacts,
   );
+  const [isOnline, setIsOnline] = useState(contactDetails?.isOnline || false);
+  const [lastActive, setLastActive] = useState<string | null>(null);
 
   console.log('contactDetails', contactDetails);
   const renderNotes = useMemo(() => {
