@@ -13,8 +13,10 @@ export const conversationListQuery = graphql`
         cursor
         node {
           id
+          rawId
           contact {
             id
+            rawId
             email
             avatar
             name

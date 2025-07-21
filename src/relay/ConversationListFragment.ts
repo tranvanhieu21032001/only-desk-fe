@@ -17,11 +17,13 @@ export const conversationListFragment = graphql`
         cursor
         node {
           id
+          rawId
           contact {
             avatar
             name
             isOnline
             id
+            rawId
             name
             email
             context {

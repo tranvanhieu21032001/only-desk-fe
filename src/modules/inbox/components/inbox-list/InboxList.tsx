@@ -97,8 +97,10 @@ const ConversationList: React.FC<Props> = ({
     if (conversation) {
       const conversationData: Conversation = {
         id: conversation.id,
+        rawId: conversation.rawId || '',
         contact: {
           id: conversation.contact?.id || '',
+          rawId: conversation.contact?.rawId || '',
           createdAt: conversation.createdAt || '',
           updatedAt: conversation.updatedAt || '',
           guestId: '',

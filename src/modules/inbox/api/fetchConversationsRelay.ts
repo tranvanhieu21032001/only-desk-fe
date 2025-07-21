@@ -23,8 +23,10 @@ export const fetchConversationsRelay = async (
     const node = edge.node;
     return {
       id: node.id,
+      rawId: node.rawId,
       contact: {
         id: node.contact?.id,
+        rawId: node.contact?.rawId,
         createdAt: '',
         updatedAt: '',
         guestId: '',
