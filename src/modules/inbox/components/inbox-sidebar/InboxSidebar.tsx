@@ -44,6 +44,7 @@ const InboxSidebar = () => {
   const { contactDetails } = useAppSelector((state: RootState) => state.contacts);
   const { operators } = useAppSelector((state) => state.operators);
   const [form] = Form.useForm();
+  const { contactByIdCoversation } = useAppSelector((state) => state.contactByIdConversation);
 
   const formattedOperators = useMemo(() => {
     return operators.map((op) => {
@@ -70,7 +71,7 @@ const InboxSidebar = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const id = selectedConversation?.contact?.id;
+    const id = selectedConversation?.contact?.id || contactByIdCoversation?.contact?.id;
     if (id) {
       dispatch(fetchDetailsContact({ idContact: id }));
     }
@@ -140,72 +141,87 @@ const InboxSidebar = () => {
     handleAutoUpdateConversation({ assignedToId: option.rawId });
   };
 
-  return (
-    <S.Container>
-      <Form form={form}>
+return (
+  <S.Container>
+    <Form form={form}>
+      {selectedConversation?.contact?.id ? (
         <ProfileCard
-          contactId={selectedConversation?.contact?.id}
+          contactId={selectedConversation.contact.id}
           avatarSize={60}
-          email={selectedConversation?.contact?.email}
-          name={selectedConversation?.contact?.name || ''}
-          avatarUrl={selectedConversation?.contact?.avatar}
-          countryCode={selectedConversation?.contact?.countryCode}
+          email={selectedConversation.contact.email}
+          name={selectedConversation.contact.name || ''}
+          avatarUrl={selectedConversation.contact.avatar}
+          countryCode={selectedConversation.contact.countryCode}
         />
-
-        <S.countryCenter onClick={() => setShowModal(true)}>
-          {t('inboxSidebar.viewProfile')}
-        </S.countryCenter>
-
-        {showModal && (
-          <UserProfileModal isOpen={true} onClose={() => setShowModal(false)} selectedConversation={selectedConversation || {}} />
-        )}
-
-        <DropdownWithCollapse
-          openDropdown={openDropdown}
-          setOpenDropdown={setOpenDropdown}
-          selected={selected}
-          options={formattedOperators}
-          handleSelect={handleSelect}
+      ) : contactByIdCoversation?.contact ? (
+        <ProfileCard
+          avatarSize={60}
+          contactId={contactByIdCoversation?.contact.id}
+          email={contactByIdCoversation?.contact.email}
+          name={contactByIdCoversation?.contact.name}
+          avatarUrl={contactByIdCoversation?.contact.avatar}
+          countryCode={contactByIdCoversation?.contact.context?.countryCode}
         />
+      ) : null}
 
-        <LocationCollapse openCollapse={openCollapse} />
-        {/* <VisitorDeviceCollapse openCollapse={openCollapse} /> */}
+      <S.countryCenter onClick={() => setShowModal(true)}>
+        {t('inboxSidebar.viewProfile')}
+      </S.countryCenter>
 
-        <ConversationParticipantsSection
-          openCollapse={openCollapse}
-          participants={participants}
-          setParticipants={setParticipants}
-          isAddParticipantModalOpen={isAddParticipantModalOpen}
-          openAddParticipantModal={() => setIsAddParticipantModalOpen(true)}
-          closeAddParticipantModal={() => {
-            setIsAddParticipantModalOpen(false);
-            setParticipantEmail('');
-          }}
-          participantEmail={participantEmail}
-          setParticipantEmail={setParticipantEmail}
-          contacts={formattedOperators}
-          onConfirmAddParticipants={(newParticipants) => {
-            setParticipants(newParticipants);
-            handleAutoUpdateConversation({ participantsIds: newParticipants });
-          }}
+      {showModal && (
+        <UserProfileModal
+          isOpen={true}
+          onClose={() => setShowModal(false)}
+          selectedConversation={selectedConversation || contactByIdCoversation}
         />
+      )}
 
-        <QuickJumpSection
-          t={t}
-          openCollapse={openCollapse}
-          openQuickJump={openQuickJump}
-          setOpenQuickJump={setOpenQuickJump}
-        />
+      <DropdownWithCollapse
+        openDropdown={openDropdown}
+        setOpenDropdown={setOpenDropdown}
+        selected={selected}
+        options={formattedOperators}
+        handleSelect={handleSelect}
+      />
 
-        <ConversationSegments
-          t={t}
-          openCollapse={openCollapse}
-          segment={tags}
-          onChangeSegment={(newTags) => {
-            setTags(newTags);
-            handleAutoUpdateConversation({ segments: newTags });
-          }}
-        />
+      <LocationCollapse openCollapse={openCollapse} />
+      {/* <VisitorDeviceCollapse openCollapse={openCollapse} /> */}
+
+      <ConversationParticipantsSection
+        openCollapse={openCollapse}
+        participants={participants}
+        setParticipants={setParticipants}
+        isAddParticipantModalOpen={isAddParticipantModalOpen}
+        openAddParticipantModal={() => setIsAddParticipantModalOpen(true)}
+        closeAddParticipantModal={() => {
+          setIsAddParticipantModalOpen(false);
+          setParticipantEmail('');
+        }}
+        participantEmail={participantEmail}
+        setParticipantEmail={setParticipantEmail}
+        contacts={formattedOperators}
+        onConfirmAddParticipants={(newParticipants) => {
+          setParticipants(newParticipants);
+          handleAutoUpdateConversation({ participantsIds: newParticipants });
+        }}
+      />
+
+      <QuickJumpSection
+        t={t}
+        openCollapse={openCollapse}
+        openQuickJump={openQuickJump}
+        setOpenQuickJump={setOpenQuickJump}
+      />
+
+      <ConversationSegments
+        t={t}
+        openCollapse={openCollapse}
+        segment={tags}
+        onChangeSegment={(newTags) => {
+          setTags(newTags);
+          handleAutoUpdateConversation({ segments: newTags });
+        }}
+      />
 
       <VisitorsData
         t={t}
@@ -215,10 +231,9 @@ const InboxSidebar = () => {
           handleAutoUpdateConversation({});
         }}
       />
-
-      </Form>
-    </S.Container>
-  );
+    </Form>
+  </S.Container>
+);
 };
 
 export default InboxSidebar;

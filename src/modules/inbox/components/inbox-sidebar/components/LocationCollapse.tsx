@@ -9,13 +9,14 @@ interface LocationCollapseProps {
 }
 
 const LocationCollapse: React.FC<LocationCollapseProps> = ({ openCollapse }) => {
-  const { contactDetails, isLoading } = useAppSelector((state) => state.contacts);
+  const { contactDetails } = useAppSelector((state) => state.contacts);
+  const { contactByIdCoversation } = useAppSelector((state) => state.contactByIdConversation);
 
   return (
     <Collapse title="Main Information">
       {openCollapse && (
         <S.SectionContent>
-          <LastReportedLocationBody context={contactDetails?.context} isLoading={isLoading} />
+          <LastReportedLocationBody context={contactDetails?.context || contactByIdCoversation?.contact.context}/>
         </S.SectionContent>
       )}
     </Collapse>

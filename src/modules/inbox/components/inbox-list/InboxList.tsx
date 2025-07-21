@@ -1,10 +1,11 @@
 import { Image } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { usePaginationFragment } from 'react-relay';
+import { commitLocalUpdate, ConnectionHandler, usePaginationFragment } from 'react-relay';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { RecordSourceSelectorProxy } from 'relay-runtime';
 
 import { getFormattedTime } from '@/shared/utils/time';
 import { decodeGlobalId } from '@/shared/utils/decode';
@@ -48,6 +49,7 @@ import addPlus from '@/assets/icons/inbox/ic-add.svg';
 import closePlus from '@/assets/icons/inbox/ic-close.svg';
 import avatarDefault from '@/assets/images/avatar-default.png';
 import ProfileCard from '@/shared/components/common/ProfileCard';
+import environment from '@/relay/RelayEnvironment';
 
 type Props = {
   conversationsRef: ConversationListFragment_query$key;
@@ -203,17 +205,27 @@ const ConversationList: React.FC<Props> = ({
     e.stopPropagation();
     setActiveMenu(null);
 
-    if (action === 'delete' && conversationId) {
-      try {
-        const realId = decodeGlobalId(conversationId);
-        await deleteConversation(realId);
-        if (workspaceId) {
-          dispatch(fetchConversations(workspaceId));
-        }
-      } catch (err) {
-        //
-      }
-    }
+if (action === 'delete' && conversationId) {
+  try {
+    const realId = decodeGlobalId(conversationId);
+    await deleteConversation(realId);
+    commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
+      const root = store.getRoot();
+
+      const connection = ConnectionHandler.getConnection(
+        root,
+        'ConversationListFragment_conversations'
+      );
+
+      if (!connection) return;
+      ConnectionHandler.deleteNode(connection, conversationId);
+      store.delete(conversationId);
+      navigate('/inbox')
+    });
+  } catch (err) {
+    console.error('Failed to delete conversation:', err);
+  }
+}
 
     if (action === 'unread' && conversationId) {
       const rawConversationId = decodeGlobalId(conversationId);

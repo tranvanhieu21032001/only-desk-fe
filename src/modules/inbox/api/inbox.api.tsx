@@ -2,8 +2,11 @@ import { deleteRequest } from '@/core/services/requests/deleteRequest';
 import { getRequest } from '@/core/services/requests/getRequest';
 
 export const deleteConversation = async (conversationId: string) => {
-  return deleteRequest(`/chat/${conversationId}`);
+  return deleteRequest(`/chat/${conversationId}`, {
+    messageSuccess: 'Delete conversation successfully',
+  });
 };
+
 
 export const getShortcutsList = async ({
   page = 1,
