@@ -742,5 +742,8 @@ export const TagWrap = styled.div`
 
 
 export const WrapperButton = styled.div`
-  margin-top: 24px;
+  margin-top: 12px;
+  input{
+  height:39px;
+  }
 `;

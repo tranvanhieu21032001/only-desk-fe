@@ -36,10 +36,21 @@ interface LastReportedLocationBodyProps {
 
 const getTimeInTimezone = (tz: string) => {
   if (!tz) return '-';
-  const currentTime = dayjs().tz(tz);
-  const offset = currentTime.format('Z');
-  return `${currentTime.format('hh:mm:ss A')} (UTC${offset})`;
+  const offsetMatch = tz.match(/^UTC([+-]\d{1,2})$/);
+  if (offsetMatch) {
+    const offset = parseInt(offsetMatch[1], 10);
+    const currentTime = dayjs().utcOffset(offset);
+    return `${currentTime.format('hh:mm:ss A')} (UTC${offsetMatch[1]})`;
+  }
+  try {
+    const currentTime = dayjs().tz(tz);
+    const offset = currentTime.format('Z');
+    return `${currentTime.format('hh:mm:ss A')} (UTC${offset})`;
+  } catch {
+    return '-';
+  }
 };
+
 
 function LastReportedLocationBody({
   context,
@@ -73,6 +84,7 @@ function LastReportedLocationBody({
   const flagIcon = flagList.find(
     (item) => item.code === context.countryCode,
   )?.image;
+console.log("flagIcon",flagIcon);
 
   const fieldMap = [
     {

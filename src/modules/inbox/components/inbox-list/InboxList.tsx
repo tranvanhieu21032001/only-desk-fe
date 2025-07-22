@@ -118,49 +118,49 @@ const ConversationList: React.FC<Props> = ({
     };
   }, []);
 
-  const handleMenuClick = (index: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setActiveMenu(activeMenu === index ? null : index);
-  };
+  // const handleMenuClick = (index: number, e: React.MouseEvent) => {
+  //   e.stopPropagation();
+  //   setActiveMenu(activeMenu === index ? null : index);
+  // };
 
-  const handleMenuItemClick = async (
-    action: string,
-    e: React.MouseEvent,
-    conversationId?: string,
-  ) => {
-    e.stopPropagation();
-    setActiveMenu(null);
+  // const handleMenuItemClick = async (
+  //   action: string,
+  //   e: React.MouseEvent,
+  //   conversationId?: string,
+  // ) => {
+  //   e.stopPropagation();
+  //   setActiveMenu(null);
 
-    if (action === 'delete' && conversationId) {
-      try {
-        const realId = decodeGlobalId(conversationId);
-        await deleteConversation(realId);
-        commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
-          const root = store.getRoot();
+  //   if (action === 'delete' && conversationId) {
+  //     try {
+  //       const realId = decodeGlobalId(conversationId);
+  //       await deleteConversation(realId);
+  //       commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
+  //         const root = store.getRoot();
 
-          const connection = ConnectionHandler.getConnection(
-            root,
-            'ConversationListFragment_conversations'
-          );
+  //         const connection = ConnectionHandler.getConnection(
+  //           root,
+  //           'ConversationListFragment_conversations'
+  //         );
 
-          if (!connection) return;
-          ConnectionHandler.deleteNode(connection, conversationId);
-          store.delete(conversationId);
-          navigate('/inbox');
-        });
-      } catch (err) {
-        console.error('Failed to delete conversation:', err);
-      }
-    }
+  //         if (!connection) return;
+  //         ConnectionHandler.deleteNode(connection, conversationId);
+  //         store.delete(conversationId);
+  //         navigate('/inbox');
+  //       });
+  //     } catch (err) {
+  //       console.error('Failed to delete conversation:', err);
+  //     }
+  //   }
 
-    if (action === 'unread' && conversationId) {
-      const rawConversationId = decodeGlobalId(conversationId);
-      openConversation(rawConversationId);
-      if (workspaceId) {
-        dispatch(updateConversationUnreadCount({ workspaceId, conversationId, unreadCount: 0 }));
-      }
-    }
-  };
+  //   if (action === 'unread' && conversationId) {
+  //     const rawConversationId = decodeGlobalId(conversationId);
+  //     openConversation(rawConversationId);
+  //     if (workspaceId) {
+  //       dispatch(updateConversationUnreadCount({ workspaceId, conversationId, unreadCount: 0 }));
+  //     }
+  //   }
+  // };
 
   const handleConversationClick = (conversationId: string) => {
     const conversation = data.conversations.edges.find(

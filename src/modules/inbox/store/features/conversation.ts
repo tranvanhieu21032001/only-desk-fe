@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchQuery } from 'react-relay';
 
 import relayEnvironment from '@/relay/RelayEnvironment';
-import { ContactByCoversationIdQuery } from '@/relay/__generated__/ContactByCoversationIdQuery.graphql';
-import { contactByCoversationIdQuery } from '@/relay/ContactByCoversationId';
+import { coversationDetailsQuery } from '@/relay/CoversationDetailsQuery';
+import { CoversationDetailsQuery } from '@/relay/__generated__/CoversationDetailsQuery.graphql';
 
 interface ContactState {
   isLoading: boolean;
@@ -18,9 +18,9 @@ const initialState: ContactState = {
 export const fetchContactByConversationId = createAsyncThunk(
   'contact/fetchByConversationId',
   async (conversationId: string) => {
-    const result = await fetchQuery<ContactByCoversationIdQuery>(
+    const result = await fetchQuery<CoversationDetailsQuery>(
       relayEnvironment,
-      contactByCoversationIdQuery,
+      coversationDetailsQuery,
       { id: conversationId },
       { fetchPolicy: 'network-only' },
     ).toPromise();

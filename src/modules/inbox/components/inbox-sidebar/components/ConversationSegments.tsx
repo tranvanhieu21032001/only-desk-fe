@@ -11,6 +11,7 @@ interface ConversationSegmentsProps {
   openCollapse: boolean;
   segment: string[];
   onChangeSegment: (value: string[]) => void;
+  allSegmentOptions?: string[];
 }
 
 const ConversationSegments: React.FC<ConversationSegmentsProps> = ({
@@ -18,12 +19,13 @@ const ConversationSegments: React.FC<ConversationSegmentsProps> = ({
   openCollapse,
   segment,
   onChangeSegment,
+  allSegmentOptions = [],
 }) => {
-  const mergedTags = Array.from(new Set([...segment]));
+  const mergedTags = Array.from(new Set([...allSegmentOptions, ...segment]));
 
   const selectOptions = mergedTags.filter(Boolean).map((tag) => ({
-    value: String(tag),
-    label: String(tag),
+    value: tag,
+    label: tag,
   }));
 
   return (

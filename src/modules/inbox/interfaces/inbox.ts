@@ -16,9 +16,13 @@ export interface Contact {
   segments: string[];
   isOnline: boolean;
   lastActivityAt: string;
-  workspaceId: string;
+  workspaceId?: string;
   avatar?: string;
-  countryCode?:string;
+  countryCode?: string;
+  countryName?:string;
+  city?: string;
+  browser?: string;
+  os?: string;
 }
 
 export interface User {
@@ -50,7 +54,7 @@ export interface Conversation {
   assignedTo: null | string;
   participants: string[];
   lastActivityAt: string;
-  latestMessage: Message;
+  latestMessage?: Message;
   unreadGuestCount?: number;
   unreadCount?: number;
 }

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo, memo } from 'react';
 import { Image } from 'antd';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -51,15 +51,13 @@ import avatarAdmin from '@/assets/images/avatar-default.png';
 import check from '@/assets/icons/common/ic-check.svg';
 import barOpen from '@/assets/icons/common/ic-bar-open.svg';
 import barClose from '@/assets/icons/common/ic-bar.svg';
-import flag from '@/assets/icons/common/ic-flag.svg';
-import defaultAvatar from '@/assets/images/avatar-default.png';
 import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
 import iconReply from '@/assets/icons/inbox/ic-reply.svg';
 import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
-import { fetchContactByConversationId } from '../../store/features/conversation';
+import { fetchConversationDetail } from '../../store/features/inbox';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar, conversation }) => {
@@ -166,15 +164,10 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         workspaceId,
       ],
     );
-
-
     useEffect(() => {
-      if (currentConversation?.contact?.id === '' && currentConversation?.id) {
-        dispatch(fetchContactByConversationId(currentConversation.id));
-      }
-    }, [currentConversation?.id, currentConversation?.contact?.id, dispatch]);
-
-        const { contactByIdCoversation } = useAppSelector((state) => state.contactByIdConversation);
+      if(conversationId)
+        dispatch(fetchConversationDetail(conversationId));
+    }, [dispatch,, conversationId]);
     
 
     const messageEndRef = useRef<HTMLDivElement>(null);
@@ -497,7 +490,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           />
           <S.Header>
             <S.HeaderLeft>
-              {currentConversation?.contact?.id?<><ProfileCard
+          <ProfileCard
                 contactId={currentConversation?.contact?.id}
                 name={currentConversation?.contact?.name || DEFAULT_FULL_NAME}
                 avatarUrl={currentConversation?.contact?.avatar}
@@ -508,18 +501,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                 <S.Name>
                   {currentConversation?.contact?.name || DEFAULT_FULL_NAME}
                 </S.Name>
-              </S.Info></>:<><ProfileCard
-                contactId={contactByIdCoversation?.contact.id}
-                name={contactByIdCoversation?.contact.name || DEFAULT_FULL_NAME}
-                avatarUrl={contactByIdCoversation?.contact.avatar}
-                countryCode={contactByIdCoversation?.contact.context.countryCode}
-                hiddenInfo
-              />
-              <S.Info>
-                <S.Name>
-                  {contactByIdCoversation?.contact.name || DEFAULT_FULL_NAME}
-                </S.Name>
-              </S.Info></>}
+              </S.Info>
             </S.HeaderLeft>
             <S.HeaderRight>
               <S.MarkResolvedButton>

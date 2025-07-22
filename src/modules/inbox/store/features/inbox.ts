@@ -1,6 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { Conversation } from '../../interfaces/inbox';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fetchQuery } from 'react-relay';
+
+import { Contact, Conversation } from '../../interfaces/inbox';
 import { fetchConversationsRelay } from '../../api/fetchConversationsRelay';
+import relayEnvironment from '@/relay/RelayEnvironment';
+import { CoversationDetailsQuery } from '@/relay/__generated__/CoversationDetailsQuery.graphql';
+import { coversationDetailsQuery } from '@/relay/CoversationDetailsQuery';
 
 interface InboxState {
   conversations: Record<string, Conversation[]>;
@@ -25,7 +30,60 @@ export const fetchConversations = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || 'Error fetching conversations');
     }
-  },
+  }
+);
+
+export const fetchConversationDetail = createAsyncThunk(
+  'inbox/fetchConversationDetail',
+  async (conversationId: string, { rejectWithValue }) => {
+    try {
+      const result = await fetchQuery<CoversationDetailsQuery>(
+        relayEnvironment,
+        coversationDetailsQuery,
+        { id: conversationId },
+        { fetchPolicy: 'network-only' }
+      ).toPromise();
+
+      if (result?.node) {
+        const data = result.node;
+
+        const contact: Contact = {
+          id: data.contact?.id || '',
+          rawId: data.contact?.rawId || '',
+          createdAt: data?.createdAt || '',
+          updatedAt: data?.updatedAt || '',
+          name: data.contact?.name || 'Guest',
+          email: data.contact?.email || '',
+          segments: [...(data?.segments || [])],
+          isOnline: data.contact?.isOnline ?? false,
+          lastActivityAt: data?.lastActivityAt || '',
+          avatar: data.contact?.avatar || '',
+          countryCode: data.contact?.context?.countryCode || '',
+          city:data.contact?.context?.city ||"",
+          countryName:data.contact?.context?.countryName ||"",
+          browser:data.contact?.context?.browser ||"",
+          os: data.contact?.context?.os ||"",
+          guestId: data.contact?.guestId || '',
+          notification:data.contact?.notification || false
+        };
+
+        const conversation: Conversation = {
+          id: data.id || '',
+          rawId: data.rawId || '',
+          contact,
+          assignedTo: data.assignedTo?.id || null,
+          participants: [...(data.participants ?? [])].map((p) => p.id),
+          lastActivityAt: data.lastActivityAt || '',
+        };
+
+        return conversation;
+      }
+
+      return null;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Error fetching conversation detail');
+    }
+  }
 );
 
 const inboxSlice = createSlice({
@@ -48,7 +106,7 @@ const inboxSlice = createSlice({
       const { workspaceId, conversationId, unreadCount } = action.payload;
       const conversations = state.conversations[workspaceId];
       if (conversations) {
-        const conv = conversations.find(c => c.id === conversationId);
+        const conv = conversations.find((c) => c.id === conversationId);
         if (conv) {
           conv.unreadCount = unreadCount;
         }
@@ -69,8 +127,29 @@ const inboxSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
+
+    builder
+      .addCase(fetchConversationDetail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchConversationDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedConversation = action.payload;
+      })
+      .addCase(fetchConversationDetail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.selectedConversation = null;
+      });
   },
 });
 
-export const { clearConversations, setSelectedConversation, clearSelectedConversation, updateConversationUnreadCount } = inboxSlice.actions;
+export const {
+  clearConversations,
+  setSelectedConversation,
+  clearSelectedConversation,
+  updateConversationUnreadCount,
+} = inboxSlice.actions;
+
 export default inboxSlice.reducer;

@@ -15,24 +15,25 @@ interface Props {
   openCollapse: boolean;
   participants: string[];
   setParticipants: (value: string[]) => void;
-  contacts: Contact[];
+  operators: Contact[];
   onConfirmAddParticipants: (newParticipants: string[]) => void;
 }
+
 
 const ConversationParticipantsSection: React.FC<Props> = ({
   openCollapse,
   participants,
   setParticipants,
-  contacts,
+  operators,
   onConfirmAddParticipants,
 }) => {
   const { t } = useTranslation('inbox');
   const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
 
   const emailById = (id: string) =>
-    contacts.find((c) => c.rawId === id)?.email || 'Unknown';
+    operators.find((c) => c.rawId === id)?.email || 'Unknown';
 
-  const contactOptions = contacts
+  const operatorOptions = operators
     .filter((c) => !participants.includes(c.rawId))
     .map((contact) => ({
       label: (
@@ -80,7 +81,7 @@ const ConversationParticipantsSection: React.FC<Props> = ({
             <Select
               key={participants.join('-')}
               placeholder={t('inboxSidebar.selectEmailPlaceholder')}
-              options={contactOptions}
+              options={operatorOptions}
               style={{ width: '100%' }}
               value={selectedValue}
               onChange={handleSelectChange}

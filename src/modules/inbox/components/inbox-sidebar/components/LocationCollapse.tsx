@@ -10,13 +10,15 @@ interface LocationCollapseProps {
 
 const LocationCollapse: React.FC<LocationCollapseProps> = ({ openCollapse }) => {
   const { contactDetails } = useAppSelector((state) => state.contacts);
-  const { contactByIdCoversation } = useAppSelector((state) => state.contactByIdConversation);
+const { selectedConversation } = useAppSelector((state) => state.inbox);
+// console.log("selectedConversation", selectedConversation);
+// console.log("contactDetails", contactDetails);
 
   return (
     <Collapse title="Main Information">
       {openCollapse && (
         <S.SectionContent>
-          <LastReportedLocationBody context={contactDetails?.context || contactByIdCoversation?.contact.context}/>
+          <LastReportedLocationBody context={selectedConversation?.contact}/>
         </S.SectionContent>
       )}
     </Collapse>

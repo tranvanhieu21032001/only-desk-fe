@@ -6,12 +6,19 @@ import unreadIcon from '@/assets/icons/common/ic-unread.svg';
 import deleteIcon from '@/assets/icons/common/ic-delete-red.svg';
 import { decodeGlobalId } from '@/shared/utils/decode';
 import { deleteConversation } from '../../api/inbox.api';
-
+import { commitLocalUpdate, ConnectionHandler } from 'react-relay';
+import environment from '@/relay/RelayEnvironment';
+import { RecordSourceSelectorProxy } from 'relay-runtime';
+import { useNavigate } from 'react-router-dom';
+import { openConversation } from '@/core/services/socket/socket';
+import { updateConversationUnreadCount } from '../../store/features/inbox';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 type Props = {
   unreadCount?: number;
   conversationId?: string;
   onCloseMenu: () => void;
-  openMenuButtonRef: React.RefObject<HTMLDivElement>; // <-- ref tới icon ba chấm bên ngoài
+  openMenuButtonRef: React.RefObject<HTMLDivElement>;
 };
 
 const InboxListMenu: React.FC<Props> = ({
@@ -21,8 +28,9 @@ const InboxListMenu: React.FC<Props> = ({
   openMenuButtonRef,
 }) => {
   const menuDropdownRef = useRef<HTMLDivElement>(null);
-
-  //close menu when click outside menu and ... button
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const workspaceId = useSelector(selectCurrentWorkspaceId);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -48,20 +56,64 @@ const InboxListMenu: React.FC<Props> = ({
     //call api update conversation
   };
 
-  const onMarkAsUnread = () => {
-    if (!conversationId) return;
-    //call socket event openConversation
-  };
+const onMarkAsUnread = () => {
+  if (!conversationId) return;
+  try {
+    const rawId = decodeGlobalId(conversationId);
+    openConversation(rawId);
 
+    if (workspaceId) {
+      dispatch(
+        updateConversationUnreadCount({
+          workspaceId,
+          conversationId,
+          unreadCount: 0,
+        }),
+      );
+    }
+  } catch (err) {
+    console.error('Failed to mark as unread:', err);
+  }
+};
   const onDelete = async () => {
     if (!conversationId) return;
+
     try {
       onCloseMenu();
+
       const realId = decodeGlobalId(conversationId);
       await deleteConversation(realId);
-      //remove conversation from relay store based on conversationId
+
+      commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
+        const root = store.getRoot();
+
+        const connection = ConnectionHandler.getConnection(
+          root,
+          'ConversationListFragment_conversations',
+        );
+
+        if (!connection) return;
+
+        ConnectionHandler.deleteNode(connection, conversationId);
+        store.delete(conversationId);
+
+        const edges = connection.getLinkedRecords('edges') || [];
+        const firstEdge = edges[0];
+        const firstNode = firstEdge?.getLinkedRecord('node');
+        const nextConversationGlobalId = firstNode?.getValue('id') as
+          | string
+          | undefined;
+
+        if (nextConversationGlobalId) {
+          navigate(
+            `/inbox?conversationId=${encodeURIComponent(nextConversationGlobalId)}`,
+          );
+        } else {
+          navigate('/inbox');
+        }
+      });
     } catch (err) {
-      //
+      console.error('Failed to delete conversation:', err);
     }
   };
 

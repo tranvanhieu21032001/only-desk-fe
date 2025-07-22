@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9726bff235482d7d09741751d4a609ee>>
+ * @generated SignedSource<<db5904ef72d2ad566dcfa3ad94329d92>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,22 +14,30 @@ export type ContactByCoversationIdQuery$variables = {
 };
 export type ContactByCoversationIdQuery$data = {
   readonly node: {
+    readonly assignedTo?: {
+      readonly id: string;
+    } | null | undefined;
+    readonly closedAt?: any | null | undefined;
     readonly contact?: {
       readonly avatar: string | null | undefined;
-      readonly context: {
-        readonly browser: string | null | undefined;
-        readonly city: string | null | undefined;
-        readonly countryCode: string | null | undefined;
-        readonly countryName: string | null | undefined;
-        readonly language: string | null | undefined;
-        readonly os: string | null | undefined;
-      } | null | undefined;
       readonly email: string | null | undefined;
       readonly id: string;
+      readonly isOnline: boolean;
       readonly name: string;
       readonly rawId: string;
     } | null | undefined;
+    readonly createdAt?: any | null | undefined;
     readonly id?: string;
+    readonly lastActivityAt?: any | null | undefined;
+    readonly latestMessage?: {
+      readonly content: string;
+    } | null | undefined;
+    readonly metadata?: any | null | undefined;
+    readonly rawId?: string;
+    readonly segments?: ReadonlyArray<string> | null | undefined;
+    readonly subject?: string | null | undefined;
+    readonly unreadCount?: number | null | undefined;
+    readonly updatedAt?: any | null | undefined;
   } | null | undefined;
 };
 export type ContactByCoversationIdQuery = {
@@ -62,17 +70,25 @@ v2 = {
 v3 = {
   "alias": null,
   "args": null,
+  "kind": "ScalarField",
+  "name": "rawId",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
   "concreteType": "Contact",
   "kind": "LinkedField",
   "name": "contact",
   "plural": false,
   "selections": [
     (v2/*: any*/),
+    (v3/*: any*/),
     {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "rawId",
+      "name": "email",
       "storageKey": null
     },
     {
@@ -93,63 +109,85 @@ v3 = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "email",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "ContactContext",
-      "kind": "LinkedField",
-      "name": "context",
-      "plural": false,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "city",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "countryName",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "language",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "os",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "browser",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "countryCode",
-          "storageKey": null
-        }
-      ],
+      "name": "isOnline",
       "storageKey": null
     }
   ],
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "subject",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "metadata",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "segments",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "createdAt",
+  "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "updatedAt",
+  "storageKey": null
+},
+v10 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lastActivityAt",
+  "storageKey": null
+},
+v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "closedAt",
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "unreadCount",
+  "storageKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "User",
+  "kind": "LinkedField",
+  "name": "assignedTo",
+  "plural": false,
+  "selections": [
+    (v2/*: any*/)
+  ],
+  "storageKey": null
+},
+v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "content",
   "storageKey": null
 };
 return {
@@ -171,7 +209,29 @@ return {
             "kind": "InlineFragment",
             "selections": [
               (v2/*: any*/),
-              (v3/*: any*/)
+              (v3/*: any*/),
+              (v4/*: any*/),
+              (v5/*: any*/),
+              (v6/*: any*/),
+              (v7/*: any*/),
+              (v8/*: any*/),
+              (v9/*: any*/),
+              (v10/*: any*/),
+              (v11/*: any*/),
+              (v12/*: any*/),
+              (v13/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Message",
+                "kind": "LinkedField",
+                "name": "latestMessage",
+                "plural": false,
+                "selections": [
+                  (v14/*: any*/)
+                ],
+                "storageKey": null
+              }
             ],
             "type": "Conversation",
             "abstractKey": null
@@ -208,7 +268,30 @@ return {
           {
             "kind": "InlineFragment",
             "selections": [
-              (v3/*: any*/)
+              (v3/*: any*/),
+              (v4/*: any*/),
+              (v5/*: any*/),
+              (v6/*: any*/),
+              (v7/*: any*/),
+              (v8/*: any*/),
+              (v9/*: any*/),
+              (v10/*: any*/),
+              (v11/*: any*/),
+              (v12/*: any*/),
+              (v13/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "Message",
+                "kind": "LinkedField",
+                "name": "latestMessage",
+                "plural": false,
+                "selections": [
+                  (v14/*: any*/),
+                  (v2/*: any*/)
+                ],
+                "storageKey": null
+              }
             ],
             "type": "Conversation",
             "abstractKey": null
@@ -219,16 +302,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a0376857be3ab4c4a89b8b8520fd0e21",
+    "cacheID": "090c222e6aafa6e3007caec0337d1e86",
     "id": null,
     "metadata": {},
     "name": "ContactByCoversationIdQuery",
     "operationKind": "query",
-    "text": "query ContactByCoversationIdQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Conversation {\n      id\n      contact {\n        id\n        rawId\n        avatar\n        name\n        email\n        context {\n          city\n          countryName\n          language\n          os\n          browser\n          countryCode\n        }\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query ContactByCoversationIdQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Conversation {\n      id\n      rawId\n      contact {\n        id\n        rawId\n        email\n        avatar\n        name\n        isOnline\n      }\n      subject\n      metadata\n      segments\n      createdAt\n      updatedAt\n      lastActivityAt\n      closedAt\n      unreadCount\n      assignedTo {\n        id\n      }\n      latestMessage {\n        content\n        id\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "a219fc3dda83be7ce180a1f3164a1938";
+(node as any).hash = "fc14e858ecb33bc115876e39f8bec875";
 
 export default node;

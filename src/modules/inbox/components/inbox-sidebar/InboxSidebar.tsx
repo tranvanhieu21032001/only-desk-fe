@@ -8,20 +8,21 @@ import ProfileCard from '@/shared/components/common/ProfileCard';
 import UserProfileModal from './components/UserProfileModal';
 import DropdownWithCollapse from './components/DropdownWithCollapse';
 import LocationCollapse from './components/LocationCollapse';
-import VisitorDeviceCollapse from './components/VisitorDeviceCollapse';
+// import VisitorDeviceCollapse from './components/VisitorDeviceCollapse';
 import ConversationParticipantsSection from './components/ConversationParticipantsCollapse';
 import QuickJumpSection from './components/QuickJumpSection';
 import ConversationSegments from './components/ConversationSegments';
 import VisitorsData from './components/VisitorsData';
 
-import {
-  fetchDetailsContact,
-} from '@/modules/contacts/store/features/contacts';
+import { fetchDetailsContact } from '@/modules/contacts/store/features/contacts';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import { RootState } from '@/core/store';
 import { handleUpdateConversation } from '../../api/conversations.api';
 import { fetchOperators } from '@/modules/settings/store/features/operators';
 import defaultAvatar from '@/assets/images/avatar-default.png';
+import Input from '@/shared/components/common/Input';
+import { handleEditProfile } from '@/modules/contacts/api/contacts.api';
+import { fetchConversationDetail } from '../../store/features/inbox';
 
 const InboxSidebar = () => {
   const { t } = useTranslation('inbox');
@@ -32,8 +33,6 @@ const InboxSidebar = () => {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
-  const [isAddParticipantModalOpen, setIsAddParticipantModalOpen] = useState(false);
-  const [participantEmail, setParticipantEmail] = useState('');
   const [participants, setParticipants] = useState<string[]>([]);
   const [openQuickJump, setOpenQuickJump] = useState({
     image: false,
@@ -41,15 +40,16 @@ const InboxSidebar = () => {
   });
 
   const { selectedConversation } = useAppSelector((state) => state.inbox);
-  const { contactDetails } = useAppSelector((state: RootState) => state.contacts);
   const { operators } = useAppSelector((state) => state.operators);
   const [form] = Form.useForm();
-  const { contactByIdCoversation } = useAppSelector((state) => state.contactByIdConversation);
+console.log("selectedConversation", selectedConversation);
+
 
   const formattedOperators = useMemo(() => {
     return operators.map((op) => {
       const { user, rawId, id } = op;
-      const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(' ') || "Guest";
+      const fullName =
+        [user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'Guest';
       return {
         id,
         rawId,
@@ -71,28 +71,28 @@ const InboxSidebar = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const id = selectedConversation?.contact?.id || contactByIdCoversation?.contact?.id;
+    const id = selectedConversation?.contact?.id;
     if (id) {
       dispatch(fetchDetailsContact({ idContact: id }));
     }
   }, [dispatch, selectedConversation?.contact?.id]);
 
   useEffect(() => {
-    if (contactDetails?.segments && Array.isArray(contactDetails.segments)) {
-      setTags(contactDetails.segments);
+    if (selectedConversation?.contact?.segments && Array.isArray(selectedConversation?.contact?.segments)) {
+      setTags(selectedConversation?.contact?.segments);
     }
-  }, [contactDetails]);
+  }, [selectedConversation]);
 
   useEffect(() => {
     let convertMetadata: { key: string; value: string }[] = [];
 
-    if (Array.isArray(contactDetails?.metadata)) {
-      convertMetadata = contactDetails.metadata.map((item) => ({
+    if (Array.isArray(selectedConversation?.contact?.metadata)) {
+      convertMetadata = selectedConversation?.contact?.metadata.map((item) => ({
         key: String(item.key),
         value: String(item.value),
       }));
     } else {
-      convertMetadata = Object.entries(contactDetails?.metadata || {}).map(
+      convertMetadata = Object.entries(selectedConversation?.contact?.metadata || {}).map(
         ([key, value]) => ({
           key: String(key),
           value: String(value),
@@ -101,25 +101,24 @@ const InboxSidebar = () => {
     }
 
     const defaultValuesForm = {
-      ...contactDetails,
+      ...selectedConversation,
       metadata: convertMetadata,
     };
 
     if (defaultValuesForm) {
       form.setFieldsValue(defaultValuesForm);
     }
-  }, [contactDetails, form]);
+  }, [selectedConversation, form]);
 
   const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
     try {
       const conversationId = selectedConversation?.rawId || '';
-      const metadataObject = form.getFieldValue('metadata')?.reduce(
-        (acc: Record<string, string>, item: any) => {
+      const metadataObject = form
+        .getFieldValue('metadata')
+        ?.reduce((acc: Record<string, string>, item: any) => {
           if (item.key?.trim()) acc[item.key] = item.value;
           return acc;
-        },
-        {}
-      );
+        }, {});
 
       const basePayload = {
         assignedToId: selected?.rawId || '',
@@ -141,99 +140,120 @@ const InboxSidebar = () => {
     handleAutoUpdateConversation({ assignedToId: option.rawId });
   };
 
-return (
-  <S.Container>
-    <Form form={form}>
-      {selectedConversation?.contact?.id ? (
+  const updateEmailIfValid = async () => {
+    const contactId = selectedConversation?.contact?.rawId;
+    if (!contactId) return;
+
+    try {
+      const values = await form.validateFields(['email']);
+      const email = values.email;
+
+      if (email) {
+        await handleEditProfile(
+          contactId,
+          { email, metadata: [] },
+          'Email updated successfully',
+          dispatch,
+        );
+      }
+      dispatch(fetchConversationDetail(selectedConversation?.id))
+    } catch {
+      // Do nothing on validation error
+    }
+  };
+
+  return (
+    <S.Container>
+      <Form form={form}>
         <ProfileCard
-          contactId={selectedConversation.contact.id}
+          contactId={selectedConversation?.contact?.id}
           avatarSize={60}
-          email={selectedConversation.contact.email}
-          name={selectedConversation.contact.name || ''}
-          avatarUrl={selectedConversation.contact.avatar}
-          countryCode={selectedConversation.contact.countryCode}
+          email={selectedConversation?.contact?.email}
+          name={selectedConversation?.contact?.name || ''}
+          avatarUrl={selectedConversation?.contact?.avatar}
+          countryCode={selectedConversation?.contact?.countryCode}
         />
-      ) : contactByIdCoversation?.contact ? (
-        <ProfileCard
-          avatarSize={60}
-          contactId={contactByIdCoversation?.contact.id}
-          email={contactByIdCoversation?.contact.email}
-          name={contactByIdCoversation?.contact.name}
-          avatarUrl={contactByIdCoversation?.contact.avatar}
-          countryCode={contactByIdCoversation?.contact.context?.countryCode}
+
+        {selectedConversation?.contact?.email ? (
+          <S.countryCenter onClick={() => setShowModal(true)}>
+            {t('inboxSidebar.viewProfile')}
+          </S.countryCenter>
+        ) : (
+          <S.WrapperButton>
+            <Form.Item
+              name="email"
+              rules={[
+                { required: true, message: 'Please enter an email' },
+                { type: 'email', message: 'Please enter a valid email address' },
+              ]}
+            >
+              <Input
+                placeholder="Enter your email"
+                onBlur={updateEmailIfValid}
+              />
+            </Form.Item>
+          </S.WrapperButton>
+        )}
+
+        {showModal && (
+          <UserProfileModal
+            isOpen={true}
+            onClose={() => setShowModal(false)}
+            selectedConversation={selectedConversation}
+          />
+        )}
+
+        <DropdownWithCollapse
+          openDropdown={openDropdown}
+          setOpenDropdown={setOpenDropdown}
+          selected={selected}
+          options={formattedOperators}
+          handleSelect={handleSelect}
         />
-      ) : null}
 
-      <S.countryCenter onClick={() => setShowModal(true)}>
-        {t('inboxSidebar.viewProfile')}
-      </S.countryCenter>
+        <LocationCollapse openCollapse={openCollapse} />
+        {/* <VisitorDeviceCollapse openCollapse={openCollapse} /> */}
 
-      {showModal && (
-        <UserProfileModal
-          isOpen={true}
-          onClose={() => setShowModal(false)}
-          selectedConversation={selectedConversation || contactByIdCoversation}
+        <ConversationParticipantsSection
+          openCollapse={openCollapse}
+          participants={participants}
+          setParticipants={setParticipants}
+          operators={formattedOperators}
+          onConfirmAddParticipants={(newParticipants) => {
+            setParticipants(newParticipants);
+            handleAutoUpdateConversation({ participantsIds: newParticipants });
+          }}
         />
-      )}
 
-      <DropdownWithCollapse
-        openDropdown={openDropdown}
-        setOpenDropdown={setOpenDropdown}
-        selected={selected}
-        options={formattedOperators}
-        handleSelect={handleSelect}
-      />
+        <QuickJumpSection
+          t={t}
+          openCollapse={openCollapse}
+          openQuickJump={openQuickJump}
+          setOpenQuickJump={setOpenQuickJump}
+        />
 
-      <LocationCollapse openCollapse={openCollapse} />
-      {/* <VisitorDeviceCollapse openCollapse={openCollapse} /> */}
+        <ConversationSegments
+          t={t}
+          openCollapse={openCollapse}
+          segment={tags}
+          allSegmentOptions={selectedConversation?.contact?.segments || []}
+          onChangeSegment={(newTags) => {
+            setTags(newTags);
+            handleAutoUpdateConversation({ segments: newTags });
+          }}
+        />
 
-      <ConversationParticipantsSection
-        openCollapse={openCollapse}
-        participants={participants}
-        setParticipants={setParticipants}
-        isAddParticipantModalOpen={isAddParticipantModalOpen}
-        openAddParticipantModal={() => setIsAddParticipantModalOpen(true)}
-        closeAddParticipantModal={() => {
-          setIsAddParticipantModalOpen(false);
-          setParticipantEmail('');
-        }}
-        participantEmail={participantEmail}
-        setParticipantEmail={setParticipantEmail}
-        contacts={formattedOperators}
-        onConfirmAddParticipants={(newParticipants) => {
-          setParticipants(newParticipants);
-          handleAutoUpdateConversation({ participantsIds: newParticipants });
-        }}
-      />
-
-      <QuickJumpSection
-        t={t}
-        openCollapse={openCollapse}
-        openQuickJump={openQuickJump}
-        setOpenQuickJump={setOpenQuickJump}
-      />
-
-      <ConversationSegments
-        t={t}
-        openCollapse={openCollapse}
-        segment={tags}
-        onChangeSegment={(newTags) => {
-          setTags(newTags);
-          handleAutoUpdateConversation({ segments: newTags });
-        }}
-      />
-
-      <VisitorsData
-        t={t}
-        openCollapse={openCollapse}
-        onChange={(newMetadata) => {
-          form.setFieldValue('metadata', newMetadata);
-          handleAutoUpdateConversation({});
-        }}
-      />
-    </Form>
-  </S.Container>
-);
+        <VisitorsData
+          t={t}
+          openCollapse={openCollapse}
+          onChange={(newMetadata) => {
+            form.setFieldValue('metadata', newMetadata);
+            handleAutoUpdateConversation({});
+          }}
+        />
+      </Form>
+    </S.Container>
+  );
 };
 
 export default InboxSidebar;
