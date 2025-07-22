@@ -14,15 +14,13 @@ import QuickJumpSection from './components/QuickJumpSection';
 import ConversationSegments from './components/ConversationSegments';
 import VisitorsData from './components/VisitorsData';
 
-import { fetchDetailsContact } from '@/modules/contacts/store/features/contacts';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
-import { RootState } from '@/core/store';
 import { handleUpdateConversation } from '../../api/conversations.api';
 import { fetchOperators } from '@/modules/settings/store/features/operators';
 import defaultAvatar from '@/assets/images/avatar-default.png';
 import Input from '@/shared/components/common/Input';
 import { handleEditProfile } from '@/modules/contacts/api/contacts.api';
-import { fetchConversationDetail } from '../../store/features/inbox';
+import { updateSelectedConversationContact } from '../../store/features/inbox';
 
 const InboxSidebar = () => {
   const { t } = useTranslation('inbox');
@@ -42,8 +40,6 @@ const InboxSidebar = () => {
   const { selectedConversation } = useAppSelector((state) => state.inbox);
   const { operators } = useAppSelector((state) => state.operators);
   const [form] = Form.useForm();
-console.log("selectedConversation", selectedConversation);
-
 
   const formattedOperators = useMemo(() => {
     return operators.map((op) => {
@@ -69,13 +65,6 @@ console.log("selectedConversation", selectedConversation);
   useEffect(() => {
     dispatch(fetchOperators());
   }, [dispatch]);
-
-  useEffect(() => {
-    const id = selectedConversation?.contact?.id;
-    if (id) {
-      dispatch(fetchDetailsContact({ idContact: id }));
-    }
-  }, [dispatch, selectedConversation?.contact?.id]);
 
   useEffect(() => {
     if (selectedConversation?.contact?.segments && Array.isArray(selectedConversation?.contact?.segments)) {
@@ -140,7 +129,7 @@ console.log("selectedConversation", selectedConversation);
     handleAutoUpdateConversation({ assignedToId: option.rawId });
   };
 
-  const updateEmailIfValid = async () => {
+  const updateEmailIfValid = async () => {    
     const contactId = selectedConversation?.contact?.rawId;
     if (!contactId) return;
 
@@ -151,12 +140,12 @@ console.log("selectedConversation", selectedConversation);
       if (email) {
         await handleEditProfile(
           contactId,
-          { email, metadata: [] },
+          { email},
           'Email updated successfully',
           dispatch,
         );
       }
-      dispatch(fetchConversationDetail(selectedConversation?.id))
+         dispatch(updateSelectedConversationContact({ email }));
     } catch {
       // Do nothing on validation error
     }

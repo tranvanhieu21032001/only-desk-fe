@@ -11,7 +11,6 @@ import webStorageClient from '@/shared/utils/webStorageClient';
 import authReducer from '@/modules/auth/store/features/auth';
 import contactsReducer from '@/modules/contacts/store/features/contacts';
 import inboxReducer from '@/modules/inbox/store/features/inbox';
-import contactByIdConversationReducer from '@/modules/inbox/store/features/conversation';
 import helpdeskCategorySlice from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import helpdeskArticlesReducer from '@/modules/knowledge-base/store/helpdeskArticleSlice'
 import operatorsReducer from '@/modules/settings/store/features/operators'
@@ -46,7 +45,6 @@ export const store = configureStore({
     helpdeskArticles : helpdeskArticlesReducer,
     helpdeskCategory: helpdeskCategorySlice,
     inbox: inboxReducer,
-    contactByIdConversation: contactByIdConversationReducer
   },
   preloadedState: loadState(),
 });

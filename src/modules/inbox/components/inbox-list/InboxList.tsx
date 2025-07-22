@@ -1,10 +1,9 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { commitLocalUpdate, ConnectionHandler, usePaginationFragment } from 'react-relay';
+import { usePaginationFragment } from 'react-relay';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RecordSourceSelectorProxy } from 'relay-runtime';
 
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import { conversationListFragment } from '@/relay/ConversationListFragment';
@@ -15,7 +14,6 @@ import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import {
   fetchConversations,
   setSelectedConversation,
-  updateConversationUnreadCount,
 } from '../../store/features/inbox';
 
 import { Conversation } from '../../interfaces/inbox';
@@ -24,11 +22,6 @@ import * as S from './InboxList.styles';
 
 import InboxItem from './InboxItem';
 import InboxListHeader from './InboxListHeader';
-
-import environment from '@/relay/RelayEnvironment';
-import { decodeGlobalId } from '@/shared/utils/decode';
-import { openConversation } from '@/core/services/socket/socket';
-import { deleteConversation } from '../../api/inbox.api';
 
 type Props = {
   conversationsRef: ConversationListFragment_query$key;
@@ -117,50 +110,6 @@ const ConversationList: React.FC<Props> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  // const handleMenuClick = (index: number, e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   setActiveMenu(activeMenu === index ? null : index);
-  // };
-
-  // const handleMenuItemClick = async (
-  //   action: string,
-  //   e: React.MouseEvent,
-  //   conversationId?: string,
-  // ) => {
-  //   e.stopPropagation();
-  //   setActiveMenu(null);
-
-  //   if (action === 'delete' && conversationId) {
-  //     try {
-  //       const realId = decodeGlobalId(conversationId);
-  //       await deleteConversation(realId);
-  //       commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
-  //         const root = store.getRoot();
-
-  //         const connection = ConnectionHandler.getConnection(
-  //           root,
-  //           'ConversationListFragment_conversations'
-  //         );
-
-  //         if (!connection) return;
-  //         ConnectionHandler.deleteNode(connection, conversationId);
-  //         store.delete(conversationId);
-  //         navigate('/inbox');
-  //       });
-  //     } catch (err) {
-  //       console.error('Failed to delete conversation:', err);
-  //     }
-  //   }
-
-  //   if (action === 'unread' && conversationId) {
-  //     const rawConversationId = decodeGlobalId(conversationId);
-  //     openConversation(rawConversationId);
-  //     if (workspaceId) {
-  //       dispatch(updateConversationUnreadCount({ workspaceId, conversationId, unreadCount: 0 }));
-  //     }
-  //   }
-  // };
 
   const handleConversationClick = (conversationId: string) => {
     const conversation = data.conversations.edges.find(

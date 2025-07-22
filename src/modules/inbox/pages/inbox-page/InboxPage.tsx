@@ -1,7 +1,8 @@
-import React, { useState, useCallback, Suspense, useMemo } from 'react';
+import React, { useCallback, Suspense, useMemo } from 'react';
 import { Splitter } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { usePreloadedQuery, loadQuery } from 'react-relay';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ConversationListPaginationQuery from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
 import type { ConversationListPaginationQuery as ConversationListPaginationQueryType } from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
@@ -17,6 +18,8 @@ import * as S from './InboxPage.styles';
 
 import DetailSkeleton from '../../components/inbox-detail/DetailSkeleton';
 import InboxListSkeleton from '../../components/inbox-list/InboxListSkeleton';
+import { RootState } from '@/core/store';
+import { toggleSidebar } from '../../store/features/inbox';
 
 const queryRef = loadQuery<ConversationListPaginationQueryType>(
   RelayEnvironment,
@@ -25,13 +28,17 @@ const queryRef = loadQuery<ConversationListPaginationQueryType>(
 );
 
 const MainInbox: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
 
-  const toggleSidebar = useCallback(() => {
-    setIsSidebarOpen((prev) => !prev);
-  }, []);
+  const isSidebarOpen = useSelector(
+    (state: RootState) => state.inbox.isSidebarOpen,
+  );
+
+  const handleToggleSidebar = useCallback(() => {
+    dispatch(toggleSidebar());
+  }, [dispatch]);
 
   // data: ConversationListPaginationQuery$data
   const data = usePreloadedQuery<ConversationListPaginationQueryType>(
@@ -75,7 +82,7 @@ const MainInbox: React.FC = () => {
               <Suspense fallback={<DetailSkeleton />}>
                 <InboxDetail
                   isSidebarOpen={isSidebarOpen}
-                  toggleSidebar={toggleSidebar}
+                  toggleSidebar={handleToggleSidebar}
                   conversation={selectedConversation}
                 />
               </Suspense>

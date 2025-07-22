@@ -12,6 +12,7 @@ interface InboxState {
   selectedConversation: Conversation | null;
   loading: boolean;
   error: string | null;
+  isSidebarOpen: boolean;
 }
 
 const initialState: InboxState = {
@@ -19,6 +20,7 @@ const initialState: InboxState = {
   selectedConversation: null,
   loading: false,
   error: null,
+  isSidebarOpen: false,
 };
 
 export const fetchConversations = createAsyncThunk(
@@ -59,12 +61,12 @@ export const fetchConversationDetail = createAsyncThunk(
           lastActivityAt: data?.lastActivityAt || '',
           avatar: data.contact?.avatar || '',
           countryCode: data.contact?.context?.countryCode || '',
-          city:data.contact?.context?.city ||"",
-          countryName:data.contact?.context?.countryName ||"",
-          browser:data.contact?.context?.browser ||"",
-          os: data.contact?.context?.os ||"",
+          city: data.contact?.context?.city || '',
+          countryName: data.contact?.context?.countryName || '',
+          browser: data.contact?.context?.browser || '',
+          os: data.contact?.context?.os || '',
           guestId: data.contact?.guestId || '',
-          notification:data.contact?.notification || false
+          notification: data.contact?.notification || false,
         };
 
         const conversation: Conversation = {
@@ -112,6 +114,21 @@ const inboxSlice = createSlice({
         }
       }
     },
+    updateSelectedConversationContact(state, action) {
+      const updates = action.payload;
+      if (state.selectedConversation?.contact) {
+        state.selectedConversation.contact = {
+          ...state.selectedConversation.contact,
+          ...updates,
+        };
+      }
+    },
+    toggleSidebar(state) {
+      state.isSidebarOpen = !state.isSidebarOpen;
+    },
+    setSidebarOpen(state, action) {
+      state.isSidebarOpen = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -150,6 +167,9 @@ export const {
   setSelectedConversation,
   clearSelectedConversation,
   updateConversationUnreadCount,
+  updateSelectedConversationContact,
+  toggleSidebar,
+  setSidebarOpen,
 } = inboxSlice.actions;
 
 export default inboxSlice.reducer;
