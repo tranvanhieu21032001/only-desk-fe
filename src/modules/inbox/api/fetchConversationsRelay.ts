@@ -41,6 +41,7 @@ export const fetchConversationsRelay = async (
       },
       assignedTo: node.assignedTo?.id || null,
       participants: [],
+      resolved:node?.resolved || false,
       lastActivityAt: node.lastActivityAt,
       latestMessage: {
         id: '',

@@ -84,7 +84,6 @@ function LastReportedLocationBody({
   const flagIcon = flagList.find(
     (item) => item.code === context.countryCode,
   )?.image;
-console.log("flagIcon",flagIcon);
 
   const fieldMap = [
     {

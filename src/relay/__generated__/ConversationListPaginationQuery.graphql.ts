@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fc4d327c1dd4c0faa4e151aee294cd1d>>
+ * @generated SignedSource<<28ca35ecb9237bb8056729bf6653102b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -211,6 +211,13 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
+                    "name": "resolved",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
                     "name": "metadata",
                     "storageKey": null
                   },
@@ -308,16 +315,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "accfa30eeac9779a013e0d52ef76c399",
+    "cacheID": "693f9d77af0ff7b5d48801b2f1198710",
     "id": null,
     "metadata": {},
     "name": "ConversationListPaginationQuery",
     "operationKind": "query",
-    "text": "query ConversationListPaginationQuery(\n  $after: String\n  $first: Float = 10\n) {\n  ...ConversationListFragment_query_2HEEH6\n}\n\nfragment ConversationListFragment_query_2HEEH6 on Query {\n  conversations(first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          avatar\n          name\n          isOnline\n          id\n          rawId\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListPaginationQuery(\n  $after: String\n  $first: Float = 10\n) {\n  ...ConversationListFragment_query_2HEEH6\n}\n\nfragment ConversationListFragment_query_2HEEH6 on Query {\n  conversations(first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          avatar\n          name\n          isOnline\n          id\n          rawId\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "30bd40576eccca1cf481850d4cf61acf";
+(node as any).hash = "be23205696035a9eb9a918f96c10d647";
 
 export default node;

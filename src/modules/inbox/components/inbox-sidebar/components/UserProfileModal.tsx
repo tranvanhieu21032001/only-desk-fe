@@ -25,22 +25,21 @@ import { listenUserStatus, offUserStatus } from '@/core/services/socket/socket';
 import { format } from 'timeago.js';
 import dayjs from 'dayjs';
 import LastReportedLocationBody from '@/shared/components/common/ReportedLocation/LastReportedLocationBody';
-import { useAppSelector } from '@/shared/hooks';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import CompanyInfoBody from '@/shared/components/common/CompanyInfoBody/CompanyInfoBody';
 import TextArea from '@/shared/components/common/TextArea';
 import Typography from '@/shared/components/common/Typography';
 import empty from '@/assets/images/contact/img-contact-empty.png';
 import SegmentsBody from '@/shared/components/common/SegmentsBody/SegmentsBody';
+import { fetchDetailsContact } from '@/modules/contacts/store/features/contacts';
 interface UserProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedConversation: any;
 }
 
 const UserProfileModal: React.FC<UserProfileModalProps> = ({
   isOpen,
   onClose,
-  selectedConversation,
 }) => {
   const { t } = useTranslation('inbox');
   const { contactDetails, isLoading } = useAppSelector(
@@ -49,7 +48,16 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const [isOnline, setIsOnline] = useState(contactDetails?.isOnline || false);
   const [lastActive, setLastActive] = useState<string | null>(null);
 
-  console.log('contactDetails', contactDetails);
+    const { selectedConversation } = useAppSelector((state) => state.inbox);
+    
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (selectedConversation?.contact?.rawId) {
+      dispatch(fetchDetailsContact({ idContact: selectedConversation?.contact?.id }));
+    }
+  }, [dispatch, selectedConversation?.contact?.rawId])
+
   const renderNotes = useMemo(() => {
     if (!contactDetails?.notes) {
       return (

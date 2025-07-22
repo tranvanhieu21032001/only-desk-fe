@@ -14,23 +14,32 @@ import { openConversation } from '@/core/services/socket/socket';
 import { updateConversationUnreadCount } from '../../store/features/inbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
+import { useTranslation } from 'react-i18next';
+import { handleUpdateConversation } from '../../api/conversations.api';
+
 type Props = {
   unreadCount?: number;
+  resolved?: boolean;
   conversationId?: string;
+  onToggleResolved?: (newResolved: boolean) => void;
   onCloseMenu: () => void;
   openMenuButtonRef: React.RefObject<HTMLDivElement>;
 };
 
 const InboxListMenu: React.FC<Props> = ({
   unreadCount,
+  resolved,
   conversationId,
+  onToggleResolved,
   onCloseMenu,
   openMenuButtonRef,
 }) => {
   const menuDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const workspaceId = useSelector(selectCurrentWorkspaceId);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -51,30 +60,42 @@ const InboxListMenu: React.FC<Props> = ({
     };
   }, [openMenuButtonRef]);
 
-  const onMarkAsResolved = () => {
+  const onMarkAsResolved = async () => {
     if (!conversationId) return;
-    //call api update conversation
+
+    try {
+      const rawId = decodeGlobalId(conversationId);
+      await handleUpdateConversation(
+        rawId,
+        { resolved: !resolved },
+        t,
+      );
+      onToggleResolved?.(!resolved);
+      onCloseMenu();
+    } catch (err) {
+      console.error('Failed to update conversation resolved state:', err);
+    }
   };
 
-const onMarkAsUnread = () => {
-  if (!conversationId) return;
-  try {
-    const rawId = decodeGlobalId(conversationId);
-    openConversation(rawId);
+  const onMarkAsUnread = () => {
+    if (!conversationId) return;
+    try {
+      const rawId = decodeGlobalId(conversationId);
+      openConversation(rawId);
 
-    if (workspaceId) {
-      dispatch(
-        updateConversationUnreadCount({
-          workspaceId,
-          conversationId,
-          unreadCount: 0,
-        }),
-      );
+      if (workspaceId) {
+        dispatch(
+          updateConversationUnreadCount({
+            workspaceId,
+            conversationId,
+            unreadCount: 0,
+          }),
+        );
+      }
+    } catch (err) {
+      console.error('Failed to mark as unread:', err);
     }
-  } catch (err) {
-    console.error('Failed to mark as unread:', err);
-  }
-};
+  };
   const onDelete = async () => {
     if (!conversationId) return;
 
@@ -123,12 +144,12 @@ const onMarkAsUnread = () => {
       isOpen={true}
       onClick={(e) => e.stopPropagation()}
     >
-      <S.MenuItem onClick={() => onMarkAsResolved()}>
+      <S.MenuItem onClick={onMarkAsResolved}>
         <Image src={check} preview={false} />
-        Mark as resolved
+        {resolved ? 'Mark as unresolved' : 'Mark as resolved'}
       </S.MenuItem>
       {(unreadCount ?? 0) > 0 && (
-        <S.MenuItem onClick={() => onMarkAsUnread()}>
+        <S.MenuItem onClick={onMarkAsUnread}>
           <Image src={unreadIcon} preview={false} />
           Mark as unread
         </S.MenuItem>
@@ -137,7 +158,7 @@ const onMarkAsUnread = () => {
         tabIndex={0}
         role="button"
         className="delete"
-        onClick={() => onDelete()}
+        onClick={onDelete}
       >
         <Image src={deleteIcon} preview={false} />
         Delete conversation

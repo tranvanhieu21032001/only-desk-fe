@@ -23,6 +23,7 @@ export const conversationListQuery = graphql`
             isOnline
           }
           subject
+          resolved
           metadata
           createdAt
           updatedAt

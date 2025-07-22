@@ -37,9 +37,7 @@ const ConversationSegments: React.FC<ConversationSegmentsProps> = ({
               mode="tags"
               allowClear
               placeholder={t('inboxSidebar.select-segments')}
-              tokenSeparators={[',']}
               options={selectOptions}
-              value={segment}
               onChange={(value) => onChangeSegment(value)}
             />
           </Form.Item>

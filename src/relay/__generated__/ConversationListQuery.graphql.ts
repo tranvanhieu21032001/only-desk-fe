@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3d8eeb6325a2cfbdb8a3cfff6434c331>>
+ * @generated SignedSource<<55eee24cd00a1120d763d93c76491160>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -35,6 +35,7 @@ export type ConversationListQuery$data = {
         } | null | undefined;
         readonly metadata: any | null | undefined;
         readonly rawId: string;
+        readonly resolved: boolean | null | undefined;
         readonly subject: string | null | undefined;
         readonly unreadCount: number | null | undefined;
         readonly updatedAt: any | null | undefined;
@@ -166,45 +167,52 @@ v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "metadata",
+  "name": "resolved",
   "storageKey": null
 },
 v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "createdAt",
+  "name": "metadata",
   "storageKey": null
 },
 v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "updatedAt",
+  "name": "createdAt",
   "storageKey": null
 },
 v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "lastActivityAt",
+  "name": "updatedAt",
   "storageKey": null
 },
 v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "closedAt",
+  "name": "lastActivityAt",
   "storageKey": null
 },
 v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "unreadCount",
+  "name": "closedAt",
   "storageKey": null
 },
 v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "unreadCount",
+  "storageKey": null
+},
+v13 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -216,7 +224,7 @@ v12 = {
   ],
   "storageKey": null
 },
-v13 = {
+v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -267,6 +275,7 @@ return {
                   (v10/*: any*/),
                   (v11/*: any*/),
                   (v12/*: any*/),
+                  (v13/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -275,7 +284,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v13/*: any*/)
+                      (v14/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -335,6 +344,7 @@ return {
                   (v10/*: any*/),
                   (v11/*: any*/),
                   (v12/*: any*/),
+                  (v13/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -343,7 +353,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v13/*: any*/),
+                      (v14/*: any*/),
                       (v2/*: any*/)
                     ],
                     "storageKey": null
@@ -360,16 +370,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8231418f5ae897127e7bbf086bb81496",
+    "cacheID": "d46297fb99c5f23acfdec432ea62615d",
     "id": null,
     "metadata": {},
     "name": "ConversationListQuery",
     "operationKind": "query",
-    "text": "query ConversationListQuery {\n  conversations {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          email\n          avatar\n          name\n          isOnline\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListQuery {\n  conversations {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          email\n          avatar\n          name\n          isOnline\n        }\n        subject\n        resolved\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "bf4537cbe3ca11cbcfd8dafe61e0feb3";
+(node as any).hash = "91d35333e6fe41c91b466c333f57e369";
 
 export default node;

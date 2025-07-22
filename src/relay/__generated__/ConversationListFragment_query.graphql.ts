@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2a679dec6b32a5ea950873424aad9dfe>>
+ * @generated SignedSource<<7187b6a8b4c87fd11e8de6354eecb3b3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -38,6 +38,7 @@ export type ConversationListFragment_query$data = {
         } | null | undefined;
         readonly metadata: any | null | undefined;
         readonly rawId: string;
+        readonly resolved: boolean | null | undefined;
         readonly subject: string | null | undefined;
         readonly unreadCount: number | null | undefined;
         readonly updatedAt: any | null | undefined;
@@ -241,6 +242,13 @@ return {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
+                  "name": "resolved",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
                   "name": "metadata",
                   "storageKey": null
                 },
@@ -331,6 +339,6 @@ return {
 };
 })();
 
-(node as any).hash = "30bd40576eccca1cf481850d4cf61acf";
+(node as any).hash = "be23205696035a9eb9a918f96c10d647";
 
 export default node;

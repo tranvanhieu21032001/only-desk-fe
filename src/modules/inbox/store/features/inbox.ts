@@ -58,6 +58,7 @@ export const fetchConversationDetail = createAsyncThunk(
           email: data.contact?.email || '',
           segments: [...(data?.segments || [])],
           isOnline: data.contact?.isOnline ?? false,
+          metadata: data?.metadata || {},
           lastActivityAt: data?.lastActivityAt || '',
           avatar: data.contact?.avatar || '',
           countryCode: data.contact?.context?.countryCode || '',
@@ -74,7 +75,7 @@ export const fetchConversationDetail = createAsyncThunk(
           rawId: data.rawId || '',
           contact,
           assignedTo: data.assignedTo?.id || null,
-          participants: [...(data.participants ?? [])].map((p) => p.id),
+          participants: data.participants,
           lastActivityAt: data.lastActivityAt || '',
         };
 

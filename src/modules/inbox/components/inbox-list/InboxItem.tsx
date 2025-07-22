@@ -21,10 +21,15 @@ const InboxItem: React.FC<Props> = ({
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [activeMenu, setActiveMenu] = useState<boolean>(false);
+  const [localResolved, setLocalResolved] = useState<boolean>(conversation?.resolved);
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveMenu(!activeMenu);
+  };
+
+  const handleToggleResolved = (newResolved: boolean) => {
+    setLocalResolved(newResolved);
   };
 
   return (
@@ -61,9 +66,9 @@ const InboxItem: React.FC<Props> = ({
         {activeMenu && (
           <InboxListMenu
             unreadCount={Number(conversation.unreadCount)}
-            onCloseMenu={function (): void {
-              setActiveMenu(false);
-            }}
+            resolved={localResolved}
+            onToggleResolved={handleToggleResolved}
+            onCloseMenu={() => setActiveMenu(false)}
             conversationId={conversation.id}
             openMenuButtonRef={menuRef as React.RefObject<HTMLDivElement>}
           />

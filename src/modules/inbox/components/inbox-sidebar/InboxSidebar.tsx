@@ -91,6 +91,7 @@ const InboxSidebar = () => {
 
     const defaultValuesForm = {
       ...selectedConversation,
+      segments: selectedConversation?.contact?.segments,
       metadata: convertMetadata,
     };
 
@@ -188,7 +189,6 @@ const InboxSidebar = () => {
           <UserProfileModal
             isOpen={true}
             onClose={() => setShowModal(false)}
-            selectedConversation={selectedConversation}
           />
         )}
 

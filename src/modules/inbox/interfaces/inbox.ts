@@ -14,6 +14,9 @@ export interface Contact {
   email: string;
   notification: boolean;
   segments: string[];
+   metadata?: {
+    [key: string]: any;
+  };
   isOnline: boolean;
   lastActivityAt: string;
   workspaceId?: string;
@@ -55,6 +58,7 @@ export interface Conversation {
   participants: string[];
   lastActivityAt: string;
   latestMessage?: Message;
+  resolved?:boolean;
   unreadGuestCount?: number;
   unreadCount?: number;
 }

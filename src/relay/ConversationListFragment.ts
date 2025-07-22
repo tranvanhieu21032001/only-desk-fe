@@ -31,6 +31,7 @@ export const conversationListFragment = graphql`
             }
           }
           subject
+          resolved
           metadata
           createdAt
           updatedAt
