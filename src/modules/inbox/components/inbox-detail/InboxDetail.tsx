@@ -29,7 +29,10 @@ import { useAppSelector } from '@/shared/hooks';
 import { ToastMessageType } from '@/shared/helper/enums/common';
 import ToastMessage from '@/shared/components/common/ToastMessage';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
+import {
+  DEFAULT_FULL_NAME,
+  EVENTBUS_UPDATED_CONVERSATION,
+} from '@/core/settings/constants';
 import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
 import { ChatMessageItem } from './ChatMessageItem';
 import { InboxFooter } from './InboxFooter';
@@ -64,6 +67,7 @@ import {
   updateSelectedConversation,
 } from '../../store/features/inbox';
 import { handleUpdateConversation } from '../../api/conversations.api';
+import { eventBus } from '@/core/event-bus';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar, conversation }) => {
@@ -155,11 +159,14 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
         const rawId = selectedConversation.rawId;
         const newResolved = !selectedConversation.resolved;
-        
 
         await handleUpdateConversation(rawId, { resolved: newResolved }, t);
 
         dispatch(updateSelectedConversation({ resolved: newResolved }));
+        eventBus.emit(EVENTBUS_UPDATED_CONVERSATION as any, {
+          conversationId: selectedConversation.id,
+          updates: { resolved: newResolved },
+        });
         dispatch(
           updateConversationResolved({
             workspaceId,

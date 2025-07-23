@@ -6,7 +6,9 @@ import {
   EVENTBUS_SOCKET_CONNECT,
   EVENTBUS_USER_TYPING,
   EVENTBUS_USER_STATUS,
+  EVENTBUS_UPDATED_CONVERSATION,
 } from '@/core/settings/constants';
+import { Conversation } from '@/modules/inbox/interfaces/inbox';
 
 export type AppEvents = {
   [EVENTBUS_INBOX_MESSAGE]: any;
@@ -20,6 +22,10 @@ export type AppEvents = {
     workspaceId: string;
     isOnline: boolean;
     lastActivityAt?: string;
+  };
+  [EVENTBUS_UPDATED_CONVERSATION]: {
+    conversationId: string;
+    updates: Partial<Conversation>;
   };
 };
 
