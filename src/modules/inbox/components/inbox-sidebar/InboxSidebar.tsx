@@ -47,14 +47,22 @@ const InboxSidebar = () => {
       const fullName =
         [user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'Guest';
       return {
-        id,
-        rawId: user?.rawId,
+        id: user.id,
+        rawId: user.rawId,
         name: fullName,
         avatar: user?.avatar || defaultAvatar,
         email: user?.email,
       };
     });
   }, [operators]);
+
+  const rawIdToUserIdMap = useMemo(() => {
+    const map = new Map<string, string>();
+    formattedOperators.forEach((op) => {
+      if (op.rawId && op.id) map.set(op.rawId, op.id);
+    });
+    return map;
+  }, [formattedOperators]);
 
   useEffect(() => {
     dispatch(fetchOperators());
@@ -105,28 +113,28 @@ const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
       const newValue = partialData[key];
       let oldValue;
 
-      switch (key) {
-        case 'assignedToId':
-          oldValue = selectedConversation?.assignedTo?.rawId;
-          break;
-        case 'participantsIds':
-          oldValue = selectedConversation?.participants?.map((p) => p.rawId) || [];
-          break;
-        case 'segments':
-          oldValue = selectedConversation?.contact?.segments || [];
-          break;
-        case 'metadata':
-          const raw = selectedConversation?.contact?.metadata || {};
-          oldValue = Array.isArray(raw)
-            ? raw.reduce((acc: any, item: any) => {
-                if (item.key?.trim()) acc[item.key] = String(item.value);
-                return acc;
-              }, {})
-            : raw;
-          break;
-        default:
-          oldValue = selectedConversation?.[key];
-      }
+        switch (key) {
+          case 'assignedToId':
+            oldValue = selectedConversation?.assignedTo?.user?.id;
+            break;
+          case 'participantsIds':
+            oldValue = selectedConversation?.participants?.map((p) => p.user?.id) || [];
+            break;
+          case 'segments':
+            oldValue = selectedConversation?.contact?.segments || [];
+            break;
+          case 'metadata':
+            const raw = selectedConversation?.contact?.metadata || {};
+            oldValue = Array.isArray(raw)
+              ? raw.reduce((acc: any, item: any) => {
+                  if (item.key?.trim()) acc[item.key] = String(item.value);
+                  return acc;
+                }, {})
+              : raw;
+            break;
+          default:
+            oldValue = selectedConversation?.[key];
+        }
 
       if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
         changedFields[key] = newValue;
@@ -142,7 +150,7 @@ const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
   const handleSelect = (option: any) => {
     setSelected(option);
     setOpenDropdown(false);
-    handleAutoUpdateConversation({ assignedToId: option.rawId });
+    handleAutoUpdateConversation({ assignedToId: option.id });
   };
 
   const updateEmailIfValid = async () => {
@@ -223,9 +231,13 @@ const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
           participants={participants}
           setParticipants={setParticipants}
           operators={formattedOperators}
-          onConfirmAddParticipants={(newParticipants) => {
-            setParticipants(newParticipants);
-            handleAutoUpdateConversation({ participantsIds: newParticipants });
+          onConfirmAddParticipants={(newRawIds) => {
+            const userIds = newRawIds
+              .map((rawId) => rawIdToUserIdMap.get(rawId))
+              .filter(Boolean) as string[];
+
+            setParticipants(newRawIds);
+            handleAutoUpdateConversation({ participantsIds: userIds });
           }}
         />
 

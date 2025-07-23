@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<72a45a6ddfc2a32eb360ad815eddd9ca>>
+ * @generated SignedSource<<3f196c8bc00e09472c1b5fb3f8f59128>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,6 +22,7 @@ export type OperatorsQuery$data = {
       readonly avatar: string | null | undefined;
       readonly email: string;
       readonly firstName: string | null | undefined;
+      readonly id: string;
       readonly lastName: string | null | undefined;
       readonly rawId: string;
     } | null | undefined;
@@ -47,87 +48,83 @@ v1 = {
   "name": "rawId",
   "storageKey": null
 },
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "avatar",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "firstName",
-  "storageKey": null
-},
-v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "lastName",
-  "storageKey": null
-},
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "email",
-  "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "role",
-  "storageKey": null
-},
-v7 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "status",
-  "storageKey": null
-};
+v2 = [
+  {
+    "alias": null,
+    "args": null,
+    "concreteType": "WorkspaceMember",
+    "kind": "LinkedField",
+    "name": "operators",
+    "plural": true,
+    "selections": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "user",
+        "plural": false,
+        "selections": [
+          (v0/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "avatar",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "firstName",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "lastName",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "email",
+            "storageKey": null
+          },
+          (v1/*: any*/)
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "role",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "status",
+        "storageKey": null
+      }
+    ],
+    "storageKey": null
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
     "name": "OperatorsQuery",
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "WorkspaceMember",
-        "kind": "LinkedField",
-        "name": "operators",
-        "plural": true,
-        "selections": [
-          (v0/*: any*/),
-          (v1/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "User",
-            "kind": "LinkedField",
-            "name": "user",
-            "plural": false,
-            "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
-              (v4/*: any*/),
-              (v5/*: any*/),
-              (v1/*: any*/)
-            ],
-            "storageKey": null
-          },
-          (v6/*: any*/),
-          (v7/*: any*/)
-        ],
-        "storageKey": null
-      }
-    ],
+    "selections": (v2/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -136,52 +133,19 @@ return {
     "argumentDefinitions": [],
     "kind": "Operation",
     "name": "OperatorsQuery",
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "WorkspaceMember",
-        "kind": "LinkedField",
-        "name": "operators",
-        "plural": true,
-        "selections": [
-          (v0/*: any*/),
-          (v1/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "User",
-            "kind": "LinkedField",
-            "name": "user",
-            "plural": false,
-            "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
-              (v4/*: any*/),
-              (v5/*: any*/),
-              (v1/*: any*/),
-              (v0/*: any*/)
-            ],
-            "storageKey": null
-          },
-          (v6/*: any*/),
-          (v7/*: any*/)
-        ],
-        "storageKey": null
-      }
-    ]
+    "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "d427d02fa5dadb12dd7555fd146a47ff",
+    "cacheID": "f296a6eff91a5835fb4e176649bffb60",
     "id": null,
     "metadata": {},
     "name": "OperatorsQuery",
     "operationKind": "query",
-    "text": "query OperatorsQuery {\n  operators {\n    id\n    rawId\n    user {\n      avatar\n      firstName\n      lastName\n      email\n      rawId\n      id\n    }\n    role\n    status\n  }\n}\n"
+    "text": "query OperatorsQuery {\n  operators {\n    id\n    rawId\n    user {\n      id\n      avatar\n      firstName\n      lastName\n      email\n      rawId\n    }\n    role\n    status\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "4d640090fd9d25bd8f834fe7e2ceb3c9";
+(node as any).hash = "b76ec3f97deee3770f36f026810725e2";
 
 export default node;

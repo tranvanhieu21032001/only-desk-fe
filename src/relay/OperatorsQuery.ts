@@ -6,6 +6,7 @@ export const operatorsQuery = graphql`
       id
       rawId
       user {
+        id
         avatar
         firstName
         lastName
