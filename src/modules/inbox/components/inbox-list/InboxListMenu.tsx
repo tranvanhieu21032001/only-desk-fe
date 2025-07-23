@@ -9,7 +9,7 @@ import { deleteConversation } from '../../api/inbox.api';
 import { commitLocalUpdate, ConnectionHandler } from 'react-relay';
 import environment from '@/relay/RelayEnvironment';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { openConversation } from '@/core/services/socket/socket';
 import {
   updateConversationUnreadCount,
@@ -40,6 +40,7 @@ const InboxListMenu: React.FC<Props> = ({
 }) => {
   const menuDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { t } = useTranslation('inbox');
   const workspaceId = useSelector(selectCurrentWorkspaceId);
@@ -105,47 +106,40 @@ const InboxListMenu: React.FC<Props> = ({
       console.error('Failed to mark as unread:', err);
     }
   };
-  const onDelete = async () => {
-    if (!conversationId) return;
+const onDelete = async () => {
+  if (!conversationId) return;
+  try {
+    onCloseMenu?.();
+    const realId = decodeGlobalId(conversationId);
+    await deleteConversation(realId);
 
-    try {
-      onCloseMenu();
+    const isAssignedToMe = location.pathname === '/assigned-to-me';
+    commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
+      const root = store.getRoot();      
+      const connection = ConnectionHandler.getConnection(
+        root,
+        'ConversationListFragment_conversations',
+        { assignedToMe: isAssignedToMe },
+      );
 
-      const realId = decodeGlobalId(conversationId);
-      await deleteConversation(realId);
+      if (!connection) return
+      ;
+      
+      ConnectionHandler.deleteNode(connection, conversationId);
+      store.delete(conversationId);
 
-      commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
-        const root = store.getRoot();
+      const edges = connection.getLinkedRecords('edges') || [];
+      const nextEdge = edges.find(
+        (edge) => edge?.getLinkedRecord('node')?.getValue('id') !== conversationId,
+      );
+      const nextId = nextEdge?.getLinkedRecord('node')?.getValue('id') as string | undefined;
 
-        const connection = ConnectionHandler.getConnection(
-          root,
-          'ConversationListFragment_conversations',
-        );
-
-        if (!connection) return;
-
-        ConnectionHandler.deleteNode(connection, conversationId);
-        store.delete(conversationId);
-
-        const edges = connection.getLinkedRecords('edges') || [];
-        const firstEdge = edges[0];
-        const firstNode = firstEdge?.getLinkedRecord('node');
-        const nextConversationGlobalId = firstNode?.getValue('id') as
-          | string
-          | undefined;
-
-        if (nextConversationGlobalId) {
-          navigate(
-            `/inbox?conversationId=${encodeURIComponent(nextConversationGlobalId)}`,
-          );
-        } else {
-          navigate('/inbox');
-        }
-      });
-    } catch (err) {
-      console.error('Failed to delete conversation:', err);
-    }
-  };
+      navigate(nextId ? `/inbox?conversationId=${encodeURIComponent(nextId)}` : '/inbox');
+    });
+  } catch (err) {
+    console.error('Failed to delete conversation:', err);
+  }
+};
 
   return (
     <S.MenuDropdown

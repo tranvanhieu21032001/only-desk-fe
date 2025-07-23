@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -13,12 +13,11 @@ import { Contact } from '@/modules/inbox/interfaces/inbox';
 
 interface Props {
   openCollapse: boolean;
-  participants: string[];
+  participants: string[]; // rawId[]
   setParticipants: (value: string[]) => void;
-  operators: Contact[];
+  operators: Contact[];   // full user objects
   onConfirmAddParticipants: (newParticipants: string[]) => void;
 }
-
 
 const ConversationParticipantsSection: React.FC<Props> = ({
   openCollapse,
@@ -30,9 +29,11 @@ const ConversationParticipantsSection: React.FC<Props> = ({
   const { t } = useTranslation('inbox');
   const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
 
+  // Tìm email theo rawId
   const emailById = (id: string) =>
     operators.find((c) => c.rawId === id)?.email || 'Unknown';
 
+  // Tạo options cho dropdown, bỏ qua người đã có trong participants
   const operatorOptions = operators
     .filter((c) => !participants.includes(c.rawId))
     .map((contact) => ({
@@ -48,12 +49,14 @@ const ConversationParticipantsSection: React.FC<Props> = ({
       value: contact.rawId,
     }));
 
+  // Xoá người tham gia
   const handleRemove = (idx: number) => {
     const updated = participants.filter((_, i) => i !== idx);
     setParticipants(updated);
     onConfirmAddParticipants(updated);
   };
 
+  // Chọn người mới
   const handleSelectChange = (value: string) => {
     if (participants.includes(value)) return;
     const updated = [...participants, value];
@@ -66,6 +69,7 @@ const ConversationParticipantsSection: React.FC<Props> = ({
     <Collapse title={t('inboxSidebar.conversationParticipants')}>
       {openCollapse && (
         <S.SectionContent>
+          {/* Hiển thị danh sách người tham gia */}
           {participants.map((rawId, idx) => (
             <S.Participant key={rawId}>
               <S.DropdownRow>
@@ -77,6 +81,8 @@ const ConversationParticipantsSection: React.FC<Props> = ({
               </S.countryCenter>
             </S.Participant>
           ))}
+
+          {/* Dropdown chọn người thêm */}
           <S.Participant>
             <Select
               key={participants.join('-')}
@@ -86,6 +92,12 @@ const ConversationParticipantsSection: React.FC<Props> = ({
               value={selectedValue}
               onChange={handleSelectChange}
               optionLabelProp="label"
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label as any)?.props?.children[1]?.props?.children[0]
+                  ?.toLowerCase()
+                  ?.includes(input.toLowerCase()) ?? false
+              }
             />
           </S.Participant>
         </S.SectionContent>
