@@ -19,7 +19,6 @@ import { handleSwitchWorkspaceApi } from '@/modules/workspace/api/workspace';
 export interface AuthInterface {
   isAuth: boolean;
   userInfo: UserInforInterface | null;
-  permissionList: Record<string, boolean>;
   isLoading?: boolean;
   workspaces?: WorkspaceInterface[] | [];
   currentWorkspace?: WorkspaceInterface | null;
@@ -28,7 +27,6 @@ export interface AuthInterface {
 const initialState: AuthInterface = {
   isAuth: false,
   userInfo: null,
-  permissionList: {},
   isLoading: false,
   workspaces: [],
   currentWorkspace: null,
@@ -110,7 +108,6 @@ const slice = createSlice({
       // Clear Redux store
       state.isAuth = false;
       state.userInfo = null;
-      state.permissionList = {};
       state.workspaces = [];
       state.currentWorkspace = null;
       state.isLoading = false;

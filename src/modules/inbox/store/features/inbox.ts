@@ -6,6 +6,8 @@ import { fetchConversationsRelay } from '../../api/fetchConversationsRelay';
 import relayEnvironment from '@/relay/RelayEnvironment';
 import { CoversationDetailsQuery } from '@/relay/__generated__/CoversationDetailsQuery.graphql';
 import { coversationDetailsQuery } from '@/relay/CoversationDetailsQuery';
+import webStorageClient from '@/shared/utils/webStorageClient';
+import { constants } from '@/core/settings';
 
 interface InboxState {
   conversations: Record<string, Conversation[]>;
@@ -32,7 +34,7 @@ export const fetchConversations = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || 'Error fetching conversations');
     }
-  }
+  },
 );
 
 export const fetchConversationDetail = createAsyncThunk(
@@ -43,7 +45,7 @@ export const fetchConversationDetail = createAsyncThunk(
         relayEnvironment,
         coversationDetailsQuery,
         { id: conversationId },
-        { fetchPolicy: 'network-only' }
+        { fetchPolicy: 'network-only' },
       ).toPromise();
 
       if (result?.node) {
@@ -85,9 +87,11 @@ export const fetchConversationDetail = createAsyncThunk(
 
       return null;
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Error fetching conversation detail');
+      return rejectWithValue(
+        error.message || 'Error fetching conversation detail',
+      );
     }
-  }
+  },
 );
 
 const inboxSlice = createSlice({
@@ -145,9 +149,8 @@ const inboxSlice = createSlice({
     },
     toggleSidebar(state) {
       state.isSidebarOpen = !state.isSidebarOpen;
-    },
-    setSidebarOpen(state, action) {
-      state.isSidebarOpen = action.payload;
+      console.log('isSidebarOpen', state.isSidebarOpen);
+      webStorageClient.set(constants.IS_SIDEBAR_OPEN, state.isSidebarOpen);
     },
   },
   extraReducers: (builder) => {
@@ -191,7 +194,6 @@ export const {
   updateSelectedConversationContact,
   updateSelectedConversation,
   toggleSidebar,
-  setSidebarOpen,
 } = inboxSlice.actions;
 
 export default inboxSlice.reducer;
