@@ -3,10 +3,15 @@ import * as S from './InboxList.styles';
 import ProfileCard from '@/shared/components/common/ProfileCard';
 import { getFormattedTime } from '@/shared/utils/time';
 import InboxListMenu from './InboxListMenu';
-import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
-import { useRef, useState } from 'react';
+import {
+  DEFAULT_FULL_NAME,
+  EVENTBUS_UPDATED_CONVERSATION,
+} from '@/core/settings/constants';
+import { useEffect, useRef, useState } from 'react';
 import avatarDefault from '@/assets/images/avatar-default.png';
 import barColumn from '@/assets/icons/common/ic-bar-column.svg';
+import { eventBus } from '@/core/event-bus';
+import { Conversation } from '../../interfaces/inbox';
 
 type Props = {
   conversation: any;
@@ -21,11 +26,46 @@ const InboxItem: React.FC<Props> = ({
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [activeMenu, setActiveMenu] = useState<boolean>(false);
+  const [localResolved, setLocalResolved] = useState<boolean>(
+    conversation?.resolved,
+  );
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveMenu(!activeMenu);
   };
+
+  const handleToggleResolved = (newResolved: boolean) => {
+    setLocalResolved(newResolved);
+  };
+
+  useEffect(() => {
+    const handleUpdatedConversation = ({
+      conversationId,
+      updates,
+    }: {
+      conversationId: string;
+      updates: Partial<Conversation>;
+    }) => {
+      if (
+        conversationId === conversation.id &&
+        updates.resolved !== undefined
+      ) {
+        setLocalResolved(updates.resolved);
+      }
+    };
+
+    eventBus.on(
+      EVENTBUS_UPDATED_CONVERSATION as any,
+      handleUpdatedConversation,
+    );
+    return () => {
+      eventBus.off(
+        EVENTBUS_UPDATED_CONVERSATION as any,
+        handleUpdatedConversation,
+      );
+    };
+  }, [conversation]);
 
   return (
     <S.NotificationItem
@@ -61,9 +101,9 @@ const InboxItem: React.FC<Props> = ({
         {activeMenu && (
           <InboxListMenu
             unreadCount={Number(conversation.unreadCount)}
-            onCloseMenu={function (): void {
-              setActiveMenu(false);
-            }}
+            resolved={localResolved}
+            onToggleResolved={handleToggleResolved}
+            onCloseMenu={() => setActiveMenu(false)}
             conversationId={conversation.id}
             openMenuButtonRef={menuRef as React.RefObject<HTMLDivElement>}
           />

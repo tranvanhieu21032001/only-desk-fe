@@ -15,6 +15,7 @@ export interface Operator {
   id: string;
   rawId: string;
   user: {
+    id:string;
     avatar?: string;
     firstName: string;
     lastName: string;

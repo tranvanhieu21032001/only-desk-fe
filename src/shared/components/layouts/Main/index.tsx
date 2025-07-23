@@ -866,8 +866,6 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
     ),
     [t, handleClickChildrenMenu, routePath],
   );
-
-  console.log('userInfo', userInfo);
   
   // Stabilize renderProfiles to prevent re-creation
   const renderProfiles = useMemo(

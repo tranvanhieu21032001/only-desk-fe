@@ -6,8 +6,9 @@ export const conversationListFragment = graphql`
   @argumentDefinitions(
     first: { type: "Float", defaultValue: 10 }
     after: { type: "String" }
+    assignedToMe: { type: "Boolean", defaultValue: false }
   ) {
-    conversations(first: $first, after: $after)
+    conversations(first: $first, after: $after, assignedToMe: $assignedToMe)
       @connection(key: "ConversationListFragment_conversations") {
       pageInfo {
         hasNextPage
@@ -17,11 +18,13 @@ export const conversationListFragment = graphql`
         cursor
         node {
           id
+          rawId
           contact {
             avatar
             name
             isOnline
             id
+            rawId
             name
             email
             context {
@@ -29,6 +32,7 @@ export const conversationListFragment = graphql`
             }
           }
           subject
+          resolved
           metadata
           createdAt
           updatedAt

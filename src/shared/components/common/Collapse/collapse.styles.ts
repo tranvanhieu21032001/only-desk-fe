@@ -4,6 +4,7 @@ export const Section = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top:12px;
 `;
 
 export const TitleWrapper = styled.div`

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dca51cde71150ab7aca7effb4fb9db3e>>
+ * @generated SignedSource<<749576c3418720447cc623fbdf0a9b64>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,6 +28,7 @@ export type ConversationListFragment_query$data = {
           readonly id: string;
           readonly isOnline: boolean;
           readonly name: string;
+          readonly rawId: string;
         } | null | undefined;
         readonly createdAt: any | null | undefined;
         readonly id: string;
@@ -36,6 +37,8 @@ export type ConversationListFragment_query$data = {
           readonly content: string;
         } | null | undefined;
         readonly metadata: any | null | undefined;
+        readonly rawId: string;
+        readonly resolved: boolean | null | undefined;
         readonly subject: string | null | undefined;
         readonly unreadCount: number | null | undefined;
         readonly updatedAt: any | null | undefined;
@@ -65,6 +68,13 @@ v1 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "rawId",
+  "storageKey": null
 };
 return {
   "argumentDefinitions": [
@@ -72,6 +82,11 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "after"
+    },
+    {
+      "defaultValue": false,
+      "kind": "LocalArgument",
+      "name": "assignedToMe"
     },
     {
       "defaultValue": 10,
@@ -106,7 +121,13 @@ return {
   "selections": [
     {
       "alias": "conversations",
-      "args": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "assignedToMe",
+          "variableName": "assignedToMe"
+        }
+      ],
       "concreteType": "ConversationConnection",
       "kind": "LinkedField",
       "name": "__ConversationListFragment_conversations_connection",
@@ -161,6 +182,7 @@ return {
               "plural": false,
               "selections": [
                 (v1/*: any*/),
+                (v2/*: any*/),
                 {
                   "alias": null,
                   "args": null,
@@ -191,6 +213,7 @@ return {
                       "storageKey": null
                     },
                     (v1/*: any*/),
+                    (v2/*: any*/),
                     {
                       "alias": null,
                       "args": null,
@@ -224,6 +247,13 @@ return {
                   "args": null,
                   "kind": "ScalarField",
                   "name": "subject",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "resolved",
                   "storageKey": null
                 },
                 {
@@ -320,6 +350,6 @@ return {
 };
 })();
 
-(node as any).hash = "6f828cd5caed42d1e06e2741ed2a60cb";
+(node as any).hash = "6c87cb1919d19e9fd4067db115c6054e";
 
 export default node;

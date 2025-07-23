@@ -1,7 +1,8 @@
-import React, { useState, useCallback, Suspense, useMemo } from 'react';
+import React, { useCallback, Suspense, useMemo } from 'react';
 import { Splitter } from 'antd';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { usePreloadedQuery, loadQuery } from 'react-relay';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ConversationListPaginationQuery from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
 import type { ConversationListPaginationQuery as ConversationListPaginationQueryType } from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
@@ -17,35 +18,47 @@ import * as S from './InboxPage.styles';
 
 import DetailSkeleton from '../../components/inbox-detail/DetailSkeleton';
 import InboxListSkeleton from '../../components/inbox-list/InboxListSkeleton';
-
-const queryRef = loadQuery<ConversationListPaginationQueryType>(
-  RelayEnvironment,
-  ConversationListPaginationQuery,
-  { first: 10 },
-);
+import { RootState } from '@/core/store';
+import { toggleSidebar } from '../../store/features/inbox';
 
 const MainInbox: React.FC = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const dispatch = useDispatch();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
 
-  const toggleSidebar = useCallback(() => {
-    setIsSidebarOpen((prev) => !prev);
-  }, []);
+  const isAssignedToMePage = location.pathname === '/assigned-to-me';
+  const queryRef = useMemo(
+    () =>
+      loadQuery<ConversationListPaginationQueryType>(
+        RelayEnvironment,
+        ConversationListPaginationQuery,
+        {
+          first: 10,
+          ...(isAssignedToMePage ? { assignedToMe: true } : {}),
+        },
+      ),
+    [isAssignedToMePage],
+  );
 
-  // data: ConversationListPaginationQuery$data
+  const isSidebarOpen = useSelector(
+    (state: RootState) => state.inbox.isSidebarOpen,
+  );
+
+  const handleToggleSidebar = useCallback(() => {
+    dispatch(toggleSidebar());
+  }, [dispatch]);
+
   const data = usePreloadedQuery<ConversationListPaginationQueryType>(
     ConversationListPaginationQuery,
     queryRef,
   ) as ConversationListPaginationQuery$data;
 
-  // conversationsList: Conversation[]
   const conversationsList =
     (
       (data as any).conversations?.edges as Array<{ node: any }> | undefined
     )?.map((edge) => edge.node) || [];
 
-  // selectedConversation: any
   const selectedConversation = useMemo(() => {
     if (!activeConversationId) return null;
     return (
@@ -75,7 +88,7 @@ const MainInbox: React.FC = () => {
               <Suspense fallback={<DetailSkeleton />}>
                 <InboxDetail
                   isSidebarOpen={isSidebarOpen}
-                  toggleSidebar={toggleSidebar}
+                  toggleSidebar={handleToggleSidebar}
                   conversation={selectedConversation}
                 />
               </Suspense>

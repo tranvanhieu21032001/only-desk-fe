@@ -84,6 +84,7 @@
 
   "inboxDetail": {
     "markResolved": "Mark Resolved",
+    "markUnResolved":"Mark as Unresolved",
     "reply": "Reply",
     "shortcuts": "Shortcuts",
     "shortcutsHello": "Hello. Can I help you?",
@@ -118,6 +119,9 @@
     "addParticipantEmail": "Add Participant Email Address",
     "emailAddress": "Email address",
     "enterEmailAddress": "Enter email address",
+   "selectEmailPlaceholder": "Select email addresses",
+    "updateSuccess": "Updated conversation successfully",
+   "select-segments":"Select segments",
     "quickJump": "Quick Jump",
     "sharedImageFiles": "Shared image files",
     "otherConversation": "Other conversation",

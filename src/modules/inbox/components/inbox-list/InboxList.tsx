@@ -1,7 +1,7 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { usePaginationFragment } from 'react-relay';
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -38,11 +38,18 @@ const ConversationList: React.FC<Props> = ({
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
 
-  // Relay pagination
   const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment(
     conversationListFragment,
     conversationsRef,
   );
+
+  const [activeMenu, setActiveMenu] = useState<number | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuDropdownRef = useRef<HTMLDivElement>(null);
+
+  const workspaceId = useSelector(selectCurrentWorkspaceId);
+  const dispatch = useAppDispatch();
+  const { conversations } = useAppSelector((state) => state.inbox);
 
   useEffect(() => {
     if (onSelectConversation && activeConversationId) {
@@ -55,7 +62,6 @@ const ConversationList: React.FC<Props> = ({
     }
   }, [activeConversationId, onSelectConversation, data.conversations.edges]);
 
-  // Scroll event for load more
   useEffect(() => {
     const wrapper = conversationListWrapperRef.current;
     if (!wrapper) return;
@@ -72,11 +78,6 @@ const ConversationList: React.FC<Props> = ({
     return () => wrapper.removeEventListener('scroll', handleScroll);
   }, [hasNext, isLoadingNext, loadNext]);
 
-  const workspaceId = useSelector(selectCurrentWorkspaceId);
-  const dispatch = useAppDispatch();
-  const { conversations } = useAppSelector((state) => state.inbox);
-
-  // Listen for workspace changes
   useEffect(() => {
     const handleWorkspaceChange = () => {
       if (workspaceId && !conversations[workspaceId]) {
@@ -90,6 +91,26 @@ const ConversationList: React.FC<Props> = ({
     };
   }, [workspaceId, dispatch, conversations]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(target) &&
+        menuDropdownRef.current &&
+        !menuDropdownRef.current.contains(target)
+      ) {
+        setActiveMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleConversationClick = (conversationId: string) => {
     const conversation = data.conversations.edges.find(
       (edge) => edge.node.id === conversationId,
@@ -97,12 +118,14 @@ const ConversationList: React.FC<Props> = ({
     if (conversation) {
       const conversationData: Conversation = {
         id: conversation.id,
+        rawId: conversation.rawId || '',
         contact: {
           id: conversation.contact?.id || '',
+          rawId: conversation.contact?.rawId || '',
           createdAt: conversation.createdAt || '',
           updatedAt: conversation.updatedAt || '',
           guestId: '',
-          name: conversation.contact?.name || 'Guest',
+          name: conversation.contact?.name || 'No Name',
           email: conversation.contact?.email || '',
           notification: true,
           segments: [],
@@ -118,11 +141,11 @@ const ConversationList: React.FC<Props> = ({
         latestMessage: {
           id: conversation.id,
           content: conversation.latestMessage?.content || '',
-          sender: 'agent' as any,
+          sender: 'agent',
           createdAt: conversation.lastActivityAt || '',
           updatedAt: conversation.lastActivityAt || '',
-          type: 'text' as any,
-          status: 'sent' as any,
+          type: 'text',
+          status: 'sent',
           user: null,
         },
       };
@@ -146,6 +169,7 @@ const ConversationList: React.FC<Props> = ({
           const conversation = edge.node;
           return (
             <InboxItem
+              key={conversation.id}
               conversation={conversation}
               onClickConversation={() => {
                 handleConversationClick(conversation.id);

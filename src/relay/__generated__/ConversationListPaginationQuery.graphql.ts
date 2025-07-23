@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<af55d221f4190652719d82cbf569742e>>
+ * @generated SignedSource<<098f9d66a39cc91512fd4cd6dc6e9ef7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type ConversationListPaginationQuery$variables = {
   after?: string | null | undefined;
+  assignedToMe?: boolean | null | undefined;
   first?: number | null | undefined;
 };
 export type ConversationListPaginationQuery$data = {
@@ -30,6 +31,11 @@ var v0 = [
     "name": "after"
   },
   {
+    "defaultValue": false,
+    "kind": "LocalArgument",
+    "name": "assignedToMe"
+  },
+  {
     "defaultValue": 10,
     "kind": "LocalArgument",
     "name": "first"
@@ -43,6 +49,11 @@ v1 = [
   },
   {
     "kind": "Variable",
+    "name": "assignedToMe",
+    "variableName": "assignedToMe"
+  },
+  {
+    "kind": "Variable",
     "name": "first",
     "variableName": "first"
   }
@@ -52,6 +63,13 @@ v2 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "rawId",
   "storageKey": null
 };
 return {
@@ -133,6 +151,7 @@ return {
                 "plural": false,
                 "selections": [
                   (v2/*: any*/),
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -163,6 +182,7 @@ return {
                         "storageKey": null
                       },
                       (v2/*: any*/),
+                      (v3/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -196,6 +216,13 @@ return {
                     "args": null,
                     "kind": "ScalarField",
                     "name": "subject",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resolved",
                     "storageKey": null
                   },
                   {
@@ -290,7 +317,9 @@ return {
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "filters": null,
+        "filters": [
+          "assignedToMe"
+        ],
         "handle": "connection",
         "key": "ConversationListFragment_conversations",
         "kind": "LinkedHandle",
@@ -299,16 +328,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "22dd85a6651b7bdb34456b5ff434edea",
+    "cacheID": "d4ff1b372d7ac6eb7c717b651e522ad3",
     "id": null,
     "metadata": {},
     "name": "ConversationListPaginationQuery",
     "operationKind": "query",
-    "text": "query ConversationListPaginationQuery(\n  $after: String\n  $first: Float = 10\n) {\n  ...ConversationListFragment_query_2HEEH6\n}\n\nfragment ConversationListFragment_query_2HEEH6 on Query {\n  conversations(first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          avatar\n          name\n          isOnline\n          id\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListPaginationQuery(\n  $after: String\n  $assignedToMe: Boolean = false\n  $first: Float = 10\n) {\n  ...ConversationListFragment_query_Bk7iV\n}\n\nfragment ConversationListFragment_query_Bk7iV on Query {\n  conversations(first: $first, after: $after, assignedToMe: $assignedToMe) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          avatar\n          name\n          isOnline\n          id\n          rawId\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6f828cd5caed42d1e06e2741ed2a60cb";
+(node as any).hash = "6c87cb1919d19e9fd4067db115c6054e";
 
 export default node;

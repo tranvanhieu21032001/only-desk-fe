@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect, useMemo, memo } from 'react';
 import { Image } from 'antd';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { LoadingOutlined } from '@ant-design/icons';
 
@@ -29,7 +29,10 @@ import { useAppSelector } from '@/shared/hooks';
 import { ToastMessageType } from '@/shared/helper/enums/common';
 import ToastMessage from '@/shared/components/common/ToastMessage';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
+import {
+  DEFAULT_FULL_NAME,
+  EVENTBUS_UPDATED_CONVERSATION,
+} from '@/core/settings/constants';
 import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
 import { ChatMessageItem } from './ChatMessageItem';
 import { InboxFooter } from './InboxFooter';
@@ -49,18 +52,22 @@ import { GlobalStyle } from './InboxDetail.styles';
 
 import avatarAdmin from '@/assets/images/avatar-default.png';
 import check from '@/assets/icons/common/ic-check.svg';
+import unresolved from '@/assets/icons/common/ic-unresolved.svg';
 import barOpen from '@/assets/icons/common/ic-bar-open.svg';
 import barClose from '@/assets/icons/common/ic-bar.svg';
-import flag from '@/assets/icons/common/ic-flag.svg';
-import defaultAvatar from '@/assets/images/avatar-default.png';
 import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
 import iconReply from '@/assets/icons/inbox/ic-reply.svg';
 import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
-
-
+import {
+  fetchConversationDetail,
+  updateConversationResolved,
+  updateSelectedConversation,
+} from '../../store/features/inbox';
+import { handleUpdateConversation } from '../../api/conversations.api';
+import { eventBus } from '@/core/event-bus';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar, conversation }) => {
@@ -68,7 +75,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const [searchParams] = useSearchParams();
     const conversationId = searchParams.get('conversationId');
     const stableConversationId = useRef<string | null>(null);
-
+    const dispatch = useDispatch();
     if (stableConversationId.current !== conversationId) {
       stableConversationId.current = conversationId;
     }
@@ -144,6 +151,36 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       (state) => state.inbox,
     );
 
+    const [isUpdatingResolved, setIsUpdatingResolved] = useState(false);
+    const onMarkAsResolved = async () => {
+      if (!selectedConversation?.rawId || !workspaceId) return;
+      try {
+        setIsUpdatingResolved(true);
+
+        const rawId = selectedConversation.rawId;
+        const newResolved = !selectedConversation.resolved;
+
+        await handleUpdateConversation(rawId, { resolved: newResolved }, t);
+
+        dispatch(updateSelectedConversation({ resolved: newResolved }));
+        eventBus.emit(EVENTBUS_UPDATED_CONVERSATION as any, {
+          conversationId: selectedConversation.id,
+          updates: { resolved: newResolved },
+        });
+        dispatch(
+          updateConversationResolved({
+            workspaceId,
+            conversationId: selectedConversation.id,
+            resolved: newResolved,
+          }),
+        );
+      } catch (err) {
+        console.error('Failed to update conversation resolved state:', err);
+      } finally {
+        setIsUpdatingResolved(false);
+      }
+    };
+
     const currentConversations = useMemo(() => {
       return workspaceId ? conversations[workspaceId] || [] : [];
     }, [workspaceId, conversations]);
@@ -167,6 +204,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         workspaceId,
       ],
     );
+    useEffect(() => {
+      if (conversationId) dispatch(fetchConversationDetail(conversationId));
+    }, [dispatch, , conversationId]);
 
     const messageEndRef = useRef<HTMLDivElement>(null);
     const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -502,10 +542,24 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
               </S.Info>
             </S.HeaderLeft>
             <S.HeaderRight>
-              <S.MarkResolvedButton>
-                <Image src={check} preview={false} />{' '}
-                {t('inboxDetail.markResolved')}
-              </S.MarkResolvedButton>
+              {selectedConversation?.resolved ? (
+                <S.MarkUnResolvedButton
+                  onClick={onMarkAsResolved}
+                  isLoading={isUpdatingResolved}
+                >
+                  <Image src={unresolved} preview={false} />{' '}
+                  {t('inboxDetail.markUnResolved')}
+                </S.MarkUnResolvedButton>
+              ) : (
+                <S.MarkResolvedButton
+                  onClick={onMarkAsResolved}
+                  isLoading={isUpdatingResolved}
+                >
+                  <Image src={check} preview={false} />{' '}
+                  {t('inboxDetail.markResolved')}
+                </S.MarkResolvedButton>
+              )}
+
               <S.ToggleSidebarButton onClick={toggleSidebar}>
                 <Image
                   src={isSidebarOpen ? barClose : barOpen}
@@ -557,7 +611,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                             contactId={currentConversation?.contact?.id}
                             name={currentConversation?.contact?.name}
                             avatar={currentConversation?.contact?.avatar}
-                            countryCode={currentConversation?.contact?.countryCode}
+                            countryCode={
+                              currentConversation?.contact?.countryCode
+                            }
                           />
                         </React.Fragment>
                       );

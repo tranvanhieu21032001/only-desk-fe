@@ -23,12 +23,14 @@ export const fetchConversationsRelay = async (
     const node = edge.node;
     return {
       id: node.id,
+      rawId: node.rawId,
       contact: {
         id: node.contact?.id,
+        rawId: node.contact?.rawId,
         createdAt: '',
         updatedAt: '',
         guestId: '',
-        name: node.contact?.name || 'Guest',
+        name: node.contact?.name || 'No name',
         email: node.contact?.email || '',
         notification: true,
         segments: [],
@@ -39,6 +41,7 @@ export const fetchConversationsRelay = async (
       },
       assignedTo: node.assignedTo?.id || null,
       participants: [],
+      resolved:node?.resolved || false,
       lastActivityAt: node.lastActivityAt,
       latestMessage: {
         id: '',

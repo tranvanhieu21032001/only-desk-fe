@@ -6,6 +6,7 @@ import {
 
 export interface Contact {
   id: string;
+  rawId: string;
   createdAt: string;
   updatedAt: string;
   guestId: string;
@@ -13,11 +14,18 @@ export interface Contact {
   email: string;
   notification: boolean;
   segments: string[];
+   metadata?: {
+    [key: string]: any;
+  };
   isOnline: boolean;
   lastActivityAt: string;
-  workspaceId: string;
+  workspaceId?: string;
   avatar?: string;
-  countryCode?:string;
+  countryCode?: string;
+  countryName?:string;
+  city?: string;
+  browser?: string;
+  os?: string;
 }
 
 export interface User {
@@ -44,11 +52,13 @@ export interface Message {
 
 export interface Conversation {
   id: string;
+  rawId: string;
   contact: Contact;
   assignedTo: null | string;
   participants: string[];
   lastActivityAt: string;
-  latestMessage: Message;
+  latestMessage?: Message;
+  resolved?:boolean;
   unreadGuestCount?: number;
   unreadCount?: number;
 }

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<52ccc3d132b5af9ea79acc623d32ea42>>
+ * @generated SignedSource<<55eee24cd00a1120d763d93c76491160>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,6 +25,7 @@ export type ConversationListQuery$data = {
           readonly id: string;
           readonly isOnline: boolean;
           readonly name: string;
+          readonly rawId: string;
         } | null | undefined;
         readonly createdAt: any | null | undefined;
         readonly id: string;
@@ -33,6 +34,8 @@ export type ConversationListQuery$data = {
           readonly content: string;
         } | null | undefined;
         readonly metadata: any | null | undefined;
+        readonly rawId: string;
+        readonly resolved: boolean | null | undefined;
         readonly subject: string | null | undefined;
         readonly unreadCount: number | null | undefined;
         readonly updatedAt: any | null | undefined;
@@ -108,12 +111,20 @@ v2 = {
 v3 = {
   "alias": null,
   "args": null,
+  "kind": "ScalarField",
+  "name": "rawId",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
   "concreteType": "Contact",
   "kind": "LinkedField",
   "name": "contact",
   "plural": false,
   "selections": [
     (v2/*: any*/),
+    (v3/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -145,56 +156,63 @@ v3 = {
   ],
   "storageKey": null
 },
-v4 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "subject",
   "storageKey": null
 },
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "metadata",
-  "storageKey": null
-},
 v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "createdAt",
+  "name": "resolved",
   "storageKey": null
 },
 v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "updatedAt",
+  "name": "metadata",
   "storageKey": null
 },
 v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "lastActivityAt",
+  "name": "createdAt",
   "storageKey": null
 },
 v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "closedAt",
+  "name": "updatedAt",
   "storageKey": null
 },
 v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "unreadCount",
+  "name": "lastActivityAt",
   "storageKey": null
 },
 v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "closedAt",
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "unreadCount",
+  "storageKey": null
+},
+v13 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -206,7 +224,7 @@ v11 = {
   ],
   "storageKey": null
 },
-v12 = {
+v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -256,6 +274,8 @@ return {
                   (v9/*: any*/),
                   (v10/*: any*/),
                   (v11/*: any*/),
+                  (v12/*: any*/),
+                  (v13/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -264,7 +284,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v12/*: any*/)
+                      (v14/*: any*/)
                     ],
                     "storageKey": null
                   }
@@ -323,6 +343,8 @@ return {
                   (v9/*: any*/),
                   (v10/*: any*/),
                   (v11/*: any*/),
+                  (v12/*: any*/),
+                  (v13/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -331,7 +353,7 @@ return {
                     "name": "latestMessage",
                     "plural": false,
                     "selections": [
-                      (v12/*: any*/),
+                      (v14/*: any*/),
                       (v2/*: any*/)
                     ],
                     "storageKey": null
@@ -348,16 +370,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "fedc492f0bf578ae0f7ffa4abc88874d",
+    "cacheID": "d46297fb99c5f23acfdec432ea62615d",
     "id": null,
     "metadata": {},
     "name": "ConversationListQuery",
     "operationKind": "query",
-    "text": "query ConversationListQuery {\n  conversations {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        contact {\n          id\n          email\n          avatar\n          name\n          isOnline\n        }\n        subject\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListQuery {\n  conversations {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          email\n          avatar\n          name\n          isOnline\n        }\n        subject\n        resolved\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "8a78dd8cf213e4c1f76c73452d2c5700";
+(node as any).hash = "91d35333e6fe41c91b466c333f57e369";
 
 export default node;

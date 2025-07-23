@@ -6,6 +6,7 @@ const IS_AUTH = '_is_auth';
 const ACCESS_TOKEN = '_access_token';
 const SIGN_UP_INFO = '_sign_up_info';
 const CURRENT_WORKSPACE = '_current_workspace';
+const IS_SIDEBAR_OPEN = '_is_sidebar_open';
 
 const constants = {
   API_SERVER,
@@ -15,6 +16,7 @@ const constants = {
   ACCESS_TOKEN,
   SIGN_UP_INFO,
   CURRENT_WORKSPACE,
+  IS_SIDEBAR_OPEN,
 };
 
 export const DEFAULT_RESIZER_CONFIG = {
@@ -45,6 +47,7 @@ export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
 export const EVENTBUS_INBOX_MESSAGE = 'inbox-message';
 export const EVENTBUS_USER_TYPING = 'user-typing';
 export const EVENTBUS_USER_STATUS = 'eventbus_user_status';
+export const EVENTBUS_UPDATED_CONVERSATION = 'updated-conversation';
 
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
 
