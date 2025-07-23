@@ -11,7 +11,10 @@ import environment from '@/relay/RelayEnvironment';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
 import { useNavigate } from 'react-router-dom';
 import { openConversation } from '@/core/services/socket/socket';
-import { updateConversationUnreadCount } from '../../store/features/inbox';
+import {
+  updateConversationUnreadCount,
+  updateSelectedConversation,
+} from '../../store/features/inbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import { useTranslation } from 'react-i18next';
@@ -37,7 +40,7 @@ const InboxListMenu: React.FC<Props> = ({
   const menuDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { t } = useTranslation();
+  const { t } = useTranslation('inbox');
   const workspaceId = useSelector(selectCurrentWorkspaceId);
 
   useEffect(() => {
@@ -64,14 +67,15 @@ const InboxListMenu: React.FC<Props> = ({
     if (!conversationId) return;
 
     try {
-      const rawId = decodeGlobalId(conversationId);
-      await handleUpdateConversation(
-        rawId,
-        { resolved: !resolved },
-        t,
-      );
-      onToggleResolved?.(!resolved);
       onCloseMenu();
+
+      const rawId = decodeGlobalId(conversationId);
+      const newResolved = !resolved;
+
+      await handleUpdateConversation(rawId, { resolved: newResolved }, t);
+
+      onToggleResolved?.(newResolved);
+      dispatch(updateSelectedConversation({ resolved: newResolved }));
     } catch (err) {
       console.error('Failed to update conversation resolved state:', err);
     }

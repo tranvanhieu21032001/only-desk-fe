@@ -84,6 +84,7 @@
 
   "inboxDetail": {
     "markResolved": "Mark Resolved",
+    "markUnResolved":"Mark as Unresolved",
     "reply": "Reply",
     "shortcuts": "Shortcuts",
     "shortcutsHello": "Hello. Can I help you?",

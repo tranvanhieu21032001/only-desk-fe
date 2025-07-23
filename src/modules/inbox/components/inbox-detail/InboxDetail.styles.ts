@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { BellOutlined } from '@ant-design/icons';
 import { createGlobalStyle } from 'styled-components';
+import Button from '@/shared/components/common/Button';
 
 interface IconProps {
   $isActive?: boolean;
@@ -55,7 +56,7 @@ export const Name = styled.div`
   font-size: 16px;
 `;
 
-export const MarkResolvedButton = styled.button`
+export const MarkResolvedButton = styled(Button)`
   background: #389e0d;
   height: 36px;
   color: white;
@@ -71,6 +72,30 @@ export const MarkResolvedButton = styled.button`
   justify-content: center;
   align-items: center;
   gap: 10px;
+  img{
+    padding-right:4px !important;
+  }
+`;
+
+export const MarkUnResolvedButton = styled(Button)`
+  background: #FA541C;
+  height: 36px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  img{
+    padding-right:4px !important;
+  }
 `;
 
 export const DateDivider = styled.div`

@@ -39,7 +39,7 @@ const DropdownWithCollapse: React.FC<DropdownWithCollapseProps> = ({
           </S.UserIcon>
 
           <S.DropdownHeader onClick={() => setOpenDropdown(!openDropdown)}>
-            <span>{selected?.name || 'Unnamed'}</span>
+            <span>{selected?.name || 'Assigned to'}</span>
             <S.ArrowIcon isOpen={openDropdown}>
               <Image src={arrDown} preview={false} />
             </S.ArrowIcon>

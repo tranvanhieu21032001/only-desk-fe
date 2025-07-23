@@ -10,6 +10,7 @@ export const operatorsQuery = graphql`
         firstName
         lastName
         email
+        rawId
       }
       role
       status

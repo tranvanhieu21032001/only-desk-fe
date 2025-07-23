@@ -49,6 +49,7 @@ import { GlobalStyle } from './InboxDetail.styles';
 
 import avatarAdmin from '@/assets/images/avatar-default.png';
 import check from '@/assets/icons/common/ic-check.svg';
+import unresolved from '@/assets/icons/common/ic-unresolved.svg';
 import barOpen from '@/assets/icons/common/ic-bar-open.svg';
 import barClose from '@/assets/icons/common/ic-bar.svg';
 import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
@@ -57,7 +58,12 @@ import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
-import { fetchConversationDetail } from '../../store/features/inbox';
+import {
+  fetchConversationDetail,
+  updateConversationResolved,
+  updateSelectedConversation,
+} from '../../store/features/inbox';
+import { handleUpdateConversation } from '../../api/conversations.api';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar, conversation }) => {
@@ -141,6 +147,33 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       (state) => state.inbox,
     );
 
+    const [isUpdatingResolved, setIsUpdatingResolved] = useState(false);
+    const onMarkAsResolved = async () => {
+      if (!selectedConversation?.rawId || !workspaceId) return;
+      try {
+        setIsUpdatingResolved(true);
+
+        const rawId = selectedConversation.rawId;
+        const newResolved = !selectedConversation.resolved;
+        
+
+        await handleUpdateConversation(rawId, { resolved: newResolved }, t);
+
+        dispatch(updateSelectedConversation({ resolved: newResolved }));
+        dispatch(
+          updateConversationResolved({
+            workspaceId,
+            conversationId: selectedConversation.id,
+            resolved: newResolved,
+          }),
+        );
+      } catch (err) {
+        console.error('Failed to update conversation resolved state:', err);
+      } finally {
+        setIsUpdatingResolved(false);
+      }
+    };
+
     const currentConversations = useMemo(() => {
       return workspaceId ? conversations[workspaceId] || [] : [];
     }, [workspaceId, conversations]);
@@ -165,10 +198,8 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       ],
     );
     useEffect(() => {
-      if(conversationId)
-        dispatch(fetchConversationDetail(conversationId));
-    }, [dispatch,, conversationId]);
-    
+      if (conversationId) dispatch(fetchConversationDetail(conversationId));
+    }, [dispatch, , conversationId]);
 
     const messageEndRef = useRef<HTMLDivElement>(null);
     const messageContainerRef = useRef<HTMLDivElement>(null);
@@ -490,7 +521,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           />
           <S.Header>
             <S.HeaderLeft>
-          <ProfileCard
+              <ProfileCard
                 contactId={currentConversation?.contact?.id}
                 name={currentConversation?.contact?.name || DEFAULT_FULL_NAME}
                 avatarUrl={currentConversation?.contact?.avatar}
@@ -504,10 +535,24 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
               </S.Info>
             </S.HeaderLeft>
             <S.HeaderRight>
-              <S.MarkResolvedButton>
-                <Image src={check} preview={false} />{' '}
-                {t('inboxDetail.markResolved')}
-              </S.MarkResolvedButton>
+              {selectedConversation?.resolved ? (
+                <S.MarkUnResolvedButton
+                  onClick={onMarkAsResolved}
+                  isLoading={isUpdatingResolved}
+                >
+                  <Image src={unresolved} preview={false} />{' '}
+                  {t('inboxDetail.markUnResolved')}
+                </S.MarkUnResolvedButton>
+              ) : (
+                <S.MarkResolvedButton
+                  onClick={onMarkAsResolved}
+                  isLoading={isUpdatingResolved}
+                >
+                  <Image src={check} preview={false} />{' '}
+                  {t('inboxDetail.markResolved')}
+                </S.MarkResolvedButton>
+              )}
+
               <S.ToggleSidebarButton onClick={toggleSidebar}>
                 <Image
                   src={isSidebarOpen ? barClose : barOpen}

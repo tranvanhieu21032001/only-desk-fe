@@ -43,24 +43,18 @@ const InboxSidebar = () => {
 
   const formattedOperators = useMemo(() => {
     return operators.map((op) => {
-      const { user, rawId, id } = op;
+      const { user, id } = op;
       const fullName =
         [user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'Guest';
       return {
         id,
-        rawId,
+        rawId: user?.rawId,
         name: fullName,
         avatar: user?.avatar || defaultAvatar,
         email: user?.email,
       };
     });
   }, [operators]);
-
-  useEffect(() => {
-    if (formattedOperators.length && !selected) {
-      setSelected(formattedOperators[0]);
-    }
-  }, [formattedOperators, selected]);
 
   useEffect(() => {
     dispatch(fetchOperators());
@@ -83,8 +77,8 @@ const InboxSidebar = () => {
     } else {
       convertMetadata = Object.entries(selectedConversation?.contact?.metadata || {}).map(
         ([key, value]) => ({
-          key: String(key),
-          value: String(value),
+        key: String(key),
+        value: String(value),
         }),
       );
     }
@@ -100,29 +94,50 @@ const InboxSidebar = () => {
     }
   }, [selectedConversation, form]);
 
-  const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
-    try {
-      const conversationId = selectedConversation?.rawId || '';
-      const metadataObject = form
-        .getFieldValue('metadata')
-        ?.reduce((acc: Record<string, string>, item: any) => {
-          if (item.key?.trim()) acc[item.key] = item.value;
-          return acc;
-        }, {});
+const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
+  try {
+    const conversationId = selectedConversation?.rawId;
+    if (!conversationId || !partialData || Object.keys(partialData).length === 0) return;
 
-      const basePayload = {
-        assignedToId: selected?.rawId || '',
-        segments: tags,
-        participantsIds: participants,
-        metadata: metadataObject,
-        ...partialData,
-      };
+    const changedFields: Record<string, any> = {};
 
-      await handleUpdateConversation(conversationId, basePayload, t);
-    } catch (err) {
-      console.error('Auto update conversation failed:', err);
+    for (const key of Object.keys(partialData)) {
+      const newValue = partialData[key];
+      let oldValue;
+
+      switch (key) {
+        case 'assignedToId':
+          oldValue = selectedConversation?.assignedTo?.rawId;
+          break;
+        case 'participantsIds':
+          oldValue = selectedConversation?.participants?.map((p) => p.rawId) || [];
+          break;
+        case 'segments':
+          oldValue = selectedConversation?.contact?.segments || [];
+          break;
+        case 'metadata':
+          const raw = selectedConversation?.contact?.metadata || {};
+          oldValue = Array.isArray(raw)
+            ? raw.reduce((acc: any, item: any) => {
+                if (item.key?.trim()) acc[item.key] = String(item.value);
+                return acc;
+              }, {})
+            : raw;
+          break;
+        default:
+          oldValue = selectedConversation?.[key];
+      }
+
+      if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+        changedFields[key] = newValue;
+      }
     }
-  };
+
+    if (Object.keys(changedFields).length === 0) return;
+
+    await handleUpdateConversation(conversationId, changedFields, t);
+  } catch {}
+};
 
   const handleSelect = (option: any) => {
     setSelected(option);
@@ -130,7 +145,7 @@ const InboxSidebar = () => {
     handleAutoUpdateConversation({ assignedToId: option.rawId });
   };
 
-  const updateEmailIfValid = async () => {    
+  const updateEmailIfValid = async () => {
     const contactId = selectedConversation?.contact?.rawId;
     if (!contactId) return;
 

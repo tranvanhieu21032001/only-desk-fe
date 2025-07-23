@@ -74,6 +74,7 @@ export const fetchConversationDetail = createAsyncThunk(
           id: data.id || '',
           rawId: data.rawId || '',
           contact,
+          resolved: data.resolved || false,
           assignedTo: data.assignedTo?.id || null,
           participants: data.participants,
           lastActivityAt: data.lastActivityAt || '',
@@ -115,12 +116,30 @@ const inboxSlice = createSlice({
         }
       }
     },
+    updateConversationResolved(state, action) {
+      const { workspaceId, conversationId, resolved } = action.payload;
+      const conversations = state.conversations[workspaceId];
+      if (conversations) {
+        const conv = conversations.find((c) => c.id === conversationId);
+        if (conv) {
+          conv.resolved = resolved;
+        }
+      }
+    },
     updateSelectedConversationContact(state, action) {
       const updates = action.payload;
       if (state.selectedConversation?.contact) {
         state.selectedConversation.contact = {
           ...state.selectedConversation.contact,
           ...updates,
+        };
+      }
+    },
+    updateSelectedConversation(state, action) {
+      if (state.selectedConversation) {
+        state.selectedConversation = {
+          ...state.selectedConversation,
+          ...action.payload,
         };
       }
     },
@@ -168,7 +187,9 @@ export const {
   setSelectedConversation,
   clearSelectedConversation,
   updateConversationUnreadCount,
+  updateConversationResolved,
   updateSelectedConversationContact,
+  updateSelectedConversation,
   toggleSidebar,
   setSidebarOpen,
 } = inboxSlice.actions;

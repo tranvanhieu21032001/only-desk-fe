@@ -11,20 +11,16 @@ const handleUpdateConversation = async (
   values: any,
   t: (key: string) => string
 ) => {
-  const updatePayload = {
-    resolved: values?.resolved ?? false,
-    assignedToId: values?.assignedToId ?? null,
-    participantsIds: values?.participantsIds ?? [],
-    segments: values?.segments ?? [],
-    metadata: values?.metadata ?? {},
-  };
-
-  await updateRequest(endpointContact.UPDATE_CONVERSATIONS.replace(':conversationsId', conversationId), {
-    data: updatePayload,
-    messageSuccess: t('inboxSidebar.updateSuccess'),
-  });
+  const updatePayload = Object.fromEntries(
+    Object.entries(values).filter(([_, v]) => v !== undefined)
+  );
+  await updateRequest(
+    endpointContact.UPDATE_CONVERSATIONS.replace(':conversationsId', conversationId),
+    {
+      data: updatePayload,
+      messageSuccess: t('inboxSidebar.updateSuccess'),
+    }
+  );
 };
-
-
 
 export { endpointContact, handleUpdateConversation };

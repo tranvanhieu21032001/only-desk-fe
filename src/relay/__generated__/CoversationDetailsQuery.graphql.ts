@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<cb15fec3c8630aa08b37f95046c46410>>
+ * @generated SignedSource<<f92fd8876c7629f0c7dba04813faf24d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -52,6 +52,7 @@ export type CoversationDetailsQuery$data = {
       readonly lastName: string | null | undefined;
     }> | null | undefined;
     readonly rawId?: string;
+    readonly resolved?: boolean | null | undefined;
     readonly segments?: ReadonlyArray<string> | null | undefined;
     readonly subject?: string | null | undefined;
     readonly unreadCount?: number | null | undefined;
@@ -271,45 +272,52 @@ v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "segments",
+  "name": "resolved",
   "storageKey": null
 },
 v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "createdAt",
+  "name": "segments",
   "storageKey": null
 },
 v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "updatedAt",
+  "name": "createdAt",
   "storageKey": null
 },
 v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "lastActivityAt",
+  "name": "updatedAt",
   "storageKey": null
 },
 v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "closedAt",
+  "name": "lastActivityAt",
   "storageKey": null
 },
 v16 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "unreadCount",
+  "name": "closedAt",
   "storageKey": null
 },
 v17 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "unreadCount",
+  "storageKey": null
+},
+v18 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -351,7 +359,8 @@ return {
               (v14/*: any*/),
               (v15/*: any*/),
               (v16/*: any*/),
-              (v17/*: any*/)
+              (v17/*: any*/),
+              (v18/*: any*/)
             ],
             "type": "Conversation",
             "abstractKey": null
@@ -399,7 +408,8 @@ return {
               (v14/*: any*/),
               (v15/*: any*/),
               (v16/*: any*/),
-              (v17/*: any*/)
+              (v17/*: any*/),
+              (v18/*: any*/)
             ],
             "type": "Conversation",
             "abstractKey": null
@@ -410,16 +420,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "0b8dc96e4f6d8b5b1a13d74001852ec5",
+    "cacheID": "6e04f51e90583357b32de4db5a21b37e",
     "id": null,
     "metadata": {},
     "name": "CoversationDetailsQuery",
     "operationKind": "query",
-    "text": "query CoversationDetailsQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Conversation {\n      id\n      rawId\n      contact {\n        id\n        rawId\n        email\n        avatar\n        name\n        isOnline\n        guestId\n        notification\n        context {\n          countryCode\n          countryName\n          city\n          timezone\n          language\n          latitude\n          longitude\n          browser\n          os\n        }\n      }\n      participants {\n        id\n        email\n        firstName\n        lastName\n        avatar\n        isOnline\n      }\n      subject\n      metadata\n      segments\n      createdAt\n      updatedAt\n      lastActivityAt\n      closedAt\n      unreadCount\n      assignedTo {\n        id\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query CoversationDetailsQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Conversation {\n      id\n      rawId\n      contact {\n        id\n        rawId\n        email\n        avatar\n        name\n        isOnline\n        guestId\n        notification\n        context {\n          countryCode\n          countryName\n          city\n          timezone\n          language\n          latitude\n          longitude\n          browser\n          os\n        }\n      }\n      participants {\n        id\n        email\n        firstName\n        lastName\n        avatar\n        isOnline\n      }\n      subject\n      metadata\n      resolved\n      segments\n      createdAt\n      updatedAt\n      lastActivityAt\n      closedAt\n      unreadCount\n      assignedTo {\n        id\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "3ac9a476a5becff32e653584a2f6001c";
+(node as any).hash = "5ba0abb2d66007e425e9d7175ddc7bc6";
 
 export default node;

@@ -37,6 +37,7 @@ export const coversationDetailsQuery = graphql`
         }
         subject
         metadata
+        resolved
         segments
         createdAt
         updatedAt
