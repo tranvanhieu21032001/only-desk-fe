@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import { useTranslation } from 'react-i18next';
 import { handleUpdateConversation } from '../../api/conversations.api';
+import { useAppSelector } from '@/shared/hooks';
 
 type Props = {
   unreadCount?: number;
@@ -42,6 +43,7 @@ const InboxListMenu: React.FC<Props> = ({
   const dispatch = useDispatch();
   const { t } = useTranslation('inbox');
   const workspaceId = useSelector(selectCurrentWorkspaceId);
+  const { selectedConversation } = useAppSelector((state) => state.inbox);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -75,7 +77,10 @@ const InboxListMenu: React.FC<Props> = ({
       await handleUpdateConversation(rawId, { resolved: newResolved }, t);
 
       onToggleResolved?.(newResolved);
-      dispatch(updateSelectedConversation({ resolved: newResolved }));
+
+      if (selectedConversation?.id === conversationId) {
+        dispatch(updateSelectedConversation({ resolved: newResolved }));
+      }
     } catch (err) {
       console.error('Failed to update conversation resolved state:', err);
     }
