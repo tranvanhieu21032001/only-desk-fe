@@ -56,7 +56,7 @@ export const fetchConversationDetail = createAsyncThunk(
           rawId: data.contact?.rawId || '',
           createdAt: data?.createdAt || '',
           updatedAt: data?.updatedAt || '',
-          name: data.contact?.name || 'Guest',
+          name: data.contact?.name || 'No Name',
           email: data.contact?.email || '',
           segments: [...(data?.segments || [])],
           isOnline: data.contact?.isOnline ?? false,

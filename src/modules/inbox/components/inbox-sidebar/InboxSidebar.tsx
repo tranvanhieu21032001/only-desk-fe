@@ -45,7 +45,7 @@ const InboxSidebar = () => {
     return operators.map((op) => {
       const { user } = op;
       const fullName =
-        [user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'Guest';
+        [user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'No Name';
       return {
         id: user.id,
         rawId: user.rawId,

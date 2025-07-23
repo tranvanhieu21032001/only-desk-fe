@@ -125,7 +125,7 @@ const ConversationList: React.FC<Props> = ({
           createdAt: conversation.createdAt || '',
           updatedAt: conversation.updatedAt || '',
           guestId: '',
-          name: conversation.contact?.name || 'Guest',
+          name: conversation.contact?.name || 'No Name',
           email: conversation.contact?.email || '',
           notification: true,
           segments: [],

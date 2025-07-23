@@ -30,7 +30,7 @@ export const fetchConversationsRelay = async (
         createdAt: '',
         updatedAt: '',
         guestId: '',
-        name: node.contact?.name || 'Guest',
+        name: node.contact?.name || 'No name',
         email: node.contact?.email || '',
         notification: true,
         segments: [],
