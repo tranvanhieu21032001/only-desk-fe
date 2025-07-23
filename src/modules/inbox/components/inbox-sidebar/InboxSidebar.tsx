@@ -43,7 +43,7 @@ const InboxSidebar = () => {
 
   const formattedOperators = useMemo(() => {
     return operators.map((op) => {
-      const { user, id } = op;
+      const { user } = op;
       const fullName =
         [user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'Guest';
       return {
@@ -56,37 +56,31 @@ const InboxSidebar = () => {
     });
   }, [operators]);
 
-  const rawIdToUserIdMap = useMemo(() => {
-    const map = new Map<string, string>();
-    formattedOperators.forEach((op) => {
-      if (op.rawId && op.id) map.set(op.rawId, op.id);
-    });
-    return map;
-  }, [formattedOperators]);
-
   useEffect(() => {
     dispatch(fetchOperators());
   }, [dispatch]);
 
   useEffect(() => {
-    if (selectedConversation?.contact?.segments && Array.isArray(selectedConversation?.contact?.segments)) {
-      setTags(selectedConversation?.contact?.segments);
+    if (Array.isArray(selectedConversation?.contact?.segments)) {
+      setTags(selectedConversation.contact.segments);
     }
   }, [selectedConversation]);
 
   useEffect(() => {
     let convertMetadata: { key: string; value: string }[] = [];
 
-    if (Array.isArray(selectedConversation?.contact?.metadata)) {
-      convertMetadata = selectedConversation?.contact?.metadata.map((item) => ({
+    const rawMetadata = selectedConversation?.contact?.metadata;
+
+    if (Array.isArray(rawMetadata)) {
+      convertMetadata = rawMetadata.map((item) => ({
         key: String(item.key),
         value: String(item.value),
       }));
     } else {
-      convertMetadata = Object.entries(selectedConversation?.contact?.metadata || {}).map(
+      convertMetadata = Object.entries(rawMetadata || {}).map(
         ([key, value]) => ({
-        key: String(key),
-        value: String(value),
+          key: String(key),
+          value: String(value),
         }),
       );
     }
@@ -115,10 +109,12 @@ const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
 
         switch (key) {
           case 'assignedToId':
-            oldValue = selectedConversation?.assignedTo?.user?.id;
+            oldValue = selectedConversation?.assignedTo?.user?.rawId;
             break;
           case 'participantsIds':
-            oldValue = selectedConversation?.participants?.map((p) => p.user?.id) || [];
+            oldValue = (selectedConversation?.participants || [])
+              .map((p) => p.user?.rawId)
+              .filter(Boolean);
             break;
           case 'segments':
             oldValue = selectedConversation?.contact?.segments || [];
@@ -150,7 +146,7 @@ const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
   const handleSelect = (option: any) => {
     setSelected(option);
     setOpenDropdown(false);
-    handleAutoUpdateConversation({ assignedToId: option.id });
+    handleAutoUpdateConversation({ assignedToId: option.rawId });
   };
 
   const updateEmailIfValid = async () => {
@@ -232,12 +228,8 @@ const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
           setParticipants={setParticipants}
           operators={formattedOperators}
           onConfirmAddParticipants={(newRawIds) => {
-            const userIds = newRawIds
-              .map((rawId) => rawIdToUserIdMap.get(rawId))
-              .filter(Boolean) as string[];
-
             setParticipants(newRawIds);
-            handleAutoUpdateConversation({ participantsIds: userIds });
+            handleAutoUpdateConversation({ participantsIds: newRawIds });
           }}
         />
 
@@ -264,7 +256,11 @@ const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
           openCollapse={openCollapse}
           onChange={(newMetadata) => {
             form.setFieldValue('metadata', newMetadata);
-            handleAutoUpdateConversation({});
+            const metadataObject = newMetadata.reduce((acc: any, { key, value }: any) => {
+              if (key?.trim()) acc[key] = value;
+              return acc;
+            }, {});
+            handleAutoUpdateConversation({ metadata: metadataObject });
           }}
         />
       </Form>
