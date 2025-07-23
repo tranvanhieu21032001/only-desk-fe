@@ -21,6 +21,7 @@ import defaultAvatar from '@/assets/images/avatar-default.png';
 import Input from '@/shared/components/common/Input';
 import { handleEditProfile } from '@/modules/contacts/api/contacts.api';
 import { updateSelectedConversationContact } from '../../store/features/inbox';
+import { decodeGlobalId } from '@/shared/utils/decode';
 
 const InboxSidebar = () => {
   const { t } = useTranslation('inbox');
@@ -61,6 +62,16 @@ const InboxSidebar = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    if (selectedConversation?.participants?.length) {
+      const rawIds = selectedConversation.participants
+        .map((p) => p?.id)
+        .filter(Boolean)
+        .map((id) => decodeGlobalId(id));
+      setParticipants(rawIds);
+    }
+  }, [selectedConversation]);
+
+  useEffect(() => {
     if (Array.isArray(selectedConversation?.contact?.segments)) {
       setTags(selectedConversation.contact.segments);
     }
@@ -96,10 +107,31 @@ const InboxSidebar = () => {
     }
   }, [selectedConversation, form]);
 
-const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
-  try {
-    const conversationId = selectedConversation?.rawId;
-    if (!conversationId || !partialData || Object.keys(partialData).length === 0) return;
+  useEffect(() => {
+    if (!selectedConversation || !formattedOperators.length) return;
+
+    const assignedToRawId = selectedConversation?.assignedTo
+      ? decodeGlobalId(selectedConversation.assignedTo)
+      : null;
+
+    if (!assignedToRawId) {
+      setSelected(null);
+      return;
+    }
+
+    const foundOperator = formattedOperators.find(
+      (op) => op.rawId === assignedToRawId
+    );
+
+    if (foundOperator) {
+      setSelected(foundOperator);
+    }
+  }, [selectedConversation, formattedOperators]);
+
+  const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
+    try {
+      const conversationId = selectedConversation?.rawId;
+      if (!conversationId || !partialData || Object.keys(partialData).length === 0) return;
 
     const changedFields: Record<string, any> = {};
 
@@ -109,7 +141,9 @@ const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
 
         switch (key) {
           case 'assignedToId':
-            oldValue = selectedConversation?.assignedTo?.user?.rawId;
+            oldValue = selectedConversation?.assignedTo
+              ? decodeGlobalId(selectedConversation?.assignedTo)
+              : null;
             break;
           case 'participantsIds':
             oldValue = (selectedConversation?.participants || [])
@@ -160,12 +194,12 @@ const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
       if (email) {
         await handleEditProfile(
           contactId,
-          { email},
+          { email },
           'Email updated successfully',
           dispatch,
         );
+        dispatch(updateSelectedConversationContact({ email }));
       }
-         dispatch(updateSelectedConversationContact({ email }));
     } catch {
       // Do nothing on validation error
     }

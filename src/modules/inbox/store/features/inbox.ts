@@ -149,7 +149,6 @@ const inboxSlice = createSlice({
     },
     toggleSidebar(state) {
       state.isSidebarOpen = !state.isSidebarOpen;
-      console.log('isSidebarOpen', state.isSidebarOpen);
       webStorageClient.set(constants.IS_SIDEBAR_OPEN, state.isSidebarOpen);
     },
   },
