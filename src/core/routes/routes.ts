@@ -175,7 +175,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'assigned-to-me',
     path: MAIN_ROUTES.ASSIGNED_TO_ME,
-    component: PageNotFound,
+    component: Inbox,
     name: 'assigned-to-me',
   },
   {

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7187b6a8b4c87fd11e8de6354eecb3b3>>
+ * @generated SignedSource<<749576c3418720447cc623fbdf0a9b64>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -84,6 +84,11 @@ return {
       "name": "after"
     },
     {
+      "defaultValue": false,
+      "kind": "LocalArgument",
+      "name": "assignedToMe"
+    },
+    {
       "defaultValue": 10,
       "kind": "LocalArgument",
       "name": "first"
@@ -116,7 +121,13 @@ return {
   "selections": [
     {
       "alias": "conversations",
-      "args": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "assignedToMe",
+          "variableName": "assignedToMe"
+        }
+      ],
       "concreteType": "ConversationConnection",
       "kind": "LinkedField",
       "name": "__ConversationListFragment_conversations_connection",
@@ -339,6 +350,6 @@ return {
 };
 })();
 
-(node as any).hash = "be23205696035a9eb9a918f96c10d647";
+(node as any).hash = "6c87cb1919d19e9fd4067db115c6054e";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<28ca35ecb9237bb8056729bf6653102b>>
+ * @generated SignedSource<<098f9d66a39cc91512fd4cd6dc6e9ef7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type ConversationListPaginationQuery$variables = {
   after?: string | null | undefined;
+  assignedToMe?: boolean | null | undefined;
   first?: number | null | undefined;
 };
 export type ConversationListPaginationQuery$data = {
@@ -30,6 +31,11 @@ var v0 = [
     "name": "after"
   },
   {
+    "defaultValue": false,
+    "kind": "LocalArgument",
+    "name": "assignedToMe"
+  },
+  {
     "defaultValue": 10,
     "kind": "LocalArgument",
     "name": "first"
@@ -40,6 +46,11 @@ v1 = [
     "kind": "Variable",
     "name": "after",
     "variableName": "after"
+  },
+  {
+    "kind": "Variable",
+    "name": "assignedToMe",
+    "variableName": "assignedToMe"
   },
   {
     "kind": "Variable",
@@ -306,7 +317,9 @@ return {
       {
         "alias": null,
         "args": (v1/*: any*/),
-        "filters": null,
+        "filters": [
+          "assignedToMe"
+        ],
         "handle": "connection",
         "key": "ConversationListFragment_conversations",
         "kind": "LinkedHandle",
@@ -315,16 +328,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "693f9d77af0ff7b5d48801b2f1198710",
+    "cacheID": "d4ff1b372d7ac6eb7c717b651e522ad3",
     "id": null,
     "metadata": {},
     "name": "ConversationListPaginationQuery",
     "operationKind": "query",
-    "text": "query ConversationListPaginationQuery(\n  $after: String\n  $first: Float = 10\n) {\n  ...ConversationListFragment_query_2HEEH6\n}\n\nfragment ConversationListFragment_query_2HEEH6 on Query {\n  conversations(first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          avatar\n          name\n          isOnline\n          id\n          rawId\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListPaginationQuery(\n  $after: String\n  $assignedToMe: Boolean = false\n  $first: Float = 10\n) {\n  ...ConversationListFragment_query_Bk7iV\n}\n\nfragment ConversationListFragment_query_Bk7iV on Query {\n  conversations(first: $first, after: $after, assignedToMe: $assignedToMe) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          avatar\n          name\n          isOnline\n          id\n          rawId\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        createdAt\n        updatedAt\n        lastActivityAt\n        closedAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "be23205696035a9eb9a918f96c10d647";
+(node as any).hash = "6c87cb1919d19e9fd4067db115c6054e";
 
 export default node;

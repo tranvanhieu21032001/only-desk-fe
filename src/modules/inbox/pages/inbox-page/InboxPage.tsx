@@ -1,6 +1,6 @@
 import React, { useCallback, Suspense, useMemo } from 'react';
 import { Splitter } from 'antd';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { usePreloadedQuery, loadQuery } from 'react-relay';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -21,16 +21,25 @@ import InboxListSkeleton from '../../components/inbox-list/InboxListSkeleton';
 import { RootState } from '@/core/store';
 import { toggleSidebar } from '../../store/features/inbox';
 
-const queryRef = loadQuery<ConversationListPaginationQueryType>(
-  RelayEnvironment,
-  ConversationListPaginationQuery,
-  { first: 10 },
-);
-
 const MainInbox: React.FC = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
+
+  const isAssignedToMePage = location.pathname === '/assigned-to-me';
+  const queryRef = useMemo(
+    () =>
+      loadQuery<ConversationListPaginationQueryType>(
+        RelayEnvironment,
+        ConversationListPaginationQuery,
+        {
+          first: 10,
+          ...(isAssignedToMePage ? { assignedToMe: true } : {}),
+        },
+      ),
+    [isAssignedToMePage],
+  );
 
   const isSidebarOpen = useSelector(
     (state: RootState) => state.inbox.isSidebarOpen,
@@ -40,19 +49,16 @@ const MainInbox: React.FC = () => {
     dispatch(toggleSidebar());
   }, [dispatch]);
 
-  // data: ConversationListPaginationQuery$data
   const data = usePreloadedQuery<ConversationListPaginationQueryType>(
     ConversationListPaginationQuery,
     queryRef,
   ) as ConversationListPaginationQuery$data;
 
-  // conversationsList: Conversation[]
   const conversationsList =
     (
       (data as any).conversations?.edges as Array<{ node: any }> | undefined
     )?.map((edge) => edge.node) || [];
 
-  // selectedConversation: any
   const selectedConversation = useMemo(() => {
     if (!activeConversationId) return null;
     return (
