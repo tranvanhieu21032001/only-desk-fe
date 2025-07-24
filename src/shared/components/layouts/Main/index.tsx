@@ -218,12 +218,12 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
                 />
                 <Typography>{t('all-chats')}</Typography>
               </S.ChildrenMenuLabel>
-              <S.ChildrenMenuCount>
+              {/* <S.ChildrenMenuCount>
                 <Typography>
                   {2 <= MAX_COUNT ? 2 : 10}
                   {11 > MAX_COUNT && '+'}
                 </Typography>
-              </S.ChildrenMenuCount>
+              </S.ChildrenMenuCount> */}
             </S.ChildrenMenuWrap>
 
             <S.ChildrenMenuWrap
@@ -241,18 +241,18 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
                 />
                 <Typography>{t('assigned-to-me')}</Typography>
               </S.ChildrenMenuLabel>
-              <S.ChildrenMenuCount>
+              {/* <S.ChildrenMenuCount>
                 <Typography>
                   {2 <= MAX_COUNT ? 2 : 10}
                   {11 > MAX_COUNT && '+'}
                 </Typography>
-              </S.ChildrenMenuCount>
+              </S.ChildrenMenuCount> */}
             </S.ChildrenMenuWrap>
           </S.PopoverLabelWrap>
 
-          <S.LineDash />
+          {/* <S.LineDash /> */}
 
-          <S.PopoverLabelWrap>
+          {/* <S.PopoverLabelWrap>
             <S.ChildrenMenuWrap
               onClick={() => {
                 setIsNewSubInboxModalOpen(true);
@@ -270,11 +270,11 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
                 <Typography>{t('new-sub-inbox')}</Typography>
               </S.ChildrenMenuLabel>
             </S.ChildrenMenuWrap>
-          </S.PopoverLabelWrap>
+          </S.PopoverLabelWrap> */}
 
-          <S.LineDash />
+          {/* <S.LineDash /> */}
 
-          <S.ChildrenMenuWrap
+          {/* <S.ChildrenMenuWrap
             onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.SPAM_CHATS)}
             $isActive={routePath === MAIN_ROUTES?.SPAM_CHATS}
           >
@@ -284,7 +284,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
                 {t('spam-chats')}
               </Typography>
             </S.ChildrenMenuLabel>
-          </S.ChildrenMenuWrap>
+          </S.ChildrenMenuWrap> */}
         </S.PopoverContent>
       ),
     },
