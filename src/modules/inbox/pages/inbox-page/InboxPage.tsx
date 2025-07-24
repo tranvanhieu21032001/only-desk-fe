@@ -96,7 +96,7 @@ const MainInbox: React.FC = () => {
           </Splitter.Panel>
         </Splitter>
       </S.CustomSplitter>
-      {isSidebarOpen && <InboxSidebar />}
+      {isSidebarOpen && !!activeConversationId && <InboxSidebar />}
     </S.InboxWrapper>
   );
 };
