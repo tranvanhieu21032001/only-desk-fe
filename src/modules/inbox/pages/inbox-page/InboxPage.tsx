@@ -54,19 +54,6 @@ const MainInbox: React.FC = () => {
     queryRef,
   ) as ConversationListPaginationQuery$data;
 
-  const conversationsList =
-    (
-      (data as any).conversations?.edges as Array<{ node: any }> | undefined
-    )?.map((edge) => edge.node) || [];
-
-  const selectedConversation = useMemo(() => {
-    if (!activeConversationId) return null;
-    return (
-      conversationsList.find((conv: any) => conv.id === activeConversationId) ||
-      null
-    );
-  }, [activeConversationId, conversationsList]);
-
   return (
     <S.InboxWrapper>
       <S.CustomSplitter>
@@ -78,7 +65,10 @@ const MainInbox: React.FC = () => {
           >
             <S.InboxList>
               <Suspense fallback={<InboxListSkeleton />}>
-                <ConversationList conversationsRef={data} />
+                <ConversationList
+                  conversationsRef={data}
+                  isAssignedToMe={isAssignedToMePage}
+                />
               </Suspense>
             </S.InboxList>
           </Splitter.Panel>
@@ -89,7 +79,6 @@ const MainInbox: React.FC = () => {
                 <InboxDetail
                   isSidebarOpen={isSidebarOpen}
                   toggleSidebar={handleToggleSidebar}
-                  conversation={selectedConversation}
                 />
               </Suspense>
             </S.InboxDetailWrapper>

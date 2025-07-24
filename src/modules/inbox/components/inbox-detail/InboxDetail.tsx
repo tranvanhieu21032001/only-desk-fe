@@ -39,7 +39,6 @@ import { InboxFooter } from './InboxFooter';
 import { formatTime } from '@/shared/utils/time';
 import { decodeGlobalId } from '@/shared/utils/decode';
 import {
-  resolveCurrentConversation,
   handleIconClickLogic,
   handleSendMessageLogic,
 } from '../../helpers/inbox.logic';
@@ -70,7 +69,7 @@ import { handleUpdateConversation } from '../../api/conversations.api';
 import { eventBus } from '@/core/event-bus';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
-  ({ isSidebarOpen, toggleSidebar, conversation }) => {
+  ({ isSidebarOpen, toggleSidebar }) => {
     const { t } = useTranslation('inbox');
     const [searchParams] = useSearchParams();
     const conversationId = searchParams.get('conversationId');
@@ -147,9 +146,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const currentUserId = user?.id;
 
     const workspaceId = useSelector(selectCurrentWorkspaceId);
-    const { conversations, selectedConversation } = useAppSelector(
-      (state) => state.inbox,
-    );
+    const { selectedConversation } = useAppSelector((state) => state.inbox);
 
     const [isUpdatingResolved, setIsUpdatingResolved] = useState(false);
     const onMarkAsResolved = async () => {
@@ -181,29 +178,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       }
     };
 
-    const currentConversations = useMemo(() => {
-      return workspaceId ? conversations[workspaceId] || [] : [];
-    }, [workspaceId, conversations]);
-
-    const currentConversation = useMemo(
-      () =>
-        resolveCurrentConversation({
-          conversation: conversation ?? undefined,
-          selectedConversation: selectedConversation ?? undefined,
-          currentConversations,
-          stableConversationId: stableConversationId.current,
-          messages: messages as Message[],
-          workspaceId,
-        }),
-      [
-        conversation,
-        selectedConversation,
-        currentConversations,
-        stableConversationId.current,
-        messages,
-        workspaceId,
-      ],
-    );
     useEffect(() => {
       if (conversationId) dispatch(fetchConversationDetail(conversationId));
     }, [dispatch, , conversationId]);
@@ -529,15 +503,15 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           <S.Header>
             <S.HeaderLeft>
               <ProfileCard
-                contactId={currentConversation?.contact?.id}
-                name={currentConversation?.contact?.name || DEFAULT_FULL_NAME}
-                avatarUrl={currentConversation?.contact?.avatar}
-                countryCode={currentConversation?.contact?.countryCode}
+                contactId={selectedConversation?.contact?.id}
+                name={selectedConversation?.contact?.name || DEFAULT_FULL_NAME}
+                avatarUrl={selectedConversation?.contact?.avatar}
+                countryCode={selectedConversation?.contact?.countryCode}
                 hiddenInfo
               />
               <S.Info>
                 <S.Name>
-                  {currentConversation?.contact?.name || DEFAULT_FULL_NAME}
+                  {selectedConversation?.contact?.name || DEFAULT_FULL_NAME}
                 </S.Name>
               </S.Info>
             </S.HeaderLeft>
@@ -608,11 +582,11 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                             justLoadedMore={false}
                             isOwner={isAgent}
                             avatarAdmin={isAgent ? undefined : avatarAdmin}
-                            contactId={currentConversation?.contact?.id}
-                            name={currentConversation?.contact?.name}
-                            avatar={currentConversation?.contact?.avatar}
+                            contactId={selectedConversation?.contact?.id}
+                            name={selectedConversation?.contact?.name}
+                            avatar={selectedConversation?.contact?.avatar}
                             countryCode={
-                              currentConversation?.contact?.countryCode
+                              selectedConversation?.contact?.countryCode
                             }
                           />
                         </React.Fragment>

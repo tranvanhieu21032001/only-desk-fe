@@ -1,7 +1,7 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { usePaginationFragment } from 'react-relay';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -11,10 +11,7 @@ import type { ConversationListFragment_query$key } from '@/relay/__generated__/C
 import { eventBus } from '@/core/event-bus';
 import { EVENTBUS_WORKSPACE_CHANGED } from '@/core/settings/constants';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import {
-  fetchConversations,
-  setSelectedConversation,
-} from '../../store/features/inbox';
+import { setSelectedConversation } from '../../store/features/inbox';
 
 import { Conversation } from '../../interfaces/inbox';
 
@@ -22,15 +19,18 @@ import * as S from './InboxList.styles';
 
 import InboxItem from './InboxItem';
 import InboxListHeader from './InboxListHeader';
+import { ConversationListPaginationQuery } from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
 
 type Props = {
   conversationsRef: ConversationListFragment_query$key;
   onSelectConversation?: (conversation: any) => void;
+  isAssignedToMe?: boolean;
 };
 
 const ConversationList: React.FC<Props> = ({
   conversationsRef,
   onSelectConversation,
+  isAssignedToMe,
 }) => {
   const { t } = useTranslation('inbox');
   const conversationListWrapperRef = useRef<HTMLDivElement>(null);
@@ -38,18 +38,28 @@ const ConversationList: React.FC<Props> = ({
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
 
-  const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment(
-    conversationListFragment,
-    conversationsRef,
-  );
-
-  const [activeMenu, setActiveMenu] = useState<number | null>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const menuDropdownRef = useRef<HTMLDivElement>(null);
+  const { data, loadNext, hasNext, isLoadingNext, refetch } =
+    usePaginationFragment<
+      ConversationListPaginationQuery,
+      ConversationListFragment_query$key
+    >(conversationListFragment, conversationsRef);
 
   const workspaceId = useSelector(selectCurrentWorkspaceId);
   const dispatch = useAppDispatch();
-  const { conversations } = useAppSelector((state) => state.inbox);
+
+  const refreshConversations = (isAssignedToMe: boolean | undefined) => {
+    refetch(
+      {
+        first: 10,
+        ...(isAssignedToMe ? { assignedToMe: true } : {}),
+      },
+      { fetchPolicy: 'network-only' }, //make sure it call server to refresh data without using cache data
+    );
+  };
+
+  useEffect(() => {
+    refreshConversations(isAssignedToMe);
+  }, [isAssignedToMe]);
 
   useEffect(() => {
     if (onSelectConversation && activeConversationId) {
@@ -80,36 +90,14 @@ const ConversationList: React.FC<Props> = ({
 
   useEffect(() => {
     const handleWorkspaceChange = () => {
-      if (workspaceId && !conversations[workspaceId]) {
-        dispatch(fetchConversations(workspaceId));
-      }
+      refreshConversations(isAssignedToMe);
     };
 
     eventBus.on(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
     return () => {
       eventBus.off(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
     };
-  }, [workspaceId, dispatch, conversations]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(target) &&
-        menuDropdownRef.current &&
-        !menuDropdownRef.current.contains(target)
-      ) {
-        setActiveMenu(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  }, [workspaceId, dispatch]);
 
   const handleConversationClick = (conversationId: string) => {
     const conversation = data.conversations.edges.find(

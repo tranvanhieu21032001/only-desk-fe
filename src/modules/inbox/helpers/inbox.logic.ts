@@ -31,7 +31,7 @@ export function createAgentMessage({
           firstName: user.firstName,
           lastName: user.lastName,
           avatar: user.avatar,
-          email: user.email
+          email: user.email,
         }
       : null,
     type,
@@ -71,91 +71,12 @@ export const uploadFile = async (
   });
 };
 
-export function resolveCurrentConversation({
-  conversation,
-  selectedConversation,
-  currentConversations,
-  stableConversationId,
-  messages,
-  workspaceId,
-}: {
-  conversation?: Conversation;
-  selectedConversation?: Conversation;
-  currentConversations: Conversation[];
-  stableConversationId: string | null;
-  messages: Message[];
-  workspaceId?: string;
-}): Conversation | undefined {
-  // Priority: conversation from props
-  if (conversation) return conversation;
-
-  // Then priority: selectedConversation from Redux
-  if (
-    selectedConversation &&
-    selectedConversation.id === stableConversationId
-  ) {
-    return selectedConversation;
-  }
-
-  // Find in currentConversations
-  const foundInRedux = currentConversations.find(
-    (conv) => conv.id === stableConversationId,
-  );
-  if (foundInRedux) {
-    return foundInRedux;
-  }
-
-  // Fallback: create from messages
-  if (messages && messages.length > 0 && stableConversationId) {
-    const guestMessage = messages.find(
-      (msg) => msg.sender === InboxSender.Guest,
-    );
-    const latestMessage = messages[0];
-    return {
-      id: stableConversationId,
-      contact: {
-        id: guestMessage?.user?.id || '',
-        createdAt: '',
-        updatedAt: '',
-        guestId: '',
-        name: guestMessage?.user?.firstName
-          ? `${guestMessage.user.firstName} ${guestMessage.user.lastName || ''}`.trim()
-          : 'Guest',
-        email: guestMessage?.user?.email,
-        notification: true,
-        segments: [],
-        isOnline: false,
-        lastActivityAt:
-          latestMessage?.createdAt || new Date().toISOString(),
-        workspaceId: workspaceId || '',
-        avatar: guestMessage?.user?.avatar || '',
-      },
-      assignedTo: null,
-      participants: [],
-      lastActivityAt: latestMessage?.createdAt || new Date().toISOString(),
-      latestMessage: latestMessage
-        ? {
-            id: latestMessage.id,
-            content: latestMessage.content,
-            sender: latestMessage.sender,
-            createdAt: latestMessage.createdAt,
-            updatedAt: latestMessage.updatedAt,
-            type: latestMessage.type,
-            status: latestMessage.status,
-            user: latestMessage.user,
-          }
-        : null,
-    } as Conversation;
-  }
-  return undefined;
-}
-
 export function handleIconClickLogic(
   e: React.MouseEvent,
   message: Message,
   setContextMenu: (ctx: any) => void,
   setHoveredMessageId: (id: string) => void,
-  MENU_WIDTH: number
+  MENU_WIDTH: number,
 ) {
   e.preventDefault();
   e.stopPropagation();
@@ -234,10 +155,7 @@ export function handleSendMessageLogic({
   setInputValue,
   setActiveTab,
 }: SendMessageParams) {
-  if (
-    (!content.trim() && type === InboxMessageType.Text) ||
-    !rawConversationId
-  )
+  if ((!content.trim() && type === InboxMessageType.Text) || !rawConversationId)
     return;
 
   const now = new Date();
@@ -254,7 +172,7 @@ export function handleSendMessageLogic({
             firstName: user.firstName,
             lastName: user.lastName,
             avatar: user.avatar,
-            email:user.email,
+            email: user.email,
           }
         : null,
     type:
