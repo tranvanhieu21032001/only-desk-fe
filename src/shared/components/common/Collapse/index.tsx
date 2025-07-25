@@ -31,7 +31,7 @@ const Collapse = ({ title, defaultOpen = true, children }: CollapseProps) => {
           )}
           {title}
         </S.TitleWrapper>
-        <S.CollapseIcon isOpen={open}>
+        <S.CollapseIcon $isOpen={open}>
           <Image src={arrClose} preview={false} />
         </S.CollapseIcon>
       </S.SectionHeader>

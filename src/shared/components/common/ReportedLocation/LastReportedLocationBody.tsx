@@ -64,7 +64,8 @@ function LastReportedLocationBody({
       </S.ContentWrap>
     );
   }
-  if (!context) {
+
+  if (!context?.countryCode && !context?.countryName) {
     return (
       <S.EmptyWrap>
         <AntImage src={empty} width={120} height={120} preview={false} />
@@ -75,15 +76,9 @@ function LastReportedLocationBody({
     );
   }
 
-  const city = context.city;
-  const country = context.countryName;
-  const timezone = context.timezone;
-  const language = context.language;
-  const device = context.os;
-  const browser = context.browser;
-  const flagIcon = flagList.find(
-    (item) => item.code === context.countryCode,
-  )?.image;
+  const { city, countryName: country, timezone, language, os: device, browser, countryCode } = context;
+
+  const flagIcon = flagList.find((item) => item.code === countryCode)?.image;
 
   const fieldMap = [
     {
@@ -93,7 +88,7 @@ function LastReportedLocationBody({
       icon: icLocation,
       show: city || country,
       customRender: (
-        <>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {flagIcon && (
             <AntImage
               src={flagIcon}
@@ -103,8 +98,10 @@ function LastReportedLocationBody({
               height={23}
             />
           )}
-          <Typography>{[city, country].filter(Boolean).join(', ')}</Typography>
-        </>
+          <Typography>
+            {[city, country].filter(Boolean).join(', ')}
+          </Typography>
+        </div>
       ),
     },
     {
@@ -128,40 +125,40 @@ function LastReportedLocationBody({
       icon: icGlobal,
       show: language,
       customRender: flagIcon && (
-        <AntImage
-          src={flagIcon}
-          alt="flag"
-          preview={false}
-          width={36}
-          height={23}
-        />
+        <div>
+          <AntImage
+            src={flagIcon}
+            alt="flag"
+            preview={false}
+            width={36}
+            height={23}
+          />
+        </div>
       ),
     },
   ];
 
   return (
     <>
-      {fieldMap.map(
-        ({ key, label, value, icon, show, customRender }) =>
-          show && (
-            <S.ContentWrap key={key}>
-              <Typography>
-                {icon ? (
-                  <AntImage src={icon} preview={false} width={20} height={20} />
-                ) : (
-                  label
-                )}
-              </Typography>
-
-              {isLoading ? (
-                <Skeleton.Input active style={{ height: 23, width: '100%' }} />
-              ) : customRender ? (
-                customRender
-              ) : (
-                <Typography>{value || '-'}</Typography>
+      {fieldMap.map(({ key, label, value, icon, show, customRender }) =>
+        show ? (
+          <S.ContentWrap key={key}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {icon && (
+                <AntImage src={icon} preview={false} width={20} height={20} />
               )}
-            </S.ContentWrap>
-          ),
+              <Typography>{label}</Typography>
+            </div>
+
+            {isLoading ? (
+              <Skeleton.Input active style={{ height: 23, width: '100%' }} />
+            ) : customRender ? (
+              <div>{customRender}</div>
+            ) : (
+              <Typography>{value || '-'}</Typography>
+            )}
+          </S.ContentWrap>
+        ) : null
       )}
     </>
   );

@@ -9,10 +9,8 @@ interface LocationCollapseProps {
 }
 
 const LocationCollapse: React.FC<LocationCollapseProps> = ({ openCollapse }) => {
-  const { contactDetails } = useAppSelector((state) => state.contacts);
 const { selectedConversation } = useAppSelector((state) => state.inbox);
-// console.log("selectedConversation", selectedConversation);
-// console.log("contactDetails", contactDetails);
+
 
   return (
     <Collapse title="Main Information">

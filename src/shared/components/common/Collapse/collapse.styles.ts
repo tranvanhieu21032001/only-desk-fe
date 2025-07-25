@@ -32,10 +32,10 @@ export const SectionHeader = styled.div`
   cursor: pointer;
 `;
 
-export const CollapseIcon = styled.span<{ isOpen: boolean }>`
+export const CollapseIcon = styled.span<{ $isOpen: boolean }>`
   margin-left: auto;
   transition: transform 0.2s ease;
-  transform: rotate(${({ isOpen }) => (isOpen ? "0deg" : "180deg")});
+  transform: rotate(${({ $isOpen }) => ($isOpen ? "0deg" : "180deg")});
   font-size: 12px;
 `;
 
