@@ -8,6 +8,8 @@
     "new-article": "New article",
     "action": "Action",
     "search": "Search...",
+    "remove":"Remove",
+    "cancel":"Cancel",
     "language": {
       "english": "English"
     },

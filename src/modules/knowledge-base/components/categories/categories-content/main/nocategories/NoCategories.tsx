@@ -13,7 +13,11 @@ import ModalAddNewCategory from "../modal-add-category/ModalAddNewCategory";
 import ModalAddASection from "../modal-add-a-section/ModalAddASection";
 import { useState } from "react";
 
-const NoCategories = () => {
+interface NoCategoriesProps {
+  onReload: () => void;
+}
+
+const NoCategories = ({ onReload }: NoCategoriesProps) => {
     const { t } = useTranslation('knowledgeBase');
 
     const {
@@ -60,13 +64,15 @@ const NoCategories = () => {
                 />
             )}
 
-            {isModalAddSectionVisible && (
+             {isModalAddSectionVisible && newCategory && (
                 <ModalAddASection
-                    open={isModalAddSectionVisible}
-                    onCancel={toggleModalAddSection}
-                    onOK={() => {
-                    }}
-                    category={newCategory}
+                open={isModalAddSectionVisible}
+                onCancel={toggleModalAddSection}
+                onOK={() => {
+                    toggleModalAddSection();
+                    onReload();
+                }}
+                category={newCategory}
                 />
             )}
         </>
