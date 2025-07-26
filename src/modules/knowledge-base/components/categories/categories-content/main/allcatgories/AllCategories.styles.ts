@@ -11,3 +11,8 @@ export const TableWrapper = styled.div`
     pointer-events: none;
   }
 `;
+ export const WrappButton = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+`;

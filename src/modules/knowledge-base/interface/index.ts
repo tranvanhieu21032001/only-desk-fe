@@ -40,6 +40,7 @@ export interface HelpdeskCategory {
     desc: string;
     createdAt: string;
     updatedAt: string;
+    sections: Section[];
     translations: {
         [lang: string]: {
             name: string;
@@ -88,6 +89,7 @@ export interface Section {
   name: string;
   createdAt: string;
   updatedAt: string;
+  articles:string[];
   translations: { [key: string]: { name: string } };
 }
 
@@ -107,8 +109,8 @@ export interface RowItem {
   title: string;
   description: string;
   statistic: string;
-  created: string;
-  lastUpdate: string;
+  createdAt: string;
+  updatedAt: string;
   category: string;
   isCategoryRow: boolean;
 }

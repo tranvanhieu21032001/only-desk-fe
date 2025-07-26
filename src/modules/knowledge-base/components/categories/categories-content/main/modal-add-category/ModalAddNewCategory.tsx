@@ -121,13 +121,11 @@ const ModalAddNewCategory = ({
         try {
             if (categoryToEdit?.id) {
                 await updateHelpdeskCategory(categoryToEdit.id, payload);
-                message.success(t('article-menu.add-a-category.success-updated'));
             } else {
                 const created = await createHelpdeskCategory(payload);
                 if (onAddCategory && created?.id) {
                     onAddCategory({ id: created.id, name });
                 }
-                message.success(t('article-menu.add-a-category.success-added'));
             }
 
             onOK();
@@ -266,16 +264,22 @@ const ModalAddNewCategory = ({
                 </S.ModalBody>
 
                 {/* Footer */}
-                <S.ModalFooter>
-                    <Button onClick={onCancel}>
-                        {t('article-menu.add-a-category.cancel')}
-                    </Button>
-                    <Button type="primary" icon={<PlusOutlined />} onClick={handleSubmit}>
-                        {categoryToEdit
-                            ? t('article-menu.add-a-category.update')
-                            : t('article-menu.add-a-category.add-category')}
-                    </Button>
+               <S.ModalFooter>
+                <Button onClick={onCancel}>
+                    {t('article-menu.add-a-category.cancel')}
+                </Button>
+
+                <Button
+                    type="primary"
+                    icon={!categoryToEdit ? <PlusOutlined /> : undefined}
+                    onClick={handleSubmit}
+                >
+                    {categoryToEdit
+                    ? t('article-menu.add-a-category.update')
+                    : t('article-menu.add-a-category.add-category')}
+                </Button>
                 </S.ModalFooter>
+
             </ModalCommon>
         </S.WrapModal>
     );

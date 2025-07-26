@@ -87,7 +87,7 @@ type WorkspaceMember implements Node {
 """Status of a workspace member"""
 enum WorkspaceMemberStatus {
   PENDING
-  APRROVED
+  APPROVED
   REJECTED
 }
 
@@ -236,7 +236,6 @@ type Conversation implements Node {
   closedAt: DateTime
   unreadCount: Int
   latestMessage: Message
-  replyTo: Message
   rawId: String!
 }
 
@@ -250,51 +249,73 @@ type ConversationConnection {
   pageInfo: PageInfo!
 }
 
-type HelpDeskCategory implements Node {
+type HelpdeskCategory implements Node {
   id: ID!
   name: String!
   image: String
   slug: String!
   desc: String
-  workspace: Workspace
+  sections: [HelpdeskCategorySection!]
+  articles: [HelpdeskArticle!]
+  defaultLanguage: String
+  translations: JSON
   createdAt: DateTime
   updatedAt: DateTime
 }
 
-type HelpDeskCategoryPaginationEdge {
-  cursor: String!
-  node: HelpDeskCategory!
-}
-
-type HelpDeskCategorySection implements Node {
+type HelpdeskArticle implements Node {
   id: ID!
-  name: String!
-  articleCount: Int!
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type HelpDeskCategorySectionPaginationEdge {
-  cursor: String!
-  node: HelpDeskCategorySection!
-}
-
-type HelpDeskArticle implements Node {
-  id: ID!
-  workspace: Workspace
   title: String!
   content: String!
   slug: String!
+  category: HelpdeskCategory
+  section: HelpdeskCategorySection
   tags: [String!]!
-  status: String!
+  status: ArticleStatus
   viewCount: Int!
+  defaultLanguage: String
+  translations: JSON
+  createdAt: DateTime
+  updatedAt: DateTime
+  rawId: String!
+}
+
+"""The status of the article"""
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+type HelpdeskArticleTypeEdge {
+  cursor: String!
+  node: HelpdeskArticle!
+}
+
+type HelpdeskArticleConnection {
+  edges: [HelpdeskArticleTypeEdge!]!
+  pageInfo: PageInfo!
+}
+
+type HelpdeskCategorySection implements Node {
+  id: ID!
+  name: String!
+  articles: [HelpdeskArticle!]
+  defaultLanguage: String
+  translations: JSON
   createdAt: DateTime
   updatedAt: DateTime
 }
 
-type HelpDeskArticlePaginationEdge {
-  cursor: String!
-  node: HelpDeskArticle!
+type HelpdeskSettings implements Node {
+  id: ID!
+  baseDomain: String!
+  customDomain: String
+  logo: String
+  banner: String
+  languages: [String!]
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 type Query {
@@ -306,6 +327,11 @@ type Query {
   contacts(args: PaginationArgs!, keyword: String): ContactPagination!
   liveContacts(first: Float, after: String, last: Float, before: String): ContactConnection!
   node(id: ID!): Node
+  helpdeskCategories: [HelpdeskCategory!]!
+  helpdeskArticles(first: Float, after: String, last: Float, before: String, keyword: String, popular: Boolean): HelpdeskArticleConnection!
+  helpdeskArticleBySlug(slug: String!): HelpdeskArticle!
+  helpdeskCategoryBySlug(slug: String!): HelpdeskCategory!
+  helpdeskSettings: HelpdeskSettings!
 }
 
 input PaginationArgs {

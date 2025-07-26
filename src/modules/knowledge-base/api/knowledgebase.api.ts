@@ -8,10 +8,14 @@ import {
 import {
   HelpdeskArticleCreatePayload,
   HelpdeskArticleListResponse,
-  HelpdeskCategory,
   HelpdeskCategoryCreatePayload,
   HelpdeskSectionCreatePayload,
 } from '../interface';
+
+import { fetchQuery } from 'react-relay';
+import RelayEnvironment from '@/relay/RelayEnvironment';
+import { CategoriesQuery } from '@/relay/__generated__/CategoriesQuery.graphql';
+import { categoriesQuery } from '@/relay/CategoriesQuery';
 
 const prefixContact: string = '';
 
@@ -21,7 +25,7 @@ export const endpointContact = {
   UPDATE_A_HELPDESK_ARTICLE: `${prefixContact}/helpdesk/articles/{id}`,
   DELETE_A_HELPDESK_ARTICLE: `${prefixContact}/helpdesk/articles/{id}`,
 
-  GET_ALL_HELPDESK_CATEGORIES: `${prefixContact}/helpdesk/categories`,
+  // GET_ALL_HELPDESK_CATEGORIES: `${prefixContact}/helpdesk/categories`, // giữ lại nếu cần fallback
   CREATE_A_NEW_HELPDESK_CATEGORY: `${prefixContact}/helpdesk/categories`,
   UPDATE_A_HELPDESK_CATEGORY: `${prefixContact}/helpdesk/categories/{id}`,
   DELETE_A_HELPDESK_CATEGORY: `${prefixContact}/helpdesk/categories/{id}`,
@@ -61,15 +65,16 @@ export const deleteHelpdeskArticle = async (id: string): Promise<any> => {
   return await deleteRequest(url);
 };
 
-// ---------- CATEGORIES ----------
-export const getAllHelpdeskCategories = async (): Promise<HelpdeskCategory[]> => {
-  return await getRequest<HelpdeskCategory[]>(endpointContact.GET_ALL_HELPDESK_CATEGORIES);
+export const getAllHelpdeskCategories = async (): Promise<CategoriesQuery['response']['helpdeskCategories']> => {
+  const data = await fetchQuery<CategoriesQuery>(RelayEnvironment, categoriesQuery, {}).toPromise();
+  if (!data) throw new Error('No data returned from Relay query.');
+  return data.helpdeskCategories;
 };
 
 export const createHelpdeskCategory = async (
   data: HelpdeskCategoryCreatePayload
 ): Promise<any> => {
-  return await postRequest(endpointContact.CREATE_A_NEW_HELPDESK_CATEGORY, { data });
+  return await postRequest(endpointContact.CREATE_A_NEW_HELPDESK_CATEGORY, { data, enableFlashMessageSuccess: false });
 };
 
 export const updateHelpdeskCategory = async (
@@ -77,19 +82,19 @@ export const updateHelpdeskCategory = async (
   data: HelpdeskCategoryCreatePayload
 ): Promise<any> => {
   const url = endpointContact.UPDATE_A_HELPDESK_CATEGORY.replace('{id}', id);
-  return await updateRequest(url, { data });
+  return await updateRequest(url, { data, messageSuccess: 'Category update successfully', });
 };
 
 export const deleteHelpdeskCategory = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_CATEGORY.replace('{id}', id);
-  return await deleteRequest(url);
+  return await deleteRequest(url, {messageSuccess: 'Category delete successfully'});
 };
 
 // ---------- SECTIONS ----------
 export const createHelpdeskSection = async (
   data: HelpdeskSectionCreatePayload
 ): Promise<any> => {
-  return await postRequest(endpointContact.CREATE_A_HELPDESK_SECTIONS, { data });
+  return await postRequest(endpointContact.CREATE_A_HELPDESK_SECTIONS, { data, messageSuccess: 'Section created successfully', });
 };
 
 export const updateHelpdeskSection = async (
@@ -97,10 +102,10 @@ export const updateHelpdeskSection = async (
   data: HelpdeskSectionCreatePayload
 ): Promise<any> => {
   const url = endpointContact.UPDATE_A_HELPDESK_SECTIONS.replace('{id}', id);
-  return await updateRequest(url, { data });
+  return await updateRequest(url, { data, messageSuccess: 'Section update successfully' });
 };
 
 export const deleteHelpdeskSection = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_SECTIONS.replace('{id}', id);
-  return await deleteRequest(url);
+  return await deleteRequest(url, {messageSuccess: 'Section delete successfully'});
 };
