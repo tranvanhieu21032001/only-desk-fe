@@ -25,6 +25,7 @@ interface InboxFooterProps {
   onSendMessage: (val: string, type?: any, metadata?: any) => void;
   handleTabClick: (tab: string) => void;
   INBOX_TABS: Record<string, string>;
+  onInputChange: (val: string) => void;
 }
 
 const InboxFooter: React.FC<InboxFooterProps> = ({
@@ -37,6 +38,7 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
   onSendMessage,
   handleTabClick,
   INBOX_TABS,
+  onInputChange,
 }) => {
   const actions = [
     {
@@ -92,13 +94,16 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
   return (
     <S.Footer>
       <S.ActionIcons>
-        {actions.map(action => (
+        {actions.map((action) => (
           <S.IconProps
             key={action.key}
             $isActive={action.isActive}
             onClick={action.onClick}
           >
-            <Image src={action.isActive ? action.iconActive : action.icon} preview={false} />
+            <Image
+              src={action.isActive ? action.iconActive : action.icon}
+              preview={false}
+            />
             {action.label}
           </S.IconProps>
         ))}
@@ -111,9 +116,10 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
         setActiveTab={setActiveTab}
         setSelectedReminder={setSelectedReminder}
         onSendMessage={onSendMessage}
+        onInputChange={onInputChange}
       />
     </S.Footer>
   );
 };
 
-export { InboxFooter }; 
+export { InboxFooter };

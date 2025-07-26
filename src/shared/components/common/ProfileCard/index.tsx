@@ -9,7 +9,10 @@ import {
 } from '@/modules/contacts/store/features/contacts';
 import { useAppDispatch } from '@/shared/hooks';
 import flagList from '@/shared/helper/data/flagIcon';
-import { listenUserStatus, offUserStatus } from '@/core/services/socket/socket';
+import {
+  listenUserStatus,
+  offUserStatus,
+} from '@/shared/chat-logic/services/socket';
 
 interface ContactProfile {
   name?: string;

@@ -1,46 +1,6 @@
 import { constants } from '@/core/settings';
-import { v4 as uuidv4 } from 'uuid';
-import {
-  InboxMessageType,
-  InboxMessageStatus,
-  InboxSender,
-} from '@/modules/settings/helpers/enums/inbox.enums';
-import { Message, Conversation } from '../interfaces/inbox';
-
-export function createAgentMessage({
-  content,
-  type = InboxMessageType.Text,
-  metadata = {},
-  currentUserId,
-  user,
-}: {
-  content: string;
-  type?: InboxMessageType;
-  metadata?: any;
-  currentUserId: string;
-  user: any;
-}): Message {
-  const now = new Date();
-  return {
-    id: uuidv4(),
-    content,
-    sender: InboxSender.Agent,
-    user: user
-      ? {
-          id: currentUserId,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatar: user.avatar,
-          email: user.email,
-        }
-      : null,
-    type,
-    status: InboxMessageStatus.Sending,
-    createdAt: now.toISOString(),
-    updatedAt: now.toISOString(),
-    metadata,
-  };
-}
+import { MessageSender } from '@/shared/chat-logic/enums/chat.enums';
+import { Message } from '@/shared/chat-logic/interfaces/inbox';
 
 export const uploadFile = async (
   file: File,
@@ -82,7 +42,7 @@ export function handleIconClickLogic(
   e.stopPropagation();
 
   const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-  const isAgent = message.sender === InboxSender.Agent;
+  const isAgent = message.sender === MessageSender.AGENT;
 
   let x, y;
 
@@ -120,117 +80,4 @@ export function handleIconClickLogic(
   });
 
   setHoveredMessageId(message.id);
-}
-
-export interface SendMessageParams {
-  content: string;
-  type?: InboxMessageType;
-  metadata?: any;
-  rawConversationId: string | null;
-  currentUserId: string | null | undefined;
-  user: any;
-  addMessage: (msg: Message) => void;
-  removeMessage: (id: string) => void;
-  updateMessage: (id: string, data: Partial<Message>) => void;
-  setPendingImageLoads: (fn: (prev: number) => number) => void;
-  scrollToShowNewMessage: () => void;
-  sendAgentMessage: (payload: any, cb: (res: any) => void) => void;
-  setInputValue: (val: string) => void;
-  setActiveTab: (val: string | null) => void;
-}
-
-export function handleSendMessageLogic({
-  content,
-  type = InboxMessageType.Text,
-  metadata = {},
-  rawConversationId,
-  currentUserId,
-  user,
-  addMessage,
-  removeMessage,
-  updateMessage,
-  setPendingImageLoads,
-  scrollToShowNewMessage,
-  sendAgentMessage,
-  setInputValue,
-  setActiveTab,
-}: SendMessageParams) {
-  if ((!content.trim() && type === InboxMessageType.Text) || !rawConversationId)
-    return;
-
-  const now = new Date();
-  const temp_id = uuidv4();
-  const sendTime = Date.now();
-  const newMessage: Message = {
-    id: temp_id,
-    content,
-    sender: InboxSender.Agent,
-    user:
-      currentUserId && user?.firstName && user?.lastName && user?.avatar
-        ? {
-            id: currentUserId,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            avatar: user.avatar,
-            email: user.email,
-          }
-        : null,
-    type:
-      type === InboxMessageType.Image
-        ? InboxMessageType.Image
-        : type === InboxMessageType.Note
-          ? InboxMessageType.Note
-          : InboxMessageType.Text,
-    status: InboxMessageStatus.Sending,
-    createdAt: now.toISOString(),
-    updatedAt: now.toISOString(),
-    metadata,
-  };
-
-  addMessage(newMessage);
-
-  if (type === InboxMessageType.Image || type === InboxMessageType.Note) {
-    setTimeout(() => {
-      scrollToShowNewMessage();
-    }, 0);
-  }
-
-  if (type === InboxMessageType.Image) {
-    setPendingImageLoads((prev) => prev + 1);
-  }
-
-  sendAgentMessage(
-    {
-      conversationId: rawConversationId,
-      message: {
-        content,
-        type,
-        metadata,
-        temp_id,
-      },
-    },
-    (res: any) => {
-      const elapsedTime = Date.now() - sendTime;
-      const minLoadingTime = 500;
-      const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
-
-      setTimeout(() => {
-        if (res?.success && res?.messageId) {
-          removeMessage(temp_id);
-
-          const realMessage: Message = {
-            ...newMessage,
-            id: res.messageId,
-            status: InboxMessageStatus.Sent,
-          };
-          addMessage(realMessage);
-        } else {
-          updateMessage(temp_id, { status: InboxMessageStatus.Failed });
-        }
-      }, remainingTime);
-    },
-  );
-
-  setInputValue('');
-  setActiveTab(null);
 }

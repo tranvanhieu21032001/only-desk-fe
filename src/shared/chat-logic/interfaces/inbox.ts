@@ -1,5 +1,4 @@
-import { MessageStatus } from '@/shared/chat-logic/enums/chat.enums';
-import { Message } from '@/shared/chat-logic/interfaces/inbox';
+import { MessageSender, MessageStatus, MessageType } from '../enums/chat.enums';
 
 export interface Contact {
   id: string;
@@ -31,6 +30,20 @@ export interface User {
   lastName: string;
   avatar: string;
   email: string;
+}
+
+export interface Message {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  content: string;
+  sender: MessageSender;
+  user: User | null;
+  type: MessageType;
+  status: MessageStatus;
+  metadata?: {
+    fileUrl?: string;
+  };
 }
 
 export interface Conversation {

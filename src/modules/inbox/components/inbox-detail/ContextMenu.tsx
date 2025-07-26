@@ -1,9 +1,12 @@
 import React from 'react';
-
-import { Message } from '../../interfaces/inbox';
-import { InboxMessageType, InboxSender } from '@/modules/settings/helpers/enums/inbox.enums';
-
 import * as S from './InboxDetail.styles';
+import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
+import iconReply from '@/assets/icons/inbox/ic-reply.svg';
+import iconEdit from '@/assets/icons/common/ic-edit.svg';
+import iconCopy from '@/assets/icons/common/ic-copy.svg';
+import iconDelete from '@/assets/icons/common/ic-delete.svg';
+import { useMessageMenu } from '@/shared/chat-logic/hooks/useMessageMenu';
+import { Message } from '@/shared/chat-logic/interfaces/inbox';
 
 interface ContextMenuProps {
   contextMenu: {
@@ -13,15 +16,9 @@ interface ContextMenuProps {
     message: Message | null;
     messageId?: string;
   };
-  handleReply: () => void;
-  handleDeleteMessage: () => void;
-  handleCopyText: () => void;
-  handleEdit: () => void;
+  rawConversationId: string;
   setHoveredMessageId: (id: string | null) => void;
-  iconReply: string;
-  iconDelete: string;
-  iconEdit: string;
-  iconCopy: string;
+  onCloseMenu: () => void;
   MENU_WIDTH: number;
   t: (key: string) => string;
 }
@@ -40,27 +37,20 @@ const getMenuItems = (
   message: Message,
   handlers: {
     handleReply: () => void;
-    handleDeleteMessage: () => void;
+    handleDelete: () => void;
     handleCopyText: () => void;
     handleEdit: () => void;
   },
-  icons: {
-    iconReply: string;
-    iconDelete: string;
-    iconEdit: string;
-    iconCopy: string;
-  },
   t: (key: string) => string,
 ): MenuItem[] => {
-  const isOwner = message.sender === InboxSender.Agent;
+  const isOwner = false;
   const isCopyTextSupported =
-    message.type === InboxMessageType.Note ||
-    message.type === InboxMessageType.Text;
+    message.type === MessageType.NOTE || message.type === MessageType.TEXT;
 
   const menus: MenuItem[] = [
     {
       key: 'reply',
-      icon: icons.iconReply,
+      icon: iconReply,
       label: t('inboxDetail.reply'),
       onClick: handlers.handleReply,
       danger: false,
@@ -71,7 +61,7 @@ const getMenuItems = (
   if (isCopyTextSupported) {
     menus.push({
       key: 'copy',
-      icon: icons.iconCopy,
+      icon: iconCopy,
       label: t('inboxDetail.copyText'),
       onClick: handlers.handleCopyText,
       danger: false,
@@ -83,7 +73,7 @@ const getMenuItems = (
     menus.push(
       {
         key: 'edit',
-        icon: icons.iconEdit,
+        icon: iconEdit,
         label: t('inboxDetail.edit'),
         onClick: handlers.handleEdit,
         danger: false,
@@ -91,12 +81,12 @@ const getMenuItems = (
       },
       {
         key: 'delete',
-        icon: icons.iconDelete,
+        icon: iconDelete,
         label: t('inboxDetail.delete'),
-        onClick: handlers.handleDeleteMessage,
+        onClick: handlers.handleDelete,
         danger: true,
         type: 'item',
-      }
+      },
     );
   }
 
@@ -106,31 +96,31 @@ const getMenuItems = (
       type: 'separator',
     });
   }
-  
+
   return menus;
 };
 
 const ContextMenu: React.FC<ContextMenuProps> = ({
   contextMenu,
-  handleReply,
-  handleDeleteMessage,
-  handleCopyText,
-  handleEdit,
   setHoveredMessageId,
-  iconReply,
-  iconDelete,
-  iconEdit,
-  iconCopy,
+  rawConversationId,
+  onCloseMenu,
   MENU_WIDTH,
   t,
 }) => {
   if (!contextMenu.visible || !contextMenu.message) return null;
 
+  const { handleCopyText, handleReply, handleEdit, handleDelete } =
+    useMessageMenu({
+      message: contextMenu.message,
+      rawConversationId,
+      onCloseMenu,
+    });
+
   const menuItems = getMenuItems(
     contextMenu.message,
-    { handleReply, handleDeleteMessage, handleCopyText, handleEdit },
-    { iconReply, iconDelete, iconEdit, iconCopy },
-    t
+    { handleReply, handleDelete, handleCopyText, handleEdit },
+    t,
   );
 
   return (
@@ -142,7 +132,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         width: MENU_WIDTH,
         zIndex: 1000,
       }}
-      onClick={e => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
       onMouseEnter={() => {
         if (contextMenu.messageId) {
           setHoveredMessageId(contextMenu.messageId);
@@ -172,4 +162,4 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   );
 };
 
-export default ContextMenu; 
+export default ContextMenu;

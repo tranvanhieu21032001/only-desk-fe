@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5ec0059444aea902b39e34305fbde719>>
+ * @generated SignedSource<<ab1b30c03c726261b88d170133e26ece>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,6 @@ import { FragmentRefs } from "relay-runtime";
 export type MessageFragment_query$data = {
   readonly messages: {
     readonly edges: ReadonlyArray<{
-      readonly cursor: string;
       readonly node: {
         readonly content: string;
         readonly createdAt: any;
@@ -31,14 +30,13 @@ export type MessageFragment_query$data = {
           readonly firstName: string | null | undefined;
           readonly id: string;
           readonly lastName: string | null | undefined;
+          readonly rawId: string;
         } | null | undefined;
       };
     }>;
     readonly pageInfo: {
       readonly endCursor: string | null | undefined;
       readonly hasNextPage: boolean;
-      readonly hasPreviousPage: boolean;
-      readonly startCursor: string | null | undefined;
     };
   };
   readonly " $fragmentType": "MessageFragment_query";
@@ -137,20 +135,6 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "hasPreviousPage",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "startCursor",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
               "name": "endCursor",
               "storageKey": null
             }
@@ -165,13 +149,6 @@ return {
           "name": "edges",
           "plural": true,
           "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "cursor",
-              "storageKey": null
-            },
             {
               "alias": null,
               "args": null,
@@ -243,6 +220,13 @@ return {
                       "alias": null,
                       "args": null,
                       "kind": "ScalarField",
+                      "name": "rawId",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
                       "name": "firstName",
                       "storageKey": null
                     },
@@ -272,6 +256,13 @@ return {
                 }
               ],
               "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "cursor",
+              "storageKey": null
             }
           ],
           "storageKey": null
@@ -285,6 +276,6 @@ return {
 };
 })();
 
-(node as any).hash = "0ca5934528f4433f454e7400aa6f1d0e";
+(node as any).hash = "11c1a2bcd00da76f06bd3fbe6e90a046";
 
 export default node;

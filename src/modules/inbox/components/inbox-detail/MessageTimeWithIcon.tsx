@@ -2,11 +2,12 @@ import React from 'react';
 import { Tooltip } from 'antd';
 
 import { LoadingOutlined, CloseCircleTwoTone } from '@ant-design/icons';
-import { InboxMessageStatus } from '@/modules/settings/helpers/enums/inbox.enums';
 
 import * as S from './InboxDetail.styles';
 
 import icBarColumn from '@/assets/icons/common/ic-bar-column.svg';
+import { MessageStatus } from '@/shared/chat-logic/enums/chat.enums';
+import { formatTime } from '@/shared/utils/time';
 
 interface MessageTimeWithIconProps {
   isOwner: boolean;
@@ -15,8 +16,7 @@ interface MessageTimeWithIconProps {
   onHoverEnter: () => void;
   onHoverLeave: () => void;
   createdAt: string;
-  status: InboxMessageStatus;
-  formatTime: (date: string) => string;
+  status: MessageStatus;
   rightIcon?: boolean;
   style?: React.CSSProperties;
 }
@@ -28,17 +28,18 @@ const MessageTimeWithIcon: React.FC<MessageTimeWithIconProps> = ({
   onHoverLeave,
   createdAt,
   status,
-  formatTime,
   rightIcon = false,
   style,
 }) => {
   const timeNode = (
-    <S.MessageTime style={rightIcon ? { marginRight: 0, marginLeft: 8, ...style } : style}>
+    <S.MessageTime
+      style={rightIcon ? { marginRight: 0, marginLeft: 8, ...style } : style}
+    >
       {formatTime(createdAt)}
-      {status === InboxMessageStatus.Sending && (
+      {status === MessageStatus.SENDING && (
         <LoadingOutlined style={{ marginLeft: 6, fontSize: 12 }} spin />
       )}
-      {status === InboxMessageStatus.Failed && (
+      {status === MessageStatus.FAILED && (
         <Tooltip title="Send failed">
           <CloseCircleTwoTone
             twoToneColor="#ff4d4f"
@@ -58,7 +59,10 @@ const MessageTimeWithIcon: React.FC<MessageTimeWithIconProps> = ({
   );
 
   return (
-    <S.TimeWithIconContainer onMouseEnter={onHoverEnter} onMouseLeave={onHoverLeave}>
+    <S.TimeWithIconContainer
+      onMouseEnter={onHoverEnter}
+      onMouseLeave={onHoverLeave}
+    >
       {rightIcon ? (
         <>
           {iconNode}
@@ -74,4 +78,4 @@ const MessageTimeWithIcon: React.FC<MessageTimeWithIconProps> = ({
   );
 };
 
-export default MessageTimeWithIcon; 
+export default MessageTimeWithIcon;

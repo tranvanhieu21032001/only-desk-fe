@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<164c532220034c764835b94dac1d97b3>>
+ * @generated SignedSource<<b238aabfb683566d7c8c64dbe3d44b02>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -120,20 +120,6 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "hasPreviousPage",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "startCursor",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
                 "name": "endCursor",
                 "storageKey": null
               }
@@ -148,13 +134,6 @@ return {
             "name": "edges",
             "plural": true,
             "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "cursor",
-                "storageKey": null
-              },
               {
                 "alias": null,
                 "args": null,
@@ -226,6 +205,13 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
+                        "name": "rawId",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
                         "name": "firstName",
                         "storageKey": null
                       },
@@ -255,6 +241,13 @@ return {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "cursor",
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -276,12 +269,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a99a9b1ea6fed6e64f8c161ee896c4ae",
+    "cacheID": "f356e1462fb185248caf95e23b7d0780",
     "id": null,
     "metadata": {},
     "name": "ConversationMessagesQuery",
     "operationKind": "query",
-    "text": "query ConversationMessagesQuery(\n  $conversationId: ID!\n  $first: Float\n  $after: String\n) {\n  ...MessageFragment_query_1QmmIs\n}\n\nfragment MessageFragment_query_1QmmIs on Query {\n  messages(conversationId: $conversationId, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        content\n        sender\n        createdAt\n        updatedAt\n        metadata\n        type\n        status\n        user {\n          id\n          firstName\n          lastName\n          avatar\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationMessagesQuery(\n  $conversationId: ID!\n  $first: Float\n  $after: String\n) {\n  ...MessageFragment_query_1QmmIs\n}\n\nfragment MessageFragment_query_1QmmIs on Query {\n  messages(conversationId: $conversationId, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      node {\n        id\n        content\n        sender\n        createdAt\n        updatedAt\n        metadata\n        type\n        status\n        user {\n          id\n          rawId\n          firstName\n          lastName\n          avatar\n        }\n        __typename\n      }\n      cursor\n    }\n  }\n}\n"
   }
 };
 })();
