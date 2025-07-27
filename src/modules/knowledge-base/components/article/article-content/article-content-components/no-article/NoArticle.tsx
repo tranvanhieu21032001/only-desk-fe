@@ -66,15 +66,13 @@ const NoArticle = () => {
         </Button>
       </ButtonGroup>
 
-      {isModalNewArticles && (
-        <ModalAddNewArticles
-          open={isModalNewArticles}
-          onCancel={handleToggleModalNewArticle}
-          onStart={() => {
-            handleToggleModalNewArticle();
-          }}
-        />
-      )}
+      <ModalAddNewArticles
+        open={isModalNewArticles}
+        onCancel={handleToggleModalNewArticle}
+        onStart={() => {
+          handleToggleModalNewArticle();
+        }}
+      />
     </Container>
   );
 };

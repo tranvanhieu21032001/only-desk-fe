@@ -32,7 +32,6 @@ import CategoryComponent from '../../../categories/categories-content/main/categ
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/core/store';
-import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -81,7 +80,6 @@ function ArticleContent() {
 
   useEffect(() => {
     dispatch(fetchHelpdeskCategories());
-    dispatch(fetchHelpdeskArticles())
   }, [dispatch]);
 
   useEffect(() => {

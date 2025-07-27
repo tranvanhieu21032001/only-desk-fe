@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<960e6ca5dd823d8d4e4b7ca7776a4401>>
+ * @generated SignedSource<<da07fa1e2585f54f5b06c8da949f708a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,14 @@ import { ConcreteRequest } from 'relay-runtime';
 export type CategoriesQuery$variables = Record<PropertyKey, never>;
 export type CategoriesQuery$data = {
   readonly helpdeskCategories: ReadonlyArray<{
+    readonly articles: ReadonlyArray<{
+      readonly content: string;
+      readonly createdAt: any | null | undefined;
+      readonly id: string;
+      readonly rawId: string;
+      readonly title: string;
+      readonly updatedAt: any | null | undefined;
+    }> | null | undefined;
     readonly createdAt: any | null | undefined;
     readonly desc: string | null | undefined;
     readonly id: string;
@@ -20,15 +28,17 @@ export type CategoriesQuery$data = {
     readonly sections: ReadonlyArray<{
       readonly articles: ReadonlyArray<{
         readonly content: string;
+        readonly createdAt: any | null | undefined;
         readonly id: string;
+        readonly rawId: string;
         readonly title: string;
+        readonly updatedAt: any | null | undefined;
       }> | null | undefined;
       readonly createdAt: any | null | undefined;
       readonly id: string;
       readonly name: string;
       readonly updatedAt: any | null | undefined;
     }> | null | undefined;
-    readonly slug: string;
     readonly updatedAt: any | null | undefined;
   }>;
 };
@@ -66,7 +76,42 @@ v3 = {
   "name": "updatedAt",
   "storageKey": null
 },
-v4 = [
+v4 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "HelpdeskArticle",
+  "kind": "LinkedField",
+  "name": "articles",
+  "plural": true,
+  "selections": [
+    (v0/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "rawId",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "title",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "content",
+      "storageKey": null
+    },
+    (v2/*: any*/),
+    (v3/*: any*/)
+  ],
+  "storageKey": null
+},
+v5 = [
   {
     "alias": null,
     "args": null,
@@ -91,15 +136,9 @@ v4 = [
         "name": "desc",
         "storageKey": null
       },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "slug",
-        "storageKey": null
-      },
       (v2/*: any*/),
       (v3/*: any*/),
+      (v4/*: any*/),
       {
         "alias": null,
         "args": null,
@@ -112,32 +151,7 @@ v4 = [
           (v1/*: any*/),
           (v2/*: any*/),
           (v3/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "HelpdeskArticle",
-            "kind": "LinkedField",
-            "name": "articles",
-            "plural": true,
-            "selections": [
-              (v0/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "title",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "content",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          }
+          (v4/*: any*/)
         ],
         "storageKey": null
       }
@@ -151,7 +165,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "CategoriesQuery",
-    "selections": (v4/*: any*/),
+    "selections": (v5/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -160,19 +174,19 @@ return {
     "argumentDefinitions": [],
     "kind": "Operation",
     "name": "CategoriesQuery",
-    "selections": (v4/*: any*/)
+    "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "52d145045071cbdb4e171627537c286a",
+    "cacheID": "514c786ebc100db29474bfdebc21af2e",
     "id": null,
     "metadata": {},
     "name": "CategoriesQuery",
     "operationKind": "query",
-    "text": "query CategoriesQuery {\n  helpdeskCategories {\n    id\n    name\n    image\n    desc\n    slug\n    createdAt\n    updatedAt\n    sections {\n      id\n      name\n      createdAt\n      updatedAt\n      articles {\n        id\n        title\n        content\n      }\n    }\n  }\n}\n"
+    "text": "query CategoriesQuery {\n  helpdeskCategories {\n    id\n    name\n    image\n    desc\n    createdAt\n    updatedAt\n    articles {\n      id\n      rawId\n      title\n      content\n      createdAt\n      updatedAt\n    }\n    sections {\n      id\n      name\n      createdAt\n      updatedAt\n      articles {\n        id\n        rawId\n        title\n        content\n        createdAt\n        updatedAt\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "84d3c4128860bbb183525f720b8f6be2";
+(node as any).hash = "7d81ebd4cec668fb7a6f6ed373bb3447";
 
 export default node;
