@@ -18,9 +18,9 @@ import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
 import { HelpdeskArticleCreatePayload, HelpdeskCategory } from '@/modules/knowledge-base/interface';
 import { AppDispatch, RootState } from '@/core/store';
-import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
+import { updateArticle } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 
 export interface AllArticleInterface {
   key: string;
@@ -78,36 +78,35 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
     }
   }, [editorReady, article]);
 
-  const handleSubmit = async () => {
-    const content = editorRef.current?.getContent() || '';
+const handleSubmit = async () => {
+  const content = editorRef.current?.getContent() || '';
 
-    const payload: HelpdeskArticleCreatePayload = {
-      title: articleTitle,
-      content: content,
-      categoryId: category,
-      translations: {
-        [language]: {
-          title: articleTitle,
-          content: content,
-        },
+  const payload: HelpdeskArticleCreatePayload = {
+    title: articleTitle,
+    content,
+    categoryId: category,
+    translations: {
+      [language]: {
+        title: articleTitle,
+        content,
       },
-      defaultLanguage: language,
-      slug: articleTitle.trim().toLowerCase().replace(/\s+/g, '-'),
-      status: 'published',
-      tags: ['workspace'],
-    };
-
-    try {
-      if (article?.key) {
-        await updateHelpdeskArticle(article.key, payload);
-        dispatch(fetchHelpdeskArticles());
-        onStart();
-      }
-    } catch (error) {
-      console.error('Failed to update article:', error);
-    }
+    },
+    defaultLanguage: language,
+    slug: articleTitle.trim().toLowerCase().replace(/\s+/g, '-'),
+    status: 'published',
+    tags: ['workspace'],
   };
 
+  try {
+    if (article?.key) {
+      const updated = await updateHelpdeskArticle(article.key, payload);
+      dispatch(updateArticle({ ...updated, rawId: article.key }));
+      onStart();
+    }
+  } catch (error) {
+    console.error('Failed to update article:', error);
+  }
+};
   return (
     <S.WrapModal>
       <ModalCommon

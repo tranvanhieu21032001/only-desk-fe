@@ -12,16 +12,23 @@ import icArchived from '@/assets/icons/knowledge-base/ic-visible.svg';
 import icMonitor from '@/assets/icons/knowledge-base/ic-monitor.svg';
 import icTrash from '@/assets/icons/knowledge-base/ic-trash.svg';
 import icEdit from '@/assets/icons/knowledge-base/ic-edit-2.svg';
+import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
 
 import Typography from '@/shared/components/common/Typography';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/core/store';
+import { AppDispatch, RootState } from '@/core/store';
 import { deleteHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
-import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 import ModalEditArticles from '../../modal-edit-articles/ModalEditArticles';
+import { formatDateTime } from '@/modules/knowledge-base/helpers/formatDateTime';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeArticle } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
+import Modal from '@/shared/components/common/Modal';
+import Button from '@/shared/components/common/Button';
+import { ReactSVG } from 'react-svg';
+import fontWeight from '@/shared/styles/themes/default/fontWeight';
 
 export interface AllArticleInterface {
   key: string;
+  id?: string;
   title: string;
   content:string;
   status: string;
@@ -33,6 +40,44 @@ export interface AllArticleInterface {
   isCategoryRow?: boolean;
 }
 
+const selectFlatArticlesFromCategory = (
+  categories: any[],
+): AllArticleInterface[] => {
+  return categories.flatMap((category: any) => {
+    const directArticles = (category.articles || []).map((article: any) => ({
+      key: article.rawId,
+      id: article.id,
+      title: article.title,
+      content: article.content,
+      status: 'published',
+      statistic: '0',
+      created: formatDateTime(article.createdAt || ''),
+      lastUpdate: formatDateTime(article.updatedAt || ''),
+      category: category.name,
+      categoryId: category.id,
+      isCategoryRow: false,
+    }));
+
+    const sectionArticles = (category.sections || []).flatMap((section: any) =>
+      (section.articles || []).map((article: any) => ({
+        key: article.rawId,
+        id: article.id,
+        title: article.title,
+        content: article.content,
+        status: 'published',
+        statistic: '0',
+        created: formatDateTime(article.createdAt || ''),
+        lastUpdate: formatDateTime(article.updatedAt || ''),
+        category: category.name,
+        categoryId: category.id,
+        isCategoryRow: false,
+      })),
+    );
+
+    return [...directArticles, ...sectionArticles];
+  });
+};
+
 const statusIcons: Record<string, string> = {
   archived: icArchived,
   draft: icDraft,
@@ -40,40 +85,36 @@ const statusIcons: Record<string, string> = {
 };
 
 const AllArticle = () => {
-  const { categories, loading: categoriesLoading } = useSelector((state: RootState) => state.helpdeskCategory);
-  const { items: articles, loading: articlesLoading, limit, page, total } = useSelector((state: RootState) => state.helpdeskArticles);
-  const dispatch = useDispatch();
   const { t } = useTranslation('knowledgeBase');
-  console.log("articles", articles);
-  
+  const dispatch = useDispatch<AppDispatch>();
 
-  const isLoading = categoriesLoading || articlesLoading || categories.length === 0 || articles.length === 0;
+  const { categories, loading: categoriesLoading } = useSelector(
+    (state: RootState) => state.helpdeskCategory,
+  );
+
+  const articles = selectFlatArticlesFromCategory(categories);
+
+  const isLoading =
+    categoriesLoading || categories.length === 0 || articles.length === 0;
 
   const [openModal, setOpenModal] = useState(false);
-  const [articleData, setArticleData] = useState<AllArticleInterface | null>(null);
+  const [articleData, setArticleData] = useState<AllArticleInterface | null>(
+    null,
+  );
 
-  const categoryMap = categories.reduce((acc: Record<string, string>, cat) => {
-    acc[cat.id] = cat.name;
-    return acc;
-  }, {});
+  const [articleToDelete, setArticleToDelete] =
+    useState<AllArticleInterface | null>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
-  const grouped = articles.reduce((acc: Record<string, AllArticleInterface[]>, article) => {
-    const categoryName = categoryMap[article.categoryId] || 'Uncategorized';
-    if (!acc[categoryName]) acc[categoryName] = [];
-    acc[categoryName].push({
-      key: article.id,
-      title: article.title,
-      content:article?.content,
-      status: article.status,
-      statistic: article.viewCount?.toString() || '0',
-      created: new Date(article.createdAt).toLocaleDateString(),
-      lastUpdate: new Date(article.updatedAt).toLocaleDateString(),
-      category: categoryName,
-      categoryId: article.categoryId,
-      isCategoryRow: false,
-    });
-    return acc;
-  }, {});
+  const grouped = articles.reduce(
+    (acc: Record<string, AllArticleInterface[]>, article) => {
+      const categoryName = article.category || 'Uncategorized';
+      if (!acc[categoryName]) acc[categoryName] = [];
+      acc[categoryName].push(article);
+      return acc;
+    },
+    {},
+  );
 
   const flatData: AllArticleInterface[] = [];
 
@@ -119,13 +160,9 @@ const AllArticle = () => {
             {t('article-menu.actions.remove')}
           </Typography>
         ),
-        onClick: async () => {
-          try {
-            await deleteHelpdeskArticle(record?.key);
-            dispatch(fetchHelpdeskArticles());
-          } catch (error) {
-            console.error('Failed to delete article:', error);
-          }
+        onClick: () => {
+          setArticleToDelete(record);
+          setConfirmDeleteOpen(true);
         },
       },
     ],
@@ -143,7 +180,10 @@ const AllArticle = () => {
             <Tag color="green" style={{ color: '#1677ff' }}>
               {record.category}
             </Tag>{' '}
-            <span>{grouped[record.category]?.length || 0} {t('article-menu.actions.articles')}</span>
+            <span>
+              {grouped[record.category]?.length || 0}{' '}
+              {t('article-menu.actions.articles')}
+            </span>
           </>
         ) : (
           <span>{record.title}</span>
@@ -200,34 +240,64 @@ const AllArticle = () => {
           <Table<AllArticleInterface>
             columns={columns}
             dataSource={flatData}
-            rowSelection={{
-              type: 'checkbox',
-            }}
-            expandable={{
-              expandIcon: () => null,
-            }}
+            rowSelection={{ type: 'checkbox' }}
+            expandable={{ expandIcon: () => null }}
             rowKey="key"
-            pagination={{
-              // onChange: onPageChange,
-              showTotal: () => (
-                <div style={{ marginRight: 50 }}>
-                  Page {page} of {Math.ceil(total / limit)}
-                </div>
-              ),
-
-            }}
+            pagination={false}
           />
         )}
       </S.TableWrapper>
       <ModalEditArticles
         open={openModal}
         onCancel={() => setOpenModal(false)}
-        onStart={() => {
-          // setOpenModal(false);
-        }}
+        onStart={() => {}}
         article={articleData}
-        />
-      </>
+      />
+
+      <Modal
+        isOpen={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        hideHeader
+        width={440}
+        footer={
+          <S.WrappButton>
+            <Button onClick={() => setConfirmDeleteOpen(false)}>
+              {t('article-menu.cancel')}
+            </Button>
+            <Button
+              type="danger"
+              onClick={async () => {
+                if (articleToDelete) {
+                  try {
+                    await deleteHelpdeskArticle(articleToDelete.key);
+                    dispatch(removeArticle(articleToDelete.key));
+                  } catch (error) {
+                    console.error('Failed to delete article:', error);
+                  } finally {
+                    setConfirmDeleteOpen(false);
+                    setArticleToDelete(null);
+                  }
+                }
+              }}
+            >
+              {t('article-menu.remove')}
+            </Button>
+          </S.WrappButton>
+        }
+      >
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+          <ReactSVG src={icNoitify} />
+          <div>
+            <Typography fontWeight={fontWeight.semiBold} margin="0 0 12px 0">
+              Remove article
+            </Typography>
+            <Typography color="#5B5B5B">
+              Delete article and all its data permanently?
+            </Typography>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 

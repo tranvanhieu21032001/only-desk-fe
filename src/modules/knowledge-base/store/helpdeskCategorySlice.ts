@@ -14,7 +14,6 @@ const initialState: HelpdeskCategoryState = {
   error: null,
 };
 
-// Async thunk to fetch categories
 export const fetchHelpdeskCategories = createAsyncThunk(
   'helpdesk/fetchCategories',
   async (_, { rejectWithValue }) => {
@@ -27,7 +26,6 @@ export const fetchHelpdeskCategories = createAsyncThunk(
   }
 );
 
-// Slice
 const helpdeskCategorySlice = createSlice({
   name: 'helpdesk',
   initialState,
@@ -36,6 +34,28 @@ const helpdeskCategorySlice = createSlice({
       state.categories = [];
       state.loading = false;
       state.error = null;
+    },
+    removeArticle(state, action) {
+      const rawId = action.payload;
+      state.categories.forEach((category) => {
+        category.articles = category.articles?.filter((a) => a.rawId !== rawId);
+        category.sections?.forEach((section) => {
+          section.articles = section.articles?.filter((a) => a.rawId !== rawId);
+        });
+      });
+    },
+    updateArticle(state, action) {
+      const updated = action.payload;
+      state.categories.forEach((category) => {
+        category.articles = category.articles?.map((a) =>
+          a.rawId === updated.rawId ? { ...a, ...updated } : a
+        );
+        category.sections?.forEach((section) => {
+          section.articles = section.articles?.map((a) =>
+            a.rawId === updated.rawId ? { ...a, ...updated } : a
+          );
+        });
+      });
     },
   },
   extraReducers: (builder) => {
@@ -55,6 +75,7 @@ const helpdeskCategorySlice = createSlice({
   },
 });
 
-export const { clearCategories } = helpdeskCategorySlice.actions;
+export const { clearCategories, removeArticle, updateArticle } =
+  helpdeskCategorySlice.actions;
 
 export default helpdeskCategorySlice.reducer;

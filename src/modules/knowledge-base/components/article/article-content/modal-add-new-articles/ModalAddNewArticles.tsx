@@ -54,12 +54,6 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
   });
 
   useEffect(() => {
-    if (open) {
-      dispatch(fetchHelpdeskCategories());
-    }
-  }, [dispatch, open]);
-
-  useEffect(() => {
     setCategoryOptions(categories);
   }, [categories]);
 
@@ -83,7 +77,7 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
 
     try {
       await createHelpdeskArticle(payload);
-      dispatch(fetchHelpdeskArticles());
+      dispatch(fetchHelpdeskCategories())
       onStart();
     } catch (error) {
       console.error('Failed to create article:', error);

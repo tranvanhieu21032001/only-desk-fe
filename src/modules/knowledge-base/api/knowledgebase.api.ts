@@ -49,7 +49,7 @@ export const getAllHelpdeskArticles = async (
 export const createHelpdeskArticle = async (
   data: HelpdeskArticleCreatePayload
 ): Promise<any> => {
-  return await postRequest(endpointContact.CRATE_A_HELPDESK_ARTICLE, { data });
+  return await postRequest(endpointContact.CRATE_A_HELPDESK_ARTICLE, { data, messageSuccess: 'Article created successfully', });
 };
 
 export const updateHelpdeskArticle = async (
@@ -57,12 +57,12 @@ export const updateHelpdeskArticle = async (
   data: HelpdeskArticleCreatePayload
 ): Promise<any> => {
   const url = endpointContact.UPDATE_A_HELPDESK_ARTICLE.replace('{id}', id);
-  return await updateRequest(url, { data });
+  return await updateRequest(url, { data, messageSuccess: 'Article updated successfully', });
 };
 
 export const deleteHelpdeskArticle = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_ARTICLE.replace('{id}', id);
-  return await deleteRequest(url);
+  return await deleteRequest(url, {messageSuccess: 'Article deleted successfully'});
 };
 
 export const getAllHelpdeskCategories = async (): Promise<CategoriesQuery['response']['helpdeskCategories']> => {
@@ -82,12 +82,12 @@ export const updateHelpdeskCategory = async (
   data: HelpdeskCategoryCreatePayload
 ): Promise<any> => {
   const url = endpointContact.UPDATE_A_HELPDESK_CATEGORY.replace('{id}', id);
-  return await updateRequest(url, { data, messageSuccess: 'Category update successfully', });
+  return await updateRequest(url, { data, messageSuccess: 'Category updated successfully', });
 };
 
 export const deleteHelpdeskCategory = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_CATEGORY.replace('{id}', id);
-  return await deleteRequest(url, {messageSuccess: 'Category delete successfully'});
+  return await deleteRequest(url, {messageSuccess: 'Category deleted successfully'});
 };
 
 // ---------- SECTIONS ----------
@@ -102,10 +102,10 @@ export const updateHelpdeskSection = async (
   data: HelpdeskSectionCreatePayload
 ): Promise<any> => {
   const url = endpointContact.UPDATE_A_HELPDESK_SECTIONS.replace('{id}', id);
-  return await updateRequest(url, { data, messageSuccess: 'Section update successfully' });
+  return await updateRequest(url, { data, messageSuccess: 'Section updated successfully' });
 };
 
 export const deleteHelpdeskSection = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_SECTIONS.replace('{id}', id);
-  return await deleteRequest(url, {messageSuccess: 'Section delete successfully'});
+  return await deleteRequest(url, {messageSuccess: 'Section deleted successfully'});
 };

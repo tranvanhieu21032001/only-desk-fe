@@ -9,16 +9,26 @@ export const categoriesQuery = graphql`
       desc
       createdAt
       updatedAt
+      articles {
+        id
+        rawId
+        title
+        content
+        createdAt
+        updatedAt
+      }
       sections {
         id
         name
-        desc
         createdAt
         updatedAt
         articles {
           id
+          rawId
           title
           content
+          createdAt
+          updatedAt
         }
       }
     }
