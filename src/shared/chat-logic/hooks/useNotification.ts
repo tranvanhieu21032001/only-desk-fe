@@ -81,7 +81,7 @@ export function useNotification(): UseNotificationReturn {
 
 const useTitleBlink = (message: string, isActive: boolean) => {
   const originalTitle = useRef(document.title);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (isActive) {

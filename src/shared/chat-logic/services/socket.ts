@@ -1,4 +1,3 @@
-import { AppEvents, eventBus } from '@/core/event-bus';
 import {
   EVENTBUS_INBOX_MESSAGE,
   EVENTBUS_USER_STATUS,
@@ -16,6 +15,7 @@ import {
 } from '../constants/socket.constants';
 
 import { Socket } from 'socket.io-client';
+import { AppEvents, eventBus } from './event-bus';
 
 let socketInstance: Socket | null = null;
 

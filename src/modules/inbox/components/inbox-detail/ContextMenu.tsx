@@ -7,6 +7,9 @@ import iconCopy from '@/assets/icons/common/ic-copy.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
 import { useMessageMenu } from '@/shared/chat-logic/hooks/useMessageMenu';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
+import { toast } from 'react-toastify';
+import ToastMessage from '@/shared/components/common/ToastMessage';
+import { ToastMessageType } from '@/shared/helper/enums/common';
 
 interface ContextMenuProps {
   contextMenu: {
@@ -119,7 +122,31 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 
   const menuItems = getMenuItems(
     contextMenu.message,
-    { handleReply, handleDelete, handleCopyText, handleEdit },
+    {
+      handleReply,
+      handleDelete,
+      handleCopyText: () =>
+        handleCopyText(
+          () => {
+            toast(
+              React.createElement(ToastMessage, {
+                typeToast: ToastMessageType.SUCCESS,
+                message: t('inboxDetail.textCopiedToClipboard'),
+              }),
+            );
+          },
+          (error) => {
+            toast.error(
+              React.createElement(ToastMessage, {
+                typeToast: ToastMessageType.ERROR,
+                message:
+                  error.toString() || t('inboxDetail.failedToCopyTextDesc'),
+              }),
+            );
+          },
+        ),
+      handleEdit,
+    },
     t,
   );
 

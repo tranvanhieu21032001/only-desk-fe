@@ -6,6 +6,7 @@ import { MessageStatus, MessageType } from '../enums/chat.enums';
 import {
   createLoadingMessage,
   createLocalMessage,
+  getId,
   parseGraphQLMessage,
 } from '../helpers/chat.helper';
 import {
@@ -13,14 +14,11 @@ import {
   openConversation,
   sendMessageToSocket,
 } from '../services/socket';
-import { getId } from '@/shared/utils/decode';
-import { eventBus } from '@/core/event-bus';
+
 import { EVENTBUS_INBOX_MESSAGE } from '../constants/event-bus.constants';
 import { useTypingHandler } from './useTypingHandler';
 import { useNotification } from './useNotification';
-import { useLazyLoadQuery } from 'react-relay';
-import { ConversationMessagesQuery } from '../relay/__generated__/ConversationMessagesQuery.graphql';
-import { conversationMessagesQuery } from '../relay/ConversationMessagesQuery';
+import { eventBus } from '../services/event-bus';
 
 /*
 Features:
@@ -73,22 +71,6 @@ export function useChat({
 
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
-  const queryVariables = useMemo(
-    () => ({
-      conversationId: rawConversationId || '',
-      first: 20,
-    }),
-    [rawConversationId],
-  );
-
-  const queryData = useLazyLoadQuery<ConversationMessagesQuery>(
-    conversationMessagesQuery,
-    queryVariables,
-    {
-      fetchPolicy: 'store-or-network',
-    },
-  );
-
   const {
     messages,
     isFetchingInitial,
@@ -98,7 +80,7 @@ export function useChat({
     addMessage,
     updateMessage,
     removeMessage,
-  } = useMessageList({ queryData, rawConversationId });
+  } = useMessageList({ rawConversationId });
 
   const { handleUserTyping, isSomeoneTyping } = useTypingHandler({
     rawConversationId: rawConversationId || '',

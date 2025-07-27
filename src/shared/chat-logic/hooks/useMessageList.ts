@@ -13,7 +13,6 @@ import { messageListFragment } from '../relay/MessageFragment';
 const MESSAGE_LIMIT = 20;
 
 interface UseMessageListProps {
-  queryData: MessageFragment_query$key;
   rawConversationId: string | null;
 }
 
@@ -29,7 +28,6 @@ interface UseMessageListReturn {
 }
 
 export function useMessageList({
-  queryData,
   rawConversationId,
 }: UseMessageListProps): UseMessageListReturn {
   if (!rawConversationId) {
@@ -46,6 +44,22 @@ export function useMessageList({
   }
 
   const [isFetchingInitial, setIsFetchingInitial] = useState(true);
+
+  const queryVariables = useMemo(
+    () => ({
+      conversationId: rawConversationId || '',
+      first: 20,
+    }),
+    [rawConversationId],
+  );
+
+  const queryData = useLazyLoadQuery<ConversationMessagesQuery>(
+    conversationMessagesQuery,
+    queryVariables,
+    {
+      fetchPolicy: 'store-or-network',
+    },
+  );
 
   const { data, loadNext, hasNext, isLoadingNext } = usePaginationFragment<
     ConversationMessagesQuery,

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e08510d9a46d7ffc6e17e7ddc0c16296>>
+ * @generated SignedSource<<09049fb22a3ef532f144add4b5c83f68>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -131,6 +131,13 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "cursor",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": "Message",
                 "kind": "LinkedField",
                 "name": "node",
@@ -235,13 +242,6 @@ return {
                   }
                 ],
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "cursor",
-                "storageKey": null
               }
             ],
             "storageKey": null
@@ -263,16 +263,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "fb670454389aae8f00c89b48582e126e",
+    "cacheID": "d0f1619cb7a709fbcb731c312db49497",
     "id": null,
     "metadata": {},
     "name": "MessageFragmentPaginationQuery",
     "operationKind": "query",
-    "text": "query MessageFragmentPaginationQuery(\n  $after: String\n  $conversationId: ID!\n  $first: Float = 20\n) {\n  ...MessageFragment_query_1QmmIs\n}\n\nfragment MessageFragment_query_1QmmIs on Query {\n  messages(conversationId: $conversationId, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      node {\n        id\n        content\n        sender\n        createdAt\n        updatedAt\n        metadata\n        type\n        status\n        user {\n          id\n          rawId\n          firstName\n          lastName\n          avatar\n        }\n        __typename\n      }\n      cursor\n    }\n  }\n}\n"
+    "text": "query MessageFragmentPaginationQuery(\n  $after: String\n  $conversationId: ID!\n  $first: Float = 20\n) {\n  ...MessageFragment_query_1QmmIs\n}\n\nfragment MessageFragment_query_1QmmIs on Query {\n  messages(conversationId: $conversationId, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        content\n        sender\n        createdAt\n        updatedAt\n        metadata\n        type\n        status\n        user {\n          id\n          rawId\n          firstName\n          lastName\n          avatar\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "11c1a2bcd00da76f06bd3fbe6e90a046";
+(node as any).hash = "14a07bb882efef75dd51a91937a0c70a";
 
 export default node;

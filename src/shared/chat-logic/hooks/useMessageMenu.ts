@@ -1,10 +1,5 @@
-import { Message } from '@/shared/chat-logic/interfaces/inbox';
-import ToastMessage from '@/shared/components/common/ToastMessage';
-import { ToastMessageType } from '@/shared/helper/enums/common';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
 import { RelayStoreHelper } from '../helpers/relay-store.helper';
+import { Message } from '../interfaces/inbox';
 
 interface UseMessageMenuProps {
   message: Message;
@@ -13,7 +8,10 @@ interface UseMessageMenuProps {
 }
 
 interface UseMessageMenuReturn {
-  handleCopyText: () => void;
+  handleCopyText: (
+    onSuccess?: () => void,
+    onError?: (error: any) => void,
+  ) => void;
   handleReply: () => void;
   handleEdit: () => void;
   handleDelete: () => void;
@@ -24,26 +22,17 @@ export function useMessageMenu({
   rawConversationId,
   onCloseMenu,
 }: UseMessageMenuProps): UseMessageMenuReturn {
-  const { t } = useTranslation('inbox');
-
-  const handleCopyText = async () => {
+  const handleCopyText = async (
+    onSuccess?: () => void,
+    onError?: (error: any) => void,
+  ) => {
     if (message.content) {
       onCloseMenu();
       try {
         await navigator.clipboard.writeText(message.content);
-        toast(
-          React.createElement(ToastMessage, {
-            typeToast: ToastMessageType.SUCCESS,
-            message: t('inboxDetail.textCopiedToClipboard'),
-          }),
-        );
+        onSuccess?.();
       } catch (error) {
-        toast.error(
-          React.createElement(ToastMessage, {
-            typeToast: ToastMessageType.ERROR,
-            message: t('inboxDetail.failedToCopyTextDesc'),
-          }),
-        );
+        onError?.(error);
       }
     }
   };

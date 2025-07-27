@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ab1b30c03c726261b88d170133e26ece>>
+ * @generated SignedSource<<2a57eeed1fc898c42a9ee3daaa67cecd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,7 @@ import { FragmentRefs } from "relay-runtime";
 export type MessageFragment_query$data = {
   readonly messages: {
     readonly edges: ReadonlyArray<{
+      readonly cursor: string;
       readonly node: {
         readonly content: string;
         readonly createdAt: any;
@@ -152,6 +153,13 @@ return {
             {
               "alias": null,
               "args": null,
+              "kind": "ScalarField",
+              "name": "cursor",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
               "concreteType": "Message",
               "kind": "LinkedField",
               "name": "node",
@@ -256,13 +264,6 @@ return {
                 }
               ],
               "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "cursor",
-              "storageKey": null
             }
           ],
           "storageKey": null
@@ -276,6 +277,6 @@ return {
 };
 })();
 
-(node as any).hash = "11c1a2bcd00da76f06bd3fbe6e90a046";
+(node as any).hash = "14a07bb882efef75dd51a91937a0c70a";
 
 export default node;

@@ -18,6 +18,7 @@ export const messageListFragment = graphql`
         endCursor
       }
       edges {
+        cursor
         node {
           id
           content
