@@ -44,6 +44,9 @@ const Workspace = React.lazy(
 const Billing = React.lazy(
   () => import('@/modules/settings/pages/billing/Billing'),
 );
+const KnowledgeBase = React.lazy(
+  () => import('@/modules/settings/pages/knowledge-base/KnowledgeBase'),
+);
 
 const ChangePlan = React.lazy(
   () =>
@@ -362,7 +365,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'knowledge-base',
     path: MAIN_ROUTES.KNOWLEDGE_BASE,
-    component: PageNotFound,
+    component: KnowledgeBase,
     name: 'knowledge-base',
   },
   {

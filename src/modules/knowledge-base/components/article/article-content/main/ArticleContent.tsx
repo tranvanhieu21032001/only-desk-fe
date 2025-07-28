@@ -32,6 +32,7 @@ import CategoryComponent from '../../../categories/categories-content/main/categ
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/core/store';
+import ModalAddNewCategory from '../../../categories/categories-content/main/modal-add-category/ModalAddNewCategory';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -79,6 +80,12 @@ function ArticleContent() {
     visible: isModalNewArticles,
     toggle: handleToggleModalNewArticle,
   } = useModal();
+
+  const {
+  visible: isModalAddCategoryVisible,
+  toggle: toggleModalAddCategory,
+} = useModal();
+
 
   useEffect(() => {
     dispatch(fetchHelpdeskCategories());
@@ -176,7 +183,18 @@ function ArticleContent() {
           />
         </S.InputSearch>
         <S.FilterPopoverWrap>
-          <S.ButtonAddArticle
+
+          {isCategoriesPage ? <S.ButtonAddArticle
+            width="fit-content"
+            iconPosition="left"
+            icon={<PlusOutlined />}
+            type="primary"
+           onClick={toggleModalAddCategory}
+          >
+            <Typography color={themeColors?.newtralLightest}>
+              {t('article-menu.new-category')}
+            </Typography>
+          </S.ButtonAddArticle>: <S.ButtonAddArticle
             width="fit-content"
             iconPosition="left"
             icon={<PlusOutlined />}
@@ -186,8 +204,8 @@ function ArticleContent() {
             <Typography color={themeColors?.newtralLightest}>
               {t('article-menu.new-article')}
             </Typography>
-          </S.ButtonAddArticle>
-          <PopoverAction
+          </S.ButtonAddArticle>}
+          {!isCategoriesPage && <PopoverAction
             content={renderActionFilter()}
             placement="bottomRight"
             btnContent={
@@ -207,7 +225,7 @@ function ArticleContent() {
                 <Typography>{t('article-menu.action')}</Typography>
               </S.ButtonAction>
             }
-          />
+          />}
         </S.FilterPopoverWrap>
       </S.FilterWrap>}
       {/* <NoArticle /> */}
@@ -276,6 +294,18 @@ function ArticleContent() {
             handleToggleModalNewArticle();
           }} />
       )}
+
+      {isModalAddCategoryVisible && (
+  <ModalAddNewCategory
+    open={isModalAddCategoryVisible}
+    onCancel={toggleModalAddCategory}
+    onOK={() => {
+      toggleModalAddCategory();
+      dispatch(fetchHelpdeskCategories());
+    }}
+  />
+)}
+
     </S.ArticleContentContainer>
   );
 }

@@ -75,7 +75,7 @@ const MAIN_ROUTES = {
   WORKSPACE: `${preRouterMain}/setting-workspace`,
   CHATBOX: `${preRouterMain}/chatbox`,
   EMAIL: `${preRouterMain}/email`,
-  KNOWLEDGE_BASE: `${preRouterMain}/knowledge-base`,
+  KNOWLEDGE_BASE: `${preRouterMain}/setting/knowledge-base`,
   STATUS_PAGE: `${preRouterMain}/status-page`,
 
   // Profiles

@@ -16,7 +16,10 @@ import icSetting from '@/assets/icons/knowledge-base/ic-setting.svg';
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
-import { HelpdeskArticleCreatePayload, HelpdeskCategory } from '@/modules/knowledge-base/interface';
+import {
+  HelpdeskArticleCreatePayload,
+  HelpdeskCategory,
+} from '@/modules/knowledge-base/interface';
 import { AppDispatch, RootState } from '@/core/store';
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,7 +32,11 @@ interface ModalAddNewArticlesProps {
   onStart: () => void;
 }
 
-function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesProps) {
+function ModalAddNewArticles({
+  open,
+  onCancel,
+  onStart,
+}: ModalAddNewArticlesProps) {
   const { t } = useTranslation('knowledgeBase');
   const editorRef = useRef<any>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -39,12 +46,15 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
   const [section, setSection] = useState('');
   const [articleTitle, setArticleTitle] = useState('');
   const [editorReady, setEditorReady] = useState(false);
-  const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
-  const [sectionsByCategory, setSectionsByCategory] = useState<Record<string, HelpdeskCategory['sections']>>({});
-  
+  const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>(
+    [],
+  );
+  const [sectionsByCategory, setSectionsByCategory] = useState<
+    Record<string, HelpdeskCategory['sections']>
+  >({});
 
   const { categories } = useSelector(
-    (state: RootState) => state.helpdeskCategory
+    (state: RootState) => state.helpdeskCategory,
   );
 
   const [uploadProgress, setUploadProgress] = useState({
@@ -153,13 +163,23 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                   setSection('');
                 }}
                 popupClassName="auth-lang"
-                placeholder={t('article-menu.add-a-new-article.getting-started')}
+                placeholder={t(
+                  'article-menu.add-a-new-article.getting-started',
+                )}
               >
-                {categoryOptions.map((cat) => (
-                  <S.LangOption key={cat.id} value={cat.id}>
-                    <Typography>{cat.name}</Typography>
+                {categoryOptions.length === 0 ? (
+                  <S.LangOption disabled value="">
+                    <Typography>
+                      {t('article-menu.add-a-new-article.no-category')}
+                    </Typography>
                   </S.LangOption>
-                ))}
+                ) : (
+                  categoryOptions.map((cat) => (
+                    <S.LangOption key={cat.id} value={cat.id}>
+                      <Typography>{cat.name}</Typography>
+                    </S.LangOption>
+                  ))
+                )}
               </S.ChangeLang>
             </S.FormField>
 
@@ -176,11 +196,19 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                 placeholder={t('article-menu.add-a-new-article.select-section')}
                 disabled={!category}
               >
-                {(sectionsByCategory[category] || []).map((sec) => (
-                  <S.LangOption key={sec.id} value={sec.id}>
-                    <Typography>{sec.name}</Typography>
+                {(sectionsByCategory[category] || []).length === 0 ? (
+                  <S.LangOption disabled value="">
+                    <Typography>
+                      {t('article-menu.add-a-new-article.no-section')}
+                    </Typography>
                   </S.LangOption>
-                ))}
+                ) : (
+                  (sectionsByCategory[category] || []).map((sec) => (
+                    <S.LangOption key={sec.id} value={sec.id}>
+                      <Typography>{sec.name}</Typography>
+                    </S.LangOption>
+                  ))
+                )}
               </S.ChangeLang>
             </S.FormField>
           </S.GroupInput>
@@ -195,7 +223,9 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
             <Input
               value={articleTitle}
               onChange={(e) => setArticleTitle(e.target.value)}
-              placeholder={t('article-menu.add-a-new-article.enter-article-title')}
+              placeholder={t(
+                'article-menu.add-a-new-article.enter-article-title',
+              )}
               size="large"
             />
           </S.FormField>
@@ -253,9 +283,16 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                   images_upload_handler: async (blobInfo, success, failure) => {
                     try {
                       const formData = new FormData();
-                      formData.append('image', blobInfo.blob(), blobInfo.filename());
+                      formData.append(
+                        'image',
+                        blobInfo.blob(),
+                        blobInfo.filename(),
+                      );
 
-                      const res = await handleUploadImage(formData, setUploadProgress);
+                      const res = await handleUploadImage(
+                        formData,
+                        setUploadProgress,
+                      );
                       if (res?.fileUrl) {
                         success(res.fileUrl);
                       } else {
@@ -272,8 +309,8 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                     input.setAttribute('accept', 'image/*');
 
                     input.onchange = async () => {
-                      console.log("action");
-                      
+                      console.log('action');
+
                       const file = input.files?.[0];
                       if (!file) return;
 
@@ -281,7 +318,10 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                       formData.append('image', file);
 
                       try {
-                        const res = await handleUploadImage(formData, setUploadProgress);
+                        const res = await handleUploadImage(
+                          formData,
+                          setUploadProgress,
+                        );
                         if (res?.fileUrl) {
                           cb(res.fileUrl, { title: file.name, alt: file.name });
                         } else {
@@ -293,23 +333,14 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                     };
 
                     input.click();
-                  }
-
+                  },
                 }}
-
               />
             </div>
           </S.FormField>
         </S.ModalBody>
 
         <S.ModalFooter>
-          <div>
-            <Image src={icSetting} preview={false} />
-            <Typography fontWeight={fontWeight.semiBold} color={themeColors.secondaryDark}>
-              {t('article-menu.add-a-new-article.option')}
-            </Typography>
-          </div>
-
           <div className="button-group">
             <Button onClick={onCancel}>
               {t('article-menu.add-a-new-article.save-draft')}
