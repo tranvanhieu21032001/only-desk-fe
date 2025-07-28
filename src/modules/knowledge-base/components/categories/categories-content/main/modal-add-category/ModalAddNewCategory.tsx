@@ -45,8 +45,6 @@ const ModalAddNewCategory = ({
 }: ModalAddNewCategoryProps) => {
     const { t } = useTranslation('knowledgeBase');
 
-    console.log("categoryToEdit", categoryToEdit);
-
 
     const [language, setLanguage] = useState(langOptions[0]?.value);
     const [name, setName] = useState('');

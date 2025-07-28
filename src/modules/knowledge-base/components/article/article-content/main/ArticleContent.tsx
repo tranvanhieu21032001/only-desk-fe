@@ -30,8 +30,8 @@ import { useLocation } from 'react-router-dom';
 import ArticleComponent from '../article-content-components/ArticleComponent';
 import CategoryComponent from '../../../categories/categories-content/main/category-component/CategoryComponent';
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/core/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/core/store';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -40,8 +40,10 @@ function ArticleContent() {
   const isCategoriesPage = currentPath === '/categories';
 
   const dispatch = useDispatch<AppDispatch>();
-
-
+  const { categories } = useSelector(
+    (state: RootState) => state.helpdeskCategory,
+  );
+  
   const {
     visible: isModalInstallHelpdesk,
     toggle: handleToggleModalInstallHelpdesk,
@@ -82,14 +84,14 @@ function ArticleContent() {
     dispatch(fetchHelpdeskCategories());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!isCategoriesPage) {
-      const timer = setTimeout(() => {
-        handleToggleModalInstallHelpdesk();
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!isCategoriesPage) {
+  //     const timer = setTimeout(() => {
+  //       handleToggleModalInstallHelpdesk();
+  //     }, 300);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, []);
 
   const handleSearchArticle = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -165,7 +167,7 @@ function ArticleContent() {
 
   return (
     <S.ArticleContentContainer>
-      <S.FilterWrap>
+      {categories.length > 0 &&  <S.FilterWrap>
         <S.InputSearch>
           <Input
             prefix
@@ -207,7 +209,7 @@ function ArticleContent() {
             }
           />
         </S.FilterPopoverWrap>
-      </S.FilterWrap>
+      </S.FilterWrap>}
       {/* <NoArticle /> */}
       {!isCategoriesPage ? <ArticleComponent /> : <CategoryComponent />}
 

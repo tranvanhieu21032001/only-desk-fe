@@ -18,7 +18,6 @@ import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
 import { HelpdeskArticleCreatePayload, HelpdeskCategory } from '@/modules/knowledge-base/interface';
 import { AppDispatch, RootState } from '@/core/store';
-import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { createHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
@@ -33,17 +32,18 @@ interface ModalAddNewArticlesProps {
 function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesProps) {
   const { t } = useTranslation('knowledgeBase');
   const editorRef = useRef<any>(null);
-
   const dispatch = useDispatch<AppDispatch>();
 
   const [language, setLanguage] = useState(langOptions?.[0]?.value);
   const [category, setCategory] = useState('');
+  const [section, setSection] = useState('');
   const [articleTitle, setArticleTitle] = useState('');
   const [editorReady, setEditorReady] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
+  const [sectionsByCategory, setSectionsByCategory] = useState<Record<string, HelpdeskCategory['sections']>>({});
   
 
-  const { categories, loading, error } = useSelector(
+  const { categories } = useSelector(
     (state: RootState) => state.helpdeskCategory
   );
 
@@ -55,11 +55,16 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
 
   useEffect(() => {
     setCategoryOptions(categories);
+    const sectionMap: Record<string, HelpdeskCategory['sections']> = {};
+    categories.forEach((cat) => {
+      sectionMap[cat.id] = cat.sections || [];
+    });
+    setSectionsByCategory(sectionMap);
   }, [categories]);
 
   const handleSubmit = async () => {
     const content = editorRef.current?.getContent() || '';
-    const payload: HelpdeskArticleCreatePayload = {
+    const payload: HelpdeskArticleCreatePayload & { sectionId?: string } = {
       title: articleTitle,
       content: content,
       categoryId: category,
@@ -75,9 +80,13 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
       tags: ['workspace'],
     };
 
+    if (section) {
+      payload.sectionId = section;
+    }
+
     try {
       await createHelpdeskArticle(payload);
-      dispatch(fetchHelpdeskCategories())
+      dispatch(fetchHelpdeskCategories());
       onStart();
     } catch (error) {
       console.error('Failed to create article:', error);
@@ -86,7 +95,13 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
 
   return (
     <S.WrapModal>
-      <ModalCommon open={open} onCancel={onCancel} showFooter={false} width={1200} rootClassName="modal-getting-started-knowledgebase" >
+      <ModalCommon
+        open={open}
+        onCancel={onCancel}
+        showFooter={false}
+        width={1200}
+        rootClassName="modal-getting-started-knowledgebase"
+      >
         <S.ModalHeader>
           <S.ModalHeaderContent>
             <Typography fontWeight={fontWeight.semiBold}>
@@ -129,18 +144,41 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
               <Typography fontWeight={fontWeight.medium}>
                 <S.FormInput>
                   {t('article-menu.add-a-new-article.category')}
-                  <Image src={icValid} height={23} width={7} />
                 </S.FormInput>
               </Typography>
               <S.ChangeLang
                 value={category}
-                onChange={(value) => setCategory(value)}
+                onChange={(value) => {
+                  setCategory(value);
+                  setSection('');
+                }}
                 popupClassName="auth-lang"
                 placeholder={t('article-menu.add-a-new-article.getting-started')}
               >
                 {categoryOptions.map((cat) => (
                   <S.LangOption key={cat.id} value={cat.id}>
                     <Typography>{cat.name}</Typography>
+                  </S.LangOption>
+                ))}
+              </S.ChangeLang>
+            </S.FormField>
+
+            <S.FormField>
+              <Typography fontWeight={fontWeight.medium}>
+                <S.FormInput>
+                  {t('article-menu.add-a-new-article.section')}
+                </S.FormInput>
+              </Typography>
+              <S.ChangeLang
+                value={section}
+                onChange={(value) => setSection(value)}
+                popupClassName="auth-lang"
+                placeholder={t('article-menu.add-a-new-article.select-section')}
+                disabled={!category}
+              >
+                {(sectionsByCategory[category] || []).map((sec) => (
+                  <S.LangOption key={sec.id} value={sec.id}>
+                    <Typography>{sec.name}</Typography>
                   </S.LangOption>
                 ))}
               </S.ChangeLang>
@@ -245,8 +283,6 @@ function ModalAddNewArticles({ open, onCancel, onStart }: ModalAddNewArticlesPro
                       try {
                         const res = await handleUploadImage(formData, setUploadProgress);
                         if (res?.fileUrl) {
-                          console.log("res?.fileUrl", res?.fileUrl);
-                          
                           cb(res.fileUrl, { title: file.name, alt: file.name });
                         } else {
                           console.error('Upload failed');
