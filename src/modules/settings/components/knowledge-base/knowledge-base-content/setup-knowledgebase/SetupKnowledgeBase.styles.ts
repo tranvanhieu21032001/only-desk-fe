@@ -123,7 +123,7 @@ export const SectionBox = styled.div`
 
   padding: 15px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #E8E8E8;
   margin-top: 10px;
 
   p {
