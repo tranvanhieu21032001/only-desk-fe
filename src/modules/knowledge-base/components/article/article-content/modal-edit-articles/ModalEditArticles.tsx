@@ -140,7 +140,7 @@ const handleSubmit = async () => {
         <S.ModalHeader>
           <S.ModalHeaderContent>
             <Typography fontWeight={fontWeight.semiBold}>
-              {t('article-menu.add-a-new-article.title', 'Edit Article')}
+              {t('article-menu.add-a-new-article.title-edit')}
             </Typography>
             <S.ModalDescription>
               <Typography color={themeColors.newtralLight}>
@@ -318,16 +318,6 @@ const handleSubmit = async () => {
         </S.ModalBody>
 
         <S.ModalFooter>
-          <div>
-            <Image src={icSetting} preview={false} />
-            <Typography
-              fontWeight={fontWeight.semiBold}
-              color={themeColors.secondaryDark}
-            >
-              {t('article-menu.add-a-new-article.option')}
-            </Typography>
-          </div>
-
           <div className="button-group">
             <Button onClick={onCancel}>
               {t('article-menu.add-a-new-article.cancel')}

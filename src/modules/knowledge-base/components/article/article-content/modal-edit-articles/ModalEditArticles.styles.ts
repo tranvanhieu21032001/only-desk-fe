@@ -39,7 +39,7 @@ export const ModalFooter = styled.div`
   padding: 12px 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   border-top: 1px solid ${(props) => props.theme.colors.newtral};
 
   > div {
