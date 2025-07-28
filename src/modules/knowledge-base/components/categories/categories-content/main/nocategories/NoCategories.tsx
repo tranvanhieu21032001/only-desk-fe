@@ -10,73 +10,52 @@ import icAdd from '@/assets/icons/knowledge-base/ic-add3.svg';
 import * as S from './NoCategories.styles';
 import { useModal } from "@/shared/hooks";
 import ModalAddNewCategory from "../modal-add-category/ModalAddNewCategory";
-import ModalAddASection from "../modal-add-a-section/ModalAddASection";
-import { useState } from "react";
 
 interface NoCategoriesProps {
   onReload: () => void;
 }
 
 const NoCategories = ({ onReload }: NoCategoriesProps) => {
-    const { t } = useTranslation('knowledgeBase');
+  const { t } = useTranslation('knowledgeBase');
 
-    const {
-        visible: isModalAddCategoryVisible,
-        toggle: toggleModalAddCategory,
-    } = useModal();
+  const {
+    visible: isModalAddCategoryVisible,
+    toggle: toggleModalAddCategory,
+  } = useModal();
 
-    const {
-        visible: isModalAddSectionVisible,
-        toggle: toggleModalAddSection,
-    } = useModal();
+  return (
+    <>
+      <S.Container>
+        <Image src={icNoCategory} preview={false} />
+        <Typography color={themeColors?.primary} variant="h5" fontWeight={fontWeight.semiBold}>
+          {t('article-menu.no-category.title')}
+        </Typography>
+        <Typography color={themeColors?.primary} fontWeight={fontWeight.light}>
+          {t('article-menu.no-category.description')}
+        </Typography>
 
-    const [newCategory, setNewCategory] = useState<{ id: string; name: string } | null>(null);
-    return (
-        <>
-            <S.Container>
-                <Image src={icNoCategory} preview={false} />
-                <Typography color={themeColors?.primary} variant="h5" fontWeight={fontWeight.semiBold}>
-                    {t('article-menu.no-category.title')}
-                </Typography>
-                <Typography color={themeColors?.primary} fontWeight={fontWeight.light}>
-                    {t('article-menu.no-category.description')}
-                </Typography>
+        <S.ButtonGroup>
+          <Button type="primary" onClick={toggleModalAddCategory}>
+            <S.IconTextWrapper>
+              <Image src={icAdd} width={18} height={18} preview={false} />
+              {t('article-menu.no-category.new-category')}
+            </S.IconTextWrapper>
+          </Button>
+        </S.ButtonGroup>
+      </S.Container>
 
-                <S.ButtonGroup>
-                    <Button type="primary" onClick={toggleModalAddCategory}>
-                        <S.IconTextWrapper>
-                            <Image src={icAdd} width={18} height={18} preview={false} />
-                            {t('article-menu.no-category.new-category')}
-                        </S.IconTextWrapper>
-                    </Button>
-                </S.ButtonGroup>
-            </S.Container>
-
-            {isModalAddCategoryVisible && (
-                <ModalAddNewCategory
-                    open={isModalAddCategoryVisible}
-                    onCancel={toggleModalAddCategory}
-                    onOK={() => {
-                        toggleModalAddCategory();
-                        toggleModalAddSection();
-                    }}
-                    onAddCategory={(category) => setNewCategory(category)}
-                />
-            )}
-
-             {isModalAddSectionVisible && newCategory && (
-                <ModalAddASection
-                open={isModalAddSectionVisible}
-                onCancel={toggleModalAddSection}
-                onOK={() => {
-                    toggleModalAddSection();
-                    onReload();
-                }}
-                category={newCategory}
-                />
-            )}
-        </>
-    );
+      {isModalAddCategoryVisible && (
+        <ModalAddNewCategory
+          open={isModalAddCategoryVisible}
+          onCancel={toggleModalAddCategory}
+          onOK={() => {
+            toggleModalAddCategory();
+            onReload(); 
+          }}
+        />
+      )}
+    </>
+  );
 };
 
 export default NoCategories;

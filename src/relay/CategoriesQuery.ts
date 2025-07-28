@@ -14,6 +14,8 @@ export const categoriesQuery = graphql`
         rawId
         title
         content
+        viewCount
+        status
         createdAt
         updatedAt
       }
@@ -26,7 +28,9 @@ export const categoriesQuery = graphql`
           id
           rawId
           title
+          status
           content
+          viewCount
           createdAt
           updatedAt
         }

@@ -186,31 +186,26 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
   });
 
   const columns: ColumnsType<RowItem> = [
-    {
-      title: t('article-menu.actions.title'),
-      dataIndex: 'title',
-      key: 'title',
-      render: (_, row) =>
-        row.isCategoryRow ? (
-          <>
-            <span style={{ fontWeight: 600 }}>Category:</span>{' '}
-            <Tag color="green" style={{ color: '#1677ff' }}>{row.category}</Tag>
-          </>
-        ) : (
-          row.title
-        ),
-    },
-    {
-      title: t('article-menu.actions.description'),
-      dataIndex: 'description',
-      key: 'description',
-      render: (_, row) =>
-        row.description ? (
-          <span style={row.isCategoryRow ? { fontStyle: 'italic', color: '#888' } : {}}>
-            {row.description}
+  {
+    title: `${t('article-menu.actions.title')} & ${t('article-menu.actions.description')}`,
+    dataIndex: 'title',
+    key: 'title',
+    render: (_, row) => {
+      if (row.isCategoryRow) {
+        return (
+          <span style={{ fontWeight: 600 }}>
+            Category: <Tag color="green" style={{ color: '#1677ff' }}>{row.category}</Tag>
+            {row.description && (
+              <span style={{ fontWeight: 400, fontStyle: 'italic', color: '#888', marginLeft: 8 }}>
+                {row.description}
+              </span>
+            )}
           </span>
-        ) : null,
+        );
+      }
+      return row.title;
     },
+  },
     {
       title: t('article-menu.actions.statistic'),
       dataIndex: 'statistic',

@@ -37,6 +37,7 @@ export interface AllArticleInterface {
   lastUpdate: string;
   category: string;
   categoryId: string;
+  sectionId?: string;
   isCategoryRow?: boolean;
 }
 
@@ -49,8 +50,8 @@ const selectFlatArticlesFromCategory = (
       id: article.id,
       title: article.title,
       content: article.content,
-      status: 'published',
-      statistic: '0',
+      status: article?.status.toLowerCase(),
+      statistic: article?.viewCount + " visits",
       created: formatDateTime(article.createdAt || ''),
       lastUpdate: formatDateTime(article.updatedAt || ''),
       category: category.name,
@@ -64,12 +65,13 @@ const selectFlatArticlesFromCategory = (
         id: article.id,
         title: article.title,
         content: article.content,
-        status: 'published',
-        statistic: '0',
+        status: article?.status.toLowerCase(),
+        statistic: article?.viewCount + " visits",
         created: formatDateTime(article.createdAt || ''),
         lastUpdate: formatDateTime(article.updatedAt || ''),
         category: category.name,
         categoryId: category.id,
+        sectionId: section.id,
         isCategoryRow: false,
       })),
     );
@@ -127,7 +129,7 @@ const AllArticle = () => {
       isCategoryRow: true,
       title: '',
       content:'',
-      status: 'published',
+      status: '',
       statistic: '',
       created: '',
       lastUpdate: '',

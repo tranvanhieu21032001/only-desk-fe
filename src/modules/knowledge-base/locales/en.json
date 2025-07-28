@@ -116,6 +116,7 @@
       "description": "Please insert modal description here.",
       "language": "Language",
       "category": "Category",
+      "section":"Sections",
       "article-title": "Article title",
       "enter-article-title": "Enter Article Title",
       "getting-started": "Getting Started",

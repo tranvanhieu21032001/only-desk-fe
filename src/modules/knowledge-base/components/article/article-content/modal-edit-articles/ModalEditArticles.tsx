@@ -20,7 +20,7 @@ import { HelpdeskArticleCreatePayload, HelpdeskCategory } from '@/modules/knowle
 import { AppDispatch, RootState } from '@/core/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
-import { updateArticle } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
+import { fetchHelpdeskCategories, updateArticle } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 
 export interface AllArticleInterface {
   key: string;
@@ -32,6 +32,7 @@ export interface AllArticleInterface {
   lastUpdate: string;
   category: string;
   categoryId: string;
+  sectionId?: string;
   isCategoryRow?: boolean;
 }
 
@@ -49,30 +50,39 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
 
   const [language, setLanguage] = useState(langOptions?.[0]?.value);
   const [category, setCategory] = useState('');
+  const [section, setSection] = useState('');
   const [articleTitle, setArticleTitle] = useState('');
   const [editorReady, setEditorReady] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
+  const [sectionsByCategory, setSectionsByCategory] = useState<Record<string, HelpdeskCategory['sections']>>({});
 
   const { categories } = useSelector((state: RootState) => state.helpdeskCategory);
+
   useEffect(() => {
     setCategoryOptions(categories);
+    const sectionMap: Record<string, HelpdeskCategory['sections']> = {};
+    categories.forEach((cat) => {
+      sectionMap[cat.id] = cat.sections || [];
+    });
+    setSectionsByCategory(sectionMap);
   }, [categories]);
 
   useEffect(() => {
     if (open && article) {
-      const lang = article.defaultLanguage || 'en';
-      const trans = article.translations?.[lang];
+      const lang = (article as any).defaultLanguage || 'en';
+      const trans = (article as any).translations?.[lang];
 
       setLanguage(lang);
       setCategory(article.categoryId);
       setArticleTitle(trans?.title || article.title || '');
+      setSection((article as any).sectionId || '');
     }
   }, [open, article]);
+
   useEffect(() => {
     if (editorReady && article) {
-      const lang = article.defaultLanguage || 'en';
+      const lang = (article as any).defaultLanguage || 'en';
       const trans = (article as any).translations?.[lang];
-
       const content = trans?.content || article.content || '';
       editorRef.current?.setContent(content);
     }
@@ -81,7 +91,11 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
 const handleSubmit = async () => {
   const content = editorRef.current?.getContent() || '';
 
-  const payload: HelpdeskArticleCreatePayload = {
+  const selectedCategorySections = sectionsByCategory[category] || [];
+  const hasSections = selectedCategorySections.length > 0;
+  const isValidSection = hasSections && section;
+
+  const payload: HelpdeskArticleCreatePayload & { sectionId?: string } = {
     title: articleTitle,
     content,
     categoryId: category,
@@ -93,20 +107,27 @@ const handleSubmit = async () => {
     },
     defaultLanguage: language,
     slug: articleTitle.trim().toLowerCase().replace(/\s+/g, '-'),
-    status: 'published',
     tags: ['workspace'],
+    sectionId: isValidSection ? section : null,
   };
+
+  if (isValidSection) {
+    payload.sectionId = section;
+  }
 
   try {
     if (article?.key) {
       const updated = await updateHelpdeskArticle(article.key, payload);
       dispatch(updateArticle({ ...updated, rawId: article.key }));
-      onStart();
+      dispatch(fetchHelpdeskCategories());
+      onCancel();
     }
   } catch (error) {
     console.error('Failed to update article:', error);
   }
 };
+
+
   return (
     <S.WrapModal>
       <ModalCommon
@@ -123,7 +144,10 @@ const handleSubmit = async () => {
             </Typography>
             <S.ModalDescription>
               <Typography color={themeColors.newtralLight}>
-                {t('article-menu.add-a-new-article.description', 'Update the article details below.')}
+                {t(
+                  'article-menu.add-a-new-article.description',
+                  'Update the article details below.',
+                )}
               </Typography>
             </S.ModalDescription>
           </S.ModalHeaderContent>
@@ -158,17 +182,40 @@ const handleSubmit = async () => {
               <Typography fontWeight={fontWeight.medium}>
                 <S.FormInput>
                   {t('article-menu.add-a-new-article.category')}
-                  <Image src={icValid} height={23} width={7} />
                 </S.FormInput>
               </Typography>
               <S.ChangeLang
                 value={category}
-                onChange={(value) => setCategory(value)}
+                onChange={(value) => {
+                  setCategory(value);
+                  setSection('');
+                }}
                 popupClassName="article-category"
               >
                 {categoryOptions.map((cat) => (
                   <S.LangOption key={cat.id} value={cat.id}>
                     <Typography>{cat.name}</Typography>
+                  </S.LangOption>
+                ))}
+              </S.ChangeLang>
+            </S.FormField>
+
+            <S.FormField>
+              <Typography fontWeight={fontWeight.medium}>
+                <S.FormInput>
+                  {t('article-menu.add-a-new-article.section')}
+                </S.FormInput>
+              </Typography>
+              <S.ChangeLang
+                value={section}
+                onChange={(value) => setSection(value)}
+                popupClassName="auth-lang"
+                placeholder={t('article-menu.add-a-new-article.select-section')}
+                disabled={!category}
+              >
+                {(sectionsByCategory[category] || []).map((sec) => (
+                  <S.LangOption key={sec.id} value={sec.id}>
+                    <Typography>{sec.name}</Typography>
                   </S.LangOption>
                 ))}
               </S.ChangeLang>
@@ -185,7 +232,9 @@ const handleSubmit = async () => {
             <Input
               value={articleTitle}
               onChange={(e) => setArticleTitle(e.target.value)}
-              placeholder={t('article-menu.add-a-new-article.enter-article-title')}
+              placeholder={t(
+                'article-menu.add-a-new-article.enter-article-title',
+              )}
               size="large"
             />
           </S.FormField>
@@ -253,7 +302,9 @@ const handleSubmit = async () => {
                       const file = input.files?.[0];
                       const reader = new FileReader();
                       reader.onload = () => {
-                        cb(reader.result?.toString() || '', { title: file?.name });
+                        cb(reader.result?.toString() || '', {
+                          title: file?.name,
+                        });
                       };
                       if (file) reader.readAsDataURL(file);
                     };
@@ -269,7 +320,10 @@ const handleSubmit = async () => {
         <S.ModalFooter>
           <div>
             <Image src={icSetting} preview={false} />
-            <Typography fontWeight={fontWeight.semiBold} color={themeColors.secondaryDark}>
+            <Typography
+              fontWeight={fontWeight.semiBold}
+              color={themeColors.secondaryDark}
+            >
               {t('article-menu.add-a-new-article.option')}
             </Typography>
           </div>
