@@ -14,6 +14,7 @@ import inboxReducer from '@/modules/inbox/store/features/inbox';
 import helpdeskCategorySlice from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import helpdeskArticlesReducer from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 import operatorsReducer from '@/modules/settings/store/features/operators';
+import knowledgeBaseSettingsReducer from '@/modules/settings/store/features/knowledgebase';
 
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
@@ -50,6 +51,7 @@ export const store = configureStore({
     operators: operatorsReducer,
     helpdeskArticles: helpdeskArticlesReducer,
     helpdeskCategory: helpdeskCategorySlice,
+    knowledgeBaseSettings: knowledgeBaseSettingsReducer,
     inbox: inboxReducer,
   },
   preloadedState: loadState(),
