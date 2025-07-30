@@ -12,7 +12,16 @@
     "remove":"Remove",
     "cancel":"Cancel",
     "language": {
-      "english": "English"
+       "english": "English",
+      "vietnamese": "Vietnamese",
+      "spanish": "Spanish",
+      "french": "French",
+      "german": "German",
+      "chinese": "Chinese",
+      "japanese": "Japanese",
+      "korean": "Korean",
+      "portuguese": "Portuguese",
+      "italian": "Italian"
     },
     "filter": {
       "view-my-knowledge-base": "View my knowledge base",

@@ -14,6 +14,7 @@ import inbox from '@/modules/inbox/locales/en.json';
 import settings from '@/modules/settings/locales/en/account-en.json';
 import settingWorkspace from '@/modules/settings/locales/en/workspace-en.json';
 import billing from '@/modules/settings/locales/en/billing-en.json'
+import knowledgeSetting from '@/modules/settings/locales/en/knowledgebase-en.json'
 
 const translationEN = {
   messages,
@@ -29,7 +30,8 @@ const translationEN = {
   inbox,
   knowledgeBase,
   settingWorkspace,
-  billing
+  billing,
+  knowledgeSetting
 };
 
 export default translationEN;

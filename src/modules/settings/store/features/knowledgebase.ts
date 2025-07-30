@@ -6,8 +6,9 @@ import { helpdeskSettingsQuery } from '@/relay/HelpdeskSettingsQuery';
 import { HelpdeskSettingsQuery } from '@/relay/__generated__/HelpdeskSettingsQuery.graphql';
 
 export interface HelpdeskSettings {
-  baseDomain: string | null;
+  basicDomain: string | null;
   customDomain: string | null;
+  name: string | null;
   logo: string | null;
   banner: string | null;
   languages: string[];
@@ -25,7 +26,7 @@ const initialState: HelpdeskSettingsState = {
 };
 
 // Async thunk to fetch settings
-export const fetchKnowledgeBaseString = createAsyncThunk(
+export const fetchKnowledgeBaseSetting = createAsyncThunk(
   'helpdesk/fetchSettings',
   async () => {
     const result = await fetchQuery<HelpdeskSettingsQuery>(
@@ -46,14 +47,14 @@ const helpdeskSettingsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchKnowledgeBaseString.pending, (state) => {
+      .addCase(fetchKnowledgeBaseSetting.pending, (state) => {
         state.isFetching = true;
       })
-      .addCase(fetchKnowledgeBaseString.fulfilled, (state, action) => {
+      .addCase(fetchKnowledgeBaseSetting.fulfilled, (state, action) => {
         state.isFetching = false;
         state.settings = action.payload;
       })
-      .addCase(fetchKnowledgeBaseString.rejected, (state) => {
+      .addCase(fetchKnowledgeBaseSetting.rejected, (state) => {
         state.isFetching = false;
       });
   },

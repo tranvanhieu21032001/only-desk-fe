@@ -107,7 +107,7 @@ export const WrapInput = styled.div`
 
 export const Domain = styled.div`
   position: absolute;
-  top: 50%;
+  top: 33%;
   transform: translateY(-50%);
   right: 12px;
   font-size: 12px;
