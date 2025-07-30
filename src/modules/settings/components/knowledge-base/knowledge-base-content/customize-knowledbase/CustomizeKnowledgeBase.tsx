@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Image, Skeleton } from 'antd';
+import { Form, Image, Skeleton, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { ReactSVG } from 'react-svg';
 
@@ -15,18 +15,14 @@ import iconImage from '@/assets/icons/common/ic-image-add.svg';
 import Input from '@/shared/components/common/Input';
 import UploadImage from '@/shared/components/common/Upload/main';
 
-import { langOptions } from '@/modules/auth/helpers/data/signIn';
-import { OptionsInterface } from '@/core/model/common';
+import flagList from '@/shared/helper/data/flagIcon';
 import { updateKnowledgeBaseSetting } from '@/modules/settings/api/knowledge-base';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/core/store';
-import { fetchKnowledgeBaseString } from '@/modules/settings/store/features/knowledgebase';
-import { useAppDispatch } from '@/shared/hooks';
 
 const CustomizeKnowledgeBase = () => {
   const [form] = Form.useForm();
   const { t } = useTranslation('knowledgeBase');
-  const dispatch = useAppDispatch();
   const [uploadParams, setUploadParams] = useState({
     isLoading: false,
     countUpload: 0,
@@ -35,15 +31,13 @@ const CustomizeKnowledgeBase = () => {
 
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [bannerUrl, setBannerUrl] = useState<string | null>(null);
-  const [domain, setDomain] = useState('');
-  const [language, setLanguage] = useState<string>(langOptions?.[0]?.value);
+  const [name, setName] = useState('');
+  const [languages, setLanguages] = useState<string[]>([]);
+  const nameRef = useRef(name);
 
-  const domainRef = useRef(domain);
   const updateSettingField = async (field: string, value: any) => {
     const payload: Record<string, any> = {};
-
-    if (field === 'domain') payload.customDomain = value;
-    else if (field === 'language') payload.languages = [value];
+    if (field === 'language') payload.languages = value;
     else payload[field] = value;
 
     try {
@@ -53,39 +47,40 @@ const CustomizeKnowledgeBase = () => {
     }
   };
 
-  const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setDomain(value);
+    setName(value);
   };
 
-  const handleDomainBlur = () => {
-    if (domain !== domainRef.current) {
-      updateSettingField('domain', domain);
-      domainRef.current = domain;
+  const handleNameBlur = () => {
+    const trimmedName = name.trim();
+    if (!trimmedName) return;
+    if (name !== nameRef.current) {
+      updateSettingField('name', name);
+      nameRef.current = name;
     }
   };
 
-  const handleLanguageChange = (value: string) => {
-    setLanguage(value);
-    updateSettingField('language', value);
+  const handleLanguageChange = (values: string[]) => {
+    setLanguages(values);
+    updateSettingField('language', values);
   };
 
-  const { settings, isFetching } = useSelector((state: RootState) => state.knowledgeBaseSettings);
-
-  useEffect(() => {
-    dispatch(fetchKnowledgeBaseString());
-  }, [dispatch]);
+  const { settings, isFetching } = useSelector(
+    (state: RootState) => state.knowledgeBaseSettings,
+  );
 
   useEffect(() => {
     if (settings) {
-      setDomain(settings.customDomain || '');
+      setName(settings.name || '');
       setLogoUrl(settings.logo || null);
       setBannerUrl(settings.banner || null);
-      setLanguage(settings.languages?.[0] || langOptions?.[0]?.value || '');
-      domainRef.current = settings.customDomain || '';
+      setLanguages(settings.languages || []);
+      nameRef.current = settings.name || '';
       form.setFieldsValue({
         logo: settings.logo || '',
         banner: settings.banner || '',
+        name: settings.name || '',
       });
     }
   }, [settings, form]);
@@ -103,7 +98,12 @@ const CustomizeKnowledgeBase = () => {
         </S.KnowledgeBaseInformationLabel>
 
         <Skeleton active loading={isFetching}>
-          <Form form={form} layout="vertical" onFinish={() => {}} onSubmitCapture={(e) => e.preventDefault()}>
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={() => {}}
+            onSubmitCapture={(e) => e.preventDefault()}
+          >
             <S.SectionBox>
               <S.Tỉtle>General</S.Tỉtle>
 
@@ -112,36 +112,87 @@ const CustomizeKnowledgeBase = () => {
                   <S.FormField>
                     <Typography fontWeight={fontWeight.medium}>
                       <S.FormInput>
-                        Basic domain <span style={{ color: 'red' }}>*</span>
+                        Name <span style={{ color: 'red' }}>*</span>
                       </S.FormInput>
                     </Typography>
                     <Input
-                      value={domain}
-                      onChange={handleDomainChange}
-                      onBlur={handleDomainBlur}
+                      value={name}
+                      onChange={handleNameChange}
+                      onBlur={handleNameBlur}
                       size="large"
-                      placeholder="help.t2bo.com"
+                      placeholder="e.g. Helpdesk Support"
                     />
                   </S.FormField>
 
                   <S.FormField>
                     <Typography fontWeight={fontWeight.medium}>
-                      <S.FormInput>Language</S.FormInput>
+                      <S.FormInput>Languages</S.FormInput>
                     </Typography>
-                    <S.ChangeLang
-                      value={language}
-                      popupClassName="auth-lang"
+
+                    <Select
+                      mode="multiple"
+                      value={languages}
                       onChange={handleLanguageChange}
+                      placeholder="Select languages"
+                      style={{ width: '100%' }}
+                      size="large"
+                      optionLabelProp="label"
+                      maxTagCount="responsive"
+                      tagRender={({ label, value, closable, onClose }) => {
+                        const selectedFlag = flagList.find(
+                          (flag) => flag.code === value,
+                        );
+                        return (
+                          <div
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              background: '#F0F0F0',
+                              borderRadius: 4,
+                              padding: '2px 8px',
+                              marginInlineEnd: 4,
+                            }}
+                          >
+                            {selectedFlag && (
+                              <img
+                                src={selectedFlag.image}
+                                alt={selectedFlag.name}
+                                width={20}
+                                style={{ marginRight: 6 }}
+                              />
+                            )}
+                            <span>{label}</span>
+                            {closable && (
+                              <span
+                                onClick={onClose}
+                                style={{ marginLeft: 6, cursor: 'pointer' }}
+                              >
+                                ×
+                              </span>
+                            )}
+                          </div>
+                        );
+                      }}
                     >
-                      {langOptions.map((lang: OptionsInterface) => (
-                        <S.LangOption key={lang.key} value={lang.value}>
-                          <Image src={lang.flag as string} preview={false} />
-                          <Typography>
-                            {t(`article-menu.language.${lang.label}`)}
-                          </Typography>
-                        </S.LangOption>
+                      {flagList.map((flag) => (
+                        <Select.Option
+                          key={flag.code}
+                          value={flag.code}
+                          label={flag.name}
+                        >
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 8,
+                            }}
+                          >
+                            <img src={flag.image} alt={flag.name} width={20} />
+                            <span>{flag.name}</span>
+                          </div>
+                        </Select.Option>
                       ))}
-                    </S.ChangeLang>
+                    </Select>
                   </S.FormField>
                 </S.GroupInput>
               </S.WrapSection>

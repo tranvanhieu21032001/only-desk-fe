@@ -1,0 +1,22 @@
+{
+    "setup-knowledge-base": {
+        "setup-title": "Setup Knowledge Base",
+        "basic-domain": "Basic domain",
+        "custom-domain": "Custom domain",
+        "custom-instruction-title": "Custom domain setup instruction",
+        "instruction-1": "Login to your DNS manager for",
+        "instruction-2-part-1": "Login to your DNS manager",
+        "instruction-2-part-2": "_onlychat.help.t2bo.com",
+        "instruction-2-part-3": "with value",
+        "instruction-2-part-4": "onlychat-website-id=",
+        "instruction-3-part-1": "Add CNAME DNS entry for",
+        "instruction-3-part-2": "help",
+        "instruction-3-part-3": ".t2bo.com with value",
+        "instruction-3-part-4": "custom.onlychat.help",
+        "instruction-4": "Wait for DNS to propagate (this may take a few hours). Use the Verify domain setup button below",
+        "verify-button": "Verify Domain Setup",
+        "view-button": "View Online",
+        "auto-save": "Automatically saved",
+        "baseHelpdeskDomain":"somebes.help"
+    }
+}

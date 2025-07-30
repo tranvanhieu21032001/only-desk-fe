@@ -96,56 +96,6 @@ type WorkspaceMemberTypeEdge {
   node: WorkspaceMember!
 }
 
-type Message implements Node {
-  id: ID!
-  conversationId: ID!
-  content: String!
-  sender: MessageSender!
-  user: User
-  replyTo: Message
-  type: MessageTypeEnum
-  status: MessageStatus!
-  metadata: JSON
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  rawId: String!
-}
-
-"""Type of message sender"""
-enum MessageSender {
-  GUEST
-  AGENT
-  SYSTEM
-}
-
-"""Type of message content"""
-enum MessageTypeEnum {
-  TEXT
-  FILE
-  IMAGE
-  SYSTEM
-  NOTE
-  RESOLVED
-}
-
-"""Status of a message"""
-enum MessageStatus {
-  SENT
-  DELIVERED
-  READ
-  FAILED
-}
-
-type MessageTypeEdge {
-  cursor: String!
-  node: Message!
-}
-
-type MessageConnection {
-  edges: [MessageTypeEdge!]!
-  pageInfo: PageInfo!
-}
-
 type ContactContext {
   ip: String
   countryCode: String
@@ -249,6 +199,56 @@ type ConversationConnection {
   pageInfo: PageInfo!
 }
 
+type Message implements Node {
+  id: ID!
+  conversation: Conversation
+  content: String!
+  sender: MessageSender!
+  user: User
+  replyTo: Message
+  type: MessageTypeEnum
+  status: MessageStatus!
+  metadata: JSON
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  rawId: String!
+}
+
+"""Type of message sender"""
+enum MessageSender {
+  GUEST
+  AGENT
+  SYSTEM
+}
+
+"""Type of message content"""
+enum MessageTypeEnum {
+  TEXT
+  FILE
+  IMAGE
+  SYSTEM
+  NOTE
+  RESOLVED
+}
+
+"""Status of a message"""
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+type MessageTypeEdge {
+  cursor: String!
+  node: Message!
+}
+
+type MessageConnection {
+  edges: [MessageTypeEdge!]!
+  pageInfo: PageInfo!
+}
+
 type HelpdeskCategory implements Node {
   id: ID!
   name: String!
@@ -309,13 +309,15 @@ type HelpdeskCategorySection implements Node {
 
 type HelpdeskSettings implements Node {
   id: ID!
-  baseDomain: String!
+  name: String!
+  basicDomain: String!
   customDomain: String
   logo: String
   banner: String
   languages: [String!]
   createdAt: DateTime
   updatedAt: DateTime
+  workspace: Workspace
 }
 
 type Query {
@@ -327,10 +329,12 @@ type Query {
   contacts(args: PaginationArgs!, keyword: String): ContactPagination!
   liveContacts(first: Float, after: String, last: Float, before: String): ContactConnection!
   node(id: ID!): Node
-  helpdeskCategories: [HelpdeskCategory!]!
+  helpdeskPublicCategories: [HelpdeskCategory!]!
   helpdeskArticles(first: Float, after: String, last: Float, before: String, keyword: String, popular: Boolean): HelpdeskArticleConnection!
   helpdeskArticleBySlug(slug: String!): HelpdeskArticle!
   helpdeskCategoryBySlug(slug: String!): HelpdeskCategory!
+  helpdeskPublicSettings: HelpdeskSettings!
+  helpdeskCategories: [HelpdeskCategory!]!
   helpdeskSettings: HelpdeskSettings!
 }
 

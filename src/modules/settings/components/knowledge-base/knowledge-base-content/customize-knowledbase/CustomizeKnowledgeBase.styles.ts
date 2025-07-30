@@ -116,6 +116,7 @@ export const FormField = styled.div`
 
   .ant-select-selector {
     padding: 12px;
+    height:47px !important;
     background: #e8e8e8 !important;
     border-color: #d9d9d9 !important;
 
@@ -125,6 +126,12 @@ export const FormField = styled.div`
       background: #e8e8e8 !important;
       border-color: #d9d9d9 !important;
       box-shadow: none !important;
+    }
+
+    .ant-select-selection-wrap{
+    height:100%;
+      display: flex;
+  align-items: center;
     }
   }
 `;

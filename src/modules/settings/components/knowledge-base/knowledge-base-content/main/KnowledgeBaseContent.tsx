@@ -1,10 +1,13 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react';
 import { KnowLedgeBaseEnums } from '@/modules/settings/helpers/enums/knowledge-base';
-import { useAppSelector } from '@/shared/hooks';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import { useSearchParams } from 'react-router-dom';
 import SetupKnowledgeBase from '../setup-knowledgebase/SetupKnowledgeBase';
 import CustomizeKnowledgeBase from '../customize-knowledbase/CustomizeKnowledgeBase';
 import styled from 'styled-components';
+import { fetchKnowledgeBaseSetting } from '@/modules/settings/store/features/knowledgebase';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/core/store';
 
 const KnowledgeBaseContainer = styled.section`
   height: 100%;
@@ -12,16 +15,25 @@ const KnowledgeBaseContainer = styled.section`
 `;
 
 const KnowledgeBaseContent = () => {
-   const [search] = useSearchParams();
-    const { currentObjHistory }: any = useAppSelector(
-      (state) => state?.historyRoute,
-    );
-      const type =
-    currentObjHistory?.find((item: any) => item?.key === 'type')
-      ?.value ||
-    search?.get('type') || KnowLedgeBaseEnums?.SET_KNOWLEDGE_BASE
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchKnowledgeBaseSetting());
+  }, [dispatch]);
 
-      const renderBillingContent = useMemo(() => {
+   const { settings, isFetching } = useSelector((state: RootState) => state.knowledgeBaseSettings);
+console.log("settings", settings);
+
+
+  const [search] = useSearchParams();
+  const { currentObjHistory }: any = useAppSelector(
+    (state) => state?.historyRoute,
+  );
+  const type =
+    currentObjHistory?.find((item: any) => item?.key === 'type')?.value ||
+    search?.get('type') ||
+    KnowLedgeBaseEnums?.SET_KNOWLEDGE_BASE;
+
+  const renderBillingContent = useMemo(() => {
     switch (type) {
       case KnowLedgeBaseEnums.SET_KNOWLEDGE_BASE:
         return <SetupKnowledgeBase />;
@@ -33,7 +45,7 @@ const KnowledgeBaseContent = () => {
   }, [type]);
   return (
     <KnowledgeBaseContainer>{renderBillingContent}</KnowledgeBaseContainer>
-  )
-}
+  );
+};
 
-export default KnowledgeBaseContent
+export default KnowledgeBaseContent;
