@@ -40,7 +40,7 @@ function ArticleMenus() {
             <S.LangOption key={lang?.key}>
               <Image src={lang?.flag as string} preview={false} />
               <Typography>
-                {t(`article-menu.language.${lang?.label}`)}
+                {t(`article-menu.language.${lang?.label.toLowerCase()}`)}
               </Typography>
             </S.LangOption>
           ))}
