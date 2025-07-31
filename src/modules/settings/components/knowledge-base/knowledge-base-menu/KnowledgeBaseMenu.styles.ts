@@ -21,6 +21,7 @@ export const KnowledgeBaseItem = styled.div<{ $isActive?: boolean }>`
   align-items: center;
   justify-content: space-between;
   border-radius: ${(props) => props?.theme?.radius?.normalRadius};
+  margin-bottom:4px;
   
   ${({ $isActive, theme }) =>
     $isActive &&

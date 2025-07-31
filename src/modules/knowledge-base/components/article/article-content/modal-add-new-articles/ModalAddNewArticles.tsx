@@ -111,6 +111,7 @@ function ModalAddNewArticles({
         showFooter={false}
         width={1200}
         rootClassName="modal-getting-started-knowledgebase"
+        style={{ margin: '12px 0' }}
       >
         <S.ModalHeader>
           <S.ModalHeaderContent>

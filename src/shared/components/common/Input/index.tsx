@@ -21,6 +21,8 @@ interface InputProps extends InputPropsFromAntd {
   suffix?: string;
   isHeight?: string;
   placeholder?: string;
+  domainText?: string;
+  isDomainHidden?: boolean;
 }
 
 export default function Input({
@@ -32,6 +34,8 @@ export default function Input({
   suffix,
   isHeight,
   placeholder,
+   domainText,
+  isDomainHidden,
   ...rest
 }: InputProps) {
   const [isShowPassWord, setIsShowPassWord] = useState<boolean>(true);
@@ -86,6 +90,7 @@ export default function Input({
           placeholder={placeholder}
         />
       )}
+      {domainText && <S.Domain $hidden={isDomainHidden}>{domainText}</S.Domain>}
     </S.WrapInput>
   );
 }
