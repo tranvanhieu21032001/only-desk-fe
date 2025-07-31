@@ -116,16 +116,14 @@ const SetupKnowledgeBase = () => {
                 ]}
                 validateTrigger="onBlur"
                 style={{ marginBottom: 0, minHeight: '72px' }}
-                extra={
-                  <S.Domain>
-                    {t('setup-knowledge-base.baseHelpdeskDomain')}
-                  </S.Domain>
-                }
+                extra={null}
               >
                 <Input
                   placeholder="e.g., t2bo"
                   size="large"
                   onBlur={() => handleBlur('basicDomain')}
+                  domainText={t('setup-knowledge-base.baseHelpdeskDomain')}
+                   isDomainHidden={false}
                 />
               </Form.Item>
             </S.FormField>
@@ -224,7 +222,7 @@ const SetupKnowledgeBase = () => {
       <S.KnowledgeBaseInformation2>
         <S.AutoSaveIndicator>
           <img src={iconTickCircle} alt="auto-save" />
-          <p>{t('auto-save')}</p>
+          <p>{t('setup-knowledge-base.auto-save')}</p>
         </S.AutoSaveIndicator>
       </S.KnowledgeBaseInformation2>
     </S.KnowledgeBaseInformationContainer>

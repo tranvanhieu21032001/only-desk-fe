@@ -107,7 +107,7 @@ export const WrapInput = styled.div`
 
 export const Domain = styled.div`
   position: absolute;
-  top: 33%;
+  top: 50%;
   transform: translateY(-50%);
   right: 12px;
   font-size: 12px;
@@ -141,6 +141,7 @@ export const WrapSection = styled.div`
   display: flex;
   gap: 8px;
 `;
+
 
 export const Ordinal = styled.div`
   display: flex;

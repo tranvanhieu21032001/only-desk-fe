@@ -15,10 +15,10 @@ import iconImage from '@/assets/icons/common/ic-image-add.svg';
 import Input from '@/shared/components/common/Input';
 import UploadImage from '@/shared/components/common/Upload/main';
 
-import flagList from '@/shared/helper/data/flagIcon';
 import { updateKnowledgeBaseSetting } from '@/modules/settings/api/knowledge-base';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/core/store';
+import { langOptions } from '@/modules/auth/helpers/data/signIn';
 
 const CustomizeKnowledgeBase = () => {
   const [form] = Form.useForm();
@@ -139,8 +139,8 @@ const CustomizeKnowledgeBase = () => {
                       optionLabelProp="label"
                       maxTagCount="responsive"
                       tagRender={({ label, value, closable, onClose }) => {
-                        const selectedFlag = flagList.find(
-                          (flag) => flag.code === value,
+                        const selectedLang = langOptions.find(
+                          (lang) => lang.value === value,
                         );
                         return (
                           <div
@@ -153,10 +153,10 @@ const CustomizeKnowledgeBase = () => {
                               marginInlineEnd: 4,
                             }}
                           >
-                            {selectedFlag && (
+                            {selectedLang?.flag && (
                               <img
-                                src={selectedFlag.image}
-                                alt={selectedFlag.name}
+                                src={selectedLang.flag}
+                                alt={selectedLang.label}
                                 width={20}
                                 style={{ marginRight: 6 }}
                               />
@@ -174,11 +174,11 @@ const CustomizeKnowledgeBase = () => {
                         );
                       }}
                     >
-                      {flagList.map((flag) => (
+                      {langOptions.map((lang) => (
                         <Select.Option
-                          key={flag.code}
-                          value={flag.code}
-                          label={flag.name}
+                          key={lang.key}
+                          value={lang.value}
+                          label={lang.label}
                         >
                           <div
                             style={{
@@ -187,8 +187,14 @@ const CustomizeKnowledgeBase = () => {
                               gap: 8,
                             }}
                           >
-                            <img src={flag.image} alt={flag.name} width={20} />
-                            <span>{flag.name}</span>
+                            {lang.flag && (
+                              <img
+                                src={lang.flag}
+                                alt={lang.label}
+                                width={20}
+                              />
+                            )}
+                            <span>{lang.label}</span>
                           </div>
                         </Select.Option>
                       ))}

@@ -2,7 +2,9 @@ import { styled } from 'styled-components';
 
 import { Input as InputAntd } from 'antd';
 
-export const WrapInput = styled.div``;
+export const WrapInput = styled.div`
+  position: relative;
+`;
 
 export const Input = styled(InputAntd)<{ $isHeight?: string }>`
   width: 100%;
@@ -70,4 +72,17 @@ export const Input = styled(InputAntd)<{ $isHeight?: string }>`
     line-height: 24px;
     color: ${(props) => props.theme.colors.newtralLight};
   }
+`;
+
+export const Domain = styled.div<{ $hidden?: boolean }>`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 12px;
+  font-size: 12px;
+  padding: 8px 10px;
+  color: #253a8e;
+  border-radius: 8px;
+  background-color: #edf1f8;
+  visibility: ${({ $hidden }) => ($hidden ? 'hidden' : 'visible')};
 `;
