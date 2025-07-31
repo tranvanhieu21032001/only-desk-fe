@@ -19,8 +19,14 @@ import { OptionsInterface } from '@/core/model/common';
 import { HelpdeskArticleCreatePayload, HelpdeskCategory } from '@/modules/knowledge-base/interface';
 import { AppDispatch, RootState } from '@/core/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
-import { fetchHelpdeskCategories, updateArticle } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
+import {
+  fetchPublicSettings,
+  updateHelpdeskArticle,
+} from '@/modules/knowledge-base/api/knowledgebase.api';
+import {
+  fetchHelpdeskCategories,
+  updateArticle,
+} from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 
 export interface AllArticleInterface {
   key: string;
@@ -33,6 +39,7 @@ export interface AllArticleInterface {
   category: string;
   categoryId: string;
   sectionId?: string;
+  defaultLanguage?: string;
   isCategoryRow?: boolean;
 }
 
@@ -56,7 +63,41 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
   const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
   const [sectionsByCategory, setSectionsByCategory] = useState<Record<string, HelpdeskCategory['sections']>>({});
 
-  const { categories } = useSelector((state: RootState) => state.helpdeskCategory);
+  const { categories } = useSelector(
+    (state: RootState) => state.helpdeskCategory,
+  );
+  const [publicLangOptions, setPublicLangOptions] = useState<
+    OptionsInterface[]
+  >([]);
+  const mapLanguagesToOptions = (langsFromSettings: string[]) => {
+    return langsFromSettings
+      .map((lang) => langOptions.find((item) => item.value === lang))
+      .filter(Boolean) as OptionsInterface[];
+  };
+  useEffect(() => {
+    const getSettings = async () => {
+      try {
+        const settings = await fetchPublicSettings();
+        const langs = settings?.languages?.length
+          ? settings.languages
+          : langOptions.map((opt) => opt.value);
+        const mapped = mapLanguagesToOptions(langs);
+        setPublicLangOptions(mapped);
+
+        if (!language) {
+          setLanguage(mapped[0]?.value ?? 'en');
+        }
+      } catch (error) {
+        console.error('Failed to fetch public settings:', error);
+        const fallback = langOptions.slice(0, 1);
+        setPublicLangOptions(fallback);
+      }
+    };
+
+    if (open) {
+      getSettings();
+    }
+  }, [open]);
 
   useEffect(() => {
     setCategoryOptions(categories);
@@ -167,12 +208,10 @@ const handleSubmit = async () => {
                 popupClassName="auth-lang"
                 onChange={(value) => setLanguage(value)}
               >
-                {langOptions?.map((lang: OptionsInterface) => (
+                {publicLangOptions?.map((lang: OptionsInterface) => (
                   <S.LangOption key={lang?.key} value={lang?.value}>
                     <Image src={lang?.flag as string} preview={false} />
-                    <Typography>
-                      {t(`article-menu.language.${lang?.label}`)}
-                    </Typography>
+                    <Typography>{lang?.label}</Typography>
                   </S.LangOption>
                 ))}
               </S.ChangeLang>
