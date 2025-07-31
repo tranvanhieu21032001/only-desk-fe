@@ -23,7 +23,10 @@ import {
 import { AppDispatch, RootState } from '@/core/store';
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { createHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
+import {
+  createHelpdeskArticle,
+  fetchPublicSettings,
+} from '@/modules/knowledge-base/api/knowledgebase.api';
 import { handleUploadImage } from '@/shared/components/common/Upload/api/upload';
 
 interface ModalAddNewArticlesProps {
@@ -40,6 +43,9 @@ function ModalAddNewArticles({
   const { t } = useTranslation('knowledgeBase');
   const editorRef = useRef<any>(null);
   const dispatch = useDispatch<AppDispatch>();
+  const [publicLangOptions, setPublicLangOptions] = useState<
+    OptionsInterface[]
+  >([]);
 
   const [language, setLanguage] = useState(langOptions?.[0]?.value);
   const [category, setCategory] = useState('');
@@ -62,6 +68,11 @@ function ModalAddNewArticles({
     countUpload: 0,
     progressPercent: 0,
   });
+  const mapLanguagesToOptions = (langsFromSettings: string[]) => {
+    return langsFromSettings
+      .map((lang) => langOptions.find((item) => item.value === lang))
+      .filter(Boolean) as OptionsInterface[];
+  };
 
   useEffect(() => {
     setCategoryOptions(categories);
@@ -102,7 +113,22 @@ function ModalAddNewArticles({
       console.error('Failed to create article:', error);
     }
   };
+  useEffect(() => {
+    const getSettings = async () => {
+      try {
+        const settings = await fetchPublicSettings();
+        if (settings?.languages?.length) {
+          const mapped = mapLanguagesToOptions(settings.languages);
+          setPublicLangOptions(mapped);
+          setLanguage(mapped[0]?.value ?? 'en');
+        }
+      } catch (error) {
+        console.error('Failed to fetch public settings:', error);
+      }
+    };
 
+    if (open) getSettings();
+  }, [open]);
   return (
     <S.WrapModal>
       <ModalCommon
@@ -136,15 +162,15 @@ function ModalAddNewArticles({
               </Typography>
 
               <S.ChangeLang
-                defaultValue={langOptions?.[0]?.value}
+                value={language}
                 popupClassName="auth-lang"
                 onChange={(value) => setLanguage(value)}
               >
-                {langOptions?.map((lang: OptionsInterface) => (
+                {publicLangOptions?.map((lang: OptionsInterface) => (
                   <S.LangOption key={lang?.key} value={lang?.value}>
                     <Image src={lang?.flag as string} preview={false} />
                     <Typography>
-                      {t(`article-menu.language.${lang?.label}`)}
+                      {lang?.label}
                     </Typography>
                   </S.LangOption>
                 ))}

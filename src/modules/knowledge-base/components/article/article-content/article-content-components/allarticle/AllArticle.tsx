@@ -35,6 +35,7 @@ export interface AllArticleInterface {
   statistic: string;
   created: string;
   lastUpdate: string;
+  defaultLanguage?: string;
   category: string;
   categoryId: string;
   sectionId?: string;
@@ -54,6 +55,7 @@ const selectFlatArticlesFromCategory = (
       statistic: article?.viewCount + " visits",
       created: formatDateTime(article.createdAt || ''),
       lastUpdate: formatDateTime(article.updatedAt || ''),
+      defaultLanguage: article?.defaultLanguage,
       category: category.name,
       categoryId: category.id,
       isCategoryRow: false,
@@ -69,6 +71,7 @@ const selectFlatArticlesFromCategory = (
         statistic: article?.viewCount + " visits",
         created: formatDateTime(article.createdAt || ''),
         lastUpdate: formatDateTime(article.updatedAt || ''),
+        defaultLanguage: article?.defaultLanguage,
         category: category.name,
         categoryId: category.id,
         sectionId: section.id,

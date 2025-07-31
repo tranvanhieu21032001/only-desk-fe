@@ -16,6 +16,8 @@ import { fetchQuery } from 'react-relay';
 import RelayEnvironment from '@/relay/RelayEnvironment';
 import { CategoriesQuery } from '@/relay/__generated__/CategoriesQuery.graphql';
 import { categoriesQuery } from '@/relay/CategoriesQuery';
+import { HelpdeskPublicSettingsQuery } from '@/relay/__generated__/HelpdeskPublicSettingsQuery.graphql';
+import { helpdeskPublicSettingsQuery } from '@/relay/HelpdeskPublicSettingsQuery';
 
 const prefixContact: string = '';
 
@@ -108,4 +110,15 @@ export const updateHelpdeskSection = async (
 export const deleteHelpdeskSection = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_SECTIONS.replace('{id}', id);
   return await deleteRequest(url, {messageSuccess: 'Section deleted successfully'});
+};
+
+export const fetchPublicSettings = async (): Promise<HelpdeskPublicSettingsQuery['response']['helpdeskPublicSettings']> => {
+  const data = await fetchQuery<HelpdeskPublicSettingsQuery>(
+    RelayEnvironment,
+    helpdeskPublicSettingsQuery,
+    {}
+  ).toPromise();
+
+  if (!data) throw new Error('No data returned from HelpdeskPublicSettingsQuery.');
+  return data.helpdeskPublicSettings;
 };

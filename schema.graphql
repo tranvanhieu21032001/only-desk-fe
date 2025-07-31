@@ -331,6 +331,7 @@ type Query {
   node(id: ID!): Node
   helpdeskPublicCategories: [HelpdeskCategory!]!
   helpdeskArticles(first: Float, after: String, last: Float, before: String, keyword: String, popular: Boolean): HelpdeskArticleConnection!
+  helpdeskRelatedArticles(articleId: String): [HelpdeskArticle!]!
   helpdeskArticleBySlug(slug: String!): HelpdeskArticle!
   helpdeskCategoryBySlug(slug: String!): HelpdeskCategory!
   helpdeskPublicSettings: HelpdeskSettings!
