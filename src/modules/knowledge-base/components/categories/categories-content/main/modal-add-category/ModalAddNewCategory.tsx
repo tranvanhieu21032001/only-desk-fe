@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Image, Input, message, Progress } from 'antd';
+import { Image, Input, message, Progress, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -14,7 +14,11 @@ import * as S from './ModalAddNewCategory.styles';
 
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
-import { createHelpdeskCategory, updateHelpdeskCategory } from '@/modules/knowledge-base/api/knowledgebase.api';
+import {
+  createHelpdeskCategory,
+  fetchPublicSettings,
+  updateHelpdeskCategory,
+} from '@/modules/knowledge-base/api/knowledgebase.api';
 
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import icImage from '@/assets/icons/knowledge-base/ic-image.svg';
@@ -22,265 +26,313 @@ import icImage from '@/assets/icons/knowledge-base/ic-image.svg';
 import { handleUploadImage } from '@/shared/components/common/Upload/api/upload';
 
 interface ModalAddNewCategoryProps {
-    open: boolean;
-    onCancel: () => void;
-    onOK: () => void;
-    onAddCategory?: (category: { id: string; name: string }) => void;
-    categoryToEdit?: {
-        id: string;
-        name: string;
-        desc?: string;
-        image?: string;
-        defaultLanguage?: string;
-        translations?: Record<string, { name: string; desc: string }>;
-    };
+  open: boolean;
+  onCancel: () => void;
+  onOK: () => void;
+  onAddCategory?: (category: { id: string; name: string }) => void;
+  categoryToEdit?: {
+    id: string;
+    name: string;
+    desc?: string;
+    image?: string;
+    defaultLanguage?: string;
+    translations?: Record<string, { name: string; desc: string }>;
+  };
 }
 
 const ModalAddNewCategory = ({
-    open,
-    onCancel,
-    onOK,
-    onAddCategory,
-    categoryToEdit,
+  open,
+  onCancel,
+  onOK,
+  onAddCategory,
+  categoryToEdit,
 }: ModalAddNewCategoryProps) => {
-    const { t } = useTranslation('knowledgeBase');
+  const { t } = useTranslation('knowledgeBase');
 
+  const [language, setLanguage] = useState('');
+  const [name, setName] = useState('');
+  const [desc, setDesc] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState('');
+  const [uploadProgress, setUploadProgress] = useState({
+    isLoading: false,
+    countUpload: 0,
+    progressPercent: 0,
+  });
+  const [publicLangOptions, setPublicLangOptions] = useState<
+    OptionsInterface[]
+  >([]);
+  const [isLoadingLangs, setIsLoadingLangs] = useState(true);
 
-    const [language, setLanguage] = useState(langOptions[0]?.value);
-    const [name, setName] = useState('');
-    const [desc, setDesc] = useState('');
-    const [imageFile, setImageFile] = useState<File | null>(null);
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
-    const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
-    const [uploadProgress, setUploadProgress] = useState({
-        isLoading: false,
-        countUpload: 0,
-        progressPercent: 0,
-    });
+  const mapLanguagesToOptions = (langs: string[]) =>
+    langs
+      .map((lang) => langOptions.find((item) => item.value === lang))
+      .filter(Boolean) as OptionsInterface[];
 
-    useEffect(() => {
-        if (categoryToEdit) {
-            const lang = categoryToEdit.defaultLanguage || 'en';
-            setLanguage(lang);
-            setName(categoryToEdit.translations?.[lang]?.name || categoryToEdit.name || '');
-            setDesc(categoryToEdit.translations?.[lang]?.desc || categoryToEdit.desc || '');
-            setUploadedImageUrl(categoryToEdit.image || '');
-            setPreviewImage(categoryToEdit.image || null);
-        } else {
-            setLanguage(langOptions[0]?.value);
-            setName('');
-            setDesc('');
-            setUploadedImageUrl('');
-            setPreviewImage(null);
-            setImageFile(null);
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const settings = await fetchPublicSettings();
+        const langs = settings?.languages?.length
+          ? settings.languages
+          : langOptions.map((l) => l.value);
+
+        const mapped = mapLanguagesToOptions(langs);
+        setPublicLangOptions(mapped);
+        if (!categoryToEdit && mapped.length) {
+          setLanguage(mapped[0].value);
         }
-    }, [categoryToEdit, open]);
-
-    const handleSubmit = async () => {
-        if (!name.trim()) {
-            message.warning(t('article-menu.add-a-category.fill-name-fields'));
-            return;
-        }
-
-        const slug = name.trim().toLowerCase().replace(/\s+/g, '-');
-
-        let imageUrl = uploadedImageUrl;
-
-        if (imageFile) {
-            const formData = new FormData();
-            formData.append('image', imageFile);
-
-            try {
-                const res = await handleUploadImage(formData, setUploadProgress);
-                if (res?.fileUrl) {
-                    imageUrl = res.fileUrl;
-                    setUploadedImageUrl(res.fileUrl); // lưu lại để reuse
-                }
-            } catch {
-                message.error(t('article-menu.add-a-category.upload-failed'));
-                return;
-            }
-        }
-
-        const payload = {
-            name,
-            desc,
-            slug,
-            image: imageUrl,
-            translations: {
-                [language]: {
-                    name,
-                    desc,
-                },
-            },
-            defaultLanguage: language,
-        };
-
-        try {
-            if (categoryToEdit?.id) {
-                await updateHelpdeskCategory(categoryToEdit.id, payload);
-            } else {
-                const created = await createHelpdeskCategory(payload);
-                if (onAddCategory && created?.id) {
-                    onAddCategory({ id: created.id, name });
-                }
-            }
-
-            onOK();
-        } catch {
-            message.error(t('article-menu.add-a-category.error'));
-        }
+      } catch (err) {
+        console.error('fetchPublicSettings failed', err);
+        setPublicLangOptions([langOptions[0]]);
+      } finally {
+        setIsLoadingLangs(false);
+      }
     };
 
-    return (
-        <S.WrapModal>
-            <ModalCommon
-                open={open}
-                onCancel={onCancel}
-                showFooter={false}
-                width={700}
-                rootClassName="modal-add-a-category"
-            >
-                <S.ModalHeader>
-                    <S.ModalHeaderContent>
-                        <Typography fontWeight={fontWeight.semiBold}>
-                            {t('article-menu.add-a-category.title')}
-                        </Typography>
-                        <S.ModalDescription>
-                            <Typography color={themeColors.newtralLight}>
-                                {t('article-menu.add-a-category.description')}
-                            </Typography>
-                        </S.ModalDescription>
-                    </S.ModalHeaderContent>
-                </S.ModalHeader>
+    fetchSettings();
+  }, []);
 
-                <S.ModalBody>
-                    {/* Language */}
-                    <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
-                            <S.FormInput>
-                                {t('article-menu.add-a-category.language')}
-                                <Image src={icValid} height={23} width={7} />
-                            </S.FormInput>
-                        </Typography>
+  useEffect(() => {
+    if (categoryToEdit) {
+      const lang = categoryToEdit.defaultLanguage || 'en';
+      setLanguage(lang);
+      setName(
+        categoryToEdit.translations?.[lang]?.name || categoryToEdit.name || '',
+      );
+      setDesc(
+        categoryToEdit.translations?.[lang]?.desc || categoryToEdit.desc || '',
+      );
+      setUploadedImageUrl(categoryToEdit.image || '');
+      setPreviewImage(categoryToEdit.image || null);
+    } else {
+      setLanguage(langOptions[0]?.value);
+      setName('');
+      setDesc('');
+      setUploadedImageUrl('');
+      setPreviewImage(null);
+      setImageFile(null);
+    }
+  }, [categoryToEdit, open]);
 
-                        <S.ChangeLang
-                            defaultValue={language}
-                            onChange={setLanguage}
-                            popupClassName="auth-lang"
-                        >
-                            {langOptions.map((lang: OptionsInterface) => (
-                                <S.LangOption key={lang.key} value={lang.value}>
-                                    <Image src={lang.flag as string} preview={false} />
-                                    <Typography>
-                                        {t(`article-menu.language.${lang.label}`)}
-                                    </Typography>
-                                </S.LangOption>
-                            ))}
-                        </S.ChangeLang>
-                    </S.FormField>
+  const handleImageChange = (file: File) => {
+    setImageFile(file);
+    setPreviewImage(URL.createObjectURL(file));
+  };
 
-                    {/* Name */}
-                    <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
-                            <S.FormInput>
-                                {t('article-menu.add-a-category.name-of-the-category')}
-                                <Image src={icValid} height={23} width={7} />
-                            </S.FormInput>
-                        </Typography>
-                        <Input
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder={t('article-menu.add-a-category.enter-a-name')}
-                            size="large"
-                        />
-                    </S.FormField>
+  const handleSubmit = async () => {
+    if (!name.trim()) {
+      message.warning(t('article-menu.add-a-category.fill-name-fields'));
+      return;
+    }
 
-                    {/* Description */}
-                    <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
-                            <S.FormInput>
-                                {t('article-menu.add-a-category.descriptions-field')}
-                                <Image src={icValid} height={23} width={7} />
-                            </S.FormInput>
-                        </Typography>
-                        <Input
-                            value={desc}
-                            onChange={(e) => setDesc(e.target.value)}
-                            placeholder={t('article-menu.add-a-category.enter-description')}
-                            size="large"
-                        />
-                    </S.FormField>
+    const slug = name.trim().toLowerCase().replace(/\s+/g, '-');
+    let imageUrl = uploadedImageUrl;
 
-                    {/* Image Upload */}
-                    <S.FormField>
-                        <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
-                            {t('article-menu.add-a-category.category-image')}
-                        </Typography>
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('image', imageFile);
 
-                        {previewImage ? (
-                            <S.ImagePreviewWrapper>
-                                <S.ImagePreview>
-                                    <Image src={previewImage} width={120} height={80} preview />
-                                    <S.RemoveImageButton onClick={() => {
-                                        setImageFile(null);
-                                        setPreviewImage(null);
-                                    }}>
-                                        ×
-                                    </S.RemoveImageButton>
-                                </S.ImagePreview>
-                                {uploadProgress.isLoading && (
-                                    <Progress percent={uploadProgress.progressPercent} size="small" />
-                                )}
-                            </S.ImagePreviewWrapper>
-                        ) : (
-                            <label htmlFor="upload-thumbnail">
-                                <S.SelectFile>
-                                    <Image src={icImage} preview={false} />
-                                    <Typography fontWeight={fontWeight.semiBold}>
-                                        {t('article-menu.add-a-category.select-or-drag-file')}
-                                    </Typography>
-                                </S.SelectFile>
-                            </label>
-                        )}
+      try {
+        const res = await handleUploadImage(formData, setUploadProgress);
+        if (res?.fileUrl) {
+          imageUrl = res.fileUrl;
+          setUploadedImageUrl(res.fileUrl);
+        }
+      } catch {
+        message.error(t('article-menu.add-a-category.upload-failed'));
+        return;
+      }
+    }
 
-                        <input
-                            id="upload-thumbnail"
-                            type="file"
-                            style={{ display: 'none' }}
-                            accept="image/*"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    setImageFile(file);
-                                    setPreviewImage(URL.createObjectURL(file));
-                                }
-                            }}
-                        />
+    const payload = {
+      name,
+      desc,
+      slug,
+      image: imageUrl,
+      translations: { [language]: { name, desc } },
+      defaultLanguage: language,
+    };
 
-                    </S.FormField>
-                </S.ModalBody>
+    try {
+      if (categoryToEdit?.id) {
+        await updateHelpdeskCategory(categoryToEdit.id, payload);
+      } else {
+        const created = await createHelpdeskCategory(payload);
+        if (created?.id && onAddCategory) {
+          onAddCategory({ id: created.id, name });
+        }
+      }
+      onOK();
+    } catch {
+      message.error(t('article-menu.add-a-category.error'));
+    }
+  };
 
-                {/* Footer */}
-               <S.ModalFooter>
-                <Button onClick={onCancel}>
-                    {t('article-menu.add-a-category.cancel')}
-                </Button>
+  return (
+    <S.WrapModal>
+      <ModalCommon
+        open={open}
+        onCancel={onCancel}
+        showFooter={false}
+        width={700}
+        rootClassName="modal-add-a-category"
+      >
+        <S.ModalHeader>
+          <S.ModalHeaderContent>
+            <Typography fontWeight={fontWeight.semiBold}>
+              {t('article-menu.add-a-category.title')}
+            </Typography>
+            <S.ModalDescription>
+              <Typography color={themeColors.newtralLight}>
+                {t('article-menu.add-a-category.description')}
+              </Typography>
+            </S.ModalDescription>
+          </S.ModalHeaderContent>
+        </S.ModalHeader>
 
-                <Button
-                    type="primary"
-                    icon={!categoryToEdit ? <PlusOutlined /> : undefined}
-                    onClick={handleSubmit}
-                >
-                    {categoryToEdit
-                    ? t('article-menu.add-a-category.update')
-                    : t('article-menu.add-a-category.add-category')}
-                </Button>
-                </S.ModalFooter>
+        <S.ModalBody>
+          {/* Language Selector */}
+          <S.FormField>
+            <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
+              <S.FormInput>
+                {t('article-menu.add-a-category.language')}
+                <Image src={icValid} height={23} width={7} />
+              </S.FormInput>
+            </Typography>
 
-            </ModalCommon>
-        </S.WrapModal>
-    );
+            {isLoadingLangs ? (
+              <Skeleton.Input active size="large" style={{ width: '100%' }} />
+            ) : (
+              <S.ChangeLang
+                value={language}
+                onChange={setLanguage}
+                popupClassName="auth-lang"
+              >
+                {publicLangOptions.map((lang) => (
+                  <S.LangOption key={lang.key} value={lang.value}>
+                    <Image src={lang.flag as string} preview={false} />
+                    <Typography>{lang.label}</Typography>
+                  </S.LangOption>
+                ))}
+              </S.ChangeLang>
+            )}
+          </S.FormField>
+
+          {/* Name */}
+          <S.FormField>
+            <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
+              <S.FormInput>
+                {t('article-menu.add-a-category.name-of-the-category')}
+                <Image src={icValid} height={23} width={7} />
+              </S.FormInput>
+            </Typography>
+            {isLoadingLangs ? (
+              <Skeleton.Input active size="large" style={{ width: '100%' }} />
+            ) : (
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={t('article-menu.add-a-category.enter-a-name')}
+                size="large"
+              />
+            )}
+          </S.FormField>
+
+          {/* Description */}
+          <S.FormField>
+            <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
+              <S.FormInput>
+                {t('article-menu.add-a-category.descriptions-field')}
+                <Image src={icValid} height={23} width={7} />
+              </S.FormInput>
+            </Typography>
+            {isLoadingLangs ? (
+              <Skeleton.Input active size="large" style={{ width: '100%' }} />
+            ) : (
+              <Input
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
+                placeholder={t('article-menu.add-a-category.enter-description')}
+                size="large"
+              />
+            )}
+          </S.FormField>
+
+          {/* Image Upload */}
+          <S.FormField>
+            <Typography fontWeight={fontWeight.medium} padding="0 0 8px">
+              {t('article-menu.add-a-category.category-image')}
+            </Typography>
+
+            {isLoadingLangs ? (
+              <Skeleton.Input
+                active
+                size="large"
+                style={{ width: "100%", height: 80 }}
+              />
+            ) : previewImage ? (
+              <S.ImagePreviewWrapper>
+                <S.ImagePreview>
+                  <Image src={previewImage} width={120} height={80} preview />
+                  <S.RemoveImageButton
+                    onClick={() => {
+                      setImageFile(null);
+                      setPreviewImage(null);
+                    }}
+                  >
+                    ×
+                  </S.RemoveImageButton>
+                </S.ImagePreview>
+                {uploadProgress.isLoading && (
+                  <Progress
+                    percent={uploadProgress.progressPercent}
+                    size="small"
+                  />
+                )}
+              </S.ImagePreviewWrapper>
+            ) : (
+              <label htmlFor="upload-thumbnail">
+                <S.SelectFile>
+                  <Image src={icImage} preview={false} />
+                  <Typography fontWeight={fontWeight.semiBold}>
+                    {t('article-menu.add-a-category.select-or-drag-file')}
+                  </Typography>
+                </S.SelectFile>
+              </label>
+            )}
+
+            <input
+              id="upload-thumbnail"
+              type="file"
+              hidden
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleImageChange(file);
+              }}
+            />
+          </S.FormField>
+        </S.ModalBody>
+
+        <S.ModalFooter>
+          <Button onClick={onCancel}>
+            {t('article-menu.add-a-category.cancel')}
+          </Button>
+          <Button
+            type="primary"
+            icon={!categoryToEdit ? <PlusOutlined /> : undefined}
+            onClick={handleSubmit}
+          >
+            {categoryToEdit
+              ? t('article-menu.add-a-category.update')
+              : t('article-menu.add-a-category.add-category')}
+          </Button>
+        </S.ModalFooter>
+      </ModalCommon>
+    </S.WrapModal>
+  );
 };
 
 export default ModalAddNewCategory;
