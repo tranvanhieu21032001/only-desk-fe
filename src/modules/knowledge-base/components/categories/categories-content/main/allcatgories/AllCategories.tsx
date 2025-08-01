@@ -286,7 +286,9 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
         width={440}
         footer={
           <S.WrappButton>
-            <Button onClick={() => setIsConfirmModalOpen(false)}>{t('article-menu.cancel')}</Button>
+            <Button onClick={() => setIsConfirmModalOpen(false)}>
+              {t('article-menu.cancel')}
+            </Button>
             <Button
               type="danger"
               onClick={async () => {
@@ -299,17 +301,29 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
           </S.WrappButton>
         }
       >
-       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-    <ReactSVG src={icNoitify} />
-    <div>
-      <Typography fontWeight={fontWeight.semiBold} margin="0 0 12px 0">
-        Remove {deleteTargetType}
-      </Typography>
-      <Typography color="#5B5B5B">
-        Delete {deleteTargetType} and all its data permanently?
-      </Typography>
-    </div>
-  </div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+          <ReactSVG src={icNoitify} />
+          {deleteTargetType === 'category' ? (
+            <div>
+              <Typography fontWeight={fontWeight.semiBold} margin="0 0 12px 0">
+                Are you sure you want to delete this category?
+              </Typography>
+              <Typography color="#5B5B5B">
+                Warning: This will also delete all sections and articles
+                associated with it!
+              </Typography>
+            </div>
+          ) : (
+            <div>
+              <Typography fontWeight={fontWeight.semiBold} margin="0 0 12px 0">
+                Remove {deleteTargetType}
+              </Typography>
+              <Typography color="#5B5B5B">
+                Delete {deleteTargetType} and all its data permanently?
+              </Typography>
+            </div>
+          )}
+        </div>
       </Modal>
     </S.TableWrapper>
   );
