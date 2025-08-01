@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
 import { Image, Skeleton } from 'antd';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
+import { RootState } from '@/core/store';
 import { OptionsInterface } from '@/core/model/common';
 import { MAX_COUNT } from '@/shared/helper/data/contacts';
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
@@ -15,29 +17,37 @@ import * as S from './ArticleMenus.styles';
 
 function ArticleMenus() {
   const { t } = useTranslation('knowledgeBase');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }, []);
+  const { data: settings, loading } = useSelector(
+    (state: RootState) => state.helpdeskSetting
+  );
+
+  const publicLangOptions = useMemo(() => {
+    const langsFromSettings = settings?.languages?.length
+      ? settings.languages
+      : langOptions.map((opt) => opt.value);
+
+    return langsFromSettings
+      .map((lang) => langOptions.find((item) => item.value === lang))
+      .filter(Boolean) as OptionsInterface[];
+  }, [settings?.languages]);
 
   return (
     <S.CategoryContainer>
-      {isLoading ? (
+      {loading ? (
         <S.SkeletonChangeLang>
           <Skeleton.Input
             style={{ minWidth: 120, width: '100%', height: 48 }}
+            active
           />
         </S.SkeletonChangeLang>
       ) : (
         <S.ChangeLang
-          defaultValue={langOptions?.[0]?.value}
+          defaultValue={publicLangOptions?.[0]?.value}
           popupClassName="auth-lang"
         >
-          {langOptions?.map((lang: OptionsInterface) => (
-            <S.LangOption key={lang?.key}>
+          {publicLangOptions?.map((lang: OptionsInterface) => (
+            <S.LangOption key={lang?.key} value={lang?.value}>
               <Image src={lang?.flag as string} preview={false} />
               <Typography>
                 {t(`article-menu.language.${lang?.label.toLowerCase()}`)}
@@ -52,11 +62,12 @@ function ArticleMenus() {
           {t('article-menu.status')}
         </Typography>
       </S.LabelCategories>
+
       <S.Categories>
-        {isLoading
+        {loading
           ? Array(4)
-              ?.fill(0)
-              ?.map((_, index: number) => (
+              .fill(0)
+              .map((_, index: number) => (
                 <S.CategoryWrap key={index}>
                   <Skeleton.Input
                     active
@@ -70,7 +81,9 @@ function ArticleMenus() {
               ))
           : statusMenu?.map((category: CategoriesInterface) => (
               <S.CategoryWrap key={category?.key}>
-                <Typography>{t(`article-menu.${category?.label}`)}</Typography>
+                <Typography>
+                  {t(`article-menu.${category?.label}`)}
+                </Typography>
                 <S.Count>
                   <Typography>
                     {category?.count <= MAX_COUNT ? category?.count || 0 : 10}
