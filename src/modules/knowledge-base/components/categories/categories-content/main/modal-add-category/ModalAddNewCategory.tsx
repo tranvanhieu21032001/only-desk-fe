@@ -16,7 +16,7 @@ import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
 import {
   createHelpdeskCategory,
-  fetchPublicSettings,
+  fetchHelpdeskSettings,
   updateHelpdeskCategory,
 } from '@/modules/knowledge-base/api/knowledgebase.api';
 
@@ -73,7 +73,7 @@ const ModalAddNewCategory = ({
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const settings = await fetchPublicSettings();
+        const settings = await fetchHelpdeskSettings();
         const langs = settings?.languages?.length
           ? settings.languages
           : langOptions.map((l) => l.value);
@@ -84,7 +84,7 @@ const ModalAddNewCategory = ({
           setLanguage(mapped[0].value);
         }
       } catch (err) {
-        console.error('fetchPublicSettings failed', err);
+        console.error('fetchHelpdeskSettings failed', err);
         setPublicLangOptions([langOptions[0]]);
       } finally {
         setIsLoadingLangs(false);

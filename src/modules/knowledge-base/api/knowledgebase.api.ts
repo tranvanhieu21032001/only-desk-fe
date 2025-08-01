@@ -16,8 +16,8 @@ import { fetchQuery } from 'react-relay';
 import RelayEnvironment from '@/relay/RelayEnvironment';
 import { CategoriesQuery } from '@/relay/__generated__/CategoriesQuery.graphql';
 import { categoriesQuery } from '@/relay/CategoriesQuery';
-import { HelpdeskPublicSettingsQuery } from '@/relay/__generated__/HelpdeskPublicSettingsQuery.graphql';
-import { helpdeskPublicSettingsQuery } from '@/relay/HelpdeskPublicSettingsQuery';
+import { HelpdeskSettingsQuery } from '@/relay/__generated__/HelpdeskSettingsQuery.graphql';
+import { helpdeskSettingsQuery } from '@/relay/HelpdeskSettingsQuery';
 
 const prefixContact: string = '';
 
@@ -112,13 +112,13 @@ export const deleteHelpdeskSection = async (id: string): Promise<any> => {
   return await deleteRequest(url, {messageSuccess: 'Section deleted successfully'});
 };
 
-export const fetchPublicSettings = async (): Promise<HelpdeskPublicSettingsQuery['response']['helpdeskPublicSettings']> => {
-  const data = await fetchQuery<HelpdeskPublicSettingsQuery>(
+export const fetchHelpdeskSettings = async (): Promise<HelpdeskSettingsQuery['response']['helpdeskSettings']> => {
+  const data = await fetchQuery<HelpdeskSettingsQuery>(
     RelayEnvironment,
-    helpdeskPublicSettingsQuery,
+    helpdeskSettingsQuery,
     {}
   ).toPromise();
 
-  if (!data) throw new Error('No data returned from HelpdeskPublicSettingsQuery.');
-  return data.helpdeskPublicSettings;
+  if (!data) throw new Error('No data returned from HelpdeskSettingsQuery.');
+  return data.helpdeskSettings;
 };

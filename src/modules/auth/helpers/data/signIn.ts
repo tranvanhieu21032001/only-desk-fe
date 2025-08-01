@@ -63,7 +63,7 @@ const langOptions: OptionsInterface[] = [
   {
     key: 'pt',
     value: 'pt',
-    label: 'Kortuguese',
+    label: 'Portuguese',
     flag: IconFlagPortugal,
   },
   {

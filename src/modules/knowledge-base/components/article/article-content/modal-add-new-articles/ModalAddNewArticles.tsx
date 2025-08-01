@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { Image, Input, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
@@ -12,7 +13,6 @@ import ModalCommon from '@/shared/components/common/ModalBase';
 
 import * as S from './ModalAddNewArticles.styles';
 
-import icSetting from '@/assets/icons/knowledge-base/ic-setting.svg';
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
@@ -22,11 +22,7 @@ import {
 } from '@/modules/knowledge-base/interface';
 import { AppDispatch, RootState } from '@/core/store';
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  createHelpdeskArticle,
-  fetchPublicSettings,
-} from '@/modules/knowledge-base/api/knowledgebase.api';
+import { createHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
 import { handleUploadImage } from '@/shared/components/common/Upload/api/upload';
 
 interface ModalAddNewArticlesProps {
@@ -43,36 +39,41 @@ function ModalAddNewArticles({
   const { t } = useTranslation('knowledgeBase');
   const editorRef = useRef<any>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const [publicLangOptions, setPublicLangOptions] = useState<
-    OptionsInterface[]
-  >([]);
 
   const [language, setLanguage] = useState(langOptions?.[0]?.value);
   const [category, setCategory] = useState('');
   const [section, setSection] = useState('');
   const [articleTitle, setArticleTitle] = useState('');
   const [editorReady, setEditorReady] = useState(false);
-  const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>(
-    [],
-  );
-  const [sectionsByCategory, setSectionsByCategory] = useState<
-    Record<string, HelpdeskCategory['sections']>
-  >({});
-
-  const { categories } = useSelector(
-    (state: RootState) => state.helpdeskCategory,
-  );
-
+  const [publicLangOptions, setPublicLangOptions] = useState<OptionsInterface[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
+  const [sectionsByCategory, setSectionsByCategory] = useState<Record<string, HelpdeskCategory['sections']>>({});
   const [uploadProgress, setUploadProgress] = useState({
     isLoading: false,
     countUpload: 0,
     progressPercent: 0,
   });
+
+  const { categories } = useSelector((state: RootState) => state.helpdeskCategory);
+  const { data: settings } = useSelector((state: RootState) => state.helpdeskSetting);
+
   const mapLanguagesToOptions = (langsFromSettings: string[]) => {
     return langsFromSettings
       .map((lang) => langOptions.find((item) => item.value === lang))
       .filter(Boolean) as OptionsInterface[];
   };
+
+  useEffect(() => {
+    if (settings?.languages?.length) {
+      const mapped = mapLanguagesToOptions(settings.languages);
+      setPublicLangOptions(mapped);
+      setLanguage(mapped[0]?.value ?? 'en');
+    } else {
+      const fallback = langOptions.slice(0, 1);
+      setPublicLangOptions(fallback);
+      setLanguage(fallback[0]?.value ?? 'en');
+    }
+  }, [settings]);
 
   useEffect(() => {
     setCategoryOptions(categories);
@@ -87,13 +88,10 @@ function ModalAddNewArticles({
     const content = editorRef.current?.getContent() || '';
     const payload: HelpdeskArticleCreatePayload & { sectionId?: string } = {
       title: articleTitle,
-      content: content,
+      content,
       categoryId: category,
       translations: {
-        [language]: {
-          title: articleTitle,
-          content: content,
-        },
+        [language]: { title: articleTitle, content },
       },
       defaultLanguage: language,
       slug: articleTitle.trim().toLowerCase().replace(/\s+/g, '-'),
@@ -113,22 +111,7 @@ function ModalAddNewArticles({
       console.error('Failed to create article:', error);
     }
   };
-  useEffect(() => {
-    const getSettings = async () => {
-      try {
-        const settings = await fetchPublicSettings();
-        if (settings?.languages?.length) {
-          const mapped = mapLanguagesToOptions(settings.languages);
-          setPublicLangOptions(mapped);
-          setLanguage(mapped[0]?.value ?? 'en');
-        }
-      } catch (error) {
-        console.error('Failed to fetch public settings:', error);
-      }
-    };
 
-    if (open) getSettings();
-  }, [open]);
   return (
     <S.WrapModal>
       <ModalCommon
@@ -151,8 +134,10 @@ function ModalAddNewArticles({
             </S.ModalDescription>
           </S.ModalHeaderContent>
         </S.ModalHeader>
+
         <S.ModalBody>
           <S.GroupInput>
+            {/* Language */}
             <S.FormField>
               <Typography fontWeight={fontWeight.medium}>
                 <S.FormInput>
@@ -160,23 +145,21 @@ function ModalAddNewArticles({
                   <Image src={icValid} height={23} width={7} />
                 </S.FormInput>
               </Typography>
-
               <S.ChangeLang
                 value={language}
                 popupClassName="auth-lang"
                 onChange={(value) => setLanguage(value)}
               >
-                {publicLangOptions?.map((lang: OptionsInterface) => (
+                {publicLangOptions.map((lang: OptionsInterface) => (
                   <S.LangOption key={lang?.key} value={lang?.value}>
                     <Image src={lang?.flag as string} preview={false} />
-                    <Typography>
-                      {lang?.label}
-                    </Typography>
+                    <Typography>{lang?.label}</Typography>
                   </S.LangOption>
                 ))}
               </S.ChangeLang>
             </S.FormField>
 
+            {/* Category */}
             <S.FormField>
               <Typography fontWeight={fontWeight.medium}>
                 <S.FormInput>
@@ -190,15 +173,11 @@ function ModalAddNewArticles({
                   setSection('');
                 }}
                 popupClassName="auth-lang"
-                placeholder={t(
-                  'article-menu.add-a-new-article.getting-started',
-                )}
+                placeholder={t('article-menu.add-a-new-article.getting-started')}
               >
                 {categoryOptions.length === 0 ? (
                   <S.LangOption disabled value="">
-                    <Typography>
-                      {t('article-menu.add-a-new-article.no-category')}
-                    </Typography>
+                    <Typography>{t('article-menu.add-a-new-article.no-category')}</Typography>
                   </S.LangOption>
                 ) : (
                   categoryOptions.map((cat) => (
@@ -210,6 +189,7 @@ function ModalAddNewArticles({
               </S.ChangeLang>
             </S.FormField>
 
+            {/* Section */}
             <S.FormField>
               <Typography fontWeight={fontWeight.medium}>
                 <S.FormInput>
@@ -225,9 +205,7 @@ function ModalAddNewArticles({
               >
                 {(sectionsByCategory[category] || []).length === 0 ? (
                   <S.LangOption disabled value="">
-                    <Typography>
-                      {t('article-menu.add-a-new-article.no-section')}
-                    </Typography>
+                    <Typography>{t('article-menu.add-a-new-article.no-section')}</Typography>
                   </S.LangOption>
                 ) : (
                   (sectionsByCategory[category] || []).map((sec) => (
@@ -240,6 +218,7 @@ function ModalAddNewArticles({
             </S.FormField>
           </S.GroupInput>
 
+          {/* Title Input */}
           <S.FormField>
             <Typography fontWeight={fontWeight.medium}>
               <S.FormInput>
@@ -250,13 +229,12 @@ function ModalAddNewArticles({
             <Input
               value={articleTitle}
               onChange={(e) => setArticleTitle(e.target.value)}
-              placeholder={t(
-                'article-menu.add-a-new-article.enter-article-title',
-              )}
+              placeholder={t('article-menu.add-a-new-article.enter-article-title')}
               size="large"
             />
           </S.FormField>
 
+          {/* Content Editor */}
           <S.FormField>
             <Typography fontWeight={fontWeight.medium}>
               <S.FormInput>
@@ -296,8 +274,7 @@ function ModalAddNewArticles({
                     'advlist autolink lists link image charmap print preview anchor',
                     'searchreplace visualblocks code fullscreen',
                     'insertdatetime media table paste code help wordcount',
-                    'link',
-                    'image',
+                    'link', 'image',
                   ],
                   toolbar:
                     'undo redo | formatselect fontsizeselect | bold italic underline | link image media | ' +
@@ -310,55 +287,34 @@ function ModalAddNewArticles({
                   images_upload_handler: async (blobInfo, success, failure) => {
                     try {
                       const formData = new FormData();
-                      formData.append(
-                        'image',
-                        blobInfo.blob(),
-                        blobInfo.filename(),
-                      );
+                      formData.append('image', blobInfo.blob(), blobInfo.filename());
 
-                      const res = await handleUploadImage(
-                        formData,
-                        setUploadProgress,
-                      );
-                      if (res?.fileUrl) {
-                        success(res.fileUrl);
-                      } else {
-                        failure('Image upload failed');
-                      }
-                    } catch (err) {
+                      const res = await handleUploadImage(formData, setUploadProgress);
+                      res?.fileUrl ? success(res.fileUrl) : failure('Image upload failed');
+                    } catch (err: any) {
                       failure('Upload error: ' + err.message);
                     }
                   },
 
-                  file_picker_callback: async (cb, value, meta) => {
+                  file_picker_callback: async (cb) => {
                     const input = document.createElement('input');
                     input.setAttribute('type', 'file');
                     input.setAttribute('accept', 'image/*');
-
                     input.onchange = async () => {
-                      console.log('action');
-
                       const file = input.files?.[0];
                       if (!file) return;
 
                       const formData = new FormData();
                       formData.append('image', file);
-
                       try {
-                        const res = await handleUploadImage(
-                          formData,
-                          setUploadProgress,
-                        );
+                        const res = await handleUploadImage(formData, setUploadProgress);
                         if (res?.fileUrl) {
                           cb(res.fileUrl, { title: file.name, alt: file.name });
-                        } else {
-                          console.error('Upload failed');
                         }
                       } catch (err) {
                         console.error('Upload error:', err);
                       }
                     };
-
                     input.click();
                   },
                 }}

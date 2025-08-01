@@ -12,7 +12,6 @@ import ModalCommon from '@/shared/components/common/ModalBase';
 
 import * as S from './ModalEditArticles.styles';
 
-import icSetting from '@/assets/icons/knowledge-base/ic-setting.svg';
 import icValid from '@/assets/icons/knowledge-base/ic-valid.svg';
 import { langOptions } from '@/modules/auth/helpers/data/signIn';
 import { OptionsInterface } from '@/core/model/common';
@@ -20,7 +19,6 @@ import { HelpdeskArticleCreatePayload, HelpdeskCategory } from '@/modules/knowle
 import { AppDispatch, RootState } from '@/core/store';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  fetchPublicSettings,
   updateHelpdeskArticle,
 } from '@/modules/knowledge-base/api/knowledgebase.api';
 import {
@@ -41,6 +39,7 @@ export interface AllArticleInterface {
   sectionId?: string;
   defaultLanguage?: string;
   isCategoryRow?: boolean;
+  translations?: Record<string, { title: string; content: string }>;
 }
 
 interface ModalEditArticlesProps {
@@ -63,41 +62,27 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
   const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
   const [sectionsByCategory, setSectionsByCategory] = useState<Record<string, HelpdeskCategory['sections']>>({});
 
-  const { categories } = useSelector(
-    (state: RootState) => state.helpdeskCategory,
-  );
-  const [publicLangOptions, setPublicLangOptions] = useState<
-    OptionsInterface[]
-  >([]);
+  const { categories } = useSelector((state: RootState) => state.helpdeskCategory);
+  const { data: settings } = useSelector((state: RootState) => state.helpdeskSetting);
+  const [publicLangOptions, setPublicLangOptions] = useState<OptionsInterface[]>([]);
+
   const mapLanguagesToOptions = (langsFromSettings: string[]) => {
     return langsFromSettings
       .map((lang) => langOptions.find((item) => item.value === lang))
       .filter(Boolean) as OptionsInterface[];
   };
+
   useEffect(() => {
-    const getSettings = async () => {
-      try {
-        const settings = await fetchPublicSettings();
-        const langs = settings?.languages?.length
-          ? settings.languages
-          : langOptions.map((opt) => opt.value);
-        const mapped = mapLanguagesToOptions(langs);
-        setPublicLangOptions(mapped);
-
-        if (!language) {
-          setLanguage(mapped[0]?.value ?? 'en');
-        }
-      } catch (error) {
-        console.error('Failed to fetch public settings:', error);
-        const fallback = langOptions.slice(0, 1);
-        setPublicLangOptions(fallback);
-      }
-    };
-
-    if (open) {
-      getSettings();
+    if (settings?.languages?.length) {
+      const mapped = mapLanguagesToOptions(settings.languages);
+      setPublicLangOptions(mapped);
+      setLanguage(mapped[0]?.value ?? 'en');
+    } else {
+      const fallback = langOptions.slice(0, 1);
+      setPublicLangOptions(fallback);
+      setLanguage(fallback[0]?.value ?? 'en');
     }
-  }, [open]);
+  }, [settings]);
 
   useEffect(() => {
     setCategoryOptions(categories);
@@ -110,64 +95,59 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
 
   useEffect(() => {
     if (open && article) {
-      const lang = (article as any).defaultLanguage || 'en';
-      const trans = (article as any).translations?.[lang];
+      const lang = article.defaultLanguage || 'en';
+      const trans = article.translations?.[lang];
 
       setLanguage(lang);
       setCategory(article.categoryId);
       setArticleTitle(trans?.title || article.title || '');
-      setSection((article as any).sectionId || '');
+      setSection(article.sectionId || '');
     }
   }, [open, article]);
 
   useEffect(() => {
     if (editorReady && article) {
-      const lang = (article as any).defaultLanguage || 'en';
-      const trans = (article as any).translations?.[lang];
+      const lang = article.defaultLanguage || 'en';
+      const trans = article.translations?.[lang];
       const content = trans?.content || article.content || '';
       editorRef.current?.setContent(content);
     }
   }, [editorReady, article]);
 
-const handleSubmit = async () => {
-  const content = editorRef.current?.getContent() || '';
+  const handleSubmit = async () => {
+    const content = editorRef.current?.getContent() || '';
 
-  const selectedCategorySections = sectionsByCategory[category] || [];
-  const hasSections = selectedCategorySections.length > 0;
-  const isValidSection = hasSections && section;
+    const selectedCategorySections = sectionsByCategory[category] || [];
+    const hasSections = selectedCategorySections.length > 0;
+    const isValidSection = hasSections && section;
 
-  const payload: HelpdeskArticleCreatePayload & { sectionId?: string } = {
-    title: articleTitle,
-    content,
-    categoryId: category,
-    translations: {
-      [language]: {
-        title: articleTitle,
-        content,
+    const payload: HelpdeskArticleCreatePayload & { sectionId?: string } = {
+      title: articleTitle,
+      content,
+      categoryId: category,
+      translations: {
+        [language]: {
+          title: articleTitle,
+          content,
+        },
       },
-    },
-    defaultLanguage: language,
-    slug: articleTitle.trim().toLowerCase().replace(/\s+/g, '-'),
-    tags: ['workspace'],
-    sectionId: isValidSection ? section : null,
-  };
+      defaultLanguage: language,
+      slug: articleTitle.trim().toLowerCase().replace(/\s+/g, '-'),
+      tags: ['workspace'],
+      sectionId: isValidSection ? section : undefined,
+    };
 
-  if (isValidSection) {
-    payload.sectionId = section;
-  }
-
-  try {
-    if (article?.key) {
-      const updated = await updateHelpdeskArticle(article.key, payload);
-      dispatch(updateArticle({ ...updated, rawId: article.key }));
-      dispatch(fetchHelpdeskCategories());
-      onCancel();
+    try {
+      if (article?.key) {
+        const updated = await updateHelpdeskArticle(article.key, payload);
+        dispatch(updateArticle({ ...updated, rawId: article.key }));
+        dispatch(fetchHelpdeskCategories());
+        onCancel();
+      }
+    } catch (error) {
+      console.error('Failed to update article:', error);
     }
-  } catch (error) {
-    console.error('Failed to update article:', error);
-  }
-};
-
+  };
 
   return (
     <S.WrapModal>
@@ -208,7 +188,7 @@ const handleSubmit = async () => {
                 popupClassName="auth-lang"
                 onChange={(value) => setLanguage(value)}
               >
-                {publicLangOptions?.map((lang: OptionsInterface) => (
+                {publicLangOptions.map((lang: OptionsInterface) => (
                   <S.LangOption key={lang?.key} value={lang?.value}>
                     <Image src={lang?.flag as string} preview={false} />
                     <Typography>{lang?.label}</Typography>
@@ -271,9 +251,7 @@ const handleSubmit = async () => {
             <Input
               value={articleTitle}
               onChange={(e) => setArticleTitle(e.target.value)}
-              placeholder={t(
-                'article-menu.add-a-new-article.enter-article-title',
-              )}
+              placeholder={t('article-menu.add-a-new-article.enter-article-title')}
               size="large"
             />
           </S.FormField>
