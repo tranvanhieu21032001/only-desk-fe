@@ -45,6 +45,7 @@ function ModalAddNewArticles({
   const [section, setSection] = useState('');
   const [articleTitle, setArticleTitle] = useState('');
   const [editorReady, setEditorReady] = useState(false);
+  const [editorContent, setEditorContent] = useState('');
   const [publicLangOptions, setPublicLangOptions] = useState<OptionsInterface[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
   const [sectionsByCategory, setSectionsByCategory] = useState<Record<string, HelpdeskCategory['sections']>>({});
@@ -111,6 +112,11 @@ function ModalAddNewArticles({
       console.error('Failed to create article:', error);
     }
   };
+
+  const isPublishDisabled =
+    !category ||
+    !articleTitle.trim() ||
+    !editorContent.trim();
 
   return (
     <S.WrapModal>
@@ -265,6 +271,10 @@ function ModalAddNewArticles({
                 onInit={(evt, editor) => {
                   editorRef.current = editor;
                   setEditorReady(true);
+                  setEditorContent(editor.getContent() || '');
+                }}
+                onEditorChange={(newContent) => {
+                  setEditorContent(newContent);
                 }}
                 init={{
                   height: '100%',
@@ -328,7 +338,7 @@ function ModalAddNewArticles({
             <Button onClick={onCancel}>
               {t('article-menu.add-a-new-article.save-draft')}
             </Button>
-            <Button type="primary" onClick={handleSubmit}>
+            <Button type="primary" onClick={handleSubmit} disabled={isPublishDisabled}>
               {t('article-menu.add-a-new-article.publish')}
             </Button>
           </div>
