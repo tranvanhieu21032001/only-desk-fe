@@ -3,20 +3,27 @@ import { Table, Image, Tag, Dropdown, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { MoreOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
+import { ReactSVG } from 'react-svg';
 
 import * as S from './AllCategories.styles';
 import Typography from '@/shared/components/common/Typography';
+import Button from '@/shared/components/common/Button';
+import Modal from '@/shared/components/common/Modal';
 
 import icTrash from '@/assets/icons/knowledge-base/ic-trash.svg';
 import icEdit from '@/assets/icons/knowledge-base/ic-edit-2.svg';
 import icAdd from '@/assets/icons/knowledge-base/ic-add2.svg';
+import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
 
 import { Category, RowItem, Section } from '@/modules/knowledge-base/interface';
 import { ActionCategoryFilterEnums } from '@/modules/knowledge-base/helpers/enums/article';
+import { deleteHelpdeskCategory, deleteHelpdeskSection } from '@/modules/knowledge-base/api/knowledgebase.api';
+
 import { useModal } from '@/shared/hooks';
 import ModalAddNewCategory from '../modal-add-category/ModalAddNewCategory';
-import { deleteHelpdeskCategory, deleteHelpdeskSection } from '@/modules/knowledge-base/api/knowledgebase.api';
 import ModalAddASection from '../modal-add-a-section/ModalAddASection';
+import fontWeight from '@/shared/styles/themes/default/fontWeight';
+import { formatDateTime } from '@/modules/knowledge-base/helpers/formatDateTime';
 
 interface AllCategoriesProps {
   categories: Category[];
@@ -28,7 +35,7 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
 
   const {
     visible: isModalEditCategory,
-    toggle: handleToggleModalEditCategory,
+    toggle: toggleModalEditCategory,
   } = useModal();
   const {
     visible: isModalAddSection,
@@ -39,107 +46,104 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
   const [sectionToEdit, setSectionToEdit] = useState<Section | null>(null);
   const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
 
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<() => void>(() => () => {});
+  const [deleteTargetType, setDeleteTargetType] = useState<'category' | 'section' | null>(null);
+
+  const showConfirmModal = (action: () => void, type: 'category' | 'section') => {
+    setConfirmAction(() => action);
+    setDeleteTargetType(type);
+    setIsConfirmModalOpen(true);
+  };
+
+
   const categoryTableData: RowItem[] = categories.flatMap((category) => {
     const lang = category.defaultLanguage || 'en';
     const catName = category.translations?.[lang]?.name || category.name;
     const catDesc = category.translations?.[lang]?.desc || category.desc;
 
-    const catRow: RowItem = {
-      key: `category-${category.id}`,
-      title: `Category: ${catName}`,
-      description: catDesc || '',
-      statistic: '',
-      created: '',
-      lastUpdate: '',
-      category: catName,
-      isCategoryRow: true,
-    };
-
-    const sectionRows: RowItem[] = category.sections.map((section) => {
+    const sectionRows = category.sections.map((section) => {
       const secName = section.translations?.[lang]?.name || section.name;
       return {
         key: `section-${section.id}`,
         title: secName,
         description: '',
-        statistic: '',
-        created: new Date(section.createdAt).toLocaleDateString(),
-        lastUpdate: new Date(section.updatedAt).toLocaleDateString(),
+        statistic: `${section.articles?.length || 0} articles`,
+        createdAt: formatDateTime(section.createdAt || ''),
+        updatedAt: formatDateTime(section.updatedAt || ''),
         category: catName,
         isCategoryRow: false,
       };
     });
 
-    return [catRow, ...sectionRows];
+    return [
+      {
+        key: `category-${category.id}`,
+        title: `Category: ${catName}`,
+        description: catDesc || '',
+        statistic: '',
+        createdAt: '',
+        updatedAt: '',
+        category: catName,
+        isCategoryRow: true,
+      },
+      ...sectionRows,
+    ];
   });
 
-  const handleActionFilterArticle = async (
-    actionType: ActionCategoryFilterEnums,
-    rowData: RowItem
-  ) => {
-    switch (actionType) {
-      case ActionCategoryFilterEnums.EDIT_A_CATEGORY:
-        const selectedCategory = categories.find(
-          (cat) => cat.translations?.[cat.defaultLanguage || 'en']?.name === rowData.category
-        );
-        if (selectedCategory) {
-          setCategoryToEdit(selectedCategory);
-          handleToggleModalEditCategory();
-        }
-        return;
+  const handleAction = async (actionType: ActionCategoryFilterEnums, rowData: RowItem) => {
+    if (!rowData.key) return;
 
-      case ActionCategoryFilterEnums.REMOVE_A_CATEGORY:
-        const category = categories.find(
-          (cat) => cat.translations?.[cat.defaultLanguage || 'en']?.name === rowData.category
-        );
-        if (category) {
-          try {
-            await deleteHelpdeskCategory(category.id);
-            onReload();
-            message.success(t('Xóa danh mục thành công'));
-          } catch (error) {
-            console.error(error);
-            message.error(t('Xóa danh mục thất bại'));
-          }
-        }
-        return;
+    if (rowData.isCategoryRow) {
+      const categoryId = rowData.key.replace('category-', '');
+      const category = categories.find((cat) => cat.id === categoryId);
+      if (!category) return;
 
-      case ActionCategoryFilterEnums.REMOVE_A_SECTION:
-        const sectionId = rowData.key.replace('section-', '');
-        try {
-          await deleteHelpdeskSection(sectionId);
+      const lang = category.defaultLanguage || 'en';
+      const catName = category.translations?.[lang]?.name || category.name;
+
+      switch (actionType) {
+        case ActionCategoryFilterEnums.EDIT_A_CATEGORY:
+          setCategoryToEdit(category);
+          toggleModalEditCategory();
+          break;
+
+        case ActionCategoryFilterEnums.REMOVE_A_CATEGORY:
+        showConfirmModal(async () => {
+          await deleteHelpdeskCategory(category.id);
           onReload();
-        } catch (error) {
-          console.error(error);
-          message.error(t('Xóa mục thất bại'));
-        }
-        return;
+        }, 'category');
 
-      case ActionCategoryFilterEnums.ADD_A_NEW_SECTION:
-        const targetCategory = categories.find(
-          (cat) => cat.translations?.[cat.defaultLanguage || 'en']?.name === rowData.category
-        );
-        if (targetCategory) {
-          setCategoryToAddSection(targetCategory);
+          break;
+
+        case ActionCategoryFilterEnums.ADD_A_NEW_SECTION:
+          setCategoryToAddSection(category);
           toggleModalAddSection();
-        }
-        return;
+          break;
+      }
+    } else {
+      const sectionId = rowData.key.replace('section-', '');
+      const category = categories.find((cat) => cat.sections.some((sec) => sec.id === sectionId));
+      const section = category?.sections.find((sec) => sec.id === sectionId);
+      if (!category || !section) return;
 
-      case ActionCategoryFilterEnums.EDIT_A_SECTION:
-        const secId = rowData.key.replace('section-', '');
-        const matchedCategory = categories.find((cat) =>
-          cat.sections.some((sec) => sec.id === secId)
-        );
-        const matchedSection = matchedCategory?.sections.find((sec) => sec.id === secId);
+      const lang = category.defaultLanguage || 'en';
+      const secName = section.translations?.[lang]?.name || section.name;
 
-        if (matchedCategory && matchedSection) {
-          setCategoryToAddSection(matchedCategory);
-          setSectionToEdit(matchedSection);
+      switch (actionType) {
+        case ActionCategoryFilterEnums.EDIT_A_SECTION:
+          setCategoryToAddSection(category);
+          setSectionToEdit(section);
           toggleModalAddSection();
-        }
-        return;
+          break;
 
-      default:
-        break;
+        case ActionCategoryFilterEnums.REMOVE_A_SECTION:
+          showConfirmModal(async () => {
+            await deleteHelpdeskSection(sectionId);
+            onReload();
+          }, 'section');
+          break;
+      }
     }
   };
 
@@ -150,26 +154,19 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
             key: 'add-section',
             icon: <Image src={icAdd} width={24} height={24} preview={false} />,
             label: <Typography padding="0 0 0 2px">{t('article-menu.actions.add-section')}</Typography>,
-            onClick: () =>
-              handleActionFilterArticle(ActionCategoryFilterEnums.ADD_A_NEW_SECTION, rowData),
+            onClick: () => handleAction(ActionCategoryFilterEnums.ADD_A_NEW_SECTION, rowData),
           },
           {
             key: 'edit-category',
             icon: <Image src={icEdit} width={24} height={24} preview={false} />,
             label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
-            onClick: () =>
-              handleActionFilterArticle(ActionCategoryFilterEnums.EDIT_A_CATEGORY, rowData),
+            onClick: () => handleAction(ActionCategoryFilterEnums.EDIT_A_CATEGORY, rowData),
           },
           {
             key: 'remove-category',
             icon: <Image src={icTrash} width={24} height={24} preview={false} />,
-            label: (
-              <Typography padding="0 0 0 2px" color="red">
-                {t('article-menu.actions.remove')}
-              </Typography>
-            ),
-            onClick: () =>
-              handleActionFilterArticle(ActionCategoryFilterEnums.REMOVE_A_CATEGORY, rowData),
+            label: <Typography padding="0 0 0 2px" color="red">{t('article-menu.actions.remove')}</Typography>,
+            onClick: () => handleAction(ActionCategoryFilterEnums.REMOVE_A_CATEGORY, rowData),
           },
         ]
       : [
@@ -177,75 +174,62 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
             key: 'edit-section',
             icon: <Image src={icEdit} width={24} height={24} preview={false} />,
             label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
-            onClick: () =>
-              handleActionFilterArticle(ActionCategoryFilterEnums.EDIT_A_SECTION, rowData),
+            onClick: () => handleAction(ActionCategoryFilterEnums.EDIT_A_SECTION, rowData),
           },
           {
             key: 'remove-section',
             icon: <Image src={icTrash} width={24} height={24} preview={false} />,
-            label: (
-              <Typography padding="0 0 0 2px" color="red">
-                {t('article-menu.actions.remove')}
-              </Typography>
-            ),
-            onClick: () =>
-              handleActionFilterArticle(ActionCategoryFilterEnums.REMOVE_A_SECTION, rowData),
+            label: <Typography padding="0 0 0 2px" color="red">{t('article-menu.actions.remove')}</Typography>,
+            onClick: () => handleAction(ActionCategoryFilterEnums.REMOVE_A_SECTION, rowData),
           },
         ],
   });
 
   const columns: ColumnsType<RowItem> = [
-    {
-      title: t('article-menu.actions.title'),
-      dataIndex: 'title',
-      key: 'title',
-      render: (_, rowData) =>
-        rowData.isCategoryRow ? (
-          <>
-            <span style={{ fontWeight: 600 }}>Category:</span>{' '}
-            <Tag color="green" style={{ color: '#1677ff' }}>
-              {rowData.category}
-            </Tag>
-          </>
-        ) : (
-          <span>{rowData.title}</span>
-        ),
-    },
-    {
-      title: t('article-menu.actions.description'),
-      dataIndex: 'description',
-      key: 'description',
-      render: (_, rowData) =>
-        rowData.description ? (
-          <span style={rowData.isCategoryRow ? { fontStyle: 'italic', color: '#888' } : {}}>
-            {rowData.description}
+  {
+    title: `${t('article-menu.actions.title')} & ${t('article-menu.actions.description')}`,
+    dataIndex: 'title',
+    key: 'title',
+    render: (_, row) => {
+      if (row.isCategoryRow) {
+        return (
+          <span style={{ fontWeight: 600 }}>
+            Category: <Tag color="green" style={{ color: '#1677ff' }}>{row.category}</Tag>
+            {row.description && (
+              <span style={{ fontWeight: 400, fontStyle: 'italic', color: '#888', marginLeft: 8 }}>
+                {row.description}
+              </span>
+            )}
           </span>
-        ) : null,
+        );
+      }
+      return row.title;
     },
+  },
     {
       title: t('article-menu.actions.statistic'),
       dataIndex: 'statistic',
       key: 'statistic',
-      render: (_, rowData) => (rowData.isCategoryRow ? null : rowData.statistic),
+      render: (_, row) => (!row.isCategoryRow ? row.statistic : null),
     },
     {
       title: t('article-menu.actions.created'),
-      dataIndex: 'created',
-      key: 'created',
-      render: (_, rowData) => (rowData.isCategoryRow ? null : rowData.created),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (_, row) => (!row.isCategoryRow ? row.createdAt : null),
     },
     {
       title: t('article-menu.actions.last-update'),
-      dataIndex: 'lastUpdate',
-      key: 'lastUpdate',
-      render: (_, rowData) => (rowData.isCategoryRow ? null : rowData.lastUpdate),
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: (_, row) => (!row.isCategoryRow ? row.updatedAt : null),
     },
     {
       title: '',
       key: 'actions',
       align: 'right',
-      render: (_, rowData) => (
-        <Dropdown menu={getDropdownMenu(rowData)} trigger={['click']}>
+      render: (_, row) => (
+        <Dropdown menu={getDropdownMenu(row)} trigger={['click']}>
           <MoreOutlined style={{ fontSize: 18, cursor: 'pointer' }} />
         </Dropdown>
       ),
@@ -263,12 +247,12 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
         pagination={false}
       />
 
-      {isModalEditCategory && (
+      {isModalEditCategory && categoryToEdit && (
         <ModalAddNewCategory
           open={isModalEditCategory}
-          onCancel={handleToggleModalEditCategory}
+          onCancel={toggleModalEditCategory}
           onOK={() => {
-            handleToggleModalEditCategory();
+            toggleModalEditCategory();
             onReload();
           }}
           onAddCategory={() => {}}
@@ -282,16 +266,65 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
           onCancel={() => {
             toggleModalAddSection();
             setSectionToEdit(null);
+            setCategoryToAddSection(null);
           }}
           onOK={() => {
             toggleModalAddSection();
             setSectionToEdit(null);
+            setCategoryToAddSection(null);
             onReload();
           }}
           category={categoryToAddSection}
           sectionToEdit={sectionToEdit}
         />
       )}
+
+      <Modal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        hideHeader
+        width={440}
+        footer={
+          <S.WrappButton>
+            <Button onClick={() => setIsConfirmModalOpen(false)}>
+              {t('article-menu.cancel')}
+            </Button>
+            <Button
+              type="danger"
+              onClick={async () => {
+                setIsConfirmModalOpen(false);
+                await confirmAction();
+              }}
+            >
+              {t('article-menu.remove')}
+            </Button>
+          </S.WrappButton>
+        }
+      >
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+          <ReactSVG src={icNoitify} />
+          {deleteTargetType === 'category' ? (
+            <div>
+              <Typography fontWeight={fontWeight.semiBold} margin="0 0 12px 0">
+                Are you sure you want to delete this category?
+              </Typography>
+              <Typography color="#5B5B5B">
+                Warning: This will also delete all sections and articles
+                associated with it!
+              </Typography>
+            </div>
+          ) : (
+            <div>
+              <Typography fontWeight={fontWeight.semiBold} margin="0 0 12px 0">
+                Remove {deleteTargetType}
+              </Typography>
+              <Typography color="#5B5B5B">
+                Delete {deleteTargetType} and all its data permanently?
+              </Typography>
+            </div>
+          )}
+        </div>
+      </Modal>
     </S.TableWrapper>
   );
 };

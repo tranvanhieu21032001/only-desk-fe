@@ -82,7 +82,7 @@ export default function AuthLayout({
                 {langOptions?.map((lang: OptionsInterface) => (
                   <S.LangOption key={lang?.key}>
                     <Image src={lang?.flag as string} preview={false} />
-                    <Typography>{t(`language.${lang?.label}`)}</Typography>
+                    <Typography>{t(`language.${lang?.label.toLowerCase()}`)}</Typography>
                   </S.LangOption>
                 ))}
               </S.ChangeLang>

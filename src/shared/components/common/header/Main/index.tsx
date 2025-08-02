@@ -33,6 +33,7 @@ import conversation from '@/assets/icons/common/ic-conversation.svg';
 import bellBlue from '@/assets/icons/common/ic-notification-blue.svg';
 import { createContact } from '@/modules/contacts/store/features/contacts';
 import { ReactSVG } from 'react-svg';
+import { useLocation } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const { t } = useTranslation('inbox');
@@ -50,6 +51,9 @@ const Header: React.FC = () => {
   const [isLoading] = useState<boolean>(false);
 
   const { visible: addContact, toggle: handleOpenModalAddContact } = useModal();
+    const location = useLocation();
+    const currentPath = location.pathname;
+    const isCategoriesPage = currentPath === '/categories';
 
   const removeTag = (index: number) => {
     const newTags = tags.filter((_, i) => i !== index);
@@ -165,7 +169,7 @@ const Header: React.FC = () => {
             </S.NotificationDropdown>
           )}
         </div>
-        <Button
+        {!isCategoriesPage && <> <Button
           type="primary"
           width="122px"
           icon={
@@ -200,7 +204,7 @@ const Header: React.FC = () => {
               {t('header.inviteTeamMembers')}
             </S.DropdownItem>
           </S.DropdownMenu>
-        )}
+        )}</>}
 
         <CreateConversationModal
           isOpen={isModalOpen}

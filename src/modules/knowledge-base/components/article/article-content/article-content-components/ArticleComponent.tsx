@@ -1,49 +1,44 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AllArticle from './allarticle/AllArticle';
 import NoArticle from './no-article/NoArticle';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/core/store';
-import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
+import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { Skeleton } from 'antd';
 
 const ArticleComponent = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
 
-  const { items: articles, total, loading, error } = useSelector(
-    (state: RootState) => state.helpdeskArticles
+  const { categories, loading } = useSelector(
+    (state: RootState) => state.helpdeskCategory,
   );
+
+  const loadCategories = useCallback(() => {
+    dispatch(fetchHelpdeskCategories());
+  }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchHelpdeskArticles({ page, limit: pageSize, status: '', lang: 'en' }));
-    
-  }, [dispatch, page, pageSize]);
+    loadCategories();
+  }, [loadCategories]);
 
-  const handlePageChange = (newPage: number, newPageSize?: number) => {
-    setPage(newPage);
-    if (newPageSize) {
-      setPageSize(newPageSize);
-    }
-  };
-
-  if (loading || error) return <div style={{ marginTop: 24 }}><Skeleton active /></div>;
-
-  return (
-    <>
-      {articles?.length > 0 ? (
-        <AllArticle
-          articles={articles}
-          currentPage={page}
-          pageSize={pageSize}
-          total={total}
-          onPageChange={handlePageChange}
-        />
-      ) : (
-        <NoArticle />
-      )}
-    </>
+  const hasArticles = categories.some(
+    (category) =>
+      (category.articles && category.articles.length > 0) ||
+      (category.sections &&
+        category.sections.some(
+          (section) => section.articles && section.articles.length > 0,
+        )),
   );
+
+  if (loading) {
+    return (
+      <div style={{ marginTop: 24 }}>
+        <Skeleton active />
+      </div>
+    );
+  }
+
+  return <>{hasArticles ? <AllArticle /> : <NoArticle />}</>;
 };
 
 export default ArticleComponent;

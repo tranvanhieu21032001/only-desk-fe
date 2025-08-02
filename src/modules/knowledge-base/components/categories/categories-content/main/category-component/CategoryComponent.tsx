@@ -32,7 +32,7 @@ const CategoryComponent = () => {
       {categories.length > 0 ? (
         <AllCategories categories={categories} onReload={loadCategories} />
       ) : (
-        <NoCategories />
+        <NoCategories onReload={loadCategories} />
       )}
     </>
   );

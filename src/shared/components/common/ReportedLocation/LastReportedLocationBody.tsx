@@ -83,7 +83,7 @@ function LastReportedLocationBody({
   const fieldMap = [
     {
       key: 'location',
-      label: `${t('contact-profile.city')}, ${t('contact-profile.country')}`,
+      label: `${t('contact-profile.country')}`,
       value: [city, country].filter(Boolean).join(', '),
       icon: icLocation,
       show: city || country,

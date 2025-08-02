@@ -6,10 +6,22 @@
     "visible": "Visible",
     "hidden": "Hidden",
     "new-article": "New article",
+    "new-category":"New category",
     "action": "Action",
     "search": "Search...",
+    "remove":"Remove",
+    "cancel":"Cancel",
     "language": {
-      "english": "English"
+       "english": "English",
+      "vietnamese": "Vietnamese",
+      "spanish": "Spanish",
+      "french": "French",
+      "german": "German",
+      "chinese": "Chinese",
+      "japanese": "Japanese",
+      "korean": "Korean",
+      "portuguese": "Portuguese",
+      "italian": "Italian"
     },
     "filter": {
       "view-my-knowledge-base": "View my knowledge base",
@@ -111,9 +123,13 @@
     },
     "add-a-new-article": {
       "title": "Add An Article To Your Knowledge Base",
+       "title-edit": "Edit An Article To Your Knowledge Base",
       "description": "Please insert modal description here.",
       "language": "Language",
       "category": "Category",
+      "section":"Sections",
+      "no-category":"No category",
+      "no-section":"No section",
       "article-title": "Article title",
       "enter-article-title": "Enter Article Title",
       "getting-started": "Getting Started",

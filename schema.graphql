@@ -49,7 +49,9 @@ type Workspace implements Node {
   rawId: String!
 }
 
-"""Status of a workspace"""
+"""
+Status of a workspace
+"""
 enum WorkspaceStatus {
   DRAFT
   PENDING
@@ -57,7 +59,9 @@ enum WorkspaceStatus {
   CLOSED
 }
 
-"""Type of member"""
+"""
+Type of member
+"""
 enum WorkspaceMemberRole {
   ADMIN
   DEVELOPER
@@ -84,7 +88,9 @@ type WorkspaceMember implements Node {
   rawId: String!
 }
 
-"""Status of a workspace member"""
+"""
+Status of a workspace member
+"""
 enum WorkspaceMemberStatus {
   PENDING
   APPROVED
@@ -94,56 +100,6 @@ enum WorkspaceMemberStatus {
 type WorkspaceMemberTypeEdge {
   cursor: String!
   node: WorkspaceMember!
-}
-
-type Message implements Node {
-  id: ID!
-  conversationId: ID!
-  content: String!
-  sender: MessageSender!
-  user: User
-  replyTo: Message
-  type: MessageTypeEnum
-  status: MessageStatus!
-  metadata: JSON
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  rawId: String!
-}
-
-"""Type of message sender"""
-enum MessageSender {
-  GUEST
-  AGENT
-  SYSTEM
-}
-
-"""Type of message content"""
-enum MessageTypeEnum {
-  TEXT
-  FILE
-  IMAGE
-  SYSTEM
-  NOTE
-  RESOLVED
-}
-
-"""Status of a message"""
-enum MessageStatus {
-  SENT
-  DELIVERED
-  READ
-  FAILED
-}
-
-type MessageTypeEdge {
-  cursor: String!
-  node: Message!
-}
-
-type MessageConnection {
-  edges: [MessageTypeEdge!]!
-  pageInfo: PageInfo!
 }
 
 type ContactContext {
@@ -194,7 +150,9 @@ type Contact implements Node {
   rawId: String!
 }
 
-"""The gender of the contact"""
+"""
+The gender of the contact
+"""
 enum ContactGender {
   MALE
   FEMALE
@@ -249,6 +207,62 @@ type ConversationConnection {
   pageInfo: PageInfo!
 }
 
+type Message implements Node {
+  id: ID!
+  conversation: Conversation
+  content: String!
+  sender: MessageSender!
+  user: User
+  replyTo: Message
+  type: MessageTypeEnum
+  status: MessageStatus!
+  metadata: JSON
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  rawId: String!
+}
+
+"""
+Type of message sender
+"""
+enum MessageSender {
+  GUEST
+  AGENT
+  SYSTEM
+}
+
+"""
+Type of message content
+"""
+enum MessageTypeEnum {
+  TEXT
+  FILE
+  IMAGE
+  SYSTEM
+  NOTE
+  RESOLVED
+}
+
+"""
+Status of a message
+"""
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+type MessageTypeEdge {
+  cursor: String!
+  node: Message!
+}
+
+type MessageConnection {
+  edges: [MessageTypeEdge!]!
+  pageInfo: PageInfo!
+}
+
 type HelpdeskCategory implements Node {
   id: ID!
   name: String!
@@ -280,7 +294,9 @@ type HelpdeskArticle implements Node {
   rawId: String!
 }
 
-"""The status of the article"""
+"""
+The status of the article
+"""
 enum ArticleStatus {
   DRAFT
   PUBLISHED
@@ -309,28 +325,57 @@ type HelpdeskCategorySection implements Node {
 
 type HelpdeskSettings implements Node {
   id: ID!
-  baseDomain: String!
+  name: String!
+  basicDomain: String!
   customDomain: String
   logo: String
   banner: String
   languages: [String!]
   createdAt: DateTime
   updatedAt: DateTime
+  workspace: Workspace
 }
 
 type Query {
   me: User
   workspaces: [Workspace!]!
   operators: [WorkspaceMember!]!
-  conversations(assignedToMe: Boolean, first: Float, after: String, last: Float, before: String): ConversationConnection!
-  messages(conversationId: ID!, first: Float, after: String, last: Float, before: String): MessageConnection!
+  conversations(
+    assignedToMe: Boolean
+    first: Float
+    after: String
+    last: Float
+    before: String
+  ): ConversationConnection!
+  messages(
+    conversationId: ID!
+    first: Float
+    after: String
+    last: Float
+    before: String
+  ): MessageConnection!
   contacts(args: PaginationArgs!, keyword: String): ContactPagination!
-  liveContacts(first: Float, after: String, last: Float, before: String): ContactConnection!
+  liveContacts(
+    first: Float
+    after: String
+    last: Float
+    before: String
+  ): ContactConnection!
   node(id: ID!): Node
-  helpdeskCategories: [HelpdeskCategory!]!
-  helpdeskArticles(first: Float, after: String, last: Float, before: String, keyword: String, popular: Boolean): HelpdeskArticleConnection!
+  helpdeskPublicCategories: [HelpdeskCategory!]!
+  helpdeskArticles(
+    first: Float
+    after: String
+    last: Float
+    before: String
+    keyword: String
+    popular: Boolean
+  ): HelpdeskArticleConnection!
+  helpdeskRelatedArticles(articleId: String): [HelpdeskArticle!]!
   helpdeskArticleBySlug(slug: String!): HelpdeskArticle!
   helpdeskCategoryBySlug(slug: String!): HelpdeskCategory!
+  helpdeskPublicSettings: HelpdeskSettings!
+  helpdeskCategories: [HelpdeskCategory!]!
   helpdeskSettings: HelpdeskSettings!
 }
 

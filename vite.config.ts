@@ -16,6 +16,6 @@ export default defineConfig({
     exclude: [],
   },
   server: {
-    port: 3000,
+    port: 3002,
   },
 });

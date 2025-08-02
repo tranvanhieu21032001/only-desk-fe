@@ -30,9 +30,9 @@ import { useLocation } from 'react-router-dom';
 import ArticleComponent from '../article-content-components/ArticleComponent';
 import CategoryComponent from '../../../categories/categories-content/main/category-component/CategoryComponent';
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/core/store';
-import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/core/store';
+import ModalAddNewCategory from '../../../categories/categories-content/main/modal-add-category/ModalAddNewCategory';
 
 function ArticleContent() {
   const { t } = useTranslation('knowledgeBase');
@@ -41,8 +41,10 @@ function ArticleContent() {
   const isCategoriesPage = currentPath === '/categories';
 
   const dispatch = useDispatch<AppDispatch>();
-
-
+  const { categories } = useSelector(
+    (state: RootState) => state.helpdeskCategory,
+  );
+  
   const {
     visible: isModalInstallHelpdesk,
     toggle: handleToggleModalInstallHelpdesk,
@@ -79,19 +81,24 @@ function ArticleContent() {
     toggle: handleToggleModalNewArticle,
   } = useModal();
 
-  useEffect(() => {
-    dispatch(fetchHelpdeskCategories());
-    dispatch(fetchHelpdeskArticles())
-  }, [dispatch]);
+  const {
+  visible: isModalAddCategoryVisible,
+  toggle: toggleModalAddCategory,
+} = useModal();
+
 
   useEffect(() => {
-    if (!isCategoriesPage) {
-      const timer = setTimeout(() => {
-        handleToggleModalInstallHelpdesk();
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+    dispatch(fetchHelpdeskCategories());
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   if (!isCategoriesPage) {
+  //     const timer = setTimeout(() => {
+  //       handleToggleModalInstallHelpdesk();
+  //     }, 300);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, []);
 
   const handleSearchArticle = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,7 +174,7 @@ function ArticleContent() {
 
   return (
     <S.ArticleContentContainer>
-      <S.FilterWrap>
+      {categories.length > 0 &&  <S.FilterWrap>
         <S.InputSearch>
           <Input
             prefix
@@ -176,7 +183,18 @@ function ArticleContent() {
           />
         </S.InputSearch>
         <S.FilterPopoverWrap>
-          <S.ButtonAddArticle
+
+          {isCategoriesPage ? <S.ButtonAddArticle
+            width="fit-content"
+            iconPosition="left"
+            icon={<PlusOutlined />}
+            type="primary"
+           onClick={toggleModalAddCategory}
+          >
+            <Typography color={themeColors?.newtralLightest}>
+              {t('article-menu.new-category')}
+            </Typography>
+          </S.ButtonAddArticle>: <S.ButtonAddArticle
             width="fit-content"
             iconPosition="left"
             icon={<PlusOutlined />}
@@ -186,8 +204,8 @@ function ArticleContent() {
             <Typography color={themeColors?.newtralLightest}>
               {t('article-menu.new-article')}
             </Typography>
-          </S.ButtonAddArticle>
-          <PopoverAction
+          </S.ButtonAddArticle>}
+          {!isCategoriesPage && <PopoverAction
             content={renderActionFilter()}
             placement="bottomRight"
             btnContent={
@@ -207,9 +225,9 @@ function ArticleContent() {
                 <Typography>{t('article-menu.action')}</Typography>
               </S.ButtonAction>
             }
-          />
+          />}
         </S.FilterPopoverWrap>
-      </S.FilterWrap>
+      </S.FilterWrap>}
       {/* <NoArticle /> */}
       {!isCategoriesPage ? <ArticleComponent /> : <CategoryComponent />}
 
@@ -276,6 +294,18 @@ function ArticleContent() {
             handleToggleModalNewArticle();
           }} />
       )}
+
+      {isModalAddCategoryVisible && (
+  <ModalAddNewCategory
+    open={isModalAddCategoryVisible}
+    onCancel={toggleModalAddCategory}
+    onOK={() => {
+      toggleModalAddCategory();
+      dispatch(fetchHelpdeskCategories());
+    }}
+  />
+)}
+
     </S.ArticleContentContainer>
   );
 }
