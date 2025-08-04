@@ -4,7 +4,6 @@ import { useMessageList } from './useMessageList';
 import { useScrollHandler } from './useScrollHandler';
 import { MessageStatus, MessageType } from '../enums/chat.enums';
 import {
-  createLoadingMessage,
   createLocalMessage,
   getId,
   parseGraphQLMessage,
@@ -32,8 +31,6 @@ Features:
   + On click of the button: append temp messages and scroll to bottom.
 */
 
-const LoadingMessage = createLoadingMessage();
-
 interface UseChatProps {
   conversationId: string | null;
   messageContainerRef: React.RefObject<HTMLDivElement | null>;
@@ -50,6 +47,7 @@ interface UseChatReturn {
   hasNewMessage: boolean;
   messages: Message[];
   isFetchingInitial: boolean;
+  isLoadingNext: boolean;
   scrollToNewMessages: () => void;
   handleUserTyping: (val: string) => void;
   isSomeoneTyping: boolean;
@@ -88,16 +86,9 @@ export function useChat({
 
   const { notifyNewMessage } = useNotification();
 
-  const handleLoadMore = (onComplete?: () => void) => {
+  const handleLoadMore = (onComplete?: (error?: Error | null) => void) => {
     if (hasNext && !isLoadingNext) {
-      addMessage(LoadingMessage);
-      loadMore((error) => {
-        if (error) {
-          console.error('Failed to load more messages:', error);
-        }
-        removeMessage(LoadingMessage.id);
-        onComplete?.();
-      });
+      loadMore(onComplete);
     }
   };
 
@@ -212,6 +203,7 @@ export function useChat({
     scrollToNewMessages: scrollToBottom,
     hasNewMessage,
     isFetchingInitial,
+    isLoadingNext,
     handleUserTyping,
     isSomeoneTyping,
   };

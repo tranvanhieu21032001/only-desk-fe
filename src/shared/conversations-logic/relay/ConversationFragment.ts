@@ -1,15 +1,18 @@
-import { graphql } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
 export const conversationListFragment = graphql`
-  fragment ConversationListFragment_query on Query
-  @refetchable(queryName: "ConversationListPaginationQuery")
+  fragment ConversationFragment_query on Query
   @argumentDefinitions(
+    assignedToMe: { type: "Boolean", defaultValue: false }
     first: { type: "Float", defaultValue: 10 }
     after: { type: "String" }
-    assignedToMe: { type: "Boolean", defaultValue: false }
-  ) {
-    conversations(first: $first, after: $after, assignedToMe: $assignedToMe)
-      @connection(key: "ConversationListFragment_conversations") {
+  )
+  @refetchable(queryName: "ConversationFragmentPaginationQuery") {
+    conversations(assignedToMe: $assignedToMe, first: $first, after: $after)
+      @connection(
+        key: "ConversationFragment_conversations"
+        filters: ["assignedToMe"]
+      ) {
       pageInfo {
         hasNextPage
         endCursor
@@ -20,12 +23,11 @@ export const conversationListFragment = graphql`
           id
           rawId
           contact {
+            id
+            rawId
             avatar
             name
             isOnline
-            id
-            rawId
-            name
             email
             context {
               countryCode
@@ -34,10 +36,7 @@ export const conversationListFragment = graphql`
           subject
           resolved
           metadata
-          createdAt
-          updatedAt
           lastActivityAt
-          closedAt
           unreadCount
           assignedTo {
             id

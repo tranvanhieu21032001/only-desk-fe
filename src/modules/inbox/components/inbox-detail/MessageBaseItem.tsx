@@ -100,12 +100,6 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             />
           </S.MessageImageLeft>
         );
-      case MessageType.LOADING:
-        return (
-          <S.MessageTypeLoading>
-            <LoadingOutlined spin style={{ fontSize: 24, color: '#999' }} />
-          </S.MessageTypeLoading>
-        );
       default:
         return null;
     }
@@ -113,18 +107,12 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
 
   // Only show timeWithIcon if not loading
   let timeWithIcon: React.ReactNode = null;
-  if (msg.type !== MessageType.LOADING) {
-    timeWithIcon = (
-      <MessageTimeWithIcon
-        {...timeWithIconProps}
-        style={msg.type === MessageType.NOTE ? { marginTop: 4 } : undefined}
-      />
-    );
-  }
-
-  if (msg.type === MessageType.LOADING) {
-    return <>{renderContent()}</>;
-  }
+  timeWithIcon = (
+    <MessageTimeWithIcon
+      {...timeWithIconProps}
+      style={msg.type === MessageType.NOTE ? { marginTop: 4 } : undefined}
+    />
+  );
 
   if (isOwner) {
     return (

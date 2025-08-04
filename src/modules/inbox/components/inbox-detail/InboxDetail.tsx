@@ -148,6 +148,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       hasNewMessage,
       messages,
       isFetchingInitial,
+      isLoadingNext,
       scrollToNewMessages,
       handleUserTyping,
       isSomeoneTyping,
@@ -359,6 +360,15 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
               $isSidebarOpen={isSidebarOpen}
               ref={messageContainerRef}
             >
+              {isLoadingNext && !isFetchingInitial && (
+                <S.MessageTypeLoading>
+                  <LoadingOutlined
+                    spin
+                    style={{ fontSize: 24, color: '#999' }}
+                  />
+                </S.MessageTypeLoading>
+              )}
+
               {messages.length === 0 && isFetchingInitial ? (
                 <RenderSkeleton />
               ) : messages.length === 0 ? (

@@ -80,23 +80,6 @@ export function createLocalMessage(
   return newMessage;
 }
 
-export function createLoadingMessage(): Message {
-  const now = new Date();
-  const newMessage: Message = {
-    id: uuidv4(),
-    content: '',
-    sender: MessageSender.SYSTEM,
-    user: null,
-    type: MessageType.LOADING,
-    createdAt: now.toISOString(),
-    updatedAt: now.toISOString(),
-    metadata: undefined,
-    status: MessageStatus.SENT,
-  };
-
-  return newMessage;
-}
-
 export const decodeGlobalId = (globalId: string): string => {
   try {
     const decoded = atob(globalId);

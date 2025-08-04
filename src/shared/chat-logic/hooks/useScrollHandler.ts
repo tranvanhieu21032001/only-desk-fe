@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 interface UseScrollHandlerProps {
   isLoaded: boolean;
-  onLoadMore: (onComplete?: () => void) => void;
+  onLoadMore: (onComplete?: (error?: Error | null) => void) => void;
   messageContainerRef: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -46,7 +46,11 @@ export function useScrollHandler({
     // 3. Load more messages when scrolled to top.
     if (scrollTop === 0) {
       const previousScrollHeight = container.scrollHeight; //save previous scroll height to keep scroll position after load more
-      onLoadMore?.(() => {
+      onLoadMore?.((error) => {
+        if (error) {
+          console.error('Failed to load more messages:', error);
+          return;
+        }
         // Wait for React + Relay render (after prepending data)
         setTimeout(() => {
           const newScrollHeight = container.scrollHeight;

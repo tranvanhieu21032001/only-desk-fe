@@ -19,5 +19,4 @@ export enum MessageType {
   SYSTEM = 'system',
   NOTE = 'note',
   RESOLVED = 'resolved',
-  LOADING = 'loading',
 }

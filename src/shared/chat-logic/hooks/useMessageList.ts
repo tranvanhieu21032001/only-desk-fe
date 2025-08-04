@@ -4,7 +4,6 @@ import { useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { RelayStoreHelper } from '../helpers/relay-store.helper';
 import { parseGraphQLMessage } from '../helpers/chat.helper';
 import { Message } from '../interfaces/inbox';
-import { MessageType } from '../enums/chat.enums';
 import { conversationMessagesQuery } from '../relay/ConversationMessagesQuery';
 import { ConversationMessagesQuery } from '../relay/__generated__/ConversationMessagesQuery.graphql';
 import { MessageFragment_query$key } from '../relay/__generated__/MessageFragment_query.graphql';
@@ -48,7 +47,8 @@ export function useMessageList({
   const queryVariables = useMemo(
     () => ({
       conversationId: rawConversationId || '',
-      first: 20,
+      first: MESSAGE_LIMIT,
+      after: null,
     }),
     [rawConversationId],
   );
@@ -57,7 +57,7 @@ export function useMessageList({
     conversationMessagesQuery,
     queryVariables,
     {
-      fetchPolicy: 'store-or-network',
+      fetchPolicy: 'store-and-network',
     },
   );
 
@@ -82,7 +82,7 @@ export function useMessageList({
     (onComplete?: (error?: Error | null) => void) => {
       if (hasNext && !isLoadingNext) {
         loadNext(MESSAGE_LIMIT, {
-          onComplete: onComplete,
+          onComplete,
         });
       }
     },
@@ -91,11 +91,7 @@ export function useMessageList({
 
   const addMessage = useCallback(
     (msg: Message) => {
-      RelayStoreHelper.addMessage(
-        msg,
-        rawConversationId,
-        msg.type === MessageType.LOADING,
-      );
+      RelayStoreHelper.addMessage(msg, rawConversationId, false);
     },
     [rawConversationId],
   );
