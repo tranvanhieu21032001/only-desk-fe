@@ -72,13 +72,13 @@ export const MarkResolvedButton = styled(Button)`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  img{
-    padding-right:4px !important;
+  img {
+    padding-right: 4px !important;
   }
 `;
 
 export const MarkUnResolvedButton = styled(Button)`
-  background: #FA541C;
+  background: #fa541c;
   height: 36px;
   color: white;
   border: none;
@@ -93,8 +93,8 @@ export const MarkUnResolvedButton = styled(Button)`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  img{
-    padding-right:4px !important;
+  img {
+    padding-right: 4px !important;
   }
 `;
 
@@ -532,7 +532,7 @@ export const NewMessageNoticeButton = styled.button`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 124px;
+  bottom: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -621,6 +621,14 @@ export const NoteMeta = styled.div`
   font-style: italic;
 `;
 
+export const SystemMessage = styled.div`
+  color: #233e93;
+  font-size: 13px;
+  text-align: center;
+  margin: 20px 8px;
+  font-style: italic;
+`;
+
 export const NoteContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -697,7 +705,6 @@ export const ContextMenuItem = styled.div<{ danger?: boolean }>`
 export const TimeWithIconContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
   /* Remove padding that causes broad hover area */
 `;
 
@@ -734,11 +741,11 @@ export const MessageTypeLoading = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: 5px;      
+  min-height: 5px;
   overflow: visible;
   background: none;
-  flex-shrink: 0;        
-  margin-top: 8px;       
+  flex-shrink: 0;
+  margin-top: 8px;
 `;
 
 export const ContextMenuSeparator = styled.div`

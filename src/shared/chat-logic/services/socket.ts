@@ -1,10 +1,12 @@
 import {
   EVENTBUS_INBOX_MESSAGE,
+  EVENTBUS_UPDATED_CONVERSATION,
   EVENTBUS_USER_STATUS,
   EVENTBUS_USER_TYPING,
 } from '../constants/event-bus.constants';
 import {
   SOCKET_RECEIVE_EVENT_MESSAGE,
+  SOCKET_RECEIVE_EVENT_UPDATED_CONVERSATION,
   SOCKET_RECEIVE_EVENT_USER_STATUS,
   SOCKET_RECEIVE_EVENT_USER_TYPING,
   SOCKET_SEND_EVENT_CLOSE_CONVERSATION,
@@ -21,6 +23,7 @@ let socketInstance: Socket | null = null;
 
 const socketEventMappings: [string, keyof AppEvents][] = [
   [SOCKET_RECEIVE_EVENT_MESSAGE, EVENTBUS_INBOX_MESSAGE],
+  [SOCKET_RECEIVE_EVENT_UPDATED_CONVERSATION, EVENTBUS_UPDATED_CONVERSATION],
   [SOCKET_RECEIVE_EVENT_USER_STATUS, EVENTBUS_USER_STATUS],
   [SOCKET_RECEIVE_EVENT_USER_TYPING, EVENTBUS_USER_TYPING],
 ];
@@ -30,12 +33,14 @@ export const setupChatSocket = (socket: Socket) => {
 
   // Listen all mapped socket events
   socketEventMappings.forEach(([socketEvent, busEvent]) => {
+    console.log('Listening to socket event', socketEvent);
     socket.on(socketEvent, (data) => eventBus.emit(busEvent, data));
   });
 
   // Return cleanup function
   return () => {
     socketEventMappings.forEach(([socketEvent]) => {
+      console.log('Removing socket event', socketEvent);
       socket.off(socketEvent);
     });
   };

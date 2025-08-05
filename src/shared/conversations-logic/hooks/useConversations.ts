@@ -1,20 +1,12 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useConversationList } from './useConversationList';
 import { Conversation } from '@/shared/chat-logic';
 import { useScrollHandler } from './useScrollHandler';
-
-/*
-Features:
-
-1. Scroll to bottom after messages are initially loaded. (do at useScrollHandler)
-2. Scroll to bottom when the owner sends a message.
-3. Load more messages when scrolled to top.
-4. Handle new incoming messages:
-  + If user is at the bottom: append and auto-scroll.
-  + If user is scrolled up: store in temp and show "new message" button.
-  + On click of the button: append temp messages and scroll to bottom.
-*/
+import { eventBus } from '@/shared/chat-logic/services/event-bus';
+import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
+import { fetchConversationDetailForList } from '../services/services';
+import { RelayStoreHelper } from '../helpers/relay-store.helper';
 
 interface UseConversationsProps {
   isAssignedToMe: boolean | null;
@@ -45,6 +37,32 @@ export function useConversations({
     onLoadMore: onLoadMore,
     conversationContainerRef,
   });
+
+  const handleUpdatedConversation = useCallback(
+    async (rawData: any) => {
+      console.log('Updated conversation:', rawData);
+      // Fetch updated conversation details
+      const updatedConversation = await fetchConversationDetailForList(
+        rawData.conversationId,
+      );
+
+      if (updatedConversation) {
+        // Check if conversation exists in list, if not add it, if exists move to top
+        RelayStoreHelper.addOrMoveConversationToTop(
+          updatedConversation,
+          isAssignedToMe || false,
+        );
+      }
+    },
+    [isAssignedToMe],
+  );
+
+  useEffect(() => {
+    eventBus.on(EVENTBUS_UPDATED_CONVERSATION, handleUpdatedConversation);
+    return () => {
+      eventBus.off(EVENTBUS_UPDATED_CONVERSATION, handleUpdatedConversation);
+    };
+  }, [handleUpdatedConversation]);
 
   return {
     conversations,

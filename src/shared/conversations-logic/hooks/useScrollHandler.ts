@@ -37,7 +37,7 @@ export function useScrollHandler({
     return () => {
       container.removeEventListener('scroll', handleScroll);
     };
-  }, [handleScroll]);
+  }, [containerRef, handleScroll]);
 
   return {};
 }

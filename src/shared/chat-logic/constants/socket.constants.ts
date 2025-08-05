@@ -1,6 +1,7 @@
 export const SOCKET_RECEIVE_EVENT_MESSAGE = 'message';
 export const SOCKET_RECEIVE_EVENT_USER_TYPING = 'user_typing';
 export const SOCKET_RECEIVE_EVENT_USER_STATUS = 'user_status';
+export const SOCKET_RECEIVE_EVENT_UPDATED_CONVERSATION = 'updated_conversation';
 
 export const SOCKET_SEND_EVENT_SEND_MESSAGE = 'send_message';
 export const SOCKET_SEND_EVENT_TYPING_START = 'typing_start';

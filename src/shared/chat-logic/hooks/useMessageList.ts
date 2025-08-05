@@ -2,7 +2,7 @@ import { useEffect, useCallback, useMemo, useState } from 'react';
 import { useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { RelayStoreHelper } from '../helpers/relay-store.helper';
-import { parseGraphQLMessage } from '../helpers/chat.helper';
+import { markTimestamps, parseGraphQLMessage } from '../helpers/chat.helper';
 import { Message } from '../interfaces/inbox';
 import { conversationMessagesQuery } from '../relay/ConversationMessagesQuery';
 import { ConversationMessagesQuery } from '../relay/__generated__/ConversationMessagesQuery.graphql';
@@ -111,10 +111,12 @@ export function useMessageList({
   );
 
   return {
-    messages: data.messages.edges.map((edge: any) => {
-      const node = edge.node;
-      return parseGraphQLMessage(node);
-    }),
+    messages: markTimestamps(
+      data.messages.edges.map((edge: any) => {
+        const node = edge.node;
+        return parseGraphQLMessage(node);
+      }),
+    ),
     isFetchingInitial,
     isLoadingNext,
     hasNext,

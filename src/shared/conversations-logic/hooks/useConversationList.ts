@@ -20,9 +20,6 @@ interface UseConversationListReturn {
   isLoadingNext: boolean;
   hasNext: boolean;
   loadMore: (onComplete?: (error?: Error | null) => void) => void;
-  // addMessage: (msg: Message) => void;
-  // updateMessage: (messageId: string, updates: Partial<Message>) => void;
-  // removeMessage: (messageId: string) => void;
 }
 
 export function useConversationList({
@@ -74,31 +71,6 @@ export function useConversationList({
     [hasNext, isLoadingNext, loadNext],
   );
 
-  // const addMessage = useCallback(
-  //   (msg: Message) => {
-  //     RelayStoreHelper.addMessage(
-  //       msg,
-  //       rawConversationId,
-  //       msg.type === MessageType.LOADING,
-  //     );
-  //   },
-  //   [rawConversationId],
-  // );
-
-  // const updateMessage = useCallback(
-  //   (messageId: string, updates: Partial<Message>) => {
-  //     RelayStoreHelper.updateMessage(messageId, updates);
-  //   },
-  //   [],
-  // );
-
-  // const removeMessage = useCallback(
-  //   (messageId: string) => {
-  //     RelayStoreHelper.removeMessage(messageId, rawConversationId);
-  //   },
-  //   [rawConversationId],
-  // );
-
   return {
     conversations: data.conversations.edges.map((edge: any) => {
       const node = edge.node;
@@ -108,8 +80,5 @@ export function useConversationList({
     isLoadingNext,
     hasNext,
     loadMore,
-    // addMessage,
-    // updateMessage,
-    // removeMessage,
   };
 }

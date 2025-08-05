@@ -14,6 +14,10 @@ export const connectSocket = (auth: any) => {
   socket.connect();
 
   socket.on('connect', () => {
+    console.log('Socket connected, waiting for setup...');
+  });
+
+  socket.on('connection_ready', () => {
     eventBus.emit(EVENTBUS_SOCKET_CONNECT);
   });
 

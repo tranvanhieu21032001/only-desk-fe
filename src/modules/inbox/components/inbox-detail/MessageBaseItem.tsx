@@ -1,6 +1,5 @@
 import React from 'react';
 import { Image } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
 
 import MessageTimeWithIcon from './MessageTimeWithIcon';
 
@@ -105,12 +104,16 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     }
   }
 
+  if (msg.type === MessageType.RESOLVED) {
+    return <S.SystemMessage>{msg.content}</S.SystemMessage>;
+  }
   // Only show timeWithIcon if not loading
-  let timeWithIcon: React.ReactNode = null;
+  let timeWithIcon: React.ReactNode = <div />;
   timeWithIcon = (
     <MessageTimeWithIcon
       {...timeWithIconProps}
       style={msg.type === MessageType.NOTE ? { marginTop: 4 } : undefined}
+      showTime={msg.showTime}
     />
   );
 
@@ -127,21 +130,28 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     return (
       <S.MessageRow>
         <S.MessageAvatarWrapper>
-          <ProfileCard
-            userId={msg.user?.id}
-            contactId={contactId}
-            name={name}
-            avatarUrl={avatar}
-            countryCode={countryCode}
-            hiddenInfo
-            avatarSize={32}
-            flagSize={12}
-          />
+          {msg.showTime ? (
+            <ProfileCard
+              userId={msg.user?.id}
+              contactId={contactId}
+              name={name}
+              avatarUrl={avatar}
+              countryCode={countryCode}
+              hiddenInfo
+              avatarSize={32}
+              flagSize={12}
+            />
+          ) : (
+            <div style={{ width: 32, height: 32 }} />
+          )}
+
           {/* <S.MessageAvatar src={avatarAdmin} alt={msg.user?.firstName} /> */}
           <S.MessageColumnView>
-            <S.MessageSenderName>
-              {msg.user?.firstName || 'Guest'}
-            </S.MessageSenderName>
+            {msg.showTime && (
+              <S.MessageSenderName>
+                {msg.user?.firstName || 'Guest'}
+              </S.MessageSenderName>
+            )}
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
               {renderContent()}
               {timeWithIcon}

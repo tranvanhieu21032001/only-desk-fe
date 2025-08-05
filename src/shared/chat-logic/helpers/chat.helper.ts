@@ -114,3 +114,47 @@ export const getId = (id: string | null | undefined) => {
   // Not recognized
   return null;
 };
+
+export const markTimestamps = (messages: Message[]) => {
+  const result = [];
+  let lastShownTime: Date | null = null;
+
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const msg = messages[i];
+    const currentTime = new Date(msg.createdAt);
+
+    let showTime = false;
+    let showDate = false;
+
+    if (!lastShownTime) {
+      showTime = true;
+      showDate = true;
+    } else {
+      const diffSender = msg.sender !== messages[i + 1]?.sender;
+      const diffMinutes =
+        (currentTime.getTime() - lastShownTime.getTime()) / 1000 / 60;
+
+      const isDifferentDay =
+        currentTime.getFullYear() !== lastShownTime.getFullYear() ||
+        currentTime.getMonth() !== lastShownTime.getMonth() ||
+        currentTime.getDate() !== lastShownTime.getDate();
+
+      if (diffMinutes > 3 || isDifferentDay || diffSender) {
+        showTime = true;
+        showDate = isDifferentDay;
+      }
+    }
+
+    if (showTime) {
+      lastShownTime = currentTime;
+    }
+
+    result.push({
+      ...msg,
+      showTime,
+      showDate,
+    });
+  }
+
+  return result.slice().reverse();
+};

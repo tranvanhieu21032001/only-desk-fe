@@ -19,6 +19,7 @@ interface MessageTimeWithIconProps {
   status: MessageStatus;
   rightIcon?: boolean;
   style?: React.CSSProperties;
+  showTime?: boolean;
 }
 
 const MessageTimeWithIcon: React.FC<MessageTimeWithIconProps> = ({
@@ -30,12 +31,18 @@ const MessageTimeWithIcon: React.FC<MessageTimeWithIconProps> = ({
   status,
   rightIcon = false,
   style,
+  showTime = true,
 }) => {
+  var timeVisible = showTime || hovered;
   const timeNode = (
     <S.MessageTime
-      style={rightIcon ? { marginRight: 0, marginLeft: 8, ...style } : style}
+      style={
+        rightIcon
+          ? { marginRight: 0, marginLeft: 8, ...style }
+          : { ...style, ...(timeVisible ? {} : { minWidth: 'unset' }) }
+      }
     >
-      {formatTime(createdAt)}
+      {timeVisible && formatTime(createdAt)}
       {status === MessageStatus.SENDING && (
         <LoadingOutlined style={{ marginLeft: 6, fontSize: 12 }} spin />
       )}

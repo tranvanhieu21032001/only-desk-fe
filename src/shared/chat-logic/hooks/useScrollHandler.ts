@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseScrollHandlerProps {
   isLoaded: boolean;
@@ -20,24 +20,24 @@ export function useScrollHandler({
   const [isUserAtBottom, setIsUserAtBottom] = useState(false);
   const isInitialRender = useRef(true);
 
+  // Scroll to bottom
+  const scrollToBottom = useCallback(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [containerRef]);
+
   // 1. Scroll to bottom after messages are initially loaded.
   useEffect(() => {
     if (isInitialRender.current && isLoaded) {
       scrollToBottom();
       isInitialRender.current = false;
     }
-  }, [isLoaded]);
-
-  // Scroll to bottom
-  const scrollToBottom = () => {
-    const container = containerRef.current;
-    if (container) {
-      container.scrollTop = container.scrollHeight;
-    }
-  };
+  }, [isLoaded, scrollToBottom]);
 
   // Detect scroll position
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
 
@@ -66,7 +66,7 @@ export function useScrollHandler({
     const isAtBottom =
       Math.abs(scrollTop + clientHeight - scrollHeight) <= tolerance;
     setIsUserAtBottom(isAtBottom);
-  };
+  }, [containerRef, onLoadMore]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -76,7 +76,7 @@ export function useScrollHandler({
     return () => {
       container.removeEventListener('scroll', handleScroll);
     };
-  }, [containerRef]);
+  }, [containerRef, handleScroll]);
 
   return {
     scrollToBottom,

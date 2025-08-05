@@ -12,6 +12,7 @@ interface UseTypingHandlerProps {
 
 interface UseTypingHandlerReturn {
   handleUserTyping: (val: string) => void;
+  handleUserStopTyping: () => void;
   isSomeoneTyping: boolean;
 }
 
@@ -41,6 +42,7 @@ export function useTypingHandler({
     }
 
     // if not typing after 2s, emit typing stop
+    //TODO: duplicate emit stop typing event when call handleUserStopTyping function in useChat
     typingTimeoutRef.current = setTimeout(() => {
       isTypingRef.current = false;
       emitTypingStop(rawConversationId);
@@ -64,6 +66,10 @@ export function useTypingHandler({
 
   return {
     handleUserTyping,
+    handleUserStopTyping: () => {
+      isTypingRef.current = false;
+      emitTypingStop(rawConversationId);
+    },
     isSomeoneTyping: isTyping,
   };
 }

@@ -80,9 +80,10 @@ export function useChat({
     removeMessage,
   } = useMessageList({ rawConversationId });
 
-  const { handleUserTyping, isSomeoneTyping } = useTypingHandler({
-    rawConversationId: rawConversationId || '',
-  });
+  const { handleUserTyping, isSomeoneTyping, handleUserStopTyping } =
+    useTypingHandler({
+      rawConversationId: rawConversationId || '',
+    });
 
   const { notifyNewMessage } = useNotification();
 
@@ -105,6 +106,7 @@ export function useChat({
     if (!container) return;
 
     if (latestMessage.type !== MessageType.IMAGE) {
+      //TODO: when many incoming messages it's delay to scroll to bottom. Should use IntersectionObserver to check if the latest message is in view port
       requestAnimationFrame(() => {
         scrollToBottom();
       });
@@ -132,6 +134,9 @@ export function useChat({
   ) => {
     const message = createLocalMessage(content, type, metadata, user);
     addMessage(message);
+
+    handleUserStopTyping();
+
     sendMessageToSocket(
       {
         conversationId: rawConversationId,
@@ -155,6 +160,8 @@ export function useChat({
         }
       },
     );
+
+    //callback this event to clear chat input after send message success
     onEndSendMessage?.(message);
 
     scrollToBottomNextFrame(message);
@@ -162,6 +169,8 @@ export function useChat({
 
   useEffect(() => {
     const handleIncomingMessage = (rawData: any) => {
+      if (rawData.conversationId !== rawConversationId) return;
+
       const message = parseGraphQLMessage(rawData);
       addMessage(message);
       if (isUserAtBottom) {

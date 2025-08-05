@@ -44,6 +44,8 @@ export interface Message {
   metadata?: {
     fileUrl?: string;
   };
+  showTime?: boolean;
+  showDate?: boolean;
 }
 
 export interface Conversation {
