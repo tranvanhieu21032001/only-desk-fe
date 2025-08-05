@@ -1,8 +1,5 @@
-import {
-  InboxMessageStatus,
-  InboxMessageType,
-  InboxSender,
-} from '@/modules/settings/helpers/enums/inbox.enums';
+import { MessageStatus } from '@/shared/chat-logic/enums/chat.enums';
+import { Message } from '@/shared/chat-logic/interfaces/inbox';
 
 export interface Contact {
   id: string;
@@ -14,7 +11,7 @@ export interface Contact {
   email: string;
   notification: boolean;
   segments: string[];
-   metadata?: {
+  metadata?: {
     [key: string]: any;
   };
   isOnline: boolean;
@@ -22,7 +19,7 @@ export interface Contact {
   workspaceId?: string;
   avatar?: string;
   countryCode?: string;
-  countryName?:string;
+  countryName?: string;
   city?: string;
   browser?: string;
   os?: string;
@@ -33,21 +30,7 @@ export interface User {
   firstName: string;
   lastName: string;
   avatar: string;
-  email:string;
-}
-
-export interface Message {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  content: string;
-  sender: InboxSender;
-  user: User | null;
-  type: InboxMessageType;
-  status: InboxMessageStatus;
-  metadata?: {
-    fileUrl?: string;
-  };
+  email: string;
 }
 
 export interface Conversation {
@@ -58,23 +41,9 @@ export interface Conversation {
   participants: string[];
   lastActivityAt: string;
   latestMessage?: Message;
-  resolved?:boolean;
+  resolved?: boolean;
   unreadGuestCount?: number;
   unreadCount?: number;
-}
-
-export interface ConversationListResponse {
-  data: Conversation[];
-  total: number;
-  page: number;
-  hasNextPage: boolean;
-}
-
-export interface MessageListResponse {
-  data: Message[];
-  total: number;
-  page: number;
-  hasNextPage: boolean;
 }
 
 export interface InboxDetailProps {
@@ -89,18 +58,6 @@ export interface MessageBaseItemProps {
   contextMenu: any;
   handleIconClick: (e: React.MouseEvent, message: Message) => void;
   setHoveredMessageId: (id: string | null) => void;
-  formatTime: (date: string) => string;
-  pendingImageScroll: boolean;
-  setPendingImageScroll: (v: boolean) => void;
-  setPendingImageLoads: React.Dispatch<React.SetStateAction<number>>;
-  scrollToBottom: () => void;
-  justLoadedMore: boolean;
-  isOwner: boolean;
-  avatarAdmin?: string;
-  contactId?: string;
-  avatar?:string;
-  name?:string;
-  countryCode?:string;
 }
 
 export interface MessageTimeWithIconProps {
@@ -110,7 +67,7 @@ export interface MessageTimeWithIconProps {
   onHoverEnter: () => void;
   onHoverLeave: () => void;
   createdAt: string;
-  status: InboxMessageStatus;
+  status: MessageStatus;
   formatTime: (date: string) => string;
   rightIcon?: boolean;
   style?: React.CSSProperties;
@@ -132,24 +89,4 @@ export interface TabContentProps {
 
 export interface RenderSkeletonProps {
   count?: number;
-}
-
-export interface ChatMessageItemProps {
-  msg: Message;
-  hoveredMessageId: string | null;
-  contextMenu: any;
-  handleIconClick: (e: React.MouseEvent, message: Message) => void;
-  setHoveredMessageId: (id: string | null) => void;
-  formatTime: (date: string) => string;
-  pendingImageScroll: boolean;
-  setPendingImageScroll: (v: boolean) => void;
-  setPendingImageLoads: React.Dispatch<React.SetStateAction<number>>;
-  scrollToBottom: () => void;
-  justLoadedMore: boolean;
-  isOwner: boolean;
-  avatarAdmin?: string;
-  contactId?: string;
-  avatar?:string;
-  name?:string;
-  countryCode?:string;
 }

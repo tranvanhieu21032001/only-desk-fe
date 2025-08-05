@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<db5904ef72d2ad566dcfa3ad94329d92>>
+ * @generated SignedSource<<e95ffbf65bf12ccb38832d88aa3ecfd5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,24 +9,25 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type ContactByCoversationIdQuery$variables = {
+export type CoversationDetailsForListQuery$variables = {
   id: string;
 };
-export type ContactByCoversationIdQuery$data = {
+export type CoversationDetailsForListQuery$data = {
   readonly node: {
     readonly assignedTo?: {
       readonly id: string;
     } | null | undefined;
-    readonly closedAt?: any | null | undefined;
     readonly contact?: {
       readonly avatar: string | null | undefined;
+      readonly context: {
+        readonly countryCode: string | null | undefined;
+      } | null | undefined;
       readonly email: string | null | undefined;
       readonly id: string;
       readonly isOnline: boolean;
       readonly name: string;
       readonly rawId: string;
     } | null | undefined;
-    readonly createdAt?: any | null | undefined;
     readonly id?: string;
     readonly lastActivityAt?: any | null | undefined;
     readonly latestMessage?: {
@@ -34,15 +35,14 @@ export type ContactByCoversationIdQuery$data = {
     } | null | undefined;
     readonly metadata?: any | null | undefined;
     readonly rawId?: string;
-    readonly segments?: ReadonlyArray<string> | null | undefined;
+    readonly resolved?: boolean | null | undefined;
     readonly subject?: string | null | undefined;
     readonly unreadCount?: number | null | undefined;
-    readonly updatedAt?: any | null | undefined;
   } | null | undefined;
 };
-export type ContactByCoversationIdQuery = {
-  response: ContactByCoversationIdQuery$data;
-  variables: ContactByCoversationIdQuery$variables;
+export type CoversationDetailsForListQuery = {
+  response: CoversationDetailsForListQuery$data;
+  variables: CoversationDetailsForListQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -88,13 +88,6 @@ v4 = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
-      "name": "email",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
       "name": "avatar",
       "storageKey": null
     },
@@ -111,6 +104,31 @@ v4 = {
       "kind": "ScalarField",
       "name": "isOnline",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "email",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "ContactContext",
+      "kind": "LinkedField",
+      "name": "context",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "countryCode",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
     }
   ],
   "storageKey": null
@@ -126,52 +144,31 @@ v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "metadata",
+  "name": "resolved",
   "storageKey": null
 },
 v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "segments",
+  "name": "metadata",
   "storageKey": null
 },
 v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "createdAt",
+  "name": "lastActivityAt",
   "storageKey": null
 },
 v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "updatedAt",
-  "storageKey": null
-},
-v10 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "lastActivityAt",
-  "storageKey": null
-},
-v11 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "closedAt",
-  "storageKey": null
-},
-v12 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
   "name": "unreadCount",
   "storageKey": null
 },
-v13 = {
+v10 = {
   "alias": null,
   "args": null,
   "concreteType": "User",
@@ -183,7 +180,7 @@ v13 = {
   ],
   "storageKey": null
 },
-v14 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -195,7 +192,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "ContactByCoversationIdQuery",
+    "name": "CoversationDetailsForListQuery",
     "selections": [
       {
         "alias": null,
@@ -217,9 +214,6 @@ return {
               (v8/*: any*/),
               (v9/*: any*/),
               (v10/*: any*/),
-              (v11/*: any*/),
-              (v12/*: any*/),
-              (v13/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -228,7 +222,7 @@ return {
                 "name": "latestMessage",
                 "plural": false,
                 "selections": [
-                  (v14/*: any*/)
+                  (v11/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -247,7 +241,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "ContactByCoversationIdQuery",
+    "name": "CoversationDetailsForListQuery",
     "selections": [
       {
         "alias": null,
@@ -276,9 +270,6 @@ return {
               (v8/*: any*/),
               (v9/*: any*/),
               (v10/*: any*/),
-              (v11/*: any*/),
-              (v12/*: any*/),
-              (v13/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -287,7 +278,7 @@ return {
                 "name": "latestMessage",
                 "plural": false,
                 "selections": [
-                  (v14/*: any*/),
+                  (v11/*: any*/),
                   (v2/*: any*/)
                 ],
                 "storageKey": null
@@ -302,16 +293,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "090c222e6aafa6e3007caec0337d1e86",
+    "cacheID": "c22f762382dc56abbf96104a7f28c24e",
     "id": null,
     "metadata": {},
-    "name": "ContactByCoversationIdQuery",
+    "name": "CoversationDetailsForListQuery",
     "operationKind": "query",
-    "text": "query ContactByCoversationIdQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Conversation {\n      id\n      rawId\n      contact {\n        id\n        rawId\n        email\n        avatar\n        name\n        isOnline\n      }\n      subject\n      metadata\n      segments\n      createdAt\n      updatedAt\n      lastActivityAt\n      closedAt\n      unreadCount\n      assignedTo {\n        id\n      }\n      latestMessage {\n        content\n        id\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query CoversationDetailsForListQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Conversation {\n      id\n      rawId\n      contact {\n        id\n        rawId\n        avatar\n        name\n        isOnline\n        email\n        context {\n          countryCode\n        }\n      }\n      subject\n      resolved\n      metadata\n      lastActivityAt\n      unreadCount\n      assignedTo {\n        id\n      }\n      latestMessage {\n        content\n        id\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "fc14e858ecb33bc115876e39f8bec875";
+(node as any).hash = "aabbb705857c42c387fdb0cd81c874f2";
 
 export default node;

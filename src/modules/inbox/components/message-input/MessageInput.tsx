@@ -1,14 +1,9 @@
 import React, { useRef, useEffect, useState, ChangeEvent } from 'react';
 import { Image, Spin } from 'antd';
-import { debounce } from 'lodash';
-import { useSearchParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import { emitTypingStart, emitTypingStop } from '@/core/services/socket/socket';
-
 import { uploadFile } from '../../helpers/inbox.logic';
-import { InboxMessageType } from '@/modules/settings/helpers/enums/inbox.enums';
 import { INBOX_TABS } from '../../constants/inbox.constants';
 import * as S from './MessageInput.styles';
 
@@ -21,6 +16,7 @@ import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
 // import icCheck from '@/assets/icons/inbox/ic-check.svg';
 import icCloseImage from '@/assets/icons/inbox/ic-close-image.svg';
 import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
+import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
 // import trash from '@/assets/icons/inbox/ic-trash.svg';
 
 interface MessageInputProps {
@@ -30,7 +26,8 @@ interface MessageInputProps {
   setInputValue: (val: string) => void;
   setActiveTab: (val: string | null) => void;
   setSelectedReminder: (val: string | null) => void;
-  onSendMessage: (val: string, type?: InboxMessageType, metadata?: any) => void;
+  onSendMessage: (val: string, type?: MessageType, metadata?: any) => void;
+  onInputChange?: (val: string) => void;
 }
 
 interface FilePreview {
@@ -51,28 +48,11 @@ const MessageInput: React.FC<MessageInputProps> = ({
   setInputValue,
   // setActiveTab,
   onSendMessage,
+  onInputChange,
 }) => {
-  const [searchParams] = useSearchParams();
-  const conversationId = searchParams.get('conversationId');
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
-
-  // Debounced typing emit
-  const debouncedTypingStart = useRef(
-    debounce(() => {
-      if (conversationId) {
-        emitTypingStart(conversationId);
-      }
-    }, 400),
-  ).current;
-  const debouncedTypingStop = useRef(
-    debounce(() => {
-      if (conversationId) {
-        emitTypingStop(conversationId);
-      }
-    }, 1000),
-  ).current;
 
   useEffect(() => {
     if (inputRef.current) {
@@ -80,18 +60,14 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   }, [activeTab, selectedReminder]);
 
-  useEffect(() => {
-    return () => {
-      debouncedTypingStart.cancel();
-      debouncedTypingStop.cancel();
-    };
-  }, [debouncedTypingStart, debouncedTypingStop]);
-
-  const updateFilePreview = (id: string, updater: (item: FilePreview) => Partial<FilePreview>) => {
-    setFilePreviews(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, ...updater(item) } : item
-      )
+  const updateFilePreview = (
+    id: string,
+    updater: (item: FilePreview) => Partial<FilePreview>,
+  ) => {
+    setFilePreviews((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, ...updater(item) } : item,
+      ),
     );
   };
 
@@ -157,7 +133,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
       for (const item of filePreviews) {
         if (item.fileUrl) {
-          onSendMessage('text image', InboxMessageType.Image, {
+          onSendMessage(inputValue, MessageType.IMAGE, {
             fileUrl: item.fileUrl,
           });
         } else {
@@ -171,15 +147,16 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
     if (inputValue.trim()) {
       if (activeTab === INBOX_TABS.NOTE) {
-        onSendMessage(inputValue, InboxMessageType.Note);
+        onSendMessage(inputValue, MessageType.NOTE);
       } else {
-        onSendMessage(inputValue, InboxMessageType.Text);
+        onSendMessage(inputValue, MessageType.TEXT);
       }
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+    onInputChange?.(e.target.value);
   };
 
   const TAB_ACTIONS = [
@@ -249,14 +226,16 @@ const MessageInput: React.FC<MessageInputProps> = ({
         </S.FilePreviewWrapper>
       )}
 
-      {inputValue && TAB_ACTIONS.map(action => (
-        activeTab === action.tab && (
-          <S.TokenBox key={action.key}>
-            <S.TokenIcon src={action.icon} alt={action.label} />
-            {action.label}
-          </S.TokenBox>
-        )
-      ))}
+      {inputValue &&
+        TAB_ACTIONS.map(
+          (action) =>
+            activeTab === action.tab && (
+              <S.TokenBox key={action.key}>
+                <S.TokenIcon src={action.icon} alt={action.label} />
+                {action.label}
+              </S.TokenBox>
+            ),
+        )}
 
       <S.InputWrapper>
         <S.Input
@@ -266,7 +245,6 @@ const MessageInput: React.FC<MessageInputProps> = ({
           onKeyPress={async (e) => {
             if (e.key === 'Enter') {
               await handleSend();
-              debouncedTypingStop();
             }
           }}
           placeholder="Messages..."

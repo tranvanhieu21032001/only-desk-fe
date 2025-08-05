@@ -1,5 +1,6 @@
 export interface UserInforInterface {
   id?: string;
+  rawId?: string;
   email?: string;
   role?: string[];
   avatar?: string;

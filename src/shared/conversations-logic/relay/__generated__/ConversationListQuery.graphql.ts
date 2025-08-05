@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<164c532220034c764835b94dac1d97b3>>
+ * @generated SignedSource<<7714e3f5e26b80ce6dc5a3264a6946dc>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,17 +10,17 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type ConversationMessagesQuery$variables = {
+export type ConversationListQuery$variables = {
   after?: string | null | undefined;
-  conversationId: string;
+  assignedToMe?: boolean | null | undefined;
   first?: number | null | undefined;
 };
-export type ConversationMessagesQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"MessageFragment_query">;
+export type ConversationListQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"ConversationFragment_query">;
 };
-export type ConversationMessagesQuery = {
-  response: ConversationMessagesQuery$data;
-  variables: ConversationMessagesQuery$variables;
+export type ConversationListQuery = {
+  response: ConversationListQuery$data;
+  variables: ConversationListQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -32,7 +32,7 @@ var v0 = {
 v1 = {
   "defaultValue": null,
   "kind": "LocalArgument",
-  "name": "conversationId"
+  "name": "assignedToMe"
 },
 v2 = {
   "defaultValue": null,
@@ -47,8 +47,8 @@ v3 = [
   },
   {
     "kind": "Variable",
-    "name": "conversationId",
-    "variableName": "conversationId"
+    "name": "assignedToMe",
+    "variableName": "assignedToMe"
   },
   {
     "kind": "Variable",
@@ -62,6 +62,13 @@ v4 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "rawId",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -72,12 +79,12 @@ return {
     ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "ConversationMessagesQuery",
+    "name": "ConversationListQuery",
     "selections": [
       {
         "args": (v3/*: any*/),
         "kind": "FragmentSpread",
-        "name": "MessageFragment_query"
+        "name": "ConversationFragment_query"
       }
     ],
     "type": "Query",
@@ -86,19 +93,19 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v1/*: any*/),
       (v2/*: any*/),
-      (v0/*: any*/)
+      (v0/*: any*/),
+      (v1/*: any*/)
     ],
     "kind": "Operation",
-    "name": "ConversationMessagesQuery",
+    "name": "ConversationListQuery",
     "selections": [
       {
         "alias": null,
         "args": (v3/*: any*/),
-        "concreteType": "MessageConnection",
+        "concreteType": "ConversationConnection",
         "kind": "LinkedField",
-        "name": "messages",
+        "name": "conversations",
         "plural": false,
         "selections": [
           {
@@ -120,20 +127,6 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "hasPreviousPage",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "startCursor",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
                 "name": "endCursor",
                 "storageKey": null
               }
@@ -143,7 +136,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "MessageTypeEdge",
+            "concreteType": "ConversationTypeEdge",
             "kind": "LinkedField",
             "name": "edges",
             "plural": true,
@@ -158,38 +151,84 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "Message",
+                "concreteType": "Conversation",
                 "kind": "LinkedField",
                 "name": "node",
                 "plural": false,
                 "selections": [
                   (v4/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
-                    "kind": "ScalarField",
-                    "name": "content",
+                    "concreteType": "Contact",
+                    "kind": "LinkedField",
+                    "name": "contact",
+                    "plural": false,
+                    "selections": [
+                      (v4/*: any*/),
+                      (v5/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "avatar",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "name",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "isOnline",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "email",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "ContactContext",
+                        "kind": "LinkedField",
+                        "name": "context",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "countryCode",
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      }
+                    ],
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "sender",
+                    "name": "subject",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "createdAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "updatedAt",
+                    "name": "resolved",
                     "storageKey": null
                   },
                   {
@@ -203,14 +242,14 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "type",
+                    "name": "lastActivityAt",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "status",
+                    "name": "unreadCount",
                     "storageKey": null
                   },
                   {
@@ -218,31 +257,29 @@ return {
                     "args": null,
                     "concreteType": "User",
                     "kind": "LinkedField",
-                    "name": "user",
+                    "name": "assignedTo",
                     "plural": false,
                     "selections": [
-                      (v4/*: any*/),
+                      (v4/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Message",
+                    "kind": "LinkedField",
+                    "name": "latestMessage",
+                    "plural": false,
+                    "selections": [
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "firstName",
+                        "name": "content",
                         "storageKey": null
                       },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "lastName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "avatar",
-                        "storageKey": null
-                      }
+                      (v4/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -266,26 +303,26 @@ return {
         "alias": null,
         "args": (v3/*: any*/),
         "filters": [
-          "conversationId"
+          "assignedToMe"
         ],
         "handle": "connection",
-        "key": "MessageFragment_messages",
+        "key": "ConversationFragment_conversations",
         "kind": "LinkedHandle",
-        "name": "messages"
+        "name": "conversations"
       }
     ]
   },
   "params": {
-    "cacheID": "a99a9b1ea6fed6e64f8c161ee896c4ae",
+    "cacheID": "47eaf97c4138098e9ad686ce3a345a50",
     "id": null,
     "metadata": {},
-    "name": "ConversationMessagesQuery",
+    "name": "ConversationListQuery",
     "operationKind": "query",
-    "text": "query ConversationMessagesQuery(\n  $conversationId: ID!\n  $first: Float\n  $after: String\n) {\n  ...MessageFragment_query_1QmmIs\n}\n\nfragment MessageFragment_query_1QmmIs on Query {\n  messages(conversationId: $conversationId, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        content\n        sender\n        createdAt\n        updatedAt\n        metadata\n        type\n        status\n        user {\n          id\n          firstName\n          lastName\n          avatar\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListQuery(\n  $first: Float\n  $after: String\n  $assignedToMe: Boolean\n) {\n  ...ConversationFragment_query_Bk7iV\n}\n\nfragment ConversationFragment_query_Bk7iV on Query {\n  conversations(assignedToMe: $assignedToMe, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          avatar\n          name\n          isOnline\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        lastActivityAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "396f7b8d39ae485cf0fe9abb3381b968";
+(node as any).hash = "af7da1041846c1d56ccb02d1ad712448";
 
 export default node;

@@ -8,15 +8,13 @@ export const messageListFragment = graphql`
     after: { type: "String" }
   )
   @refetchable(queryName: "MessageFragmentPaginationQuery") {
-    messages(
-      conversationId: $conversationId,
-      first: $first,
-      after: $after
-    ) @connection(key: "MessageFragment_messages", filters: ["conversationId"]) {
+    messages(conversationId: $conversationId, first: $first, after: $after)
+      @connection(
+        key: "MessageFragment_messages"
+        filters: ["conversationId"]
+      ) {
       pageInfo {
         hasNextPage
-        hasPreviousPage
-        startCursor
         endCursor
       }
       edges {
@@ -32,6 +30,7 @@ export const messageListFragment = graphql`
           status
           user {
             id
+            rawId
             firstName
             lastName
             avatar

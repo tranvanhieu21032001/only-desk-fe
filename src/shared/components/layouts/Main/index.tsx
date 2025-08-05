@@ -866,22 +866,22 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
     ),
     [t, handleClickChildrenMenu, routePath],
   );
-  
+
   // Stabilize renderProfiles to prevent re-creation
   const renderProfiles = useMemo(
     () => (
       <S.PopoverContent>
         <ProfileCard
-            avatarUrl={userInfo?.avatar || icDefaultAvatar}
-            avatarSize={40}
-            userId={userInfo?.id}
-            name={
-              userInfo?.firstName
-                ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
-                : DEFAULT_FULL_NAME
-            }
-            email={userInfo?.email}
-          />
+          avatarUrl={userInfo?.avatar || icDefaultAvatar}
+          avatarSize={40}
+          userId={userInfo?.id}
+          name={
+            userInfo?.firstName
+              ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
+              : DEFAULT_FULL_NAME
+          }
+          email={userInfo?.email}
+        />
 
         <S.Line />
         <S.PopoverLabelWrap>

@@ -21,7 +21,6 @@ import tagsBlue from '@/assets/icons/common/ic-tags-blue.svg';
 
 import ProfilePreviewModal from '../../profile-preview-modal/ProfilePreviewModal';
 import ProfileCard from '@/shared/components/common/ProfileCard';
-import { listenUserStatus, offUserStatus } from '@/core/services/socket/socket';
 import { format } from 'timeago.js';
 import dayjs from 'dayjs';
 import LastReportedLocationBody from '@/shared/components/common/ReportedLocation/LastReportedLocationBody';
@@ -32,6 +31,10 @@ import Typography from '@/shared/components/common/Typography';
 import empty from '@/assets/images/contact/img-contact-empty.png';
 import SegmentsBody from '@/shared/components/common/SegmentsBody/SegmentsBody';
 import { fetchDetailsContact } from '@/modules/contacts/store/features/contacts';
+import {
+  listenUserStatus,
+  offUserStatus,
+} from '@/shared/chat-logic/services/socket';
 interface UserProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -48,15 +51,17 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const [isOnline, setIsOnline] = useState(contactDetails?.isOnline || false);
   const [lastActive, setLastActive] = useState<string | null>(null);
 
-    const { selectedConversation } = useAppSelector((state) => state.inbox);
-    
+  const { selectedConversation } = useAppSelector((state) => state.inbox);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (selectedConversation?.contact?.rawId) {
-      dispatch(fetchDetailsContact({ idContact: selectedConversation?.contact?.id }));
+      dispatch(
+        fetchDetailsContact({ idContact: selectedConversation?.contact?.id }),
+      );
     }
-  }, [dispatch, selectedConversation?.contact?.rawId])
+  }, [dispatch, selectedConversation?.contact?.rawId]);
 
   const renderNotes = useMemo(() => {
     if (!contactDetails?.notes) {
@@ -100,7 +105,11 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
   }, [selectedConversation]);
 
   return (
-    <ProfilePreviewModal isOpen={isOpen} onClose={onClose}  redirectUrl={`/contacts/${selectedConversation?.contact?.id}`}>
+    <ProfilePreviewModal
+      isOpen={isOpen}
+      onClose={onClose}
+      redirectUrl={`/contacts/${selectedConversation?.contact?.id}`}
+    >
       <S.PanelWrapper>
         <S.PanelHeader>
           <S.PanelColumn>

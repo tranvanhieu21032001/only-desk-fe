@@ -28,18 +28,6 @@ const MainInbox: React.FC = () => {
   const activeConversationId = searchParams.get('conversationId');
 
   const isAssignedToMePage = location.pathname === '/assigned-to-me';
-  const queryRef = useMemo(
-    () =>
-      loadQuery<ConversationListPaginationQueryType>(
-        RelayEnvironment,
-        ConversationListPaginationQuery,
-        {
-          first: 10,
-          ...(isAssignedToMePage ? { assignedToMe: true } : {}),
-        },
-      ),
-    [isAssignedToMePage],
-  );
 
   const isSidebarOpen = useSelector(
     (state: RootState) => state.inbox.isSidebarOpen,
@@ -48,11 +36,6 @@ const MainInbox: React.FC = () => {
   const handleToggleSidebar = useCallback(() => {
     dispatch(toggleSidebar());
   }, [dispatch]);
-
-  const data = usePreloadedQuery<ConversationListPaginationQueryType>(
-    ConversationListPaginationQuery,
-    queryRef,
-  ) as ConversationListPaginationQuery$data;
 
   return (
     <S.InboxWrapper>
@@ -65,10 +48,7 @@ const MainInbox: React.FC = () => {
           >
             <S.InboxList>
               <Suspense fallback={<InboxListSkeleton />}>
-                <ConversationList
-                  conversationsRef={data}
-                  isAssignedToMe={isAssignedToMePage}
-                />
+                <ConversationList isAssignedToMe={isAssignedToMePage} />
               </Suspense>
             </S.InboxList>
           </Splitter.Panel>

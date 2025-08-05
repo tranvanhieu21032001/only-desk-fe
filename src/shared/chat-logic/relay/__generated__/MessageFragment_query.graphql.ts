@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5ec0059444aea902b39e34305fbde719>>
+ * @generated SignedSource<<2a57eeed1fc898c42a9ee3daaa67cecd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -31,14 +31,13 @@ export type MessageFragment_query$data = {
           readonly firstName: string | null | undefined;
           readonly id: string;
           readonly lastName: string | null | undefined;
+          readonly rawId: string;
         } | null | undefined;
       };
     }>;
     readonly pageInfo: {
       readonly endCursor: string | null | undefined;
       readonly hasNextPage: boolean;
-      readonly hasPreviousPage: boolean;
-      readonly startCursor: string | null | undefined;
     };
   };
   readonly " $fragmentType": "MessageFragment_query";
@@ -137,20 +136,6 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "hasPreviousPage",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "startCursor",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
               "name": "endCursor",
               "storageKey": null
             }
@@ -243,6 +228,13 @@ return {
                       "alias": null,
                       "args": null,
                       "kind": "ScalarField",
+                      "name": "rawId",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
                       "name": "firstName",
                       "storageKey": null
                     },
@@ -285,6 +277,6 @@ return {
 };
 })();
 
-(node as any).hash = "0ca5934528f4433f454e7400aa6f1d0e";
+(node as any).hash = "14a07bb882efef75dd51a91937a0c70a";
 
 export default node;

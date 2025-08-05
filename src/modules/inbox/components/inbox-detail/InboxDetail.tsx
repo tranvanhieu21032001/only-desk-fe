@@ -1,47 +1,19 @@
-import React, { useRef, useState, useEffect, useMemo, memo } from 'react';
+import React, { useRef, useState, useEffect, memo } from 'react';
 import { Image } from 'antd';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import {
-  sendAgentMessage,
-  closeConversation,
-  openConversation,
-  listenUserTyping,
-  offUserTyping,
-} from '../../../../core/services/socket/socket';
-import AvatarWithStatus from '../../../../shared/components/common/Avatar';
-import { InboxDetailProps, Message } from '../../interfaces/inbox';
-import { useMessageList } from '../../hooks/useMessageList';
-import { useUser } from '@/core/context/UserContext';
-import { useScrollHandler } from '../../hooks/useScrollHandler';
-import {
-  InboxMessageType,
-  InboxSender,
-  InboxMessageStatus,
-} from '@/modules/settings/helpers/enums/inbox.enums';
+import { InboxDetailProps } from '../../interfaces/inbox';
 import { getShortcutsList } from '@/modules/inbox/api/inbox.api';
 import type { Shortcut } from '@/modules/settings/models/chatbox.model';
 import { useAppSelector } from '@/shared/hooks';
-import { ToastMessageType } from '@/shared/helper/enums/common';
-import ToastMessage from '@/shared/components/common/ToastMessage';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import {
-  DEFAULT_FULL_NAME,
-  EVENTBUS_UPDATED_CONVERSATION,
-} from '@/core/settings/constants';
+import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
-import { ChatMessageItem } from './ChatMessageItem';
 import { InboxFooter } from './InboxFooter';
-import { formatTime } from '@/shared/utils/time';
-import { decodeGlobalId } from '@/shared/utils/decode';
-import {
-  handleIconClickLogic,
-  handleSendMessageLogic,
-} from '../../helpers/inbox.logic';
+import { handleIconClickLogic } from '../../helpers/inbox.logic';
 import RenderSkeleton from './RenderSkeleton';
 import ContextMenu from './ContextMenu';
 import TabContent from './TabContent';
@@ -49,16 +21,12 @@ import TabContent from './TabContent';
 import * as S from './InboxDetail.styles';
 import { GlobalStyle } from './InboxDetail.styles';
 
-import avatarAdmin from '@/assets/images/avatar-default.png';
 import check from '@/assets/icons/common/ic-check.svg';
 import unresolved from '@/assets/icons/common/ic-unresolved.svg';
 import barOpen from '@/assets/icons/common/ic-bar-open.svg';
 import barClose from '@/assets/icons/common/ic-bar.svg';
 import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
-import iconReply from '@/assets/icons/inbox/ic-reply.svg';
-import iconEdit from '@/assets/icons/common/ic-edit.svg';
-import iconCopy from '@/assets/icons/common/ic-copy.svg';
-import iconDelete from '@/assets/icons/common/ic-delete.svg';
+
 import ProfileCard from '@/shared/components/common/ProfileCard';
 import {
   fetchConversationDetail,
@@ -67,36 +35,23 @@ import {
 } from '../../store/features/inbox';
 import { handleUpdateConversation } from '../../api/conversations.api';
 import { eventBus } from '@/core/event-bus';
+import { useChat } from '@/shared/chat-logic/hooks/useChat';
+import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
+import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
+import { MessageBaseItem } from './MessageBaseItem';
+import { Message } from '@/shared/chat-logic/interfaces/inbox';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar }) => {
     const { t } = useTranslation('inbox');
     const [searchParams] = useSearchParams();
     const conversationId = searchParams.get('conversationId');
+
     const stableConversationId = useRef<string | null>(null);
     const dispatch = useDispatch();
     if (stableConversationId.current !== conversationId) {
       stableConversationId.current = conversationId;
     }
-
-    const {
-      messages,
-      loading,
-      loadingMore,
-      hasNextPage,
-      loadMore,
-      addMessage,
-      updateMessage,
-      removeMessage,
-    } = useMessageList({ conversationId: stableConversationId.current });
-
-    const rawConversationId = useMemo(
-      () =>
-        stableConversationId.current
-          ? decodeGlobalId(stableConversationId.current)
-          : null,
-      [stableConversationId.current, decodeGlobalId],
-    );
 
     const prevConversationIdRef = useRef<string | null>(null);
     const hasConversationChanged =
@@ -115,10 +70,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const inputRef = useRef<HTMLInputElement>(null);
     const footerRef = useRef<HTMLDivElement>(null);
     const [inputValue, setInputValue] = useState('');
-    const [guestTyping, setGuestTyping] = useState(false);
-    const isSelfSendingRef = useRef(false);
-    const [pendingImageScroll, setPendingImageScroll] = useState(false);
-    const [_pendingImageLoads, setPendingImageLoads] = useState(0);
     const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
     const [_shortcutsPage, setShortcutsPage] = useState(1);
     const [shortcutsHasMore, setShortcutsHasMore] = useState(true);
@@ -142,8 +93,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       messageId: undefined,
     });
 
-    const user = useUser();
-    const currentUserId = user?.id;
+    const { userInfo } = useAppSelector((state) => state.auth);
 
     const workspaceId = useSelector(selectCurrentWorkspaceId);
     const { selectedConversation } = useAppSelector((state) => state.inbox);
@@ -182,87 +132,31 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       if (conversationId) dispatch(fetchConversationDetail(conversationId));
     }, [dispatch, , conversationId]);
 
-    const messageEndRef = useRef<HTMLDivElement>(null);
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
-    // Use custom scroll hook
+    const onEndSendMessage = (message: Message) => {
+      if (
+        message.type === MessageType.TEXT ||
+        message.type === MessageType.NOTE
+      ) {
+        setInputValue('');
+      }
+    };
+
     const {
-      showNewMessageNotice,
-      scrollToBottom,
-      scrollToShowNewMessage,
-      isLoadingMoreMessages,
-      setWasAtBottom,
-      setShowNewMessageNotice,
-    } = useScrollHandler({
-      isLoadingNext: loadingMore,
-      hasNextPage: hasNextPage,
-      loadMore,
+      sendMessage,
+      hasNewMessage,
+      messages,
+      isFetchingInitial,
+      isLoadingNext,
+      scrollToNewMessages,
+      handleUserTyping,
+      isSomeoneTyping,
+    } = useChat({
+      conversationId,
       messageContainerRef,
-      messageEndRef,
-      messages: messages as any[],
-      loading,
-      stableConversationId: stableConversationId.current,
+      onEndSendMessage: onEndSendMessage,
     });
-
-    const prevConversationId = useRef<string | null>(null);
-    const isFirstMount = useRef(true);
-
-    useEffect(() => {
-      if (isFirstMount.current) {
-        if (rawConversationId) {
-          openConversation(rawConversationId);
-          prevConversationId.current = rawConversationId;
-        }
-        isFirstMount.current = false;
-        return;
-      }
-
-      if (rawConversationId) {
-        if (
-          prevConversationId.current &&
-          prevConversationId.current !== rawConversationId
-        ) {
-          closeConversation(prevConversationId.current);
-        }
-        if (prevConversationId.current !== rawConversationId) {
-          openConversation(rawConversationId);
-          prevConversationId.current = rawConversationId;
-        }
-      } else {
-        if (prevConversationId.current) {
-          closeConversation(prevConversationId.current);
-          prevConversationId.current = null;
-        }
-      }
-
-      return () => {
-        if (prevConversationId.current) {
-          closeConversation(prevConversationId.current);
-          prevConversationId.current = null;
-        }
-      };
-    }, [rawConversationId]);
-
-    useEffect(() => {
-      const handleUserTyping = (data: any) => {
-        setGuestTyping(!!data.isTyping);
-        if (data.isTyping) {
-          if ((window as any).guestTypingTimeout)
-            clearTimeout((window as any).guestTypingTimeout);
-          (window as any).guestTypingTimeout = setTimeout(
-            () => setGuestTyping(false),
-            2000,
-          );
-        }
-      };
-      listenUserTyping(handleUserTyping);
-      return () => {
-        offUserTyping(handleUserTyping);
-        setGuestTyping(false);
-        if ((window as any).guestTypingTimeout)
-          clearTimeout((window as any).guestTypingTimeout);
-      };
-    }, []);
 
     const handleTabClick = (tab: string) => {
       setActiveTab(activeTab === tab ? null : tab);
@@ -272,32 +166,10 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     const handleSendMessage = (
       content: string,
-      type: InboxMessageType = InboxMessageType.Text,
+      type: MessageType,
       metadata: any = {},
     ) => {
-      isSelfSendingRef.current = true;
-      handleSendMessageLogic({
-        content,
-        type,
-        metadata,
-        rawConversationId,
-        currentUserId,
-        user,
-        addMessage,
-        removeMessage,
-        updateMessage,
-        setPendingImageLoads,
-        scrollToShowNewMessage,
-        sendAgentMessage,
-        setInputValue,
-        setActiveTab,
-      });
-      if (messageContainerRef.current) {
-        messageContainerRef.current.scrollTop =
-          messageContainerRef.current.scrollHeight;
-      }
-      setWasAtBottom(true);
-      setShowNewMessageNotice(false);
+      sendMessage(content, type, metadata, userInfo);
     };
 
     useEffect(() => {
@@ -384,18 +256,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       };
     }, [activeTab]);
 
-    const LOADING_MESSAGE = {
-      id: 'loading-message',
-      type: InboxMessageType.Loading,
-      content: '',
-      sender: InboxSender.Guest,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      status: InboxMessageStatus.Sending,
-      user: null,
-      metadata: undefined,
-    };
-
     const handleIconClick = (e: React.MouseEvent, message: Message) => {
       handleIconClickLogic(
         e,
@@ -423,51 +283,6 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       }
     }, [contextMenu.visible]);
 
-    const handleCopyText = async () => {
-      if (contextMenu.message?.content) {
-        try {
-          await navigator.clipboard.writeText(contextMenu.message.content);
-          toast(
-            React.createElement(ToastMessage, {
-              typeToast: ToastMessageType.SUCCESS,
-              message: t('inboxDetail.textCopiedToClipboard'),
-            }),
-          );
-          closeContextMenu();
-        } catch (error) {
-          try {
-            const textArea = document.createElement('textarea');
-            textArea.value = contextMenu.message.content;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            toast.success(
-              React.createElement(ToastMessage, {
-                typeToast: ToastMessageType.SUCCESS,
-                message: t('inboxDetail.textCopiedToClipboard'),
-              }),
-            );
-            closeContextMenu();
-          } catch (fallbackError) {
-            toast.error(
-              React.createElement(ToastMessage, {
-                typeToast: ToastMessageType.ERROR,
-                message: t('inboxDetail.failedToCopyTextDesc'),
-              }),
-            );
-            closeContextMenu();
-          }
-        }
-      }
-    };
-
-    const handleReply = () => console.log('Reply to:', contextMenu.message?.id);
-    const handleEdit = () =>
-      console.log('Edit message:', contextMenu.message?.id);
-    const handleDeleteMessage = () =>
-      console.log('Delete message:', contextMenu.message?.id);
-
     if (!conversationId) {
       return (
         <S.Container>
@@ -488,15 +303,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         <S.Container>
           <ContextMenu
             contextMenu={contextMenu}
-            handleReply={handleReply}
-            handleDeleteMessage={handleDeleteMessage}
-            handleCopyText={handleCopyText}
-            handleEdit={handleEdit}
+            rawConversationId={conversationId}
             setHoveredMessageId={setHoveredMessageId}
-            iconReply={iconReply}
-            iconDelete={iconDelete}
-            iconEdit={iconEdit}
-            iconCopy={iconCopy}
+            onCloseMenu={closeContextMenu}
             MENU_WIDTH={MENU_WIDTH}
             t={t}
           />
@@ -551,43 +360,32 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
               $isSidebarOpen={isSidebarOpen}
               ref={messageContainerRef}
             >
-              {messages.length === 0 && loading ? (
+              {isLoadingNext && !isFetchingInitial && (
+                <S.MessageTypeLoading>
+                  <LoadingOutlined
+                    spin
+                    style={{ fontSize: 24, color: '#999' }}
+                  />
+                </S.MessageTypeLoading>
+              )}
+
+              {messages.length === 0 && isFetchingInitial ? (
                 <RenderSkeleton />
-              ) : messages.length === 0 && !loading ? (
+              ) : messages.length === 0 ? (
                 <S.EmptyState>{t('inboxDetail.noMessage')}</S.EmptyState>
               ) : (
                 <>
                   {(() => {
                     let displayMessages = messages.slice().reverse();
-                    if (isLoadingMoreMessages) {
-                      displayMessages = [LOADING_MESSAGE, ...displayMessages];
-                    }
                     return displayMessages.map((msg, idx) => {
-                      const isAgent =
-                        (msg.user?.id && msg.user?.id === currentUserId) ||
-                        (!msg.user && msg.sender === InboxSender.Agent);
                       return (
                         <React.Fragment key={msg.id || idx}>
-                          <ChatMessageItem
+                          <MessageBaseItem
                             msg={msg}
                             hoveredMessageId={hoveredMessageId}
                             contextMenu={contextMenu}
                             handleIconClick={handleIconClick}
                             setHoveredMessageId={setHoveredMessageId}
-                            formatTime={formatTime}
-                            pendingImageScroll={pendingImageScroll}
-                            setPendingImageScroll={setPendingImageScroll}
-                            setPendingImageLoads={setPendingImageLoads}
-                            scrollToBottom={scrollToBottom}
-                            justLoadedMore={false}
-                            isOwner={isAgent}
-                            avatarAdmin={isAgent ? undefined : avatarAdmin}
-                            contactId={selectedConversation?.contact?.id}
-                            name={selectedConversation?.contact?.name}
-                            avatar={selectedConversation?.contact?.avatar}
-                            countryCode={
-                              selectedConversation?.contact?.countryCode
-                            }
                           />
                         </React.Fragment>
                       );
@@ -595,9 +393,8 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                   })()}
                 </>
               )}
-              <div ref={messageEndRef} />
-              {showNewMessageNotice && (
-                <S.NewMessageNoticeButton onClick={scrollToBottom}>
+              {hasNewMessage && (
+                <S.NewMessageNoticeButton onClick={scrollToNewMessages}>
                   <p>{t('inboxDetail.haveNewMessage')}</p>
                   <img
                     src={icArrowDown}
@@ -606,7 +403,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                   />
                 </S.NewMessageNoticeButton>
               )}
-              {loading && messages.length > 0 && renderLoadingOverlay()}
+              {messages.length > 0 &&
+                isFetchingInitial &&
+                renderLoadingOverlay()}
             </S.MessageContainer>
             {activeTab && (
               <S.TabOverlay $tabtype={activeTab}>
@@ -628,9 +427,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           </S.MainContent>
 
           {/* Guest is typing indicator */}
-          {guestTyping && (
+          {isSomeoneTyping && (
             <S.TypingIndicator>
-              {t('inboxDetail.guestIsTyping')}
+              {t('inboxDetail.typingPlaceholder')}
             </S.TypingIndicator>
           )}
 
@@ -644,6 +443,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             onSendMessage={handleSendMessage}
             handleTabClick={handleTabClick}
             INBOX_TABS={INBOX_TABS}
+            onInputChange={handleUserTyping}
           />
         </S.Container>
       </>

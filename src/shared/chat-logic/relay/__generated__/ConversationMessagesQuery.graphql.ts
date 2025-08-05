@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<da9b091461ba219d963f0d054837752b>>
+ * @generated SignedSource<<25b332d07fa364cea010667951a10200>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,38 +10,36 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type MessageFragmentPaginationQuery$variables = {
+export type ConversationMessagesQuery$variables = {
   after?: string | null | undefined;
   conversationId: string;
   first?: number | null | undefined;
 };
-export type MessageFragmentPaginationQuery$data = {
+export type ConversationMessagesQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"MessageFragment_query">;
 };
-export type MessageFragmentPaginationQuery = {
-  response: MessageFragmentPaginationQuery$data;
-  variables: MessageFragmentPaginationQuery$variables;
+export type ConversationMessagesQuery = {
+  response: ConversationMessagesQuery$data;
+  variables: ConversationMessagesQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "after"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "conversationId"
-  },
-  {
-    "defaultValue": 20,
-    "kind": "LocalArgument",
-    "name": "first"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "after"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "conversationId"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "first"
+},
+v3 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -58,7 +56,7 @@ v1 = [
     "variableName": "first"
   }
 ],
-v2 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -67,13 +65,17 @@ v2 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "MessageFragmentPaginationQuery",
+    "name": "ConversationMessagesQuery",
     "selections": [
       {
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "kind": "FragmentSpread",
         "name": "MessageFragment_query"
       }
@@ -83,13 +85,17 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v2/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
-    "name": "MessageFragmentPaginationQuery",
+    "name": "ConversationMessagesQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "concreteType": "MessageConnection",
         "kind": "LinkedField",
         "name": "messages",
@@ -108,20 +114,6 @@ return {
                 "args": null,
                 "kind": "ScalarField",
                 "name": "hasNextPage",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "hasPreviousPage",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "startCursor",
                 "storageKey": null
               },
               {
@@ -157,7 +149,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
+                  (v4/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -215,7 +207,14 @@ return {
                     "name": "user",
                     "plural": false,
                     "selections": [
-                      (v2/*: any*/),
+                      (v4/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "rawId",
+                        "storageKey": null
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -258,7 +257,7 @@ return {
       },
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v3/*: any*/),
         "filters": [
           "conversationId"
         ],
@@ -270,16 +269,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a22dccdab579b7dd675d63e0c7c5b7ef",
+    "cacheID": "c428f30c8a60fd2901fddb190374ddf1",
     "id": null,
     "metadata": {},
-    "name": "MessageFragmentPaginationQuery",
+    "name": "ConversationMessagesQuery",
     "operationKind": "query",
-    "text": "query MessageFragmentPaginationQuery(\n  $after: String\n  $conversationId: ID!\n  $first: Float = 20\n) {\n  ...MessageFragment_query_1QmmIs\n}\n\nfragment MessageFragment_query_1QmmIs on Query {\n  messages(conversationId: $conversationId, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        content\n        sender\n        createdAt\n        updatedAt\n        metadata\n        type\n        status\n        user {\n          id\n          firstName\n          lastName\n          avatar\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationMessagesQuery(\n  $conversationId: ID!\n  $first: Float\n  $after: String\n) {\n  ...MessageFragment_query_1QmmIs\n}\n\nfragment MessageFragment_query_1QmmIs on Query {\n  messages(conversationId: $conversationId, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        content\n        sender\n        createdAt\n        updatedAt\n        metadata\n        type\n        status\n        user {\n          id\n          rawId\n          firstName\n          lastName\n          avatar\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "0ca5934528f4433f454e7400aa6f1d0e";
+(node as any).hash = "396f7b8d39ae485cf0fe9abb3381b968";
 
 export default node;

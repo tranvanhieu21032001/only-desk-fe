@@ -1,14 +1,16 @@
 import mitt from 'mitt';
 
 import {
-  EVENTBUS_INBOX_MESSAGE,
   EVENTBUS_SOCKET_DISCONNECT,
   EVENTBUS_SOCKET_CONNECT,
-  EVENTBUS_USER_TYPING,
-  EVENTBUS_USER_STATUS,
-  EVENTBUS_UPDATED_CONVERSATION,
 } from '@/core/settings/constants';
 import { Conversation } from '@/modules/inbox/interfaces/inbox';
+import {
+  EVENTBUS_INBOX_MESSAGE,
+  EVENTBUS_UPDATED_CONVERSATION,
+  EVENTBUS_USER_STATUS,
+  EVENTBUS_USER_TYPING,
+} from '@/shared/chat-logic/constants/event-bus.constants';
 
 export type AppEvents = {
   [EVENTBUS_INBOX_MESSAGE]: any;
