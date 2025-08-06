@@ -1,7 +1,6 @@
 import { Image } from 'antd';
 import * as S from './InboxList.styles';
 import ProfileCard from '@/shared/components/common/ProfileCard';
-import { getFormattedTime } from '@/shared/utils/time';
 import InboxListMenu from './InboxListMenu';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { useEffect, useRef, useState } from 'react';
@@ -10,6 +9,7 @@ import barColumn from '@/assets/icons/common/ic-bar-column.svg';
 import { eventBus } from '@/core/event-bus';
 import { Conversation } from '../../interfaces/inbox';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
+import { getFormattedTime } from '@/shared/chat-logic/utils/time';
 
 type Props = {
   conversation: any;

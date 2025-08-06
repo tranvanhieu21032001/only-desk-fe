@@ -832,3 +832,10 @@ export const LoadingOverlay = styled.div`
   justify-content: center;
   z-index: 10;
 `;
+
+export const DateSeparator = styled.div`
+  text-align: center;
+  color: #aaa;
+  font-size: 12px;
+  margin: 16px 0;
+`;

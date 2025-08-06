@@ -1,5 +1,3 @@
-// Các hàm xử lý thời gian dùng chung
-
 export const formatTimeAgo = (dateString: string): string => {
   const date = new Date(dateString);
   const now = new Date();
@@ -37,4 +35,14 @@ export const formatTime = (isoString: string) => {
     minute: '2-digit',
     hour12: true,
   });
-}; 
+};
+
+export const formatDate = (isoString: string) => {
+  if (!isoString) return '';
+  const date = new Date(isoString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};

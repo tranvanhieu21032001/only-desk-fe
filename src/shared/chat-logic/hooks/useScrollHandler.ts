@@ -61,10 +61,17 @@ export function useScrollHandler({
       });
     }
 
-    // Detect if user is at bottom
-    const tolerance = 1; // or 2 for safety
-    const isAtBottom =
-      Math.abs(scrollTop + clientHeight - scrollHeight) <= tolerance;
+    // Detect if user is at bottom within a tolerance
+    const tolerance = 300; // Consider user at bottom when within 300px
+    const isAtBottom = scrollHeight - scrollTop - clientHeight <= tolerance;
+    console.log('isAtBottom', isAtBottom);
+    console.log('scrollTop', scrollTop);
+    console.log('scrollHeight', scrollHeight);
+    console.log('clientHeight', clientHeight);
+    console.log(
+      '-------------------------------',
+      scrollHeight - scrollTop - clientHeight,
+    );
     setIsUserAtBottom(isAtBottom);
   }, [containerRef, onLoadMore]);
 

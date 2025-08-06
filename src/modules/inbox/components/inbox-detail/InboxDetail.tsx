@@ -40,6 +40,7 @@ import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { MessageBaseItem } from './MessageBaseItem';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
+import { formatDate } from '@/shared/chat-logic/utils/time';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar }) => {
@@ -134,13 +135,8 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
-    const onEndSendMessage = (message: Message) => {
-      if (
-        message.type === MessageType.TEXT ||
-        message.type === MessageType.NOTE
-      ) {
-        setInputValue('');
-      }
+    const onEndSendMessage = (_message: Message) => {
+      setInputValue('');
     };
 
     const {
@@ -380,6 +376,11 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                     return displayMessages.map((msg, idx) => {
                       return (
                         <React.Fragment key={msg.id || idx}>
+                          {msg.showDate && (
+                            <S.DateSeparator>
+                              {formatDate(msg.createdAt)}
+                            </S.DateSeparator>
+                          )}
                           <MessageBaseItem
                             msg={msg}
                             hoveredMessageId={hoveredMessageId}

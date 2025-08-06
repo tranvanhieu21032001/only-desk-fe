@@ -149,7 +149,13 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     return (
       <S.MessageRowUser>
         <div
-          style={{ display: 'flex', alignItems: 'flex-end', justifyContent:'flex-end', gap: 8, width:'100%' }}
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
+            gap: 8,
+            width: '100%',
+          }}
           onMouseEnter={onHoverEnter}
           onMouseLeave={onHoverLeave}
         >

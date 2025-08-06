@@ -7,7 +7,7 @@ import * as S from './InboxDetail.styles';
 
 import icBarColumn from '@/assets/icons/common/ic-bar-column.svg';
 import { MessageStatus } from '@/shared/chat-logic/enums/chat.enums';
-import { formatTime } from '@/shared/utils/time';
+import { formatTime } from '@/shared/chat-logic/utils/time';
 
 interface MessageTimeWithIconProps {
   isOwner: boolean;
