@@ -7,7 +7,6 @@ import { constants } from '@/core/settings';
 import { handleSignUp } from '@/modules/auth/api/auth';
 import { passwordRegex } from '@/shared/regex';
 import { useNavigate } from 'react-router-dom';
-import { useRouter } from '@/shared/hooks/useRouter';
 import { AUTH_ROUTES } from '@/core/routes/constants';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import webLocalStorage from '@/shared/utils/webLocalStorage';

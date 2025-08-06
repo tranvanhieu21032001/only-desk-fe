@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Table, Image, Tag, Dropdown, message } from 'antd';
+import { Table, Image, Tag, Dropdown } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { MoreOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
@@ -15,9 +15,12 @@ import icEdit from '@/assets/icons/knowledge-base/ic-edit-2.svg';
 import icAdd from '@/assets/icons/knowledge-base/ic-add2.svg';
 import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
 
-import { Category, RowItem, Section } from '@/modules/knowledge-base/interface';
+import { Category, RowItem } from '@/modules/knowledge-base/interface';
 import { ActionCategoryFilterEnums } from '@/modules/knowledge-base/helpers/enums/article';
-import { deleteHelpdeskCategory, deleteHelpdeskSection } from '@/modules/knowledge-base/api/knowledgebase.api';
+import {
+  deleteHelpdeskCategory,
+  deleteHelpdeskSection,
+} from '@/modules/knowledge-base/api/knowledgebase.api';
 
 import { useModal } from '@/shared/hooks';
 import ModalAddNewCategory from '../modal-add-category/ModalAddNewCategory';
@@ -33,29 +36,35 @@ interface AllCategoriesProps {
 const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
   const { t } = useTranslation('knowledgeBase');
 
-  const {
-    visible: isModalEditCategory,
-    toggle: toggleModalEditCategory,
-  } = useModal();
-  const {
-    visible: isModalAddSection,
-    toggle: toggleModalAddSection,
-  } = useModal();
+  const { visible: isModalEditCategory, toggle: toggleModalEditCategory } =
+    useModal();
+  const { visible: isModalAddSection, toggle: toggleModalAddSection } =
+    useModal();
 
-  const [categoryToAddSection, setCategoryToAddSection] = useState<Category | null>(null);
-  const [sectionToEdit, setSectionToEdit] = useState<Section | null>(null);
+  const [categoryToAddSection, setCategoryToAddSection] =
+    useState<Category | null>(null);
+  const [sectionToEdit, setSectionToEdit] = useState<{
+    key: string;
+    name: string;
+  } | null>(null);
   const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<() => void>(() => () => {});
-  const [deleteTargetType, setDeleteTargetType] = useState<'category' | 'section' | null>(null);
+  const [confirmAction, setConfirmAction] = useState<() => void>(
+    () => () => {},
+  );
+  const [deleteTargetType, setDeleteTargetType] = useState<
+    'category' | 'section' | null
+  >(null);
 
-  const showConfirmModal = (action: () => void, type: 'category' | 'section') => {
+  const showConfirmModal = (
+    action: () => void,
+    type: 'category' | 'section',
+  ) => {
     setConfirmAction(() => action);
     setDeleteTargetType(type);
     setIsConfirmModalOpen(true);
   };
-
 
   const categoryTableData: RowItem[] = categories.flatMap((category) => {
     const lang = category.defaultLanguage || 'en';
@@ -91,7 +100,10 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
     ];
   });
 
-  const handleAction = async (actionType: ActionCategoryFilterEnums, rowData: RowItem) => {
+  const handleAction = async (
+    actionType: ActionCategoryFilterEnums,
+    rowData: RowItem,
+  ) => {
     if (!rowData.key) return;
 
     if (rowData.isCategoryRow) {
@@ -99,8 +111,8 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
       const category = categories.find((cat) => cat.id === categoryId);
       if (!category) return;
 
-      const lang = category.defaultLanguage || 'en';
-      const catName = category.translations?.[lang]?.name || category.name;
+      // const lang = category.defaultLanguage || 'en';
+      // const catName = category.translations?.[lang]?.name || category.name;
 
       switch (actionType) {
         case ActionCategoryFilterEnums.EDIT_A_CATEGORY:
@@ -109,10 +121,10 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
           break;
 
         case ActionCategoryFilterEnums.REMOVE_A_CATEGORY:
-        showConfirmModal(async () => {
-          await deleteHelpdeskCategory(category.id);
-          onReload();
-        }, 'category');
+          showConfirmModal(async () => {
+            await deleteHelpdeskCategory(category.id);
+            onReload();
+          }, 'category');
 
           break;
 
@@ -123,17 +135,22 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
       }
     } else {
       const sectionId = rowData.key.replace('section-', '');
-      const category = categories.find((cat) => cat.sections.some((sec) => sec.id === sectionId));
+      const category = categories.find((cat) =>
+        cat.sections.some((sec) => sec.id === sectionId),
+      );
       const section = category?.sections.find((sec) => sec.id === sectionId);
       if (!category || !section) return;
 
-      const lang = category.defaultLanguage || 'en';
-      const secName = section.translations?.[lang]?.name || section.name;
+      // const lang = category.defaultLanguage || 'en';
+      // const secName = section.translations?.[lang]?.name || section.name;
 
       switch (actionType) {
         case ActionCategoryFilterEnums.EDIT_A_SECTION:
           setCategoryToAddSection(category);
-          setSectionToEdit(section);
+          setSectionToEdit({
+            key: section.id,
+            name: section.name,
+          });
           toggleModalAddSection();
           break;
 
@@ -153,59 +170,104 @@ const AllCategories = ({ categories, onReload }: AllCategoriesProps) => {
           {
             key: 'add-section',
             icon: <Image src={icAdd} width={24} height={24} preview={false} />,
-            label: <Typography padding="0 0 0 2px">{t('article-menu.actions.add-section')}</Typography>,
-            onClick: () => handleAction(ActionCategoryFilterEnums.ADD_A_NEW_SECTION, rowData),
+            label: (
+              <Typography padding="0 0 0 2px">
+                {t('article-menu.actions.add-section')}
+              </Typography>
+            ),
+            onClick: () =>
+              handleAction(
+                ActionCategoryFilterEnums.ADD_A_NEW_SECTION,
+                rowData,
+              ),
           },
           {
             key: 'edit-category',
             icon: <Image src={icEdit} width={24} height={24} preview={false} />,
-            label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
-            onClick: () => handleAction(ActionCategoryFilterEnums.EDIT_A_CATEGORY, rowData),
+            label: (
+              <Typography padding="0 0 0 2px">
+                {t('article-menu.actions.edit')}
+              </Typography>
+            ),
+            onClick: () =>
+              handleAction(ActionCategoryFilterEnums.EDIT_A_CATEGORY, rowData),
           },
           {
             key: 'remove-category',
-            icon: <Image src={icTrash} width={24} height={24} preview={false} />,
-            label: <Typography padding="0 0 0 2px" color="red">{t('article-menu.actions.remove')}</Typography>,
-            onClick: () => handleAction(ActionCategoryFilterEnums.REMOVE_A_CATEGORY, rowData),
+            icon: (
+              <Image src={icTrash} width={24} height={24} preview={false} />
+            ),
+            label: (
+              <Typography padding="0 0 0 2px" color="red">
+                {t('article-menu.actions.remove')}
+              </Typography>
+            ),
+            onClick: () =>
+              handleAction(
+                ActionCategoryFilterEnums.REMOVE_A_CATEGORY,
+                rowData,
+              ),
           },
         ]
       : [
           {
             key: 'edit-section',
             icon: <Image src={icEdit} width={24} height={24} preview={false} />,
-            label: <Typography padding="0 0 0 2px">{t('article-menu.actions.edit')}</Typography>,
-            onClick: () => handleAction(ActionCategoryFilterEnums.EDIT_A_SECTION, rowData),
+            label: (
+              <Typography padding="0 0 0 2px">
+                {t('article-menu.actions.edit')}
+              </Typography>
+            ),
+            onClick: () =>
+              handleAction(ActionCategoryFilterEnums.EDIT_A_SECTION, rowData),
           },
           {
             key: 'remove-section',
-            icon: <Image src={icTrash} width={24} height={24} preview={false} />,
-            label: <Typography padding="0 0 0 2px" color="red">{t('article-menu.actions.remove')}</Typography>,
-            onClick: () => handleAction(ActionCategoryFilterEnums.REMOVE_A_SECTION, rowData),
+            icon: (
+              <Image src={icTrash} width={24} height={24} preview={false} />
+            ),
+            label: (
+              <Typography padding="0 0 0 2px" color="red">
+                {t('article-menu.actions.remove')}
+              </Typography>
+            ),
+            onClick: () =>
+              handleAction(ActionCategoryFilterEnums.REMOVE_A_SECTION, rowData),
           },
         ],
   });
 
   const columns: ColumnsType<RowItem> = [
-  {
-    title: `${t('article-menu.actions.title')} & ${t('article-menu.actions.description')}`,
-    dataIndex: 'title',
-    key: 'title',
-    render: (_, row) => {
-      if (row.isCategoryRow) {
-        return (
-          <span style={{ fontWeight: 600 }}>
-            Category: <Tag color="green" style={{ color: '#1677ff' }}>{row.category}</Tag>
-            {row.description && (
-              <span style={{ fontWeight: 400, fontStyle: 'italic', color: '#888', marginLeft: 8 }}>
-                {row.description}
-              </span>
-            )}
-          </span>
-        );
-      }
-      return row.title;
+    {
+      title: `${t('article-menu.actions.title')} & ${t('article-menu.actions.description')}`,
+      dataIndex: 'title',
+      key: 'title',
+      render: (_, row) => {
+        if (row.isCategoryRow) {
+          return (
+            <span style={{ fontWeight: 600 }}>
+              Category:{' '}
+              <Tag color="green" style={{ color: '#1677ff' }}>
+                {row.category}
+              </Tag>
+              {row.description && (
+                <span
+                  style={{
+                    fontWeight: 400,
+                    fontStyle: 'italic',
+                    color: '#888',
+                    marginLeft: 8,
+                  }}
+                >
+                  {row.description}
+                </span>
+              )}
+            </span>
+          );
+        }
+        return row.title;
+      },
     },
-  },
     {
       title: t('article-menu.actions.statistic'),
       dataIndex: 'statistic',

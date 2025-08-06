@@ -49,7 +49,7 @@ interface ModalEditArticlesProps {
   article: AllArticleInterface | null;
 }
 
-function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticlesProps) {
+function ModalEditArticles({ open, onCancel, article }: ModalEditArticlesProps) {
   const { t } = useTranslation('knowledgeBase');
   const editorRef = useRef<any>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -74,7 +74,7 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
 
   useEffect(() => {
     if (settings?.languages?.length) {
-      const mapped = mapLanguagesToOptions(settings.languages);
+      const mapped = mapLanguagesToOptions([...settings.languages]);
       setPublicLangOptions(mapped);
       setLanguage(mapped[0]?.value ?? 'en');
     } else {
@@ -186,7 +186,7 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
               <S.ChangeLang
                 value={language}
                 popupClassName="auth-lang"
-                onChange={(value) => setLanguage(value)}
+                onChange={(value) => setLanguage(value as string)}
               >
                 {publicLangOptions.map((lang: OptionsInterface) => (
                   <S.LangOption key={lang?.key} value={lang?.value}>
@@ -206,7 +206,7 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
               <S.ChangeLang
                 value={category}
                 onChange={(value) => {
-                  setCategory(value);
+                  setCategory(value as string);
                   setSection('');
                 }}
                 popupClassName="article-category"
@@ -227,7 +227,7 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
               </Typography>
               <S.ChangeLang
                 value={section}
-                onChange={(value) => setSection(value)}
+                onChange={(value) => setSection(value as string)}
                 popupClassName="auth-lang"
                 placeholder={t('article-menu.add-a-new-article.select-section')}
                 disabled={!category}
@@ -283,7 +283,7 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
             >
               <Editor
                 apiKey="10lpxjmyvyly4rdb88xil2fxm3y11ava3j2s5rn9tl5btib8"
-                onInit={(evt, editor) => {
+                onInit={(_evt, editor) => {
                   editorRef.current = editor;
                   setEditorReady(true);
                 }}
@@ -303,7 +303,7 @@ function ModalEditArticles({ open, onCancel, onStart, article }: ModalEditArticl
                     'alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
                   fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
                   file_picker_types: 'image media file',
-                  file_picker_callback: (cb, value, meta) => {
+                  file_picker_callback: (cb: any, _value: any, meta: any) => {
                     const input = document.createElement('input');
                     input.setAttribute('type', 'file');
 

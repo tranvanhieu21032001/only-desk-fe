@@ -24,7 +24,6 @@ interface ModalRemoveLanguageProps {
 function ModalRemoveLanguage({
     open,
     onCancel,
-    onStart,
 }: ModalRemoveLanguageProps) {
     const { t } = useTranslation('knowledgeBase');
 

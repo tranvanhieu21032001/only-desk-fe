@@ -1,3 +1,4 @@
+// store.ts
 import { configureStore } from '@reduxjs/toolkit';
 
 import historyRoute from './features/historyRoute';
@@ -10,13 +11,14 @@ import {
 import webStorageClient from '@/shared/utils/webStorageClient';
 import authReducer from '@/modules/auth/store/features/auth';
 import contactsReducer from '@/modules/contacts/store/features/contacts';
-import inboxReducer from '@/modules/inbox/store/features/inbox';
+import inboxReducer, { initialState as inboxInitialState } from '@/modules/inbox/store/features/inbox';
 import helpdeskCategorySlice from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import helpdeskArticlesReducer from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 import operatorsReducer from '@/modules/settings/store/features/operators';
 import knowledgeBaseSettingsReducer from '@/modules/settings/store/features/knowledgebase';
 import helpdeskSettingReducer from '@/modules/knowledge-base/store/helpdeskSettingsSlice';
 
+// Hàm load state từ storage
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
     constants.CURRENT_WORKSPACE,
@@ -37,7 +39,7 @@ export const loadState = () => {
       currentWorkspace: currentWorkspaceFromStorage,
     },
     inbox: {
-      conversations: {},
+      ...inboxInitialState,
       isSidebarOpen: isSidebarOpenFromStorage,
     },
   };
@@ -46,7 +48,6 @@ export const loadState = () => {
 export const store = configureStore({
   reducer: {
     historyRoute: historyRoute,
-
     auth: authReducer,
     contacts: contactsReducer,
     operators: operatorsReducer,
@@ -59,7 +60,5 @@ export const store = configureStore({
   preloadedState: loadState(),
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;

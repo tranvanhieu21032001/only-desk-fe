@@ -10,7 +10,18 @@ import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
 import { Image } from 'antd';
 
-const AddOperatorStepModal = ({
+interface AddOperatorStepModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  authStep: 'select' | 'password' | '2fa' | 'google' | 'apple';
+  setAuthStep: (step: 'select' | 'password' | '2fa' | 'google' | 'apple') => void;
+  password: string;
+  setPassword: (val: string) => void;
+  twoFA: string[];
+  setTwoFA: (arr: string[]) => void;
+}
+
+const AddOperatorStepModal: React.FC<AddOperatorStepModalProps> = ({
   isOpen,
   onClose,
   authStep,

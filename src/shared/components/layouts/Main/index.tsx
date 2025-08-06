@@ -21,7 +21,7 @@ import {
   settingsPaths,
 } from '@/shared/helper/data/layout';
 import {
-  DEFAULT_EMAIL,
+  // DEFAULT_EMAIL,
   DEFAULT_FULL_NAME,
   EVENTBUS_SOCKET_CONNECT,
   EVENTBUS_SOCKET_DISCONNECT,
@@ -48,7 +48,7 @@ import ModalConfirmCreateWorkspace from '@/modules/workspace/pages/modal-confirm
 
 import Header from '../../common/header/Main';
 import Typography from '../../common/Typography';
-import AvatarWithStatus from '../../common/Avatar';
+// import AvatarWithStatus from '../../common/Avatar';
 
 import * as S from './main.styles';
 
@@ -61,9 +61,9 @@ import icPlugins from '@/assets/icons/layout/ic-plugins.svg';
 import icAllChats from '@/assets/icons/layout/ic-all-chat.svg';
 import icCampaign from '@/assets/icons/layout/ic-campaign.svg';
 import icUserTick from '@/assets/icons/layout/ic-user-tick.svg';
-import icSpamChats from '@/assets/icons/layout/ic-spam-chats.svg';
+// import icSpamChats from '@/assets/icons/layout/ic-spam-chats.svg';
 import icKnowledge from '@/assets/icons/layout/ic-knowledge.svg';
-import icPlusCircle from '@/assets/icons/layout/ic-plus-circle.svg';
+// import icPlusCircle from '@/assets/icons/layout/ic-plus-circle.svg';
 import icAiAutomation from '@/assets/icons/layout/ic-ai-automation.svg';
 import icDefaultAvatar from '@/assets/images/avatar-default.png';
 import icDefaultWorkspace from '@/assets/images/workspace-default.png';
@@ -95,13 +95,13 @@ import icSettings from '@/assets/icons/layout/ic-settings.svg';
 import icSettingsDark from '@/assets/icons/layout/ic-setting-dark.svg';
 
 //Profiles
-import flag from '@/assets/icons/common/ic-flag.svg';
+// import flag from '@/assets/icons/common/ic-flag.svg';
 import icGuide from '@/assets/icons/layout/ic-guide.svg';
 import icLogout from '@/assets/icons/layout/ic-logout.svg';
-import icVector from '@/assets/icons/layout/ic-vector.svg';
+// import icVector from '@/assets/icons/layout/ic-vector.svg';
 import icUserEdit from '@/assets/icons/layout/ic-user-edit.svg';
 import icHeadPhone from '@/assets/icons/layout/ic-headphone.svg';
-import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
+// import icArrowRight from '@/assets/icons/layout/ic-arrow-right.svg';
 
 import { eventBus } from '@/core/event-bus';
 import { connectSocket, disconnectSocket } from '@/core/services/socket/socket';

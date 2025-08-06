@@ -1,5 +1,5 @@
 export interface UserInforInterface {
-  id?: string;
+  id: string;
   rawId?: string;
   email?: string;
   role?: string[];

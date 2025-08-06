@@ -24,7 +24,6 @@ import { AppDispatch, RootState } from '@/core/store';
 import { fetchHelpdeskCategories } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import { createHelpdeskArticle } from '@/modules/knowledge-base/api/knowledgebase.api';
 import { handleUploadImage } from '@/shared/components/common/Upload/api/upload';
-
 interface ModalAddNewArticlesProps {
   open: boolean;
   onCancel: () => void;
@@ -40,23 +39,35 @@ function ModalAddNewArticles({
   const editorRef = useRef<any>(null);
   const dispatch = useDispatch<AppDispatch>();
 
-  const [language, setLanguage] = useState(langOptions?.[0]?.value);
-  const [category, setCategory] = useState('');
+  const [language, setLanguage] = useState<string>(
+    langOptions?.[0]?.value ?? '',
+  );
+  const [category, setCategory] = useState<string>('');
   const [section, setSection] = useState('');
   const [articleTitle, setArticleTitle] = useState('');
   const [editorReady, setEditorReady] = useState(false);
   const [editorContent, setEditorContent] = useState('');
-  const [publicLangOptions, setPublicLangOptions] = useState<OptionsInterface[]>([]);
-  const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>([]);
-  const [sectionsByCategory, setSectionsByCategory] = useState<Record<string, HelpdeskCategory['sections']>>({});
-  const [uploadProgress, setUploadProgress] = useState({
+  const [publicLangOptions, setPublicLangOptions] = useState<
+    OptionsInterface[]
+  >([]);
+  const [categoryOptions, setCategoryOptions] = useState<HelpdeskCategory[]>(
+    [],
+  );
+  const [sectionsByCategory, setSectionsByCategory] = useState<
+    Record<string, HelpdeskCategory['sections']>
+  >({});
+  const [, setUploadProgress] = useState({
     isLoading: false,
     countUpload: 0,
     progressPercent: 0,
   });
 
-  const { categories } = useSelector((state: RootState) => state.helpdeskCategory);
-  const { data: settings } = useSelector((state: RootState) => state.helpdeskSetting);
+  const { categories } = useSelector(
+    (state: RootState) => state.helpdeskCategory,
+  );
+  const { data: settings } = useSelector(
+    (state: RootState) => state.helpdeskSetting,
+  );
 
   const mapLanguagesToOptions = (langsFromSettings: string[]) => {
     return langsFromSettings
@@ -66,7 +77,8 @@ function ModalAddNewArticles({
 
   useEffect(() => {
     if (settings?.languages?.length) {
-      const mapped = mapLanguagesToOptions(settings.languages);
+      const mapped = mapLanguagesToOptions(settings.languages as string[]);
+
       setPublicLangOptions(mapped);
       setLanguage(mapped[0]?.value ?? 'en');
     } else {
@@ -114,9 +126,7 @@ function ModalAddNewArticles({
   };
 
   const isPublishDisabled =
-    !category ||
-    !articleTitle.trim() ||
-    !editorContent.trim();
+    !category || !articleTitle.trim() || !editorContent.trim();
 
   return (
     <S.WrapModal>
@@ -154,7 +164,7 @@ function ModalAddNewArticles({
               <S.ChangeLang
                 value={language}
                 popupClassName="auth-lang"
-                onChange={(value) => setLanguage(value)}
+                onChange={(value) => setLanguage(value as string)}
               >
                 {publicLangOptions.map((lang: OptionsInterface) => (
                   <S.LangOption key={lang?.key} value={lang?.value}>
@@ -175,15 +185,19 @@ function ModalAddNewArticles({
               <S.ChangeLang
                 value={category}
                 onChange={(value) => {
-                  setCategory(value);
+                  setCategory(value as string);
                   setSection('');
                 }}
                 popupClassName="auth-lang"
-                placeholder={t('article-menu.add-a-new-article.getting-started')}
+                placeholder={t(
+                  'article-menu.add-a-new-article.getting-started',
+                )}
               >
                 {categoryOptions.length === 0 ? (
                   <S.LangOption disabled value="">
-                    <Typography>{t('article-menu.add-a-new-article.no-category')}</Typography>
+                    <Typography>
+                      {t('article-menu.add-a-new-article.no-category')}
+                    </Typography>
                   </S.LangOption>
                 ) : (
                   categoryOptions.map((cat) => (
@@ -204,14 +218,16 @@ function ModalAddNewArticles({
               </Typography>
               <S.ChangeLang
                 value={section}
-                onChange={(value) => setSection(value)}
+                onChange={(value) => setSection(value as string)}
                 popupClassName="auth-lang"
                 placeholder={t('article-menu.add-a-new-article.select-section')}
                 disabled={!category}
               >
                 {(sectionsByCategory[category] || []).length === 0 ? (
                   <S.LangOption disabled value="">
-                    <Typography>{t('article-menu.add-a-new-article.no-section')}</Typography>
+                    <Typography>
+                      {t('article-menu.add-a-new-article.no-section')}
+                    </Typography>
                   </S.LangOption>
                 ) : (
                   (sectionsByCategory[category] || []).map((sec) => (
@@ -235,7 +251,9 @@ function ModalAddNewArticles({
             <Input
               value={articleTitle}
               onChange={(e) => setArticleTitle(e.target.value)}
-              placeholder={t('article-menu.add-a-new-article.enter-article-title')}
+              placeholder={t(
+                'article-menu.add-a-new-article.enter-article-title',
+              )}
               size="large"
             />
           </S.FormField>
@@ -268,7 +286,7 @@ function ModalAddNewArticles({
             >
               <Editor
                 apiKey="10lpxjmyvyly4rdb88xil2fxm3y11ava3j2s5rn9tl5btib8"
-                onInit={(evt, editor) => {
+                onInit={(_evt, editor) => {
                   editorRef.current = editor;
                   setEditorReady(true);
                   setEditorContent(editor.getContent() || '');
@@ -284,7 +302,8 @@ function ModalAddNewArticles({
                     'advlist autolink lists link image charmap print preview anchor',
                     'searchreplace visualblocks code fullscreen',
                     'insertdatetime media table paste code help wordcount',
-                    'link', 'image',
+                    'link',
+                    'image',
                   ],
                   toolbar:
                     'undo redo | formatselect fontsizeselect | bold italic underline | link image media | ' +
@@ -294,19 +313,34 @@ function ModalAddNewArticles({
                   automatic_uploads: true,
                   image_uploadtab: false,
 
-                  images_upload_handler: async (blobInfo, success, failure) => {
+                  images_upload_handler: async (
+                    blobInfo: { blob: () => Blob; filename: () => string | undefined; },
+                    success: (url: string) => void,
+                    failure: (err: string, opts?: { remove?: boolean }) => void,
+                  ) => {
                     try {
                       const formData = new FormData();
-                      formData.append('image', blobInfo.blob(), blobInfo.filename());
+                      formData.append(
+                        'image',
+                        blobInfo.blob(),
+                        blobInfo.filename(),
+                      );
 
-                      const res = await handleUploadImage(formData, setUploadProgress);
-                      res?.fileUrl ? success(res.fileUrl) : failure('Image upload failed');
+                      const res = await handleUploadImage(
+                        formData,
+                        setUploadProgress,
+                      );
+                      res?.fileUrl
+                        ? success(res.fileUrl)
+                        : failure('Image upload failed');
                     } catch (err: any) {
                       failure('Upload error: ' + err.message);
                     }
                   },
 
-                  file_picker_callback: async (cb) => {
+                  file_picker_callback: async (
+                    cb: (url: string, meta?: Record<string, any>) => void,
+                  ) => {
                     const input = document.createElement('input');
                     input.setAttribute('type', 'file');
                     input.setAttribute('accept', 'image/*');
@@ -317,7 +351,10 @@ function ModalAddNewArticles({
                       const formData = new FormData();
                       formData.append('image', file);
                       try {
-                        const res = await handleUploadImage(formData, setUploadProgress);
+                        const res = await handleUploadImage(
+                          formData,
+                          setUploadProgress,
+                        );
                         if (res?.fileUrl) {
                           cb(res.fileUrl, { title: file.name, alt: file.name });
                         }
@@ -338,7 +375,11 @@ function ModalAddNewArticles({
             <Button onClick={onCancel}>
               {t('article-menu.add-a-new-article.save-draft')}
             </Button>
-            <Button type="primary" onClick={handleSubmit} disabled={isPublishDisabled}>
+            <Button
+              type="primary"
+              onClick={handleSubmit}
+              disabled={isPublishDisabled}
+            >
               {t('article-menu.add-a-new-article.publish')}
             </Button>
           </div>

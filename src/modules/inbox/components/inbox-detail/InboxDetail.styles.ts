@@ -125,6 +125,7 @@ export const MessageColumnView = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
+  width: 100%;
 `;
 
 export const MessageBubbleLeft = styled.div`
@@ -311,6 +312,7 @@ export const Sidebar = styled.div`
 export const MessageAvatarWrapper = styled.div`
   display: flex;
   gap: 8px;
+  width:100%
 `;
 
 export const MessageSenderName = styled.div`

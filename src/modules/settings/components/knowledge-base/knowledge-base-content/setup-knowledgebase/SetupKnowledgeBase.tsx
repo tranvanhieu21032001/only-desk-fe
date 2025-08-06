@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as S from './SetupKnowledgeBase.styles';
 import Typography from '@/shared/components/common/Typography';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';

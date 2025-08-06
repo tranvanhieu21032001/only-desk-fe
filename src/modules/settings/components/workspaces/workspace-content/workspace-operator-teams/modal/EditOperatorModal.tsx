@@ -11,8 +11,8 @@ interface Props {
   onClose: () => void;
   isLoading: boolean;
   form: any;
-  handleFinish: () => void;
-  operator: { email: string; role: string; status: string } | null;
+  handleFinish: (values: any) => void | Promise<void>;
+  operator: { email?: string; role?: string; status?: string } | null;
   t: (key: string) => string;
 }
 

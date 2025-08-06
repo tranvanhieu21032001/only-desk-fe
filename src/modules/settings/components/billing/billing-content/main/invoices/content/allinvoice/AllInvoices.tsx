@@ -8,7 +8,7 @@ import icUpcoming from '@/assets/icons/billing/ic-upcoming.svg';
 import icTick from '@/assets/icons/billing/ic-tick.svg';
 import InvoiceDrawer from '../invoice-drawer/InvoiceDrawer';
 import styled from 'styled-components';
-const CustomTable = styled(Table)`
+const CustomTable = styled(Table<Invoice>)`
   .ant-table-cell {
     padding: 12px !important;
   }

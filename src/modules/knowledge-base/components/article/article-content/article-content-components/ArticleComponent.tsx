@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import AllArticle from './allarticle/AllArticle';
 import NoArticle from './no-article/NoArticle';
 import { useDispatch, useSelector } from 'react-redux';

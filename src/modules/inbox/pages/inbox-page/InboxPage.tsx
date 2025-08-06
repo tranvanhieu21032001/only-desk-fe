@@ -1,17 +1,15 @@
-import React, { useCallback, Suspense, useMemo } from 'react';
+import React, { useCallback, Suspense, } from 'react';
 import { Splitter } from 'antd';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { usePreloadedQuery, loadQuery } from 'react-relay';
 import { useDispatch, useSelector } from 'react-redux';
 
-import ConversationListPaginationQuery from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
-import type { ConversationListPaginationQuery as ConversationListPaginationQueryType } from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
-import type { ConversationListPaginationQuery$data } from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
+// import ConversationListPaginationQuery from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
+// import type { ConversationListPaginationQuery as ConversationListPaginationQueryType } from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
+// import type { ConversationListPaginationQuery$data } from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
 
 import { DEFAULT_RESIZER_CONFIG } from '@/core/settings/constants';
 import ConversationList from '../../components/inbox-list/InboxList';
 import InboxDetail from '../../components/inbox-detail/InboxDetail';
-import RelayEnvironment from '@/relay/RelayEnvironment';
 import InboxSidebar from '../../components/inbox-sidebar/InboxSidebar';
 
 import * as S from './InboxPage.styles';

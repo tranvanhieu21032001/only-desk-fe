@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Image, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 
@@ -13,9 +13,9 @@ import { Contact } from '@/modules/inbox/interfaces/inbox';
 
 interface Props {
   openCollapse: boolean;
-  participants: string[]; // rawId[]
+  participants: string[];
   setParticipants: (value: string[]) => void;
-  operators: Contact[];   // full user objects
+  operators: Contact[];
   onConfirmAddParticipants: (newParticipants: string[]) => void;
 }
 

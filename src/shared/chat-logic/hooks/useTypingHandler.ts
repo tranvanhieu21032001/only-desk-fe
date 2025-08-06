@@ -30,7 +30,7 @@ export function useTypingHandler({
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isTypingRef = useRef(false);
 
-  const handleUserTyping = (val: string) => {
+  const handleUserTyping = (_val: string) => {
     if (!isTypingRef.current) {
       isTypingRef.current = true;
       emitTypingStart(rawConversationId);

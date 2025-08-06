@@ -15,6 +15,7 @@ interface ButtonProps {
   htmlType?: 'button' | 'submit' | 'reset';
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
+  style?: React.CSSProperties;
 }
 
 export default function Button({

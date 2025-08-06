@@ -1,20 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import AvatarWithStatus from '@/shared/components/common/Avatar';
 import * as S from '../InboxSidebar.styles';
 
-import chorme from '@/assets/icons/common/ic-chorme.svg';
+// import chorme from '@/assets/icons/common/ic-chorme.svg';
 import defaultAvatar from '@/assets/images/avatar-default.png';
 import flag from '@/assets/icons/common/ic-flag.svg';
 import chatBlue from '@/assets/icons/common/ic-chat-blue.svg';
 import badge from '@/assets/icons/common/ic-badge.svg';
 import addBlue from '@/assets/icons/common/ic-add-blue.svg';
-import earthBlue from '@/assets/icons/common/ic-earth-blue.svg';
+// import earthBlue from '@/assets/icons/common/ic-earth-blue.svg';
 import locationBlue from '@/assets/icons/common/ic-locaion-blue.svg';
-import cloudBlue from '@/assets/icons/common/ic-cloud-blue.svg';
-import screen from '@/assets/icons/common/ic-screen.svg';
-import flagAmerica from '@/assets/icons/common/ic-flag-america.svg';
+// import cloudBlue from '@/assets/icons/common/ic-cloud-blue.svg';
+// import screen from '@/assets/icons/common/ic-screen.svg';
+// import flagAmerica from '@/assets/icons/common/ic-flag-america.svg';
 import company from '@/assets/icons/common/ic-company.svg';
 import noteBlue from '@/assets/icons/common/ic-note-blue.svg';
 import tagsBlue from '@/assets/icons/common/ic-tags-blue.svg';
@@ -26,7 +26,6 @@ import dayjs from 'dayjs';
 import LastReportedLocationBody from '@/shared/components/common/ReportedLocation/LastReportedLocationBody';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import CompanyInfoBody from '@/shared/components/common/CompanyInfoBody/CompanyInfoBody';
-import TextArea from '@/shared/components/common/TextArea';
 import Typography from '@/shared/components/common/Typography';
 import empty from '@/assets/images/contact/img-contact-empty.png';
 import SegmentsBody from '@/shared/components/common/SegmentsBody/SegmentsBody';
@@ -63,25 +62,25 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
     }
   }, [dispatch, selectedConversation?.contact?.rawId]);
 
-  const renderNotes = useMemo(() => {
-    if (!contactDetails?.notes) {
-      return (
-        <S.EmptyWrap>
-          <Image src={empty} width={120} height={120} preview={false} />
-          <Typography margin="8px 0 0 0">
-            {t('contact-profile.no-data-added')}
-          </Typography>
-        </S.EmptyWrap>
-      );
-    }
+  // const renderNotes = useMemo(() => {
+  //   if (!contactDetails?.notes) {
+  //     return (
+  //       <S.EmptyWrap>
+  //         <Image src={empty} width={120} height={120} preview={false} />
+  //         <Typography margin="8px 0 0 0">
+  //           {t('contact-profile.no-data-added')}
+  //         </Typography>
+  //       </S.EmptyWrap>
+  //     );
+  //   }
 
-    return (
-      <TextArea
-        disabled={true}
-        placeholder={t('contact-profile.enter-notes')}
-      />
-    );
-  }, [contactDetails?.notes]);
+  //   return (
+  //     <TextArea
+  //       disabled={true}
+  //       placeholder={t('contact-profile.enter-notes')}
+  //     />
+  //   );
+  // }, [contactDetails?.notes]);
 
   useEffect(() => {
     const contactId = selectedConversation?.contact?.id;

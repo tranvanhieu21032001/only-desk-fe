@@ -68,7 +68,7 @@ export interface HelpdeskArticleCreatePayload {
   defaultLanguage: string;
   tags?: string[];
   slug: string;
-  status: 'published';
+  status?: 'published';
 }
 
 export interface HelpdeskSectionCreatePayload {

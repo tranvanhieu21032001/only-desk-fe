@@ -33,7 +33,7 @@ const helpdeskSettingsSlice = createSlice({
         state.error = null;
       })
       .addCase(getHelpdeskSettings.fulfilled, (state, action) => {
-        state.data = action.payload;
+        state.data = action.payload as any;
         state.loading = false;
       })
       .addCase(getHelpdeskSettings.rejected, (state, action) => {

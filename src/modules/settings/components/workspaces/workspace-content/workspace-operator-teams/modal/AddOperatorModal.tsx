@@ -7,13 +7,12 @@ import addHeader from '@/assets/icons/common/ic-add-header.svg';
 import Select from '@/shared/components/common/Select';
 import { Form } from 'antd';
 import Input from '@/shared/components/common/Input';
-
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   isLoading: boolean;
   form: any;
-  handleFinish: () => void;
+  handleFinish: (values: unknown) => void | Promise<void>;
   t: (key: string) => string;
 };
 
@@ -40,7 +39,9 @@ const AddOperatorModal = ({
           width="180px"
           isLoading={isLoading}
           onClick={form.submit}
-          icon={<Image src={addHeader} preview={false} width={20} height={20} />}
+          icon={
+            <Image src={addHeader} preview={false} width={20} height={20} />
+          }
           iconPosition="left"
         >
           {t('operators.add-operator')}

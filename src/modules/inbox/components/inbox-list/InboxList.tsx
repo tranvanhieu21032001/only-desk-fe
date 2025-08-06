@@ -2,10 +2,10 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 
-import { useAppDispatch } from '@/shared/hooks';
-import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
+// import { useAppDispatch } from '@/shared/hooks';
+// import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 
 import * as S from './InboxList.styles';
 
@@ -19,7 +19,7 @@ type Props = {
 };
 
 const ConversationList: React.FC<Props> = ({
-  onSelectConversation,
+  onSelectConversation: _onSelectConversation,
   isAssignedToMe,
 }) => {
   const { t } = useTranslation('inbox');
@@ -33,8 +33,8 @@ const ConversationList: React.FC<Props> = ({
     conversationContainerRef: conversationListWrapperRef,
   });
 
-  const workspaceId = useSelector(selectCurrentWorkspaceId);
-  const dispatch = useAppDispatch();
+  // const workspaceId = useSelector(selectCurrentWorkspaceId);
+  // const dispatch = useAppDispatch();
 
   // useEffect(() => {
   //   if (onSelectConversation && activeConversationId) {

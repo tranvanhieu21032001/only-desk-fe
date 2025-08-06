@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Col, Form, Image, Skeleton } from 'antd';
+import { Col, Form, Image, message, Skeleton } from 'antd';
 
 import Button from '@/shared/components/common/Button';
 import Modal from '@/shared/components/common/Modal';
@@ -36,7 +36,7 @@ import EditOperatorModal from './modal/EditOperatorModal';
 
 const WorkspaceOperatorTeams = () => {
   const { t } = useTranslation('settingWorkspace');
-  const [form] = Form.useForm();
+  // const [form] = Form.useForm();
   // const [isPublic, setIsPublic] = useState(true);
   // const [disableConditions] = useState(false);
   const dispatch = useAppDispatch();
@@ -45,21 +45,21 @@ const WorkspaceOperatorTeams = () => {
     dispatch(fetchOperators());
   }, [dispatch]);
 
-  const { userInfo, currentWorkspace } = useAppSelector(
+  const { userInfo } = useAppSelector(
     (state: RootState) => state.auth,
   );
   const dataSource = useMemo(() => {
     return operators.map((op) => ({
       id: op.id,
       rawId: op.rawId,
-      email: op.user.email,
+      email: op.user?.email,
       name:
         `${op.user?.firstName || ''} ${op.user?.lastName || ''}`.trim() ||
         'No Name',
       role: op.role,
       status: op.status,
-      avatar: op.user.avatar,
-      isYou: userInfo?.email === op.user.email,
+      avatar: op.user?.avatar,
+      isYou: userInfo?.email === op.user?.email,
     }));
   }, [operators]);
 
@@ -89,18 +89,21 @@ const WorkspaceOperatorTeams = () => {
   // const [role, setRole] = useState<string | undefined>(undefined);
   const [password, setPassword] = useState('');
   const [twoFA, setTwoFA] = useState(['', '', '', '', '', '']);
-  const handleFinish = async (values: { email: string; role: string }) => {
-    await dispatch(
-      addOperatorToWorkspace({
-        email: values.email,
-        role: values.role,
-        t,
-      }),
-    ).unwrap();
+ const handleFinish = async (values: unknown) => {
+  const { email, role } = values as { email: string; role: string };
 
-    setIsOpenAddOperator(false);
-    addForm.resetFields();
-  };
+  await dispatch(
+    addOperatorToWorkspace({
+      email,
+      role,
+      t,
+    }),
+  ).unwrap();
+
+  setIsOpenAddOperator(false);
+  addForm.resetFields();
+};
+
 
   const openRemoveModal = (op: Operator) => {
     setSelectedOperator(op);
@@ -114,7 +117,7 @@ const WorkspaceOperatorTeams = () => {
     try {
       await dispatch(
         updateOperatorInWorkspace({
-          memberId: selectedOperator.rawId,
+          memberId: selectedOperator?.rawId || '',
           role: values.role.toLowerCase(),
           status: values.status.toLowerCase(),
           t,
@@ -347,7 +350,7 @@ const WorkspaceOperatorTeams = () => {
           if (!selectedOperator) return;
           dispatch(
             removeOperatorFromWorkspace({
-              memberId: selectedOperator.rawId,
+              memberId: selectedOperator.rawId ||'',
               t,
             }),
           ).then(() => setIsOpenRemoveOperator(false));

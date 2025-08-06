@@ -78,7 +78,7 @@ const ModalAddNewCategory = ({
           ? settings.languages
           : langOptions.map((l) => l.value);
 
-        const mapped = mapLanguagesToOptions(langs);
+       const mapped = mapLanguagesToOptions(langs as string[]);
         setPublicLangOptions(mapped);
         if (!categoryToEdit && mapped.length) {
           setLanguage(mapped[0].value);
