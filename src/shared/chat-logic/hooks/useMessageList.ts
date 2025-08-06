@@ -44,6 +44,13 @@ export function useMessageList({
 
   const [isFetchingInitial, setIsFetchingInitial] = useState(true);
 
+  // Cache to preserve showDate/showTime flags when messages are recalculated
+  // This prevents UI flickering when loading more messages, as timestamp display
+  // decisions are maintained across re-renders and pagination
+  const [timestampCache, setTimestampCache] = useState<
+    Map<string, { showDate: boolean; showTime: boolean }>
+  >(new Map());
+
   const queryVariables = useMemo(
     () => ({
       conversationId: rawConversationId || '',
@@ -110,13 +117,42 @@ export function useMessageList({
     [rawConversationId],
   );
 
+  // Calculate messages with timestamps and cache them in useMemo
+  const messagesWithTimestamps = useMemo(() => {
+    const rawMessages = data.messages.edges.map((edge: any) => {
+      const node = edge.node;
+      const parsed = parseGraphQLMessage(node);
+
+      // Restore cached timestamp info to maintain UI consistency
+      // Without this, messages would lose their showDate/showTime flags
+      // when new messages are loaded via pagination
+      const cached = timestampCache.get(parsed.id);
+      if (cached) {
+        parsed.showDate = cached.showDate;
+        parsed.showTime = cached.showTime;
+      }
+
+      return parsed;
+    });
+
+    return markTimestamps(rawMessages);
+  }, [data]); // Only depend on data to avoid infinite re-renders
+
+  // Update cache in separate useEffect to prevent infinite loop
+  // This preserves showDate/showTime decisions for future re-calculations
+  useEffect(() => {
+    const newCache = new Map(timestampCache);
+    messagesWithTimestamps.forEach((msg) => {
+      newCache.set(msg.id, {
+        showDate: msg.showDate || false,
+        showTime: msg.showTime || false,
+      });
+    });
+    setTimestampCache(newCache);
+  }, [messagesWithTimestamps]);
+
   return {
-    messages: markTimestamps(
-      data.messages.edges.map((edge: any) => {
-        const node = edge.node;
-        return parseGraphQLMessage(node);
-      }),
-    ),
+    messages: messagesWithTimestamps,
     isFetchingInitial,
     isLoadingNext,
     hasNext,

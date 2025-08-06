@@ -122,8 +122,8 @@ export const markTimestamps = (messages: Message[]) => {
     const msg = messages[i];
     const currentTime = new Date(msg.createdAt);
 
-    let showTime = false;
-    let showDate = false;
+    let showTime = msg.showTime || false; // Preserve existing showTime
+    let showDate = msg.showDate || false; // Preserve existing showDate
 
     if (!lastShownTime) {
       showTime = true;
@@ -140,7 +140,7 @@ export const markTimestamps = (messages: Message[]) => {
 
       if (diffMinutes > 3 || isDifferentDay || diffSender) {
         showTime = true;
-        showDate = isDifferentDay;
+        showDate = isDifferentDay || showDate; // Keep existing showDate if already true
       }
     }
 
@@ -155,5 +155,5 @@ export const markTimestamps = (messages: Message[]) => {
     });
   }
 
-  return result.slice().reverse();
+  return result.reverse();
 };
