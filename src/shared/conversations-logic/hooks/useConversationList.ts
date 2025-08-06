@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useMemo, useState } from 'react';
 import { useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
-import { parseGraphQLConversation } from '../helpers/chat.helper';
+import { parseGraphQLConversation } from '../helpers/conversation.helper';
 import { Conversation } from '@/shared/chat-logic';
 import { ConversationListQuery } from '../relay/__generated__/ConversationListQuery.graphql';
 import { conversationListQuery } from '../relay/ConversationListQuery';

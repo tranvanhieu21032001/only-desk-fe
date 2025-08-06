@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1c436c988712728cb01647ed736b243f>>
+ * @generated SignedSource<<a9a800731fceec9601b896a68a270a47>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -273,6 +273,13 @@ return {
                         "name": "content",
                         "storageKey": null
                       },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "type",
+                        "storageKey": null
+                      },
                       (v2/*: any*/)
                     ],
                     "storageKey": null
@@ -307,16 +314,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "242ec3e1d61789f0a9653917be0e7753",
+    "cacheID": "7fb3ea408206f0dac81fcaaee8e0f4d8",
     "id": null,
     "metadata": {},
     "name": "ConversationFragmentPaginationQuery",
     "operationKind": "query",
-    "text": "query ConversationFragmentPaginationQuery(\n  $after: String\n  $assignedToMe: Boolean = false\n  $first: Float = 10\n) {\n  ...ConversationFragment_query_Bk7iV\n}\n\nfragment ConversationFragment_query_Bk7iV on Query {\n  conversations(assignedToMe: $assignedToMe, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          avatar\n          name\n          isOnline\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        lastActivityAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationFragmentPaginationQuery(\n  $after: String\n  $assignedToMe: Boolean = false\n  $first: Float = 10\n) {\n  ...ConversationFragment_query_Bk7iV\n}\n\nfragment ConversationFragment_query_Bk7iV on Query {\n  conversations(assignedToMe: $assignedToMe, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          avatar\n          name\n          isOnline\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        lastActivityAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          type\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "bd6201a4e45c05475657f8f28d6b6e2f";
+(node as any).hash = "51252a14193ac95637a93924093d2aff";
 
 export default node;

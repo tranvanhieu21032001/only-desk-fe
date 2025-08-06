@@ -1,6 +1,6 @@
 import { fetchQuery } from 'relay-runtime';
 import relayEnvironment from '@/relay/RelayEnvironment';
-import { parseGraphQLConversation } from '../helpers/chat.helper';
+import { parseGraphQLConversation } from '../helpers/conversation.helper';
 import { CoversationDetailsForListQuery } from '../relay/__generated__/CoversationDetailsForListQuery.graphql';
 import { coversationDetailsForListQuery } from '../relay/CoversationDetailsForListQuery';
 

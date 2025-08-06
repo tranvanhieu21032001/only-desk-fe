@@ -27,6 +27,7 @@ export const coversationDetailsForListQuery = graphql`
         }
         latestMessage {
           content
+          type
         }
       }
     }

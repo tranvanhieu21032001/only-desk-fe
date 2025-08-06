@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e95ffbf65bf12ccb38832d88aa3ecfd5>>
+ * @generated SignedSource<<9b6e7428cf7401c291ef194a26f61b10>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
+export type MessageTypeEnum = "FILE" | "IMAGE" | "NOTE" | "RESOLVED" | "SYSTEM" | "TEXT" | "%future added value";
 export type CoversationDetailsForListQuery$variables = {
   id: string;
 };
@@ -32,6 +33,7 @@ export type CoversationDetailsForListQuery$data = {
     readonly lastActivityAt?: any | null | undefined;
     readonly latestMessage?: {
       readonly content: string;
+      readonly type: MessageTypeEnum | null | undefined;
     } | null | undefined;
     readonly metadata?: any | null | undefined;
     readonly rawId?: string;
@@ -186,6 +188,13 @@ v11 = {
   "kind": "ScalarField",
   "name": "content",
   "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "type",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -222,7 +231,8 @@ return {
                 "name": "latestMessage",
                 "plural": false,
                 "selections": [
-                  (v11/*: any*/)
+                  (v11/*: any*/),
+                  (v12/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -279,6 +289,7 @@ return {
                 "plural": false,
                 "selections": [
                   (v11/*: any*/),
+                  (v12/*: any*/),
                   (v2/*: any*/)
                 ],
                 "storageKey": null
@@ -293,16 +304,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c22f762382dc56abbf96104a7f28c24e",
+    "cacheID": "305ab6cde1771a67ec38290734a11f2b",
     "id": null,
     "metadata": {},
     "name": "CoversationDetailsForListQuery",
     "operationKind": "query",
-    "text": "query CoversationDetailsForListQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Conversation {\n      id\n      rawId\n      contact {\n        id\n        rawId\n        avatar\n        name\n        isOnline\n        email\n        context {\n          countryCode\n        }\n      }\n      subject\n      resolved\n      metadata\n      lastActivityAt\n      unreadCount\n      assignedTo {\n        id\n      }\n      latestMessage {\n        content\n        id\n      }\n    }\n    id\n  }\n}\n"
+    "text": "query CoversationDetailsForListQuery(\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ... on Conversation {\n      id\n      rawId\n      contact {\n        id\n        rawId\n        avatar\n        name\n        isOnline\n        email\n        context {\n          countryCode\n        }\n      }\n      subject\n      resolved\n      metadata\n      lastActivityAt\n      unreadCount\n      assignedTo {\n        id\n      }\n      latestMessage {\n        content\n        type\n        id\n      }\n    }\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "aabbb705857c42c387fdb0cd81c874f2";
+(node as any).hash = "4f295bf8c24f1a7ad5c00906045ca73d";
 
 export default node;

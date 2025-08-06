@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<da5880075ec53c3ef55f4f689ea97054>>
+ * @generated SignedSource<<a3e8bd32ddce882e475ef570f4cde291>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ReaderFragment } from 'relay-runtime';
+export type MessageTypeEnum = "FILE" | "IMAGE" | "NOTE" | "RESOLVED" | "SYSTEM" | "TEXT" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type ConversationFragment_query$data = {
   readonly conversations: {
@@ -33,6 +34,7 @@ export type ConversationFragment_query$data = {
         readonly lastActivityAt: any | null | undefined;
         readonly latestMessage: {
           readonly content: string;
+          readonly type: MessageTypeEnum | null | undefined;
         } | null | undefined;
         readonly metadata: any | null | undefined;
         readonly rawId: string;
@@ -300,6 +302,13 @@ return {
                       "kind": "ScalarField",
                       "name": "content",
                       "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "type",
+                      "storageKey": null
                     }
                   ],
                   "storageKey": null
@@ -326,6 +335,6 @@ return {
 };
 })();
 
-(node as any).hash = "bd6201a4e45c05475657f8f28d6b6e2f";
+(node as any).hash = "51252a14193ac95637a93924093d2aff";
 
 export default node;

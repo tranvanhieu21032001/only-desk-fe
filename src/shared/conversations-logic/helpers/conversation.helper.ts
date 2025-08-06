@@ -50,3 +50,22 @@ export function parseGraphQLConversation(node: any): Conversation {
 
   return conversation;
 }
+
+export const getLatestMessageContent = (conversation: Conversation) => {
+  if (!conversation.latestMessage) return 'No message';
+
+  // Remove HTML tags from content
+  const cleanContent = conversation.latestMessage.content
+    .replace(/<[^>]*>/g, '')
+    .trim();
+
+  // If content is empty after cleaning, show message type
+  if (!cleanContent) {
+    return conversation.latestMessage.type || 'Message';
+  }
+
+  if (cleanContent.length > 30) {
+    return cleanContent.slice(0, 30) + '...';
+  }
+  return cleanContent;
+};

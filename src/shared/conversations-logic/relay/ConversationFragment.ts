@@ -43,6 +43,7 @@ export const conversationListFragment = graphql`
           }
           latestMessage {
             content
+            type
           }
         }
       }

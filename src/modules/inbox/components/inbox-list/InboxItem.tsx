@@ -10,6 +10,7 @@ import { eventBus } from '@/core/event-bus';
 import { Conversation } from '../../interfaces/inbox';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { getFormattedTime } from '@/shared/chat-logic/utils/time';
+import { getLatestMessageContent } from '@/shared/conversations-logic/helpers/conversation.helper';
 
 type Props = {
   conversation: any;
@@ -82,9 +83,7 @@ const InboxItem: React.FC<Props> = ({
       </S.Avatar>
       <S.Content>
         <S.Title>{conversation.contact?.name || DEFAULT_FULL_NAME}</S.Title>
-        <S.Subtitle>
-          {conversation.latestMessage?.content || <p>No message</p>}
-        </S.Subtitle>
+        <S.Subtitle>{getLatestMessageContent(conversation)}</S.Subtitle>
       </S.Content>
       <S.RightSection ref={menuRef}>
         <S.Time className="time">

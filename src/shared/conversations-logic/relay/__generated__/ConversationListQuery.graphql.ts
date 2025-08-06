@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7714e3f5e26b80ce6dc5a3264a6946dc>>
+ * @generated SignedSource<<c46cc2a9b611459b4613d7c1d7ca66f3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -279,6 +279,13 @@ return {
                         "name": "content",
                         "storageKey": null
                       },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "type",
+                        "storageKey": null
+                      },
                       (v4/*: any*/)
                     ],
                     "storageKey": null
@@ -313,12 +320,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "47eaf97c4138098e9ad686ce3a345a50",
+    "cacheID": "490ab25daaf57c26c2720f10cda25b82",
     "id": null,
     "metadata": {},
     "name": "ConversationListQuery",
     "operationKind": "query",
-    "text": "query ConversationListQuery(\n  $first: Float\n  $after: String\n  $assignedToMe: Boolean\n) {\n  ...ConversationFragment_query_Bk7iV\n}\n\nfragment ConversationFragment_query_Bk7iV on Query {\n  conversations(assignedToMe: $assignedToMe, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          avatar\n          name\n          isOnline\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        lastActivityAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListQuery(\n  $first: Float\n  $after: String\n  $assignedToMe: Boolean\n) {\n  ...ConversationFragment_query_Bk7iV\n}\n\nfragment ConversationFragment_query_Bk7iV on Query {\n  conversations(assignedToMe: $assignedToMe, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          avatar\n          name\n          isOnline\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        lastActivityAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          type\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
