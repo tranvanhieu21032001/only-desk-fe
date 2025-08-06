@@ -80,7 +80,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             <Image.PreviewGroup>
               {children}
               <div ref={hiddenImageRef} style={{ display: 'none' }}>
-                <Image src={msg.metadata.fileUrl} />
+                <Image src={msg?.metadata?.fileUrl} />
               </div>
             </Image.PreviewGroup>
           </S.MessageImage>
@@ -149,7 +149,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     return (
       <S.MessageRowUser>
         <div
-          style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}
+          style={{ display: 'flex', alignItems: 'flex-end', justifyContent:'flex-end', gap: 8, width:'100%' }}
           onMouseEnter={onHoverEnter}
           onMouseLeave={onHoverLeave}
         >
