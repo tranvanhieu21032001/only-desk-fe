@@ -63,8 +63,9 @@ function ModalAddASection({
     setLoading(true);
     try {
       if (sectionToEdit) {
-        await updateHelpdeskSection(sectionToEdit?.id, {
+        await updateHelpdeskSection(sectionToEdit?.key, {
           name: sectionName,
+          categoryId: category.id,
           defaultLanguage: 'en',
           translations: {
             en: { name: sectionName },
@@ -152,7 +153,7 @@ function ModalAddASection({
             onClick={handleSubmit}
             type="primary"
             icon={sectionToEdit ? <EditOutlined /> : <PlusOutlined />}
-            loading={loading}
+            isLoading={loading}
           >
             {sectionToEdit
               ? t('article-menu.add-a-section.update')

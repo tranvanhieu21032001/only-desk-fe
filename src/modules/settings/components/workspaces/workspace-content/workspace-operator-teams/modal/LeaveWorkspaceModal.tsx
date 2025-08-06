@@ -3,15 +3,24 @@ import iconInfo from '@/assets/icons/info.svg';
 import Button from '@/shared/components/common/Button';
 import Modal from '@/shared/components/common/Modal';
 
-const LeaveWorkspaceModal = ({ isOpen, onClose }) => (
+type LeaveWorkspaceModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const LeaveWorkspaceModal = ({ isOpen, onClose }: LeaveWorkspaceModalProps) => (
   <Modal
     isOpen={isOpen}
     onClose={onClose}
     hideHeader
     footer={
       <S.ModalEmptyFooter>
-        <Button type="default" onClick={onClose}>Cancel</Button>
-        <Button type="danger" width="180px" onClick={onClose}>Leave Workspace</Button>
+        <Button type="default" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button type="danger" width="180px" onClick={onClose}>
+          Leave Workspace
+        </Button>
       </S.ModalEmptyFooter>
     }
   >

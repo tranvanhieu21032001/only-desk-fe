@@ -21,7 +21,6 @@ interface ModalExportArticlesProps {
 function ModalExportArticles({
   open,
   onCancel,
-  onStart,
 }: ModalExportArticlesProps) {
   const { t } = useTranslation('knowledgeBase');
 

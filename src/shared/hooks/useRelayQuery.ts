@@ -1,5 +1,5 @@
-import { useLazyLoadQuery, GraphQLTaggedNode } from 'react-relay';
 import { OperationType } from 'relay-runtime';
+import { useLazyLoadQuery, GraphQLTaggedNode } from 'react-relay';
 
 export function useRelayQuery<TQuery extends OperationType>(
   query: GraphQLTaggedNode,

@@ -50,7 +50,6 @@ import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 import icConversation from '@/assets/icons/contact/ic-new-conversation.svg';
 import icOnline from '@/assets/icons/contact/ic-online.svg';
 import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
-import { RootState } from '@/core/store';
 import flagList from '@/shared/helper/data/flagIcon';
 import { format } from 'timeago.js';
 import Modal from '@/shared/components/common/Modal';
@@ -67,9 +66,6 @@ function ContactDetails() {
 
   const { isLoading, contactDetails, isDetails } = useAppSelector(
     (state) => state.contacts,
-  );
-  const { currentWorkspace } = useAppSelector(
-    (state: RootState) => state?.auth,
   );
 
   const [params, setParams] = useState<{

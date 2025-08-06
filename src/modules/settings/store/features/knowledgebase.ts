@@ -33,11 +33,11 @@ export const fetchKnowledgeBaseSetting = createAsyncThunk(
       relayEnvironment,
       helpdeskSettingsQuery,
       {},
-      { fetchPolicy: 'network-only' }
+      { fetchPolicy: 'network-only' },
     ).toPromise();
 
     return result?.helpdeskSettings ?? null;
-  }
+  },
 );
 
 // Slice
@@ -52,7 +52,19 @@ const helpdeskSettingsSlice = createSlice({
       })
       .addCase(fetchKnowledgeBaseSetting.fulfilled, (state, action) => {
         state.isFetching = false;
-        state.settings = action.payload;
+
+        const payload = action.payload;
+
+        state.settings = payload
+          ? {
+              basicDomain: payload.basicDomain ?? null,
+              customDomain: payload.customDomain ?? null,
+              name: payload.name ?? null,
+              logo: payload.logo ?? null,
+              banner: payload.banner ?? null,
+              languages: payload.languages ? [...payload.languages] : [],
+            }
+          : null;
       })
       .addCase(fetchKnowledgeBaseSetting.rejected, (state) => {
         state.isFetching = false;

@@ -2,13 +2,13 @@ import React, { useRef, useState, useEffect, memo } from 'react';
 import { Image } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { LoadingOutlined } from '@ant-design/icons';
 
 import { InboxDetailProps } from '../../interfaces/inbox';
 import { getShortcutsList } from '@/modules/inbox/api/inbox.api';
 import type { Shortcut } from '@/modules/settings/models/chatbox.model';
-import { useAppSelector } from '@/shared/hooks';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
@@ -49,7 +49,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const conversationId = searchParams.get('conversationId');
 
     const stableConversationId = useRef<string | null>(null);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     if (stableConversationId.current !== conversationId) {
       stableConversationId.current = conversationId;
     }

@@ -23,7 +23,7 @@ export const fetchHelpdeskCategories = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || 'Error fetching categories');
     }
-  }
+  },
 );
 
 const helpdeskCategorySlice = createSlice({
@@ -38,9 +38,14 @@ const helpdeskCategorySlice = createSlice({
     removeArticle(state, action) {
       const rawId = action.payload;
       state.categories.forEach((category) => {
-        category.articles = category.articles?.filter((a) => a.rawId !== rawId);
+        category.articles = category.articles?.filter(
+          (a) => (a as any).rawId !== rawId,
+        );
+
         category.sections?.forEach((section) => {
-          section.articles = section.articles?.filter((a) => a.rawId !== rawId);
+          section.articles = section.articles?.filter(
+            (a) => (a as any).rawId !== rawId,
+          );
         });
       });
     },
@@ -48,11 +53,16 @@ const helpdeskCategorySlice = createSlice({
       const updated = action.payload;
       state.categories.forEach((category) => {
         category.articles = category.articles?.map((a) =>
-          a.rawId === updated.rawId ? { ...a, ...updated } : a
+          (a as any).rawId === updated.rawId
+            ? { ...(a as any), ...updated }
+            : a,
         );
+
         category.sections?.forEach((section) => {
           section.articles = section.articles?.map((a) =>
-            a.rawId === updated.rawId ? { ...a, ...updated } : a
+            (a as any).rawId === updated.rawId
+              ? { ...(a as any), ...updated }
+              : a,
           );
         });
       });
@@ -66,7 +76,7 @@ const helpdeskCategorySlice = createSlice({
       })
       .addCase(fetchHelpdeskCategories.fulfilled, (state, action) => {
         state.loading = false;
-        state.categories = action.payload;
+        state.categories = action.payload as unknown as HelpdeskCategory[];
       })
       .addCase(fetchHelpdeskCategories.rejected, (state, action) => {
         state.loading = false;

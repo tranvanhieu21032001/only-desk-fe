@@ -22,6 +22,7 @@ import Input from '@/shared/components/common/Input';
 import { handleEditProfile } from '@/modules/contacts/api/contacts.api';
 import { updateSelectedConversationContact } from '../../store/features/inbox';
 import { decodeGlobalId } from '@/shared/utils/decode';
+import { Contact } from '../../interfaces/inbox';
 
 const InboxSidebar = () => {
   const { t } = useTranslation('inbox');
@@ -48,8 +49,8 @@ const InboxSidebar = () => {
       const fullName =
         [user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'No Name';
       return {
-        id: user.id,
-        rawId: user.rawId,
+        id: user?.id ?? '',
+        rawId: (user as any)?.rawId ?? '',
         name: fullName,
         avatar: user?.avatar || defaultAvatar,
         email: user?.email,
@@ -64,7 +65,7 @@ const InboxSidebar = () => {
   useEffect(() => {
     if (selectedConversation?.participants?.length) {
       const rawIds = selectedConversation.participants
-        .map((p) => p?.id)
+       .map((p) => typeof p === 'string' ? p : p?.id)
         .filter(Boolean)
         .map((id) => decodeGlobalId(id));
       setParticipants(rawIds);
@@ -147,7 +148,7 @@ const InboxSidebar = () => {
             break;
           case 'participantsIds':
             oldValue = (selectedConversation?.participants || [])
-              .map((p) => p.user?.rawId)
+              .map((p) => typeof p !== 'string' ? (p.user as any)?.rawId : undefined)
               .filter(Boolean);
             break;
           case 'segments':
@@ -163,7 +164,7 @@ const InboxSidebar = () => {
               : raw;
             break;
           default:
-            oldValue = selectedConversation?.[key];
+            oldValue = (selectedConversation as any)?.[key];
         }
 
       if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
@@ -260,7 +261,7 @@ const InboxSidebar = () => {
           openCollapse={openCollapse}
           participants={participants}
           setParticipants={setParticipants}
-          operators={formattedOperators}
+          operators={formattedOperators as unknown as Contact[]}
           onConfirmAddParticipants={(newRawIds) => {
             setParticipants(newRawIds);
             handleAutoUpdateConversation({ participantsIds: newRawIds });

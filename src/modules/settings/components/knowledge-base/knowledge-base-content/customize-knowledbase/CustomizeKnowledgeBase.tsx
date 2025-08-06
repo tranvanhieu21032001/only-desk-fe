@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Image, Skeleton, Select } from 'antd';
-import { useTranslation } from 'react-i18next';
+import { Form, Skeleton, Select } from 'antd';
+// import { useTranslation } from 'react-i18next';
 import { ReactSVG } from 'react-svg';
 
 import * as S from './CustomizeKnowledgeBase.styles';
@@ -22,8 +22,7 @@ import { langOptions } from '@/modules/auth/helpers/data/signIn';
 
 const CustomizeKnowledgeBase = () => {
   const [form] = Form.useForm();
-  const { t } = useTranslation('knowledgeBase');
-  const [uploadParams, setUploadParams] = useState({
+  const [_uploadParams, setUploadParams] = useState({
     isLoading: false,
     countUpload: 0,
     progressPercent: 0,
@@ -155,7 +154,7 @@ const CustomizeKnowledgeBase = () => {
                           >
                             {selectedLang?.flag && (
                               <img
-                                src={selectedLang.flag}
+                                src={selectedLang.flag.toString()}
                                 alt={selectedLang.label}
                                 width={20}
                                 style={{ marginRight: 6 }}
@@ -189,7 +188,7 @@ const CustomizeKnowledgeBase = () => {
                           >
                             {lang.flag && (
                               <img
-                                src={lang.flag}
+                                src={lang.flag.toString()}
                                 alt={lang.label}
                                 width={20}
                               />

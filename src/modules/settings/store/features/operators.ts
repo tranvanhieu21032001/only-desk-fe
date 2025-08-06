@@ -12,17 +12,17 @@ import {
 } from '../../api/operators';
 
 export interface Operator {
-  id: string;
-  rawId: string;
-  user: {
-    id:string;
+  id?: string;
+  rawId?: string;
+  user?: {
+    id?: string;
     avatar?: string;
-    firstName: string;
-    lastName: string;
-    email: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
   };
-  role: string;
-  status: string;
+  role?: string;
+  status?: string;
 }
 
 interface OperatorsState {
@@ -67,10 +67,7 @@ export const addOperatorToWorkspace = createAsyncThunk(
 
 export const removeOperatorFromWorkspace = createAsyncThunk(
   'operators/remove',
-  async (
-    params: { memberId: string; t: TFunction },
-    { dispatch },
-  ) => {
+  async (params: { memberId: string; t: TFunction }, { dispatch }) => {
     const { memberId, t } = params;
     await removeMemberFromWorkspace(memberId, t);
     dispatch(fetchOperators());
@@ -102,7 +99,7 @@ const operatorsSlice = createSlice({
       })
       .addCase(fetchOperators.fulfilled, (state, action) => {
         state.isFetching = false;
-        state.operators = action.payload;
+        state.operators = action.payload as unknown as Operator[];
       })
       .addCase(fetchOperators.rejected, (state) => {
         state.isFetching = false;

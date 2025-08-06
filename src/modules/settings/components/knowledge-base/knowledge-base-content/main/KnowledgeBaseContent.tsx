@@ -20,7 +20,7 @@ const KnowledgeBaseContent = () => {
     dispatch(fetchKnowledgeBaseSetting());
   }, [dispatch]);
 
-   const { settings, isFetching } = useSelector((state: RootState) => state.knowledgeBaseSettings);
+   const { settings } = useSelector((state: RootState) => state.knowledgeBaseSettings);
 console.log("settings", settings);
 
 

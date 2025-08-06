@@ -128,6 +128,7 @@ const slice = createSlice({
         ...(state.workspaces || []),
         {
           id: action.payload?.id,
+          rawId:action.payload?.rawId,
           logo: action.payload?.logo,
           name: action.payload?.name,
           websiteID: action.payload?.websiteID,

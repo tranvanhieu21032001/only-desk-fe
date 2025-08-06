@@ -25,11 +25,11 @@ export interface Contact {
 }
 
 export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  avatar: string;
-  email: string;
+  id?: string;
+  firstName?: string;
+  lastName?: string;
+  avatar?: string;
+  email?: string;
 }
 
 export interface Message {

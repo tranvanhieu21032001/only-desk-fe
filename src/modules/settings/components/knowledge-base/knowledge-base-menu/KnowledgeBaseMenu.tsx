@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import Typography from '@/shared/components/common/Typography';
 import * as S from './KnowledgeBaseMenu.styles';
 import { KnowLedgeBaseEnums } from '@/modules/settings/helpers/enums/knowledge-base';
 
 const KnowledgeBaseMenu: React.FC = () => {
-  const { t } = useTranslation('knowledgeBase');
+  // const { t } = useTranslation('knowledgeBase');
 
   const knowledgeBaseMenus = [
     { key: KnowLedgeBaseEnums.SET_KNOWLEDGE_BASE, label: 'Setup Knowledge Base' },

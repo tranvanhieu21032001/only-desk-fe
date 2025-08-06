@@ -26,7 +26,9 @@ export interface Contact {
 }
 
 export interface User {
+  user?: any;
   id: string;
+  rawId?: string;
   firstName: string;
   lastName: string;
   avatar: string;
@@ -38,7 +40,7 @@ export interface Conversation {
   rawId: string;
   contact: Contact;
   assignedTo: null | string;
-  participants: string[];
+  participants?: (User | string)[];
   lastActivityAt: string;
   latestMessage?: Message;
   resolved?: boolean;

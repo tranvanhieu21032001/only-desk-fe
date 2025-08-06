@@ -39,13 +39,13 @@ const VisitorContent = () => {
 
     visitors.forEach(({ id, name, location }) => {
       const point = {
-        type: 'point',
+        type: 'point' as const,
         longitude: location[0],
         latitude: location[1],
       };
 
       const markerSymbol = {
-        type: 'simple-marker',
+        type: 'simple-marker' as const,
         color: 'blue',
         outline: {
           color: 'white',
@@ -70,7 +70,7 @@ const VisitorContent = () => {
     return () => {
       if (viewRef.current) {
         viewRef.current.destroy();
-        viewRef.current = undefined;
+        viewRef.current = null;
       }
     };
   }, []);
