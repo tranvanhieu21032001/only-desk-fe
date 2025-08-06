@@ -130,9 +130,9 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
       style={{
         width: 28,
         flexShrink: 0,
-        opacity: hovered ? 1 : 0,
+        opacity: msg.showTime || hovered ? 1 : 0,
         transition: 'opacity 0.2s',
-        pointerEvents: hovered ? 'auto' : 'none',
+        pointerEvents: msg.showTime || hovered ? 'auto' : 'none',
         display: 'flex',
         justifyContent: isOwner ? 'flex-end' : 'flex-start',
       }}
