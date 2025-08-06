@@ -22,6 +22,10 @@ export function parseGraphQLConversation(node: any): Conversation {
       isOnline: node.contact.isOnline,
       createdAt: node.contact.createdAt,
       updatedAt: node.contact.updatedAt ?? node.contact.createdAt,
+      guestId: node.contact.guestId || '',
+      notification: node.contact.notification || false,
+      segments: node.contact.segments || [],
+      lastActivityAt: node.contact.lastActivityAt || node.lastActivityAt,
     },
     lastActivityAt: node.lastActivityAt,
     metadata: parsedMetadata ?? undefined,
@@ -30,13 +34,16 @@ export function parseGraphQLConversation(node: any): Conversation {
           id: node.latestMessage.id,
           content: node.latestMessage.content,
           type: node.latestMessage.type,
+          createdAt: node.latestMessage.createdAt || '',
+          updatedAt: node.latestMessage.updatedAt || '',
+          sender: node.latestMessage.sender,
+          user: node.latestMessage.user || null,
+          status: node.latestMessage.status,
+          metadata: node.latestMessage.metadata,
         }
-      : null,
-    assignedTo: node.assignedTo
-      ? {
-          id: node.assignedTo.id,
-        }
-      : null,
+      : undefined,
+    assignedTo: node.assignedTo?.id || null,
+    participants: node.participants?.map((p: any) => p.id) || [],
     resolved: node.resolved,
     unreadCount: node.unreadCount,
   };
