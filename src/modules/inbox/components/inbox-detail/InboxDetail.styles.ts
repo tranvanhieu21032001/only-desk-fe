@@ -130,7 +130,7 @@ export const MessageColumnView = styled.div`
 
 export const MessageBubbleLeft = styled.div`
   background: white;
-  padding: 8px 12px;
+  padding: 8px 11px;
   border-radius: 12px;
   margin: 0 8px 0 0;
   /* max-width: 70%; */
