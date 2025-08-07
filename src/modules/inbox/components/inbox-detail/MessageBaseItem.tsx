@@ -48,6 +48,30 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     rightIcon: isOwner,
   };
 
+  const timeWithIcon = (
+    <div
+      style={{
+        width: 28,
+        flexShrink: 0,
+        opacity: msg.showTime || hovered ? 1 : 0,
+        transition: 'opacity 0.2s',
+        pointerEvents: msg.showTime || hovered ? 'auto' : 'none',
+        display: 'flex',
+        justifyContent: isOwner ? 'flex-end' : 'flex-start',
+      }}
+    >
+      <MessageTimeWithIcon
+        {...timeWithIconProps}
+        style={msg.type === MessageType.NOTE ? { marginTop: 4 } : undefined}
+        showTime={msg.showTime}
+      />
+    </div>
+  );
+
+  if (msg.type === MessageType.RESOLVED) {
+    return <S.SystemMessage>{msg.content}</S.SystemMessage>;
+  }
+
   function renderContent() {
     switch (msg.type) {
       case MessageType.TEXT:
@@ -75,89 +99,63 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
 
         const hiddenImageRef = useRef<HTMLDivElement>(null);
 
-        const ImgWrapper = ({ children }: { children: React.ReactNode }) => (
-          <S.MessageImage>
-            <Image.PreviewGroup>
-              {children}
-              <div ref={hiddenImageRef} style={{ display: 'none' }}>
-                <Image src={msg?.metadata?.fileUrl} />
-              </div>
-            </Image.PreviewGroup>
-          </S.MessageImage>
-        );
-
         const handleClick = () => {
           hiddenImageRef.current?.querySelector('img')?.click();
         };
 
-        return isOwner ? (
-          <ImgWrapper>
-            <img
-              src={msg.metadata.fileUrl}
-              alt="image"
-              data-id={msg.id}
-              style={{ width: 200, cursor: 'pointer', borderRadius: 10 }}
-              onClick={handleClick}
-            />
-          </ImgWrapper>
-        ) : (
-          <S.MessageImageLeft>
-            <Image.PreviewGroup>
-              <img
-                src={msg.metadata.fileUrl}
-                alt="image"
-                data-id={msg.id}
-                style={{ width: 200, cursor: 'pointer', borderRadius: 12 }}
-                onClick={handleClick}
-              />
-              <div ref={hiddenImageRef} style={{ display: 'none' }}>
-                <Image src={msg.metadata.fileUrl} />
-              </div>
-            </Image.PreviewGroup>
-          </S.MessageImageLeft>
-        );
+        if (isOwner) {
+          return (
+            <S.MessageImage>
+              <Image.PreviewGroup>
+                <img
+                  src={msg.metadata.fileUrl}
+                  alt="image"
+                  data-id={msg.id}
+                  style={{ width: 200, cursor: 'pointer', borderRadius: 10 }}
+                  onClick={handleClick}
+                />
+                <div ref={hiddenImageRef} style={{ display: 'none' }}>
+                  <Image src={msg.metadata.fileUrl} />
+                </div>
+              </Image.PreviewGroup>
+            </S.MessageImage>
+          );
+        } else {
+          return (
+            <S.MessageImageLeft>
+              <Image.PreviewGroup>
+                <img
+                  src={msg.metadata.fileUrl}
+                  alt="image"
+                  data-id={msg.id}
+                  style={{ width: 200, cursor: 'pointer', borderRadius: 12 }}
+                  onClick={handleClick}
+                />
+                <div ref={hiddenImageRef} style={{ display: 'none' }}>
+                  <Image src={msg.metadata.fileUrl} />
+                </div>
+              </Image.PreviewGroup>
+            </S.MessageImageLeft>
+          );
+        }
       default:
         return null;
     }
   }
 
-  if (msg.type === MessageType.RESOLVED) {
-    return <S.SystemMessage>{msg.content}</S.SystemMessage>;
-  }
-
-  const timeWithIcon = (
-    <div
-      style={{
-        width: 28,
-        flexShrink: 0,
-        opacity: msg.showTime || hovered ? 1 : 0,
-        transition: 'opacity 0.2s',
-        pointerEvents: msg.showTime || hovered ? 'auto' : 'none',
-        display: 'flex',
-        justifyContent: isOwner ? 'flex-end' : 'flex-start',
-      }}
-    >
-      <MessageTimeWithIcon
-        {...timeWithIconProps}
-        style={msg.type === MessageType.NOTE ? { marginTop: 4 } : undefined}
-        showTime={msg.showTime}
-      />
-    </div>
-  );
-
   if (isOwner) {
     return (
       <S.MessageRowUser>
         <div
+          onMouseEnter={onHoverEnter}
+          onMouseLeave={onHoverLeave}
           style={{
             display: 'flex',
             alignItems: 'flex-end',
             justifyContent: 'flex-end',
             gap: 8,
-            width: '100%',
+            width: 'fit-content',
           }}
-          onMouseEnter={onHoverEnter}
-          onMouseLeave={onHoverLeave}
         >
           {timeWithIcon}
           {renderContent()}
@@ -184,14 +182,17 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
           )}
           <S.MessageColumnView>
             {msg.showTime && (
-              <S.MessageSenderName>
-                {msg.user?.firstName || 'Guest'}
-              </S.MessageSenderName>
+              <S.MessageSenderName>{msg.user?.firstName || 'Guest'}</S.MessageSenderName>
             )}
             <div
-              style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}
               onMouseEnter={onHoverEnter}
               onMouseLeave={onHoverLeave}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                gap: 4,
+                width: 'fit-content',
+              }}
             >
               {renderContent()}
               {timeWithIcon}
