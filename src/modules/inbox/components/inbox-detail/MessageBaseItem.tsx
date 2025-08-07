@@ -96,7 +96,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
               src={msg.metadata.fileUrl}
               alt="image"
               data-id={msg.id}
-              style={{ width: 200, cursor: 'pointer' }}
+              style={{ width: 200, cursor: 'pointer', borderRadius: 10 }}
               onClick={handleClick}
             />
           </ImgWrapper>
@@ -107,7 +107,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
                 src={msg.metadata.fileUrl}
                 alt="image"
                 data-id={msg.id}
-                style={{ width: 200, cursor: 'pointer' }}
+                style={{ width: 200, cursor: 'pointer', borderRadius: 12 }}
                 onClick={handleClick}
               />
               <div ref={hiddenImageRef} style={{ display: 'none' }}>
