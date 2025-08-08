@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9b6e7428cf7401c291ef194a26f61b10>>
+ * @generated SignedSource<<97534c46df17f0f3850f28ccb92e3a92>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -32,7 +32,7 @@ export type CoversationDetailsForListQuery$data = {
     readonly id?: string;
     readonly lastActivityAt?: any | null | undefined;
     readonly latestMessage?: {
-      readonly content: string;
+      readonly content: string | null | undefined;
       readonly type: MessageTypeEnum | null | undefined;
     } | null | undefined;
     readonly metadata?: any | null | undefined;

@@ -70,8 +70,8 @@ const MAIN_ROUTES = {
 
   // Settings
   ACCOUNT: `${preRouterMain}/setting-account`,
-  BILLING: `${preRouterMain}/billing`,
-  CHANGEPLAN: `${preRouterMain}/billing/change-plan`,
+  BILLING: `${preRouterMain}/setting/billing`,
+  CHANGEPLAN: `${preRouterMain}/setting/billing/change-plan`,
   WORKSPACE: `${preRouterMain}/setting-workspace`,
   CHATBOX: `${preRouterMain}/chatbox`,
   EMAIL: `${preRouterMain}/email`,
@@ -147,7 +147,7 @@ const getBreadcrumbMap = (t: (key: string) => string): BreadcrumbItem[] => [
   { path: MAIN_ROUTES.CATEGORIES, breadcrumb: [t('breadcrumb.categories')] },
 
   // === Plugins ===
-  { path: MAIN_ROUTES.ALL_PLUGINS, breadcrumb: [t('breadcrumb.all_plugins')] },
+  { path: MAIN_ROUTES.ALL_PLUGINS, breadcrumb: [t('breadcrumb.all-plugins')] },
   {
     path: MAIN_ROUTES.INSTALLED_PLUGINS,
     breadcrumb: [t('breadcrumb.installed_plugins')],

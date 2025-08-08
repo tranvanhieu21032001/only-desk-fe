@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a3e8bd32ddce882e475ef570f4cde291>>
+ * @generated SignedSource<<d4fcdafc4eaa7b96248831ff5ef741e6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,7 +33,7 @@ export type ConversationFragment_query$data = {
         readonly id: string;
         readonly lastActivityAt: any | null | undefined;
         readonly latestMessage: {
-          readonly content: string;
+          readonly content: string | null | undefined;
           readonly type: MessageTypeEnum | null | undefined;
         } | null | undefined;
         readonly metadata: any | null | undefined;

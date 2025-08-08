@@ -184,6 +184,7 @@
     "customize-knowledge-base": "Customize Knowledge Base",
     "advanced-settings": "Advanced settings",
     "plugins": "Plugins",
-    "all-plugins": "All plugins"
+    "all-plugins": "All plugins",
+    "installed_plugins":"Installed plugins"
   }
 }

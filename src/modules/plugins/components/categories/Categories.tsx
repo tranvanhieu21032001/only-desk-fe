@@ -1,24 +1,31 @@
 import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { CategoriesInterface } from '../../model/allPlugins';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { categories, MAX_COUNT } from '../../helpers/data/allPlugins';
 
 import Typography from '@/shared/components/common/Typography';
-
 import * as S from './Categories.styles';
 
 function Categories() {
   const { t } = useTranslation('plugins');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPath = location.pathname.replace('/', '');
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
   }, []);
+
+  const handleCategoryClick = (key: string) => {
+    navigate(`/${key}`);
+  };
 
   return (
     <S.CategoryContainer>
@@ -27,11 +34,12 @@ function Categories() {
           {t('all-plugins.categories')}
         </Typography>
       </S.LabelCategories>
+
       <S.Categories>
         {isLoading
           ? Array(8)
-              ?.fill(0)
-              ?.map((_, index: number) => (
+              .fill(0)
+              .map((_, index) => (
                 <S.CategoryWrap key={index}>
                   <Skeleton.Input
                     active
@@ -43,17 +51,27 @@ function Categories() {
                   />
                 </S.CategoryWrap>
               ))
-          : categories?.map((category: CategoriesInterface) => (
-              <S.CategoryWrap key={category?.key}>
-                <Typography>{t(`all-plugins.${category?.label}`)}</Typography>
-                <S.Count>
+          : categories.map((category: CategoriesInterface) => {
+              const isActive = currentPath === category.key;
+
+              return (
+                <S.CategoryWrap
+                  key={category.key}
+                  $isActive={isActive}
+                  onClick={() => handleCategoryClick(category.key)}
+                >
                   <Typography>
-                    {category?.count <= MAX_COUNT ? category?.count || 0 : 10}
-                    {category?.count > MAX_COUNT && '+'}
+                    {t(`all-plugins.${category.label}`)}
                   </Typography>
-                </S.Count>
-              </S.CategoryWrap>
-            ))}
+                  {/* <S.Count>
+                    <Typography>
+                      {category.count <= MAX_COUNT ? category.count || 0 : 10}
+                      {category.count > MAX_COUNT && '+'}
+                    </Typography>
+                  </S.Count> */}
+                </S.CategoryWrap>
+              );
+            })}
       </S.Categories>
     </S.CategoryContainer>
   );

@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import { useLocation } from 'react-router-dom';
 
-import { mockupCardPlugins, pluginTypes } from '../../helpers/data/allPlugins';
+import { getAllPlugins, getInstalledPlugins } from '../../api/plugin.api';
+import { PAGE_SIZE } from '@/shared/constant/common';
+import { pluginTypes } from '../../helpers/data/allPlugins';
 
 import CardPlugin from '../card-plugin/CardPlugin';
 import Input from '@/shared/components/common/Input';
@@ -13,33 +16,48 @@ import * as S from './ListPlugins.styles';
 
 function Plugins() {
   const { t } = useTranslation('plugins');
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [typePlugins, setTypePlugins] = useState<string[]>([]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  const [plugins, setPlugins] = useState<any[]>([]);
 
   const handleSearchPlugins = debounce(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      //TODO handle later
+      //TODO handle search
       e?.target?.value;
     },
-    600,
+    600
   );
 
-  function handleFilterPluginsByType(e: string) {
-    setTypePlugins((prev) => {
-      if (prev?.includes(e)) {
-        return prev?.filter((item) => item !== e);
-      } else {
-        return [...prev, e];
+  useEffect(() => {
+    const fetchPlugins = async () => {
+      try {
+        const isInstalledPage = location.pathname === '/installed-plugins';
+
+        let data;
+        if (isInstalledPage) {
+          const installed = await getInstalledPlugins();
+          data = installed.map((plugin) => ({ node: plugin }));
+        } else {
+          const all = await getAllPlugins({ first: PAGE_SIZE });
+          data = all?.edges || [];
+        }
+
+        setPlugins(data);
+      } catch (error) {
+        console.error('Failed to fetch plugins:', error);
+      } finally {
+        setIsLoading(false);
       }
-    });
+    };
+
+    fetchPlugins();
+  }, [location.pathname]);
+
+  function handleFilterPluginsByType(e: string) {
+    setTypePlugins((prev) =>
+      prev?.includes(e) ? prev?.filter((item) => item !== e) : [...prev, e]
+    );
   }
 
   return (
@@ -71,8 +89,12 @@ function Plugins() {
       </S.PluginsTypesContainer>
 
       <S.Plugins>
-        {mockupCardPlugins?.map((card) => (
-          <CardPlugin key={card?.key} card={card} isLoading={isLoading} />
+        {plugins?.map((card) => (
+          <CardPlugin
+            key={card?.node?.id || card?.node?.key}
+            card={card?.node}
+            isLoading={isLoading}
+          />
         ))}
       </S.Plugins>
     </S.PluginsContainer>

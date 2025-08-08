@@ -8,7 +8,9 @@
     "marketing": "Marketing",
     "messaging": "Messaging",
     "teamwork": "Teamwork",
-    "others": "Others"
+    "others": "Others",
+    "all-plugins": "All plugins",
+    "installed-plugins":"Installed plugins"
   },
 
   "plugins": {
@@ -19,9 +21,10 @@
     "plus": "Plus",
     "pricing": "Pricing",
 
-    "view-detail": "View Detail",
+    "view": "View",
     "configure": "Configure",
     "installed": "Installed",
+    "install": "Install",
 
     "all-plugins": "All Plugins",
     "insert-page": "Insert page description here."

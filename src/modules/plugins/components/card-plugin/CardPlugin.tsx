@@ -1,12 +1,15 @@
 import { Image, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { DeleteOutlined, EyeOutlined, SettingFilled } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EyeOutlined,
+  PlusCircleOutlined,
+} from '@ant-design/icons';
 
 import { useModal } from '@/shared/hooks';
 import { CardPluginInterface } from '../../model/allPlugins';
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
-import { PluginsStatusEnums } from '../../helpers/enums/allPlugins';
 
 import Typography from '@/shared/components/common/Typography';
 import ModalViewDetailPlugin from '../modal-view-detail-plugin/ModalViewDetailPlugin';
@@ -43,31 +46,34 @@ function CardPlugin({ isLoading, card }: CardPluginProps) {
   }
 
   const renderAction = () => {
-    if (card?.status === PluginsStatusEnums?.UNINSTALLED) {
+    if (!card?.isInstalled) {
       return (
-        <S.ButtonViewDetail onClick={handleViewDetail}>
-          <EyeOutlined />
-          <Typography fontWeight={fontWeight?.semiBold}>
-            {t('plugins.view-detail')}
-          </Typography>
-        </S.ButtonViewDetail>
+        <S.ActionWrap>
+          <S.ButtonConfigure onClick={handleConfigure} type="primary">
+            <PlusCircleOutlined />
+            <Typography
+              color={themeColors?.newtralLightest}
+              fontWeight={fontWeight?.semiBold}
+            >
+              {t('plugins.install')}
+            </Typography>
+          </S.ButtonConfigure>
+          <S.ButtonView onClick={handleView}>
+            <EyeOutlined />
+            <Typography fontWeight={fontWeight?.semiBold}>
+              {t('plugins.view')}
+            </Typography>
+          </S.ButtonView>
+        </S.ActionWrap>
       );
     }
+
     return (
       <S.ActionWrap>
-        <S.ButtonConfigure onClick={handleConfigure} type="primary">
-          <SettingFilled />
-          <Typography
-            color={themeColors?.newtralLightest}
-            fontWeight={fontWeight?.semiBold}
-          >
-            {t('plugins.configure')}
-          </Typography>
-        </S.ButtonConfigure>
         <S.ButtonView onClick={handleView}>
           <EyeOutlined />
           <Typography fontWeight={fontWeight?.semiBold}>
-            {t('plugins.view-detail')}
+            {t('plugins.view')}
           </Typography>
         </S.ButtonView>
         <S.ButtonDelete onClick={handleDeletePlugin}>
@@ -78,9 +84,7 @@ function CardPlugin({ isLoading, card }: CardPluginProps) {
   };
 
   return (
-    <S.CardPluginsContainer
-      $isInstalled={card?.status === PluginsStatusEnums?.INSTALLED}
-    >
+    <S.CardPluginsContainer $isInstalled={card?.isInstalled ?? false}>
       {isLoading ? (
         <S.CardPluginSkeleton>
           <S.CardHeader>
@@ -107,7 +111,7 @@ function CardPlugin({ isLoading, card }: CardPluginProps) {
         <S.CardPlugin>
           <S.CardHeader>
             <Image
-              src={card?.icon || icImageDefault}
+              src={card?.iconUrl || icImageDefault}
               width={60}
               height={60}
               onError={(e) => {
@@ -115,18 +119,18 @@ function CardPlugin({ isLoading, card }: CardPluginProps) {
               }}
               preview={false}
             />
-
-            <S.PluginType $type={card?.type}>
-              <Typography textAlign="center">
-                {t(`plugins.${card?.type}`)}
-              </Typography>
-            </S.PluginType>
+            {card?.type && (
+              <S.PluginType $type={card.type}>
+                <Typography textAlign="center">{card.type}</Typography>
+              </S.PluginType>
+            )}
           </S.CardHeader>
+
           <S.NamePlugin>
             <Typography fontWeight={fontWeight?.semiBold}>
               {card?.name || '--/--'}
             </Typography>
-            {card?.status === PluginsStatusEnums?.INSTALLED && (
+            {card?.isInstalled && (
               <S.Status>
                 <Image
                   src={icCheckGreen}
@@ -138,9 +142,11 @@ function CardPlugin({ isLoading, card }: CardPluginProps) {
               </S.Status>
             )}
           </S.NamePlugin>
+
           <S.Description>
-            <Typography>{card?.description || '--/--'}</Typography>
+            <Typography>{card?.shortDesc || '--/--'}</Typography>
           </S.Description>
+
           {renderAction()}
         </S.CardPlugin>
       )}
@@ -149,7 +155,7 @@ function CardPlugin({ isLoading, card }: CardPluginProps) {
         <ModalViewDetailPlugin
           open={viewDetailModal}
           onCancel={handleOpenModalViewDetail}
-          card={card}
+          cardId={card?.id}
         />
       )}
     </S.CardPluginsContainer>

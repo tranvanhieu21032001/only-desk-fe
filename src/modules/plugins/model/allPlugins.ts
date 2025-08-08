@@ -15,10 +15,20 @@ export interface PluginsTypeInterface {
 }
 
 export interface CardPluginInterface {
-  key: string;
-  icon: string;
-  name: string;
-  description: string;
-  type: PluginsTypeEnums;
-  status: PluginsStatusEnums;
+  id?: string;
+  key?: string;
+  name?: string;
+  iconUrl?: string;
+  docUrl?: string;
+  isInstalled?: boolean;
+  category?: string;
+  shortDesc?: string;
+  desc?: string;
+  type?: PluginsTypeEnums;
+  status?: PluginsStatusEnums;
+  author?: {
+    name?: string;
+    photo?: string;
+    domain?: string;
+  };
 }

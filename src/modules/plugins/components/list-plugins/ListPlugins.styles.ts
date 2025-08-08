@@ -105,8 +105,6 @@ export const Plugins = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  align-items: center;
-
   height: calc(100vh - 200px);
   overflow-y: auto;
 
