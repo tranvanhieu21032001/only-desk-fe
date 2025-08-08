@@ -1,9 +1,9 @@
 export enum PluginsTypeEnums {
-  ESSENTIALS = 'essentials',
-  MINI = 'mini',
-  FREE = 'free',
-  PLUS = 'plus',
-  PRICING = 'pricing',
+  ESSENTIALS = 'ESSENTIALS',
+  MINI = 'MINI',
+  FREE = 'FREE',
+  PLUS = 'PLUS',
+  PRICING = 'PRICING',
 }
 
 export enum PluginsStatusEnums {

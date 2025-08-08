@@ -8,14 +8,16 @@ import { useTranslation } from 'react-i18next';
 
 
 const BillingMenus: React.FC = () => {
-     const { t } = useTranslation('billing');
+    const { t } = useTranslation('billing');
+    
     const billingMenus = [
         { key: 'plans-&-subcriptions', label: t('billing-menu.plan-subcriptions')},
         { key: 'card', label: t('billing-menu.card') },
         { key: 'invoices', label: t('billing-menu.invoices')},
     ];
+
     const [searchParams, setSearchParams] = useSearchParams();
-    const type = searchParams.get('type') || 'message-shortcuts';
+    const type = searchParams.get('type') || billingMenus[0].key;
 
     const handleMenuClick = (key: string) => {
         setSearchParams({ type: key });

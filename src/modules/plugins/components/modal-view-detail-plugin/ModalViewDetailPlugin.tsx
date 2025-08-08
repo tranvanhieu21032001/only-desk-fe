@@ -15,24 +15,44 @@ import * as S from './ModalViewDetailPlugin.styles';
 
 import icVideo from '@/assets/icons/plugins/ic-video.svg';
 import icMockup from '@/assets/icons/plugins/ic-mockup.svg';
-import icWebsite from '@/assets/icons/plugins/ic-global.svg';
 import icDocument from '@/assets/icons/plugins/ic-document.svg';
-import icMessaging from '@/assets/icons/plugins/ic-messaging.svg';
+import { getPluginDetail } from '../../api/plugin.api';
 
 interface ModalViewDetailPluginProps {
   open: boolean;
   onCancel: () => void;
-  card: CardPluginInterface;
+  cardId?: string;
 }
 
 function ModalViewDetailPlugin({
   open,
   onCancel,
-  card,
+  cardId,
 }: ModalViewDetailPluginProps) {
   const { t } = useTranslation('plugins');
-
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [card, setCard] = useState<any | null>(null);
+  useEffect(() => {
+    if (open && cardId) {
+      setIsLoading(true);
+
+      getPluginDetail(cardId)
+        .then((data) => {
+          if (data?.__typename === 'Plugin') {
+            setCard(data);
+            console.log('✅ Plugin Detail:', data);
+          } else {
+            console.warn('❌ Not a Plugin node');
+          }
+        })
+        .catch((error) => {
+          console.error('❌ Failed to fetch plugin detail:', error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [open, cardId]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -144,7 +164,7 @@ function ModalViewDetailPlugin({
               <Col xs={24} md={12}>
                 <S.LogoPlugin>
                   <Image
-                    src={card?.icon}
+                    src={card?.iconUrl}
                     width={130}
                     height={130}
                     preview={false}
@@ -168,18 +188,18 @@ function ModalViewDetailPlugin({
                     </S.BodyPlugin>
                     <S.DesignFul>
                       <Image
-                        src={icMockup}
+                        src={card?.author?.photo}
                         preview={false}
                         width={46}
                         height={46}
                       />
                       <S.Design>
                         <Typography fontWeight={fontWeight?.semiBold}>
-                          {t('modal-view-detail-plugin.designful')}
+                          {card?.author?.name}
                         </Typography>
                         <S.ActionDesign>
                           <Typography color={themeColors?.newtralDark}>
-                            {t('modal-view-detail-plugin.designful')}
+                            {card?.author?.domain}
                           </Typography>
                         </S.ActionDesign>
                       </S.Design>
@@ -191,7 +211,7 @@ function ModalViewDetailPlugin({
                     <S.InstallPlugin
                       onClick={handleInstall}
                       type="primary"
-                      disabled={card?.status === PluginsStatusEnums?.INSTALLED}
+                      disabled={card?.isInstalled === true}
                     >
                       <PlusCircleOutlined />
                       <Typography
@@ -202,7 +222,7 @@ function ModalViewDetailPlugin({
                       </Typography>
                     </S.InstallPlugin>
 
-                    {card?.status === PluginsStatusEnums?.INSTALLED && (
+                    {card?.isInstalled && (
                       <S.Configure onClick={handleConfigure}>
                         <SettingFilled />
                         <Typography fontWeight={fontWeight?.semiBold}>
@@ -220,7 +240,7 @@ function ModalViewDetailPlugin({
                   </S.ButtonVideo>
                 </S.ActionPlugin>
               </Col>
-              <Col xs={24} md={6}>
+              {/* <Col xs={24} md={6}>
                 <S.Messaging>
                   <Image src={icMessaging} preview={false} />
                   <Typography fontWeight={fontWeight?.semiBold}>
@@ -272,7 +292,7 @@ function ModalViewDetailPlugin({
                     </Typography>
                   </S.Permissions>
                 </S.Website>
-              </S.WebsiteWrap>
+              </S.WebsiteWrap> */}
             </S.ContentHeader>
           )}
 
@@ -285,51 +305,7 @@ function ModalViewDetailPlugin({
               <Skeleton active paragraph={{ rows: 20 }} />
             </S.Description>
           ) : (
-            <S.Description>
-              Help Desk Hero - AI-Powered Customer Support Analytics Turn your
-              customer conversations into actionable business intelligence with
-              Help Desk Hero, the AI-powered analytics tool that transforms your
-              Crisp live chat interactions into valuable insights. 🔍 Discover
-              What Your Customers Really Think Stop guessing what your customers
-              want. Help Desk Hero analyzes your support conversations to
-              reveal: Customer sentiment and satisfaction levels Most requested
-              features and product improvements Common pain points and
-              frustrations Frequently asked questions and best answers Emerging
-              bugs and technical issues 💡 Powerful Features Automated
-              Conversation Analysis Sync and analyze up to 100 conversations at
-              a time Get instant insights about customer sentiment Track trends
-              and patterns in customer behavior Identify business opportunities
-              and areas for improvement Smart FAQ Generation Automatically
-              extract common questions and answers Create comprehensive FAQs
-              from real customer interactions Save hours of manual documentation
-              work Keep your knowledge base current and relevant Business
-              Intelligence Dashboard View top 10 feature requests with
-              popularity counts Track customer pain points and their frequency
-              Monitor support team performance Analyze market trends and
-              opportunities 📊 Data-Driven Decision Making: Make informed
-              business decisions based on real customer data: Prioritize feature
-              development based on actual demand Address common issues before
-              they become problems Improve customer satisfaction with
-              data-backed insights Optimize your support resources efficiently
-              🚀 Getting Started Install Help Desk Hero from the Crisp
-              Marketplace Connect your OpenAI API key Start syncing your
-              conversations Watch as insights automatically populate your
-              dashboard 📈 Recommended Usage For optimal results: Minimum of 100
-              conversations for initial insights 500+ conversations for powerful
-              actionable data 1,000+ conversations for business-transforming
-              insights 🔒 Security & Privacy Your data security is our priority:
-              All data processed on secure North American servers Hosted on
-              Canadian soil with Digital Ocean VPS Complete data deletion upon
-              app uninstallation Export functionality for preserving valuable
-              insights 🎯 Perfect For: E-commerce businesses SaaS companies
-              Retail stores Service providers Any business using Crisp chat for
-              customer support 🔜 Coming Soon: - Social media content generator
-              - AI chatbot with custom training - Homepage optimization advisor
-              - Unresolved conversation helper - Feature gap analyzer Transform
-              your customer support from a cost center into a strategic asset.
-              Let Help Desk Hero unlock the valuable insights hidden in your
-              customer conversations today.
-            </S.Description>
+            <S.Description dangerouslySetInnerHTML={{ __html: card?.desc || '' }} />
           )}
         </S.ModalDescription>
       </ModalCommon>

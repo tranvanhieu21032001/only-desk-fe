@@ -1,19 +1,45 @@
 import Button from '@/shared/components/common/Button';
 import { PluginsTypeEnums } from '../../helpers/enums/allPlugins';
-
 import { css, styled } from 'styled-components';
 
+export const ActionWrap = styled.div`
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+`;
+
+
 export const CardPluginsContainer = styled.section<{ $isInstalled: boolean }>`
+  position: relative;
   border: 1px solid ${(props) => props?.theme?.colors?.newtral};
   box-shadow: 0px 0px 2px 0px #0000000f;
   padding: 24px;
   border-radius: 12px;
   cursor: pointer;
+  min-width: 356px;
+  max-height: 255px;
 
   &:hover {
     transform: translateY(-5px);
     transition: transform 0.3s ease-in-out;
     box-shadow: 0px 4px 8px 0px #0000001a;
+
+    ${ActionWrap} {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
   }
 
   ${({ $isInstalled }) =>
@@ -26,6 +52,7 @@ export const CardPluginsContainer = styled.section<{ $isInstalled: boolean }>`
     padding: 12px;
   }
 `;
+
 
 export const CardPlugin = styled.div``;
 
@@ -98,7 +125,6 @@ export const PluginType = styled.div<{ $type: PluginsTypeEnums }>`
       case PluginsTypeEnums?.FREE:
         return css`
           background-color: #fce9f4;
-
           p {
             color: #c41d7f;
           }
@@ -106,7 +132,6 @@ export const PluginType = styled.div<{ $type: PluginsTypeEnums }>`
       case PluginsTypeEnums?.PLUS:
         return css`
           background-color: #fde9e7;
-
           p {
             color: #d91f11;
           }
@@ -114,7 +139,6 @@ export const PluginType = styled.div<{ $type: PluginsTypeEnums }>`
       default:
         return css`
           background-color: #f0e9fb;
-
           p {
             color: #531dab;
           }
@@ -135,13 +159,6 @@ export const Description = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   }
-`;
-
-export const ActionWrap = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
 `;
 
 export const ButtonViewDetail = styled(Button)`

@@ -301,7 +301,7 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'installed-plugins',
     path: MAIN_ROUTES.INSTALLED_PLUGINS,
-    component: PageNotFound,
+    component: AllPLugins,
     name: 'installed-plugins',
   },
 

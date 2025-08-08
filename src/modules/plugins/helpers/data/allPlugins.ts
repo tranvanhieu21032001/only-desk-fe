@@ -13,45 +13,55 @@ const MAX_COUNT: number = 10;
 
 const categories: CategoriesInterface[] = [
   {
-    key: 'features',
-    label: 'features',
+    key: 'all-plugins',
+    label: 'all-plugins',
     count: 2,
   },
   {
-    key: 'automation',
-    label: 'automation',
+    key: 'installed-plugins',
+    label: 'installed-plugins',
     count: 3,
   },
-  {
-    key: 'cms',
-    label: 'cms',
-    count: 12,
-  },
-  {
-    key: 'crm',
-    label: 'crm',
-    count: 16,
-  },
-  {
-    key: 'marketing',
-    label: 'marketing',
-    count: 6,
-  },
-  {
-    key: 'messaging',
-    label: 'messaging',
-    count: 5,
-  },
-  {
-    key: 'teamwork',
-    label: 'teamwork',
-    count: 8,
-  },
-  {
-    key: 'others',
-    label: 'others',
-    count: 10,
-  },
+  // {
+  //   key: 'features',
+  //   label: 'features',
+  //   count: 2,
+  // },
+  // {
+  //   key: 'automation',
+  //   label: 'automation',
+  //   count: 3,
+  // },
+  // {
+  //   key: 'cms',
+  //   label: 'cms',
+  //   count: 12,
+  // },
+  // {
+  //   key: 'crm',
+  //   label: 'crm',
+  //   count: 16,
+  // },
+  // {
+  //   key: 'marketing',
+  //   label: 'marketing',
+  //   count: 6,
+  // },
+  // {
+  //   key: 'messaging',
+  //   label: 'messaging',
+  //   count: 5,
+  // },
+  // {
+  //   key: 'teamwork',
+  //   label: 'teamwork',
+  //   count: 8,
+  // },
+  // {
+  //   key: 'others',
+  //   label: 'others',
+  //   count: 10,
+  // },
 ];
 
 const pluginTypes: PluginsTypeInterface[] = [

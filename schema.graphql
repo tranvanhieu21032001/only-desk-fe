@@ -49,9 +49,7 @@ type Workspace implements Node {
   rawId: String!
 }
 
-"""
-Status of a workspace
-"""
+"""Status of a workspace"""
 enum WorkspaceStatus {
   DRAFT
   PENDING
@@ -59,9 +57,7 @@ enum WorkspaceStatus {
   CLOSED
 }
 
-"""
-Type of member
-"""
+"""Type of member"""
 enum WorkspaceMemberRole {
   ADMIN
   DEVELOPER
@@ -88,9 +84,7 @@ type WorkspaceMember implements Node {
   rawId: String!
 }
 
-"""
-Status of a workspace member
-"""
+"""Status of a workspace member"""
 enum WorkspaceMemberStatus {
   PENDING
   APPROVED
@@ -150,9 +144,7 @@ type Contact implements Node {
   rawId: String!
 }
 
-"""
-The gender of the contact
-"""
+"""The gender of the contact"""
 enum ContactGender {
   MALE
   FEMALE
@@ -210,7 +202,7 @@ type ConversationConnection {
 type Message implements Node {
   id: ID!
   conversation: Conversation
-  content: String!
+  content: String
   sender: MessageSender!
   user: User
   replyTo: Message
@@ -222,18 +214,14 @@ type Message implements Node {
   rawId: String!
 }
 
-"""
-Type of message sender
-"""
+"""Type of message sender"""
 enum MessageSender {
   GUEST
   AGENT
   SYSTEM
 }
 
-"""
-Type of message content
-"""
+"""Type of message content"""
 enum MessageTypeEnum {
   TEXT
   FILE
@@ -243,9 +231,7 @@ enum MessageTypeEnum {
   RESOLVED
 }
 
-"""
-Status of a message
-"""
+"""Status of a message"""
 enum MessageStatus {
   SENT
   DELIVERED
@@ -260,6 +246,57 @@ type MessageTypeEdge {
 
 type MessageConnection {
   edges: [MessageTypeEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AuthorInfo {
+  name: String
+  photo: String
+  domain: String
+}
+
+type Plugin implements Node {
+  id: ID!
+  key: String!
+  name: String!
+  shortDesc: String!
+  desc: String!
+  version: String!
+  category: PluginCategory!
+  type: PluginType!
+  iconUrl: String
+  docUrl: String
+  author: AuthorInfo
+  isInstalled: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  rawId: String!
+}
+
+"""The category of the plugin"""
+enum PluginCategory {
+  FEATURE
+  AUTOMATION
+  MARKETING
+  MESSAGING
+  OTHER
+}
+
+"""The type of the plugin"""
+enum PluginType {
+  ESSENTIALS
+  MINI
+  FREE
+  PLUS
+}
+
+type PluginTypeEdge {
+  cursor: String!
+  node: Plugin!
+}
+
+type PluginConnection {
+  edges: [PluginTypeEdge!]!
   pageInfo: PageInfo!
 }
 
@@ -294,9 +331,7 @@ type HelpdeskArticle implements Node {
   rawId: String!
 }
 
-"""
-The status of the article
-"""
+"""The status of the article"""
 enum ArticleStatus {
   DRAFT
   PUBLISHED
@@ -340,38 +375,16 @@ type Query {
   me: User
   workspaces: [Workspace!]!
   operators: [WorkspaceMember!]!
-  conversations(
-    assignedToMe: Boolean
-    first: Float
-    after: String
-    last: Float
-    before: String
-  ): ConversationConnection!
-  messages(
-    conversationId: ID!
-    first: Float
-    after: String
-    last: Float
-    before: String
-  ): MessageConnection!
+  conversations(assignedToMe: Boolean, first: Float, after: String, last: Float, before: String): ConversationConnection!
+  messages(conversationId: ID!, first: Float, after: String, last: Float, before: String): MessageConnection!
   contacts(args: PaginationArgs!, keyword: String): ContactPagination!
-  liveContacts(
-    first: Float
-    after: String
-    last: Float
-    before: String
-  ): ContactConnection!
+  liveContacts(first: Float, after: String, last: Float, before: String): ContactConnection!
   node(id: ID!): Node
+  plugins(first: Float, after: String, last: Float, before: String): PluginConnection!
+  installedPlugins: [Plugin!]!
   helpdeskPublicCategories: [HelpdeskCategory!]!
-  helpdeskArticles(
-    first: Float
-    after: String
-    last: Float
-    before: String
-    keyword: String
-    popular: Boolean
-  ): HelpdeskArticleConnection!
-  helpdeskRelatedArticles(articleId: String): [HelpdeskArticle!]!
+  helpdeskArticles(first: Float, after: String, last: Float, before: String, keyword: String, popular: Boolean): HelpdeskArticleConnection!
+  helpdeskRelatedArticles(articleId: String!): [HelpdeskArticle!]!
   helpdeskArticleBySlug(slug: String!): HelpdeskArticle!
   helpdeskCategoryBySlug(slug: String!): HelpdeskCategory!
   helpdeskPublicSettings: HelpdeskSettings!
