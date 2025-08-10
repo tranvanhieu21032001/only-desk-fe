@@ -44,6 +44,7 @@ const Workspace = React.lazy(
 const Billing = React.lazy(
   () => import('@/modules/settings/pages/billing/Billing'),
 );
+
 const KnowledgeBase = React.lazy(
   () => import('@/modules/settings/pages/knowledge-base/KnowledgeBase'),
 );
@@ -54,6 +55,14 @@ const ChangePlan = React.lazy(
       '@/modules/settings/components/billing/billing-content/main/change-plan/ChangePlan'
     ),
 );
+
+const CheckoutSuccess = React.lazy(
+  () =>
+    import(
+      '@/modules/settings/components/billing/billing-content/billing-checkout-success/CheckoutSuccess'
+    ),
+);
+
 
 //Knowledge Base
 const Articles = React.lazy(
@@ -343,6 +352,12 @@ const routes_main: RouterElementInterface[] = [
     path: MAIN_ROUTES.CHANGEPLAN,
     component: ChangePlan,
     name: 'change-plan',
+  },
+    {
+    key: 'checkout-success',
+    path: MAIN_ROUTES.CHECKOUT_SUCCESS,
+    component: CheckoutSuccess,
+    name: 'checkout-success',
   },
   {
     key: 'setting-workspace',

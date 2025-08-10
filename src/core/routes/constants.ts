@@ -78,6 +78,7 @@ const MAIN_ROUTES = {
   KNOWLEDGE_BASE: `${preRouterMain}/setting/knowledge-base`,
   STATUS_PAGE: `${preRouterMain}/status-page`,
 
+  CHECKOUT_SUCCESS: `${preRouterMain}/checkout/success`,
   // Profiles
   ACCOUNT_SETTINGS: `${preRouterMain}/account-settings`,
   INTEGRATIONS: `${preRouterMain}/integrations`,
