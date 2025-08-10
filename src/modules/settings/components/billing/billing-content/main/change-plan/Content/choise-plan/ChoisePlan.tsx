@@ -1,5 +1,6 @@
 import { Image, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
 import * as S from './ChoisePlan.styles';
 import Button from '@/shared/components/common/Button';
 
@@ -15,9 +16,26 @@ import icInfor from '@/assets/icons/billing/ic-info.svg';
 import icMinitorDark from '@/assets/icons/billing/ic-monitor-dark.svg';
 import icUserDark from '@/assets/icons/billing/ic-user-dark.svg';
 import icInforDark from '@/assets/icons/billing/ic-info-dark.svg';
+import { checkoutPlan, getAllPlans } from '@/modules/settings/api/billing';
 
-const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }) => {
+const ChoisePlan = ({
+  setActiveStep,
+}: {
+  setActiveStep: (step: number) => void;
+}) => {
   const { t } = useTranslation('billing');
+  const [plans, setPlans] = useState<any[]>([]);
+
+  useEffect(() => {
+    getAllPlans()
+      .then((res) => {
+        console.log('API getAllPlans response:', res);
+        setPlans(res || []);
+      })
+      .catch((err) => {
+        console.error('API getAllPlans error:', err);
+      });
+  }, []);
 
   const labels = [
     { icon: icCheck, label: t('choice-plan.label-trial') },
@@ -25,64 +43,20 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
     { icon: icTime, label: t('choice-plan.label-cancel') },
   ];
 
-  const handleBuyNow = () => {
-    setActiveStep(1);
+  const handleBuyNow = (planKey: string) => {
+    checkoutPlan(planKey)
+      .then((res) => {
+        const url = res?.url;
+        if (url) {
+          window.open(url, '_blank');
+        } else {
+          console.error('Không tìm thấy URL từ API checkout');
+        }
+      })
+      .catch((err) => {
+        console.error('Checkout lỗi:', err);
+      });
   };
-
-  const plans = [
-    {
-      title: t('choice-plan.plan-free-title'),
-      desc: t('choice-plan.plan-free-desc'),
-      price: '0',
-      sections: [
-        t('choice-plan.feature-chat-widget'),
-        t('choice-plan.feature-shared-inbox'),
-        t('choice-plan.feature-contact-form'),
-        t('choice-plan.feature-mobile-apps'),
-        t('choice-plan.feature-unlimited-conversations'),
-        t('choice-plan.feature-ecommerce'),
-      ],
-    },
-    {
-      title: t('choice-plan.plan-mini-title'),
-      desc: t('choice-plan.plan-mini-desc'),
-      price: '45',
-      sections: [
-        t('choice-plan.feature-chat-widget'),
-        t('choice-plan.feature-shared-inbox'),
-        t('choice-plan.feature-contact-form'),
-        t('choice-plan.feature-mobile-apps'),
-        t('choice-plan.feature-unlimited-conversations'),
-        t('choice-plan.feature-ecommerce'),
-      ],
-    },
-    {
-      title: t('choice-plan.plan-essentials-title'),
-      desc: t('choice-plan.plan-essentials-desc'),
-      price: '95',
-      sections: [
-        t('choice-plan.feature-chat-widget'),
-        t('choice-plan.feature-shared-inbox'),
-        t('choice-plan.feature-contact-form'),
-        t('choice-plan.feature-mobile-apps'),
-        t('choice-plan.feature-unlimited-conversations'),
-        t('choice-plan.feature-ecommerce'),
-      ],
-    },
-    {
-      title: t('choice-plan.plan-plus-title'),
-      desc: t('choice-plan.plan-plus-desc'),
-      price: '295',
-      sections: [
-        t('choice-plan.feature-chat-widget'),
-        t('choice-plan.feature-shared-inbox'),
-        t('choice-plan.feature-contact-form'),
-        t('choice-plan.feature-mobile-apps'),
-        t('choice-plan.feature-unlimited-conversations'),
-        t('choice-plan.feature-ecommerce'),
-      ],
-    },
-  ];
 
   return (
     <S.PlanContainer>
@@ -97,13 +71,13 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
 
       <S.PlanList>
         {plans.map((plan, index) => (
-          <S.WrapPlanCard key={index}>
+          <S.WrapPlanCard key={plan.key}>
             <S.PlanCard isDark={index === plans.length - 1}>
               <S.PlanTitle>{plan.title}</S.PlanTitle>
               <S.PlanDesc>{plan.desc}</S.PlanDesc>
               <S.PlanPriceGroup>
                 <S.PlanPrice isDark={index === plans.length - 1}>
-                  ${plan.price}
+                  ${plan.priceMonth}
                 </S.PlanPrice>
                 <span>{t('choice-plan.month')}</span>
               </S.PlanPriceGroup>
@@ -112,7 +86,7 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
                 <S.GroupButton>
                   {index === plans.length - 1 ? (
                     <Button
-                      onClick={handleBuyNow}
+                      onClick={() => handleBuyNow(plan.key)}
                       type="default"
                       iconPosition="right"
                       icon={<Image preview={false} src={icTransferDark} />}
@@ -121,7 +95,7 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
                     </Button>
                   ) : (
                     <Button
-                      onClick={handleBuyNow}
+                      onClick={() => handleBuyNow(plan.key)}
                       type="primary"
                       iconPosition="right"
                       icon={<Image preview={false} src={icTransfer} />}
@@ -143,7 +117,7 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
                     preview={false}
                     src={index !== plans.length - 1 ? icMinitor : icMinitorDark}
                   />
-                  {t('choice-plan.seats-included')}
+                  {plan.seats} {t('choice-plan.seats-included')}
                   <Image
                     preview={false}
                     src={index !== plans.length - 1 ? icInfor : icInforDark}
@@ -154,7 +128,7 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
                     preview={false}
                     src={index !== plans.length - 1 ? icUser : icUserDark}
                   />
-                  {t('choice-plan.profiles-included')}
+                  {plan.contacts} {t('choice-plan.profiles-included')}
                   <Image
                     preview={false}
                     src={index !== plans.length - 1 ? icInfor : icInforDark}
@@ -164,13 +138,13 @@ const ChoisePlan = ({ setActiveStep }: { setActiveStep: (step: number) => void }
 
               <hr />
               <S.SectionList isDark={index === plans.length - 1}>
-                {plan.sections.map((section, idx) => (
+                {plan.features.map((feature: string, idx: number) => (
                   <li key={idx}>
                     <Image
                       preview={false}
                       src={index !== plans.length - 1 ? icCheck : icCheckDark}
                     />
-                    {section}
+                    {feature}
                   </li>
                 ))}
               </S.SectionList>
