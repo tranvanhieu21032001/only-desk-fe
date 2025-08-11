@@ -61,7 +61,7 @@ const MAIN_ROUTES = {
 
   // Plugins
   ALL_PLUGINS: `${preRouterMain}/plugins`,
-  INSTALLED_PLUGINS: `${preRouterMain}/installed-plugins`,
+  INSTALLED_PLUGINS: `${preRouterMain}/plugins?type=installed-plugins`,
 
   // Admin
   WORKSPACE_ADMIN: `${preRouterMain}/admin/workspace`,

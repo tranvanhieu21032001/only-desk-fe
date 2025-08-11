@@ -134,3 +134,14 @@ export const Plugins = styled.div`
     height: calc(100vh - 400px);
   }
 `;
+
+
+export const EmptyWrap = styled.div`
+  margin-top:24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width:100%;
+  gap:12px;
+`;

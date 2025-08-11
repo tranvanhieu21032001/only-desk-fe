@@ -46,3 +46,8 @@ export const InvoicesInformationLabel = styled.div`
     font-size: 20px;
   }
 `;
+
+export const SkeletonWrapper = styled.div`
+  padding: 20px 0;
+  width: 100%;
+`;
