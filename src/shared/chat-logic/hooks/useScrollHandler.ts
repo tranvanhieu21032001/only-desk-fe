@@ -17,7 +17,7 @@ export function useScrollHandler({
   messageContainerRef,
 }: UseScrollHandlerProps): UseScrollHandlerReturn {
   const containerRef = messageContainerRef;
-  const [isUserAtBottom, setIsUserAtBottom] = useState(false);
+  const [isUserAtBottom, setIsUserAtBottom] = useState(true);
   const isInitialRender = useRef(true);
 
   // Scroll to bottom

@@ -57,30 +57,33 @@ import icUser2 from '@/assets/icons/layout/ic-user-edit.svg';
 import icPlus from '@/assets/icons/layout/ic-plus.svg';
 import icChats from '@/assets/icons/layout/ic-chats.svg';
 import icGlobal from '@/assets/icons/layout/ic-global.svg';
-import icPlugins from '@/assets/icons/layout/ic-plugins.svg';
 import icAllChats from '@/assets/icons/layout/ic-all-chat.svg';
-import icCampaign from '@/assets/icons/layout/ic-campaign.svg';
+
 import icUserTick from '@/assets/icons/layout/ic-user-tick.svg';
 // import icSpamChats from '@/assets/icons/layout/ic-spam-chats.svg';
 import icKnowledge from '@/assets/icons/layout/ic-knowledge.svg';
 // import icPlusCircle from '@/assets/icons/layout/ic-plus-circle.svg';
-import icAiAutomation from '@/assets/icons/layout/ic-ai-automation.svg';
+
 import icDefaultAvatar from '@/assets/images/avatar-default.png';
 import icDefaultWorkspace from '@/assets/images/workspace-default.png';
 import icInfoAleartRed from '@/assets/icons/common/ic-info-aleart-red.svg';
 import icCloseAleart from '@/assets/icons/common/ic-close-aleart.svg';
 
 //AI Automation
-import icAiChatBox from '@/assets/icons/layout/ic-ai-chatbox.svg';
-import icWebContent from '@/assets/icons/layout/ic-web-content.svg';
-import icInboxMessage from '@/assets/icons/layout/ic-inbox-message.svg';
-import icKnowledgeBase from '@/assets/icons/layout/ic-knowledge-base.svg';
-import icAnswerSnippets from '@/assets/icons/layout/ic-answer-snippets.svg';
-import icAiChatBoxTrigger from '@/assets/icons/layout/ic-ai-chatbox-trigger.svg';
+// import icAiAutomation from '@/assets/icons/layout/ic-ai-automation.svg';
+// import icAiChatBox from '@/assets/icons/layout/ic-ai-chatbox.svg';
+// import icWebContent from '@/assets/icons/layout/ic-web-content.svg';
+// import icInboxMessage from '@/assets/icons/layout/ic-inbox-message.svg';
+// import icAnswerSnippets from '@/assets/icons/layout/ic-answer-snippets.svg';
+// import icAiChatBoxTrigger from '@/assets/icons/layout/ic-ai-chatbox-trigger.svg';
+
+// import icCampaign from '@/assets/icons/layout/ic-campaign.svg';
+// import icPlugins from '@/assets/icons/layout/ic-plugins.svg';
 
 //Knowledge Base
 import icArticles from '@/assets/icons/layout/ic-articles.svg';
 import icCategories from '@/assets/icons/layout/ic-categories.svg';
+import icKnowledgeBase from '@/assets/icons/layout/ic-knowledge-base.svg';
 
 //Plugins
 import icAllPlugins from '@/assets/icons/layout/ic-all-plugins.svg';
@@ -298,128 +301,128 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
       icon: icUser,
       redirect: `${MAIN_ROUTES?.CONTACTS}`,
     },
-    {
-      key: 'ai-knowledge',
-      icon: icAiAutomation,
-      children: (
-        <S.PopoverContent>
-          <Typography
-            fontWeight={fontWeight?.semiBold}
-            variant="body-text-larger"
-          >
-            {t('ai-knowledge.ai-automation')}
-          </Typography>
-          <S.Line />
-          <S.PopoverLabelWrap>
-            <S.ChildrenMenuWrap
-              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.AI_CHATBOT)}
-              $isActive={routePath === MAIN_ROUTES?.AI_CHATBOT}
-            >
-              <S.ChildrenMenuLabel>
-                <Image
-                  src={icAiChatBox}
-                  preview={false}
-                  width={24}
-                  height={24}
-                />
-                <Typography>{t('ai-knowledge.ai-chatbot')}</Typography>
-              </S.ChildrenMenuLabel>
-            </S.ChildrenMenuWrap>
+    // {
+    //   key: 'ai-knowledge',
+    //   icon: icAiAutomation,
+    //   children: (
+    //     <S.PopoverContent>
+    //       <Typography
+    //         fontWeight={fontWeight?.semiBold}
+    //         variant="body-text-larger"
+    //       >
+    //         {t('ai-knowledge.ai-automation')}
+    //       </Typography>
+    //       <S.Line />
+    //       <S.PopoverLabelWrap>
+    //         <S.ChildrenMenuWrap
+    //           onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.AI_CHATBOT)}
+    //           $isActive={routePath === MAIN_ROUTES?.AI_CHATBOT}
+    //         >
+    //           <S.ChildrenMenuLabel>
+    //             <Image
+    //               src={icAiChatBox}
+    //               preview={false}
+    //               width={24}
+    //               height={24}
+    //             />
+    //             <Typography>{t('ai-knowledge.ai-chatbot')}</Typography>
+    //           </S.ChildrenMenuLabel>
+    //         </S.ChildrenMenuWrap>
 
-            <S.ChildrenMenuWrap
-              onClick={() =>
-                handleClickChildrenMenu(MAIN_ROUTES?.CHATBOX_TRIGGER)
-              }
-              $isActive={routePath === MAIN_ROUTES?.CHATBOX_TRIGGER}
-            >
-              <S.ChildrenMenuLabel>
-                <Image
-                  src={icAiChatBoxTrigger}
-                  preview={false}
-                  width={24}
-                  height={24}
-                />
-                <Typography>{t('ai-knowledge.chatbox-triggers')}</Typography>
-              </S.ChildrenMenuLabel>
-            </S.ChildrenMenuWrap>
-          </S.PopoverLabelWrap>
+    //         <S.ChildrenMenuWrap
+    //           onClick={() =>
+    //             handleClickChildrenMenu(MAIN_ROUTES?.CHATBOX_TRIGGER)
+    //           }
+    //           $isActive={routePath === MAIN_ROUTES?.CHATBOX_TRIGGER}
+    //         >
+    //           <S.ChildrenMenuLabel>
+    //             <Image
+    //               src={icAiChatBoxTrigger}
+    //               preview={false}
+    //               width={24}
+    //               height={24}
+    //             />
+    //             <Typography>{t('ai-knowledge.chatbox-triggers')}</Typography>
+    //           </S.ChildrenMenuLabel>
+    //         </S.ChildrenMenuWrap>
+    //       </S.PopoverLabelWrap>
 
-          <S.LineDash />
+    //       <S.LineDash />
 
-          <S.PopoverLabelWrapNoBorder>
-            <S.ChildrenMenuWrap
-              onClick={() =>
-                handleClickChildrenMenu(MAIN_ROUTES?.ANSWER_SNIPPETS)
-              }
-              $isActive={routePath === MAIN_ROUTES?.ANSWER_SNIPPETS}
-            >
-              <S.ChildrenMenuLabel>
-                <Image
-                  src={icAnswerSnippets}
-                  preview={false}
-                  width={24}
-                  height={24}
-                />
-                <Typography>{t('ai-knowledge.answer-snippets')}</Typography>
-              </S.ChildrenMenuLabel>
-            </S.ChildrenMenuWrap>
-            <S.ChildrenMenuWrap
-              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.WEB_CONTENT)}
-              $isActive={routePath === MAIN_ROUTES?.WEB_CONTENT}
-            >
-              <S.ChildrenMenuLabel>
-                <Image
-                  src={icWebContent}
-                  preview={false}
-                  width={24}
-                  height={24}
-                />
-                <Typography>{t('ai-knowledge.web-content')}</Typography>
-              </S.ChildrenMenuLabel>
-            </S.ChildrenMenuWrap>
-            <S.ChildrenMenuWrap
-              onClick={() =>
-                handleClickChildrenMenu(MAIN_ROUTES?.INBOX_MESSAGES)
-              }
-              $isActive={routePath === MAIN_ROUTES?.INBOX_MESSAGES}
-            >
-              <S.ChildrenMenuLabel>
-                <Image
-                  src={icInboxMessage}
-                  preview={false}
-                  width={24}
-                  height={24}
-                />
-                <Typography>{t('ai-knowledge.inbox-messages')}</Typography>
-              </S.ChildrenMenuLabel>
-            </S.ChildrenMenuWrap>
-            <S.ChildrenMenuWrap
-              onClick={() =>
-                handleClickChildrenMenu(MAIN_ROUTES?.KNOWLEDGE_BASE_ARTICLE)
-              }
-              $isActive={routePath === MAIN_ROUTES?.KNOWLEDGE_BASE_ARTICLE}
-            >
-              <S.ChildrenMenuLabel>
-                <Image
-                  src={icKnowledgeBase}
-                  preview={false}
-                  width={24}
-                  height={24}
-                />
-                <Typography>
-                  {t('ai-knowledge.knowledge-base-articles')}
-                </Typography>
-              </S.ChildrenMenuLabel>
-            </S.ChildrenMenuWrap>
-          </S.PopoverLabelWrapNoBorder>
-        </S.PopoverContent>
-      ),
-    },
-    {
-      key: 'campaigns',
-      icon: icCampaign,
-      redirect: `${MAIN_ROUTES?.CAMPAIGNS}`,
-    },
+    //       <S.PopoverLabelWrapNoBorder>
+    //         <S.ChildrenMenuWrap
+    //           onClick={() =>
+    //             handleClickChildrenMenu(MAIN_ROUTES?.ANSWER_SNIPPETS)
+    //           }
+    //           $isActive={routePath === MAIN_ROUTES?.ANSWER_SNIPPETS}
+    //         >
+    //           <S.ChildrenMenuLabel>
+    //             <Image
+    //               src={icAnswerSnippets}
+    //               preview={false}
+    //               width={24}
+    //               height={24}
+    //             />
+    //             <Typography>{t('ai-knowledge.answer-snippets')}</Typography>
+    //           </S.ChildrenMenuLabel>
+    //         </S.ChildrenMenuWrap>
+    //         <S.ChildrenMenuWrap
+    //           onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.WEB_CONTENT)}
+    //           $isActive={routePath === MAIN_ROUTES?.WEB_CONTENT}
+    //         >
+    //           <S.ChildrenMenuLabel>
+    //             <Image
+    //               src={icWebContent}
+    //               preview={false}
+    //               width={24}
+    //               height={24}
+    //             />
+    //             <Typography>{t('ai-knowledge.web-content')}</Typography>
+    //           </S.ChildrenMenuLabel>
+    //         </S.ChildrenMenuWrap>
+    //         <S.ChildrenMenuWrap
+    //           onClick={() =>
+    //             handleClickChildrenMenu(MAIN_ROUTES?.INBOX_MESSAGES)
+    //           }
+    //           $isActive={routePath === MAIN_ROUTES?.INBOX_MESSAGES}
+    //         >
+    //           <S.ChildrenMenuLabel>
+    //             <Image
+    //               src={icInboxMessage}
+    //               preview={false}
+    //               width={24}
+    //               height={24}
+    //             />
+    //             <Typography>{t('ai-knowledge.inbox-messages')}</Typography>
+    //           </S.ChildrenMenuLabel>
+    //         </S.ChildrenMenuWrap>
+    //         <S.ChildrenMenuWrap
+    //           onClick={() =>
+    //             handleClickChildrenMenu(MAIN_ROUTES?.KNOWLEDGE_BASE_ARTICLE)
+    //           }
+    //           $isActive={routePath === MAIN_ROUTES?.KNOWLEDGE_BASE_ARTICLE}
+    //         >
+    //           <S.ChildrenMenuLabel>
+    //             <Image
+    //               src={icKnowledgeBase}
+    //               preview={false}
+    //               width={24}
+    //               height={24}
+    //             />
+    //             <Typography>
+    //               {t('ai-knowledge.knowledge-base-articles')}
+    //             </Typography>
+    //           </S.ChildrenMenuLabel>
+    //         </S.ChildrenMenuWrap>
+    //       </S.PopoverLabelWrapNoBorder>
+    //     </S.PopoverContent>
+    //   ),
+    // },
+    // {
+    //   key: 'campaigns',
+    //   icon: icCampaign,
+    //   redirect: `${MAIN_ROUTES?.CAMPAIGNS}`,
+    // },
     {
       key: 'knowledge',
       icon: icKnowledge,
@@ -480,11 +483,11 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
         </S.PopoverContent>
       ),
     },
-    {
-      key: 'charts',
-      icon: icPlugins,
-      redirect: `${MAIN_ROUTES?.CHARTS}`,
-    },
+    // {
+    //   key: 'charts',
+    //   icon: icPlugins,
+    //   redirect: `${MAIN_ROUTES?.CHARTS}`,
+    // },
     {
       key: 'plugins',
       icon: icPlus,
