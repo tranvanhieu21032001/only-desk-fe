@@ -8,12 +8,12 @@ import icUpcoming from '@/assets/icons/billing/ic-upcoming.svg';
 import icTick from '@/assets/icons/billing/ic-tick.svg';
 import InvoiceDrawer from '../invoice-drawer/InvoiceDrawer';
 import styled from 'styled-components';
+
 const CustomTable = styled(Table<Invoice>)`
   .ant-table-cell {
     padding: 12px !important;
   }
 `;
-
 
 interface Invoice {
   key: string;
@@ -23,31 +23,11 @@ interface Invoice {
   total: string;
 }
 
-const data: Invoice[] = [
-  {
-    key: '1',
-    dueDate: dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
-    description: 'Mini Plan Subscription - May 2025',
-    status: 'Upcoming',
-    total: '$45.00',
-  },
-  {
-    key: '2',
-    dueDate: dayjs().add(10, 'day').format('YYYY-MM-DD'),
-    description: 'Mini Plan Subscription - June 2025',
-    status: 'Paid',
-    total: '$45.00',
-  },
-  {
-    key: '3',
-    dueDate: dayjs().subtract(30, 'day').format('YYYY-MM-DD'),
-    description: 'Mini Plan Subscription - April 2025',
-    status: 'Paid',
-    total: '$45.00',
-  },
-];
+interface AllInvoicesProps {
+  invoices: any[];
+}
 
-const AllInvoices = () => {
+const AllInvoices = ({ invoices }: AllInvoicesProps) => {
   const [isDrawerVisible, setDrawerVisible] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
@@ -55,6 +35,14 @@ const AllInvoices = () => {
     setSelectedInvoice(record);
     setDrawerVisible(true);
   };
+
+  const tableData: Invoice[] = invoices.map((inv) => ({
+    key: inv._id,
+    dueDate: dayjs(inv.paidAt || inv.createdAt).format('MM/DD/YYYY'),
+    description: inv.description || 'No description',
+    status: inv.status.toLowerCase() === 'paid' ? 'Paid' : 'Upcoming',
+    total: `$${inv.amount.toFixed(2)}`,
+  }));
 
   const columns: ColumnsType<Invoice> = [
     {
@@ -110,7 +98,7 @@ const AllInvoices = () => {
 
   return (
     <>
-      <CustomTable columns={columns} dataSource={data} pagination={false} />
+      <CustomTable columns={columns} dataSource={tableData} pagination={false} />
       <InvoiceDrawer open={isDrawerVisible} onClose={() => setDrawerVisible(false)} invoice={selectedInvoice} />
     </>
   );

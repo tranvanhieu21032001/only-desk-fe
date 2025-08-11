@@ -233,7 +233,6 @@ export const PluginType = styled.div<{ $type: PluginsTypeEnums }>`
       case PluginsTypeEnums?.FREE:
         return css`
           background-color: #fce9f4;
-
           p {
             color: #c41d7f;
           }
@@ -241,7 +240,6 @@ export const PluginType = styled.div<{ $type: PluginsTypeEnums }>`
       case PluginsTypeEnums?.PLUS:
         return css`
           background-color: #fde9e7;
-
           p {
             color: #d91f11;
           }
@@ -249,7 +247,6 @@ export const PluginType = styled.div<{ $type: PluginsTypeEnums }>`
       default:
         return css`
           background-color: #f0e9fb;
-
           p {
             color: #531dab;
           }
@@ -257,7 +254,6 @@ export const PluginType = styled.div<{ $type: PluginsTypeEnums }>`
     }
   }}
 `;
-
 export const ModalLineBreak = styled.div`
   border-bottom: 1px solid ${(props) => props?.theme?.colors?.newtral};
   padding: 12px 0;

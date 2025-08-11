@@ -21,6 +21,7 @@ import {
   installPluginThunk,
   uninstallPluginThunk,
 } from '../../store/pluginsSlice';
+import { PluginsTypeEnums } from '../../helpers/enums/allPlugins';
 
 interface ModalViewDetailPluginProps {
   open: boolean;
@@ -143,18 +144,22 @@ function ModalViewDetailPlugin({
                         <Typography fontWeight={600}>
                           {card?.name || '--/--'}
                         </Typography>
-                        <S.PluginType $type={card?.type}>
-                          {card?.type}
-                        </S.PluginType>
+                        {card?.type && (
+                         <S.PluginType $type={card?.type as PluginsTypeEnums}>
+                            <Typography textAlign="center">
+                              {card.type}
+                            </Typography>
+                          </S.PluginType>
+                        )}
                       </S.LabelPlugin>
-                      <S.BodyPlugin>
+                      {/* <S.BodyPlugin>
                         <Typography fontWeight={600} color="#555">
                           developer
                         </Typography>
-                      </S.BodyPlugin>
+                      </S.BodyPlugin> */}
                       <S.DesignFul>
                         <Image
-                          src={card?.author?.photo}
+                          src={card?.author?.photo ?? ''}
                           preview={false}
                           width={46}
                           height={46}
@@ -193,22 +198,22 @@ function ModalViewDetailPlugin({
                           >
                             Uninstall
                           </S.UninstallPlugin>
-                          <S.Configure onClick={handleConfigure}>
+                          {/* <S.Configure onClick={handleConfigure}>
                             <SettingFilled />
                             <Typography fontWeight={600}>
                               {t('modal-view-detail-plugin.configure')}
                             </Typography>
-                          </S.Configure>
+                          </S.Configure> */}
                         </>
                       )}
                     </S.ActionInstallPlugin>
 
-                    <S.ButtonVideo onClick={handleViewVideo}>
+                    {/* <S.ButtonVideo onClick={handleViewVideo}>
                       <Image src={icVideo} preview={false} width={20} />
                     </S.ButtonVideo>
                     <S.ButtonVideo onClick={handleViewDocument}>
                       <Image src={icDocument} preview={false} width={20} />
-                    </S.ButtonVideo>
+                    </S.ButtonVideo> */}
                   </S.ActionPlugin>
                 </Col>
               </S.ContentHeader>
@@ -239,15 +244,13 @@ function ModalViewDetailPlugin({
         width={440}
         footer={
           <S.WrappButton>
-            <Button onClick={toggleRemoveModal}>
-              {t('cancel')}
-            </Button>
+            <Button onClick={toggleRemoveModal}>{t('cancel')}</Button>
             <Button
               type="danger"
               isLoading={loadingRemoveBtn}
               onClick={handleUninstall}
             >
-             {t('uninstall')}
+              {t('uninstall')}
             </Button>
           </S.WrappButton>
         }
@@ -255,14 +258,11 @@ function ModalViewDetailPlugin({
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
           <ReactSVG src={icNoitify} />
           <div>
-            <Typography
-              fontWeight={fontWeight?.semiBold}
-              margin="0 0 12px 0"
-            >
-               Uninstall plugin
+            <Typography fontWeight={fontWeight?.semiBold} margin="0 0 12px 0">
+              Uninstall plugin
             </Typography>
             <Typography color="#5B5B5B">
-               Confirm uninstalling the plugin?
+              Confirm uninstalling the plugin?
             </Typography>
           </div>
         </div>

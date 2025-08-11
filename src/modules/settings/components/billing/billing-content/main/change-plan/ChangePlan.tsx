@@ -24,7 +24,7 @@ const ChangePlan = () => {
   const [activeStep, setActiveStep] = useState(0);
 
   const handleBack = () => {
-    navigate('/billing');
+    navigate('/setting/billing');
   };
 
   const steps = [

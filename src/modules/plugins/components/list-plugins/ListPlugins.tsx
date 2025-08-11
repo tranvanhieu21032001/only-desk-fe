@@ -1,27 +1,28 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { CheckCircleOutlined } from '@ant-design/icons';
-import { useSearchParams } from 'react-router-dom'; // Dùng useSearchParams thay cho useLocation
+import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { pluginTypes } from '../../helpers/data/allPlugins';
-
 import CardPlugin from '../card-plugin/CardPlugin';
 import Input from '@/shared/components/common/Input';
-import Typography from '@/shared/components/common/Typography';
 import * as S from './ListPlugins.styles';
 import { fetchInstalledPlugins, fetchPlugins } from '../../store/pluginsSlice';
+import empty from '@/assets/images/contact/img-contact-empty.png';
+import { Image, Skeleton } from 'antd';
+import Typography from '@/shared/components/common/Typography';
+import themeColors from '@/shared/styles/themes/default/colors';
 
 function Plugins() {
   const { t } = useTranslation('plugins');
   const dispatch = useDispatch();
 
-  const { data: allPlugins, installedPlugins, loading: isLoading } = useSelector(
-    (state: any) => state.plugins
-  );
+  const {
+    data: allPlugins,
+    installedPlugins,
+    loading: isLoading,
+  } = useSelector((state: any) => state.plugins);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const typeParam = searchParams.get('type'); // Lấy param "type" từ url query
 
   const [typePlugins, setTypePlugins] = useState<string[]>([]);
@@ -31,7 +32,7 @@ function Plugins() {
     debounce((value: string) => {
       setSearchTerm(value.trim().toLowerCase());
     }, 600),
-    []
+    [],
   );
 
   const handleSearchPlugins = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,25 +52,29 @@ function Plugins() {
     let baseList = isInstalledPage ? installedPlugins : allPlugins;
 
     if (typePlugins.length > 0) {
-      baseList = baseList.filter((plugin) => typePlugins.includes(plugin.type || ''));
+      baseList = baseList.filter((plugin) =>
+        typePlugins.includes(plugin.type || ''),
+      );
     }
 
     if (searchTerm) {
       baseList = baseList.filter(
         (plugin) =>
           plugin.name.toLowerCase().includes(searchTerm) ||
-          (plugin.shortDesc?.toLowerCase().includes(searchTerm) ?? false)
+          (plugin.shortDesc?.toLowerCase().includes(searchTerm) ?? false),
       );
     }
 
     return baseList;
   }, [typeParam, installedPlugins, allPlugins, typePlugins, searchTerm]);
 
-  function handleFilterPluginsByType(typeKey: string) {
-    setTypePlugins((prev) =>
-      prev.includes(typeKey) ? prev.filter((item) => item !== typeKey) : [...prev, typeKey]
-    );
-  }
+  // function handleFilterPluginsByType(typeKey: string) {
+  //   setTypePlugins((prev) =>
+  //     prev.includes(typeKey)
+  //       ? prev.filter((item) => item !== typeKey)
+  //       : [...prev, typeKey],
+  //   );
+  // }
 
   return (
     <S.PluginsContainer>
@@ -79,7 +84,8 @@ function Plugins() {
         onChange={handleSearchPlugins}
         allowClear
       />
-      <S.PluginsTypesContainer>
+
+      {/* <S.PluginsTypesContainer>
         {isLoading
           ? Array(5)
               .fill(0)
@@ -94,13 +100,38 @@ function Plugins() {
                 {typePlugins.includes(pluginType.key) && <CheckCircleOutlined />}
               </S.PluginType>
             ))}
-      </S.PluginsTypesContainer>
+      </S.PluginsTypesContainer> */}
 
-      <S.Plugins>
-        {pluginsToShow.map((card) => (
-          <CardPlugin key={card.id || card.key} card={card} isLoading={isLoading} />
-        ))}
-      </S.Plugins>
+      {isLoading ? (
+        <S.Plugins>
+          {Array(4)
+            .fill(0)
+            .map((_, idx) => (
+              <Skeleton.Input
+                key={idx}
+                active
+                style={{ width: '100%', height: 100, marginBottom: 16 }}
+              />
+            ))}
+        </S.Plugins>
+      ) : pluginsToShow.length === 0 ? (
+        <S.EmptyWrap>
+          <Image src={empty} preview={false} />
+          <Typography variant="h3" margin="8px 0 0 0" color={themeColors?.primary}>
+            No plugins found
+          </Typography>
+        </S.EmptyWrap>
+      ) : (
+        <S.Plugins>
+          {pluginsToShow.map((card) => (
+            <CardPlugin
+              key={card.id || card.key}
+              card={card}
+              isLoading={isLoading}
+            />
+          ))}
+        </S.Plugins>
+      )}
     </S.PluginsContainer>
   );
 }

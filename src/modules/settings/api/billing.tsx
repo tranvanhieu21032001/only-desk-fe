@@ -7,6 +7,7 @@ export const ENDPOINT = {
   CHECKOUT: `${prefixBase}/checkout`,
   INSTALL_PLUGIN: `${prefixBase}/plugins`,
   UNINSTALL_PLUGIN: `${prefixBase}/plugins`,
+  GET_INVOICES: `${prefixBase}/checkout/invoices`,
 };
 
 export const getAllPlans = async () => {
@@ -22,6 +23,13 @@ export const checkoutPlan = async (planKey: string, provider: string = 'stripe')
       planKey,
       provider,
     },
+    enableFlashMessageSuccess: false,
+    enableFlashMessageError: true,
+  });
+};
+
+export const getInvoices = async () => {
+  return getRequest(ENDPOINT.GET_INVOICES, {
     enableFlashMessageSuccess: false,
     enableFlashMessageError: true,
   });
