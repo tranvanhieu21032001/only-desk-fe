@@ -110,6 +110,9 @@ export const DesignFul = styled.div`
   margin-top: 8px;
   display: flex;
   gap: 8px;
+  img{
+  border:none;
+  }
 `;
 
 export const Design = styled.div``;
