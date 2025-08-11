@@ -1,4 +1,4 @@
-import { Image, Button } from 'antd';
+import { Image } from 'antd';
 import icSuccess from '@/assets/icons/billing/ic-payment-success.svg';
 import styled from 'styled-components';
 
@@ -30,9 +30,9 @@ const Wrapper = styled.div`
 `;
 
 const CheckoutSuccess = () => {
-  const handleGoHome = () => {
-    window.location.href = '/'; // hoặc navigate('/')
-  };
+  // const handleGoHome = () => {
+  //   window.location.href = '/';
+  // };
 
   return (
     <Wrapper>

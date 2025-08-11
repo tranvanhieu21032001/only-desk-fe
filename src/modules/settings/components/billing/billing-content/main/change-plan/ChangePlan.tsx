@@ -21,7 +21,7 @@ import PaymentComponent from './Content/Payment/PaymentComponent';
 const ChangePlan = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('billing');
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, _setActiveStep] = useState(0);
 
   const handleBack = () => {
     navigate('/setting/billing');
@@ -75,7 +75,7 @@ const ChangePlan = () => {
           ))}
         </S.StepsContainer>
 
-        {activeStep === 0 && <ChoisePlan setActiveStep={setActiveStep} />}
+        {activeStep === 0 && <ChoisePlan/>}
         {activeStep === 1 && <PaymentComponent />}
       </S.ChangePlanInformation>
     </S.ChangePlanInformationContainer>
