@@ -4,11 +4,13 @@ import { Image } from 'antd';
 import MessageTimeWithIcon from './MessageTimeWithIcon';
 
 import * as S from './InboxDetail.styles';
+import icEye from '@/assets/icons/common/ic-eye.svg'
 import ProfileCard from '@/shared/components/common/ProfileCard';
 import { MessageBaseItemProps } from '@/shared/chat-logic/interfaces/inbox';
 import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
 import { useAppSelector } from '@/shared/hooks';
 import { getId } from '@/shared/utils/decode';
+import { ReactSVG } from 'react-svg';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -72,76 +74,71 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     return <S.SystemMessage>{msg.content}</S.SystemMessage>;
   }
 
-  function renderContent() {
-    switch (msg.type) {
-      case MessageType.TEXT:
-        return (
-          <S.MessageBubbleRight
-            style={{
-              background: isOwner ? '#e6f4ff' : '#f5f5f5',
-              color: '#222',
-              wordBreak: 'break-word',
+ function renderContent() {
+  switch (msg.type) {
+    case MessageType.TEXT:
+      return (
+        <S.MessageBubbleRight
+          style={{
+            background: isOwner ? '#e6f4ff' : '#f5f5f5',
+            color: '#222',
+            wordBreak: 'break-word',
+          }}
+        >
+          {msg.content}
+        </S.MessageBubbleRight>
+      );
+    case MessageType.NOTE:
+      return (
+        <S.NoteContainer>
+          <S.NoteRow>
+            <S.NoteBubbleRight>{msg.content}</S.NoteBubbleRight>
+          </S.NoteRow>
+        </S.NoteContainer>
+      );
+    case MessageType.IMAGE:
+      if (!msg.metadata?.fileUrl) return null;
+
+      const hiddenImageRef = useRef<HTMLDivElement>(null);
+
+      const handleClick = () => {
+        hiddenImageRef.current?.querySelector('img')?.click();
+      };
+
+      const imageWithPreviewOverlay = (
+        <Image.PreviewGroup>
+          <S.ImageWrapper
+            isOwner={isOwner}
+            onClick={handleClick}
+            role="button"
+            tabIndex={0}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') handleClick();
             }}
           >
-            {msg.content}
-          </S.MessageBubbleRight>
-        );
-      case MessageType.NOTE:
-        return (
-          <S.NoteContainer>
-            <S.NoteRow>
-              <S.NoteBubbleRight>{msg.content}</S.NoteBubbleRight>
-            </S.NoteRow>
-          </S.NoteContainer>
-        );
-      case MessageType.IMAGE:
-        if (!msg.metadata?.fileUrl) return null;
+            <S.StyledImage
+              src={msg.metadata.fileUrl}
+              alt="image"
+              data-id={msg.id}
+              isOwner={isOwner}
+            />
+            <S.Overlay className="overlay"><S.Previewbox><ReactSVG src={icEye}/>Preview</S.Previewbox></S.Overlay>
+          </S.ImageWrapper>
+          <div ref={hiddenImageRef} style={{ display: 'none' }}>
+            <Image src={msg.metadata.fileUrl} />
+          </div>
+        </Image.PreviewGroup>
+      );
 
-        const hiddenImageRef = useRef<HTMLDivElement>(null);
-
-        const handleClick = () => {
-          hiddenImageRef.current?.querySelector('img')?.click();
-        };
-
-        if (isOwner) {
-          return (
-            <S.MessageImage>
-              <Image.PreviewGroup>
-                <img
-                  src={msg.metadata.fileUrl}
-                  alt="image"
-                  data-id={msg.id}
-                  style={{ width: 200, cursor: 'pointer', borderRadius: 10 }}
-                  onClick={handleClick}
-                />
-                <div ref={hiddenImageRef} style={{ display: 'none' }}>
-                  <Image src={msg.metadata.fileUrl} />
-                </div>
-              </Image.PreviewGroup>
-            </S.MessageImage>
-          );
-        } else {
-          return (
-            <S.MessageImageLeft>
-              <Image.PreviewGroup>
-                <img
-                  src={msg.metadata.fileUrl}
-                  alt="image"
-                  data-id={msg.id}
-                  style={{ width: 200, cursor: 'pointer', borderRadius: 12 }}
-                  onClick={handleClick}
-                />
-                <div ref={hiddenImageRef} style={{ display: 'none' }}>
-                  <Image src={msg.metadata.fileUrl} />
-                </div>
-              </Image.PreviewGroup>
-            </S.MessageImageLeft>
-          );
-        }
-      default:
-        return null;
-    }
+      if (isOwner) {
+        return <S.MessageImage>{imageWithPreviewOverlay}</S.MessageImage>;
+      } else {
+        return <S.MessageImageLeft>{imageWithPreviewOverlay}</S.MessageImageLeft>;
+      }
+    default:
+      return null;
   }
+}
 
   if (isOwner) {
     return (
