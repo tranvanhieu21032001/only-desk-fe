@@ -1,10 +1,12 @@
-import { getRequest, postRequest } from '@/core/services/requests';
+import { getRequest, postRequest, deleteRequest } from '@/core/services/requests';
 
 const prefixBase = '';
 
 export const ENDPOINT = {
   GET_ALL_PLAN: `${prefixBase}/plans`,
   CHECKOUT: `${prefixBase}/checkout`,
+  INSTALL_PLUGIN: `${prefixBase}/plugins`,
+  UNINSTALL_PLUGIN: `${prefixBase}/plugins`,
 };
 
 export const getAllPlans = async () => {

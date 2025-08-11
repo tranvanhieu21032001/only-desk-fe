@@ -60,7 +60,7 @@ const MAIN_ROUTES = {
   CATEGORIES: `${preRouterMain}/categories`,
 
   // Plugins
-  ALL_PLUGINS: `${preRouterMain}/all-plugins`,
+  ALL_PLUGINS: `${preRouterMain}/plugins`,
   INSTALLED_PLUGINS: `${preRouterMain}/installed-plugins`,
 
   // Admin

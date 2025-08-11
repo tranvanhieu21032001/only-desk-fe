@@ -1,30 +1,30 @@
-import { Skeleton } from 'antd';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { CategoriesInterface } from '../../model/allPlugins';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
-import { categories, MAX_COUNT } from '../../helpers/data/allPlugins';
+import { categories } from '../../helpers/data/allPlugins';
 
 import Typography from '@/shared/components/common/Typography';
 import * as S from './Categories.styles';
+import { useEffect } from 'react';
 
 function Categories() {
   const { t } = useTranslation('plugins');
-  const [isLoading, setIsLoading] = useState(true);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const currentPath = location.pathname.replace('/', '');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentType = searchParams.get('type');
+  const defaultType = categories[0]?.key || '';
 
+  // Set default type param if none present
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!currentType && defaultType) {
+      setSearchParams({ type: defaultType }, { replace: true });
+    }
+  }, [currentType, defaultType, setSearchParams]);
 
   const handleCategoryClick = (key: string) => {
-    navigate(`/${key}`);
+    setSearchParams({ type: key });
   };
 
   return (
@@ -36,42 +36,25 @@ function Categories() {
       </S.LabelCategories>
 
       <S.Categories>
-        {isLoading
-          ? Array(8)
-              .fill(0)
-              .map((_, index) => (
-                <S.CategoryWrap key={index}>
-                  <Skeleton.Input
-                    active
-                    style={{ minWidth: 120, width: 120, height: 28 }}
-                  />
-                  <Skeleton.Avatar
-                    active
-                    style={{ minWidth: 30, width: 30, height: 30 }}
-                  />
-                </S.CategoryWrap>
-              ))
-          : categories.map((category: CategoriesInterface) => {
-              const isActive = currentPath === category.key;
+        {categories.map((category: CategoriesInterface) => {
+          const isActive = (currentType || defaultType) === category.key;
 
-              return (
-                <S.CategoryWrap
-                  key={category.key}
-                  $isActive={isActive}
-                  onClick={() => handleCategoryClick(category.key)}
-                >
-                  <Typography>
-                    {t(`all-plugins.${category.label}`)}
-                  </Typography>
-                  {/* <S.Count>
-                    <Typography>
-                      {category.count <= MAX_COUNT ? category.count || 0 : 10}
-                      {category.count > MAX_COUNT && '+'}
-                    </Typography>
-                  </S.Count> */}
-                </S.CategoryWrap>
-              );
-            })}
+          return (
+            <S.CategoryWrap
+              key={category.key}
+              $isActive={isActive}
+              onClick={() => handleCategoryClick(category.key)}
+            >
+              <Typography>{t(`all-plugins.${category.label}`)}</Typography>
+              {/* <S.Count>
+                <Typography>
+                  {category.count <= MAX_COUNT ? category.count || 0 : 10}
+                  {category.count > MAX_COUNT && '+'}
+                </Typography>
+              </S.Count> */}
+            </S.CategoryWrap>
+          );
+        })}
       </S.Categories>
     </S.CategoryContainer>
   );

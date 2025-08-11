@@ -1,62 +1,73 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { CheckCircleOutlined } from '@ant-design/icons';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom'; // Dùng useSearchParams thay cho useLocation
+import { useDispatch, useSelector } from 'react-redux';
 
-import { getAllPlugins, getInstalledPlugins } from '../../api/plugin.api';
-import { PAGE_SIZE } from '@/shared/constant/common';
 import { pluginTypes } from '../../helpers/data/allPlugins';
 
 import CardPlugin from '../card-plugin/CardPlugin';
 import Input from '@/shared/components/common/Input';
 import Typography from '@/shared/components/common/Typography';
-
 import * as S from './ListPlugins.styles';
+import { fetchInstalledPlugins, fetchPlugins } from '../../store/pluginsSlice';
 
 function Plugins() {
   const { t } = useTranslation('plugins');
-  const location = useLocation();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [typePlugins, setTypePlugins] = useState<string[]>([]);
-  const [plugins, setPlugins] = useState<any[]>([]);
+  const dispatch = useDispatch();
 
-  const handleSearchPlugins = debounce(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      //TODO handle search
-      e?.target?.value;
-    },
-    600
+  const { data: allPlugins, installedPlugins, loading: isLoading } = useSelector(
+    (state: any) => state.plugins
   );
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const typeParam = searchParams.get('type'); // Lấy param "type" từ url query
+
+  const [typePlugins, setTypePlugins] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value.trim().toLowerCase());
+    }, 600),
+    []
+  );
+
+  const handleSearchPlugins = (e: React.ChangeEvent<HTMLInputElement>) => {
+    debouncedSearch(e.target.value);
+  };
+
   useEffect(() => {
-    const fetchPlugins = async () => {
-      try {
-        const isInstalledPage = location.pathname === '/installed-plugins';
+    if (typeParam === 'installed-plugins') {
+      dispatch(fetchInstalledPlugins());
+    } else {
+      dispatch(fetchPlugins());
+    }
+  }, [dispatch, typeParam]);
 
-        let data;
-        if (isInstalledPage) {
-          const installed = await getInstalledPlugins();
-          data = installed.map((plugin) => ({ node: plugin }));
-        } else {
-          const all = await getAllPlugins({ first: PAGE_SIZE });
-          data = all?.edges || [];
-        }
+  const pluginsToShow = useMemo(() => {
+    const isInstalledPage = typeParam === 'installed-plugins';
+    let baseList = isInstalledPage ? installedPlugins : allPlugins;
 
-        setPlugins(data);
-      } catch (error) {
-        console.error('Failed to fetch plugins:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (typePlugins.length > 0) {
+      baseList = baseList.filter((plugin) => typePlugins.includes(plugin.type || ''));
+    }
 
-    fetchPlugins();
-  }, [location.pathname]);
+    if (searchTerm) {
+      baseList = baseList.filter(
+        (plugin) =>
+          plugin.name.toLowerCase().includes(searchTerm) ||
+          (plugin.shortDesc?.toLowerCase().includes(searchTerm) ?? false)
+      );
+    }
 
-  function handleFilterPluginsByType(e: string) {
+    return baseList;
+  }, [typeParam, installedPlugins, allPlugins, typePlugins, searchTerm]);
+
+  function handleFilterPluginsByType(typeKey: string) {
     setTypePlugins((prev) =>
-      prev?.includes(e) ? prev?.filter((item) => item !== e) : [...prev, e]
+      prev.includes(typeKey) ? prev.filter((item) => item !== typeKey) : [...prev, typeKey]
     );
   }
 
@@ -66,35 +77,28 @@ function Plugins() {
         prefix
         placeholder={t('plugins.search')}
         onChange={handleSearchPlugins}
+        allowClear
       />
       <S.PluginsTypesContainer>
         {isLoading
           ? Array(5)
-              ?.fill(0)
-              ?.map((_, index: number) => (
-                <S.SkeletonContainer active key={index} />
-              ))
-          : pluginTypes?.map((pluginType) => (
+              .fill(0)
+              .map((_, index) => <S.SkeletonContainer active key={index} />)
+          : pluginTypes.map((pluginType) => (
               <S.PluginType
-                $type={pluginType?.key}
-                key={pluginType?.key}
-                onClick={() => handleFilterPluginsByType(pluginType?.key)}
+                $type={pluginType.key}
+                key={pluginType.key}
+                onClick={() => handleFilterPluginsByType(pluginType.key)}
               >
-                <Typography>{t(`plugins.${pluginType?.label}`)} </Typography>
-                {typePlugins?.includes(pluginType?.key) && (
-                  <CheckCircleOutlined />
-                )}
+                <Typography>{t(`plugins.${pluginType.label}`)}</Typography>
+                {typePlugins.includes(pluginType.key) && <CheckCircleOutlined />}
               </S.PluginType>
             ))}
       </S.PluginsTypesContainer>
 
       <S.Plugins>
-        {plugins?.map((card) => (
-          <CardPlugin
-            key={card?.node?.id || card?.node?.key}
-            card={card?.node}
-            isLoading={isLoading}
-          />
+        {pluginsToShow.map((card) => (
+          <CardPlugin key={card.id || card.key} card={card} isLoading={isLoading} />
         ))}
       </S.Plugins>
     </S.PluginsContainer>
