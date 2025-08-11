@@ -66,6 +66,9 @@ export const CardHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  img{
+  border-radius:4px;
+  }
 `;
 
 export const NamePlugin = styled.div`
