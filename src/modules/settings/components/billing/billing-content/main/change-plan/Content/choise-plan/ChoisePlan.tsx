@@ -18,11 +18,7 @@ import icUserDark from '@/assets/icons/billing/ic-user-dark.svg';
 import icInforDark from '@/assets/icons/billing/ic-info-dark.svg';
 import { checkoutPlan, getAllPlans } from '@/modules/settings/api/billing';
 
-const ChoisePlan = ({
-  setActiveStep,
-}: {
-  setActiveStep: (step: number) => void;
-}) => {
+const ChoisePlan = () => {
   const { t } = useTranslation('billing');
   const [plans, setPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

@@ -1,4 +1,4 @@
-import { getRequest, postRequest, deleteRequest } from '@/core/services/requests';
+import { getRequest, postRequest } from '@/core/services/requests';
 
 const prefixBase = '';
 

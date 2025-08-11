@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Col, Image, message, Modal, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { PlusCircleOutlined, SettingFilled } from '@ant-design/icons';
+import { PlusCircleOutlined } from '@ant-design/icons';
 
 import Typography from '@/shared/components/common/Typography';
 import ModalCommon from '@/shared/components/common/ModalBase';
 import * as S from './ModalViewDetailPlugin.styles';
 
-import icVideo from '@/assets/icons/plugins/ic-video.svg';
-import icDocument from '@/assets/icons/plugins/ic-document.svg';
+// import icVideo from '@/assets/icons/plugins/ic-video.svg';
+// import icDocument from '@/assets/icons/plugins/ic-document.svg';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
 
@@ -52,13 +52,13 @@ function ModalViewDetailPlugin({
     }
   }, [open, cardId, dispatch]);
 
-  function handleViewVideo() {
-    // TODO handle later
-  }
+  // function handleViewVideo() {
+  //   // TODO handle later
+  // }
 
-  function handleViewDocument() {
-    // TODO handle later
-  }
+  // function handleViewDocument() {
+  //   // TODO handle later
+  // }
 
   // Cài plugin
   async function handleInstall() {
@@ -97,9 +97,9 @@ function ModalViewDetailPlugin({
     setIsRemoveModalOpen(false);
   }
 
-  function handleConfigure() {
-    // TODO handle later
-  }
+  // function handleConfigure() {
+  //   // TODO handle later
+  // }
 
   return (
     <>
