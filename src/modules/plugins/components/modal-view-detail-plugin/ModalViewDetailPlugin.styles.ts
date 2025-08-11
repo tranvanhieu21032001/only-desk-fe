@@ -4,6 +4,7 @@ import Button from '@/shared/components/common/Button';
 
 import styled, { css } from 'styled-components';
 import { PluginsTypeEnums } from '../../helpers/enums/allPlugins';
+import themeColors from '@/shared/styles/themes/default/colors';
 
 export const WrapModal = styled.div``;
 
@@ -151,6 +152,15 @@ export const InstallPlugin = styled(Button)`
   }
 `;
 
+export const UninstallPlugin = styled(Button)`
+  span {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
 export const Configure = styled(Button)`
   span {
     display: flex;
@@ -277,5 +287,20 @@ export const Description = styled.div`
 
   @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     max-height: 50vh;
+  }
+`;
+
+
+export const WrappButton = styled.div`
+
+border-top:1px solid ${themeColors?.newtral};
+margin-top:24px;
+  padding:12px 0 0 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  justify-content:flex-end;
+  button{
+  width:fit-content;
   }
 `;

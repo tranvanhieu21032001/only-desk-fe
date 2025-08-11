@@ -5,7 +5,32 @@ import { allPluginsQuery } from '@/relay/AllpluginsQuery';
 import { PluginDetailQuery } from '@/relay/__generated__/PluginDetailQuery.graphql';
 import { pluginDetailQuery } from '@/relay/PluginDetailQuery';
 import { InstalledPluginQuery } from '@/relay/__generated__/InstalledPluginQuery.graphql';
-import { installedPluginQuery } from '@/relay/InstalledpluginQuery';
+import { installedPluginQuery } from '@/relay/InstalledPluginQuery';
+import { deleteRequest, postRequest } from '@/core/services/requests';
+
+const prefixBase = '';
+export const ENDPOINT = {
+  INSTALL_PLUGIN: `${prefixBase}/plugins`,
+  UNINSTALL_PLUGIN: `${prefixBase}/plugins`,
+};
+export interface PluginDetail {
+  id: string;
+  rawId?: string;
+  key: string;
+  name: string;
+  type?: string;
+  desc?: string;
+  version?: string;
+  category?: string;
+  iconUrl?: string;
+  isInstalled?: boolean;
+  author?: {
+    name?: string | null;
+    photo?: string | null;
+    domain?: string | null;
+  } | null;
+  __typename?: string;
+}
 
 export const getAllPlugins = async (variables: {
   first?: number;
@@ -26,9 +51,7 @@ export const getAllPlugins = async (variables: {
   return data.plugins;
 };
 
-export const getPluginDetail = async (
-  id: string
-): Promise<PluginDetailQuery['response']['node']> => {
+export const getPluginDetail = async (id: string): Promise<PluginDetail> => {
   const data = await fetchQuery<PluginDetailQuery>(
     RelayEnvironment,
     pluginDetailQuery,
@@ -39,7 +62,7 @@ export const getPluginDetail = async (
     throw new Error('No plugin data returned for given ID.');
   }
 
-  return data.node;
+  return data.node as PluginDetail;
 };
 
 export const getInstalledPlugins = async (): Promise<
@@ -56,4 +79,22 @@ export const getInstalledPlugins = async (): Promise<
   }
 
   return data.installedPlugins;
+};
+
+
+export const installPlugin = async (pluginKey: string) => {
+  return postRequest(ENDPOINT.INSTALL_PLUGIN, {
+    data: {
+      pluginKey,
+    },
+     messageSuccess:'Plugin installed successfully',
+    enableFlashMessageError: true,
+  });
+};
+
+export const uninstallPlugin = async (pluginKey: string) => {
+  return deleteRequest(`${ENDPOINT.UNINSTALL_PLUGIN}/${pluginKey}/uninstall`, {
+    messageSuccess:'Plugin uninstalled successfully',
+    enableFlashMessageError: true,
+  });
 };

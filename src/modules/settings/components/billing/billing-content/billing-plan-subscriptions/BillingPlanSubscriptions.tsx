@@ -13,7 +13,7 @@ const BillingPlanSubscriptions = () => {
     const { t } = useTranslation('billing');
      const navigate = useNavigate();
     const handleChangePlan = () => {
-        navigate('/billing/change-plan');
+        navigate('/setting/billing/change-plan');
     };
 
     return (

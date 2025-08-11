@@ -68,7 +68,7 @@ export const CategoryWrap = styled.div<{ $isActive?: boolean }>`
 
     p {
       color: ${(props) => props?.theme?.colors?.secondaryDarker};
-      font-weight: ${(props) => props?.theme?.fontWeight?.semiBold} !important;
+      // font-weight: ${(props) => props?.theme?.fontWeight?.semiBold} !important;
     }
   }
 `;

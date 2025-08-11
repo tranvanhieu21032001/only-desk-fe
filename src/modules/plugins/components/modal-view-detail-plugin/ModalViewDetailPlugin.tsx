@@ -1,22 +1,26 @@
 import { useEffect, useState } from 'react';
-import { Col, Image, Skeleton } from 'antd';
+import { Col, Image, message, Modal, Skeleton } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { PlusCircleOutlined, SettingFilled } from '@ant-design/icons';
 
-import { CardPluginInterface } from '../../model/allPlugins';
-import themeColors from '@/shared/styles/themes/default/colors';
-import fontWeight from '@/shared/styles/themes/default/fontWeight';
-import { PluginsStatusEnums } from '../../helpers/enums/allPlugins';
-
 import Typography from '@/shared/components/common/Typography';
 import ModalCommon from '@/shared/components/common/ModalBase';
-
 import * as S from './ModalViewDetailPlugin.styles';
 
 import icVideo from '@/assets/icons/plugins/ic-video.svg';
-import icMockup from '@/assets/icons/plugins/ic-mockup.svg';
 import icDocument from '@/assets/icons/plugins/ic-document.svg';
-import { getPluginDetail } from '../../api/plugin.api';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks';
+import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
+
+import { ReactSVG } from 'react-svg';
+import fontWeight from '@/shared/styles/themes/default/fontWeight';
+import Button from '@/shared/components/common/Button';
+
+import {
+  fetchPluginDetail,
+  installPluginThunk,
+  uninstallPluginThunk,
+} from '../../store/pluginsSlice';
 
 interface ModalViewDetailPluginProps {
   open: boolean;
@@ -30,286 +34,240 @@ function ModalViewDetailPlugin({
   cardId,
 }: ModalViewDetailPluginProps) {
   const { t } = useTranslation('plugins');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [card, setCard] = useState<any | null>(null);
+  const dispatch = useAppDispatch();
+
+  const card = useAppSelector((state) => state.plugins.detail);
+  const isLoading = useAppSelector((state) => state.plugins.detailLoading);
+  const error = useAppSelector((state) => state.plugins.detailError);
+
+  const [loadingInstall, setLoadingInstall] = useState(false);
+
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+  const [loadingRemoveBtn, setLoadingRemoveBtn] = useState(false);
+
   useEffect(() => {
     if (open && cardId) {
-      setIsLoading(true);
-
-      getPluginDetail(cardId)
-        .then((data) => {
-          if (data?.__typename === 'Plugin') {
-            setCard(data);
-            console.log('✅ Plugin Detail:', data);
-          } else {
-            console.warn('❌ Not a Plugin node');
-          }
-        })
-        .catch((error) => {
-          console.error('❌ Failed to fetch plugin detail:', error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      dispatch(fetchPluginDetail(cardId));
     }
-  }, [open, cardId]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }, []);
+  }, [open, cardId, dispatch]);
 
   function handleViewVideo() {
-    //TODO handle later
+    // TODO handle later
   }
 
   function handleViewDocument() {
-    //TODO handle later
+    // TODO handle later
   }
 
-  function handleInstall() {
-    //TODO handle later
+  // Cài plugin
+  async function handleInstall() {
+    if (!card?.key) return;
+    setLoadingInstall(true);
+    try {
+      await dispatch(installPluginThunk(card.key)).unwrap();
+    } catch {
+      message.error(t('plugins.installError'));
+    } finally {
+      setLoadingInstall(false);
+    }
+  }
+
+  // Gỡ plugin thật sự (gọi API)
+  async function handleUninstall() {
+    if (!card?.key) return;
+    setLoadingRemoveBtn(true);
+    try {
+      await dispatch(uninstallPluginThunk(card.key)).unwrap();
+      setIsRemoveModalOpen(false);
+    } catch {
+      message.error(t('plugins.uninstallError'));
+    } finally {
+      setLoadingRemoveBtn(false);
+    }
+  }
+
+  // Mở modal xác nhận khi bấm nút Uninstall
+  function handleOpenRemoveModal() {
+    setIsRemoveModalOpen(true);
+  }
+
+  // Đóng modal xác nhận
+  function toggleRemoveModal() {
+    setIsRemoveModalOpen(false);
   }
 
   function handleConfigure() {
-    //TODO handle later
+    // TODO handle later
   }
 
   return (
-    <S.WrapModal>
-      <ModalCommon
-        open={open}
-        onCancel={onCancel}
-        showFooter={false}
-        isLoading={isLoading}
-        width={1050}
-      >
-        <S.ModalHeader>
-          <S.ModalHeaderContent>
-            <Typography fontWeight={fontWeight?.semiBold}>
-              {t('modal-view-detail-plugin.plugins')}
-            </Typography>
-            <Typography color={themeColors?.newtralLight}>
-              {t('modal-view-detail-plugin.please-insert-modal-description')}
-            </Typography>
-          </S.ModalHeaderContent>
-        </S.ModalHeader>
+    <>
+      <S.WrapModal>
+        <ModalCommon
+          open={open}
+          onCancel={onCancel}
+          showFooter={false}
+          isLoading={isLoading}
+          width={1050}
+        >
+          <S.ModalHeader>
+            <S.ModalHeaderContent>
+              <Typography fontWeight={600}>
+                {t('modal-view-detail-plugin.plugins')}
+              </Typography>
+              <Typography color="#999">
+                {t('modal-view-detail-plugin.please-insert-modal-description')}
+              </Typography>
+            </S.ModalHeaderContent>
+          </S.ModalHeader>
 
-        <S.ModalContent>
-          {isLoading ? (
-            <S.ContentHeader gutter={[72, 16]}>
-              <Col xs={24} md={12}>
-                <S.LogoPlugin>
-                  <Skeleton.Image active style={{ width: 130, height: 130 }} />
-                  <S.InfoPlugin>
-                    <S.LabelPlugin>
-                      <Skeleton.Input
-                        active
-                        style={{ width: 100, height: 22 }}
-                      />
-                      <Skeleton.Input
-                        active
-                        style={{ minWidth: 50, width: 50, height: 22 }}
-                      />
-                    </S.LabelPlugin>
-                    <S.BodyPlugin>
-                      <Skeleton.Input
-                        active
-                        style={{ width: 100, height: 22 }}
-                      />
-                    </S.BodyPlugin>
-                    <S.DesignFul>
-                      <Skeleton.Image
-                        active
-                        style={{ width: 46, height: 46 }}
-                      />
-                      <S.Design>
-                        <Skeleton.Input
-                          active
-                          style={{ width: 100, height: 22 }}
+          <S.ModalContent>
+            {isLoading ? (
+              <S.ContentHeader gutter={[72, 16]}>
+                {/* ...skeleton loading như cũ */}
+              </S.ContentHeader>
+            ) : error ? (
+              <div>{t('modal-view-detail-plugin.error-loading-plugin')}</div>
+            ) : (
+              <S.ContentHeader gutter={[72, 16]}>
+                <Col xs={24} md={12}>
+                  <S.LogoPlugin>
+                    <Image
+                      src={card?.iconUrl}
+                      width={130}
+                      height={130}
+                      preview={false}
+                    />
+                    <S.InfoPlugin>
+                      <S.LabelPlugin>
+                        <Typography fontWeight={600}>
+                          {card?.name || '--/--'}
+                        </Typography>
+                        <S.PluginType $type={card?.type}>
+                          {card?.type}
+                        </S.PluginType>
+                      </S.LabelPlugin>
+                      <S.BodyPlugin>
+                        <Typography fontWeight={600} color="#555">
+                          developer
+                        </Typography>
+                      </S.BodyPlugin>
+                      <S.DesignFul>
+                        <Image
+                          src={card?.author?.photo}
+                          preview={false}
+                          width={46}
+                          height={46}
                         />
-                        <S.ActionDesign>
-                          <Skeleton.Input
-                            active
-                            style={{ minWidth: 50, width: 50, height: 22 }}
-                          />
-                        </S.ActionDesign>
-                      </S.Design>
-                    </S.DesignFul>
-                  </S.InfoPlugin>
-                </S.LogoPlugin>
-                <S.ActionPlugin>
-                  <Skeleton.Input active style={{ width: 120, height: 38 }} />
-                  <Skeleton.Input active style={{ width: 120, height: 38 }} />
-                  <Skeleton.Input
-                    active
-                    style={{ minWidth: 50, width: 50, height: 38 }}
-                  />
-                  <Skeleton.Input
-                    active
-                    style={{ minWidth: 50, width: 50, height: 38 }}
-                  />
-                </S.ActionPlugin>
-              </Col>
-              <Col xs={24} md={6}>
-                <Skeleton active />
-              </Col>
-              <Col xs={24} md={6}>
-                <Skeleton active />
-              </Col>
-            </S.ContentHeader>
-          ) : (
-            <S.ContentHeader gutter={[72, 16]}>
-              <Col xs={24} md={12}>
-                <S.LogoPlugin>
-                  <Image
-                    src={card?.iconUrl}
-                    width={130}
-                    height={130}
-                    preview={false}
-                  />
-                  <S.InfoPlugin>
-                    <S.LabelPlugin>
-                      <Typography fontWeight={fontWeight?.semiBold}>
-                        {card?.name || '--/--'}
-                      </Typography>
-                      <S.PluginType $type={card?.type}>
-                        {card?.type}
-                      </S.PluginType>
-                    </S.LabelPlugin>
-                    <S.BodyPlugin>
-                      <Typography
-                        fontWeight={fontWeight?.semiBold}
-                        color={themeColors?.newtralDark}
-                      >
-                        developer
-                      </Typography>
-                    </S.BodyPlugin>
-                    <S.DesignFul>
-                      <Image
-                        src={card?.author?.photo}
-                        preview={false}
-                        width={46}
-                        height={46}
-                      />
-                      <S.Design>
-                        <Typography fontWeight={fontWeight?.semiBold}>
-                          {card?.author?.name}
-                        </Typography>
-                        <S.ActionDesign>
-                          <Typography color={themeColors?.newtralDark}>
-                            {card?.author?.domain}
+                        <S.Design>
+                          <Typography fontWeight={600}>
+                            {card?.author?.name}
                           </Typography>
-                        </S.ActionDesign>
-                      </S.Design>
-                    </S.DesignFul>
-                  </S.InfoPlugin>
-                </S.LogoPlugin>
-                <S.ActionPlugin>
-                  <S.ActionInstallPlugin>
-                    <S.InstallPlugin
-                      onClick={handleInstall}
-                      type="primary"
-                      disabled={card?.isInstalled === true}
-                    >
-                      <PlusCircleOutlined />
-                      <Typography
-                        color={themeColors?.newtralLightest}
-                        fontWeight={fontWeight?.semiBold}
-                      >
-                        {t('modal-view-detail-plugin.install')}
-                      </Typography>
-                    </S.InstallPlugin>
+                          <S.ActionDesign>
+                            <Typography color="#555">
+                              {card?.author?.domain}
+                            </Typography>
+                          </S.ActionDesign>
+                        </S.Design>
+                      </S.DesignFul>
+                    </S.InfoPlugin>
+                  </S.LogoPlugin>
+                  <S.ActionPlugin>
+                    <S.ActionInstallPlugin>
+                      {!card?.isInstalled ? (
+                        <S.InstallPlugin
+                          onClick={handleInstall}
+                          type="primary"
+                          isLoading={loadingInstall}
+                        >
+                          <PlusCircleOutlined />
+                          <Typography color="#fff" fontWeight={600}>
+                            {t('modal-view-detail-plugin.install')}
+                          </Typography>
+                        </S.InstallPlugin>
+                      ) : (
+                        <>
+                          <S.UninstallPlugin
+                            type="danger"
+                            onClick={handleOpenRemoveModal}
+                          >
+                            Uninstall
+                          </S.UninstallPlugin>
+                          <S.Configure onClick={handleConfigure}>
+                            <SettingFilled />
+                            <Typography fontWeight={600}>
+                              {t('modal-view-detail-plugin.configure')}
+                            </Typography>
+                          </S.Configure>
+                        </>
+                      )}
+                    </S.ActionInstallPlugin>
 
-                    {card?.isInstalled && (
-                      <S.Configure onClick={handleConfigure}>
-                        <SettingFilled />
-                        <Typography fontWeight={fontWeight?.semiBold}>
-                          {t('modal-view-detail-plugin.configure')}
-                        </Typography>
-                      </S.Configure>
-                    )}
-                  </S.ActionInstallPlugin>
+                    <S.ButtonVideo onClick={handleViewVideo}>
+                      <Image src={icVideo} preview={false} width={20} />
+                    </S.ButtonVideo>
+                    <S.ButtonVideo onClick={handleViewDocument}>
+                      <Image src={icDocument} preview={false} width={20} />
+                    </S.ButtonVideo>
+                  </S.ActionPlugin>
+                </Col>
+              </S.ContentHeader>
+            )}
 
-                  <S.ButtonVideo onClick={handleViewVideo}>
-                    <Image src={icVideo} preview={false} width={20} />
-                  </S.ButtonVideo>
-                  <S.ButtonVideo onClick={handleViewDocument}>
-                    <Image src={icDocument} preview={false} width={20} />
-                  </S.ButtonVideo>
-                </S.ActionPlugin>
-              </Col>
-              {/* <Col xs={24} md={6}>
-                <S.Messaging>
-                  <Image src={icMessaging} preview={false} />
-                  <Typography fontWeight={fontWeight?.semiBold}>
-                    {t('modal-view-detail-plugin.messaging')}
-                  </Typography>
-                </S.Messaging>
-                <Typography margin="8px 0 0 0" color={themeColors?.newtralDark}>
-                  Read sessions
-                </Typography>
-                <Typography margin="8px 0 0 0" color={themeColors?.newtralDark}>
-                  Read & write messages
-                </Typography>
-                <Typography margin="8px 0 0 0" color={themeColors?.newtralDark}>
-                  Read states
-                </Typography>
-                <Typography margin="8px 0 0 0" color={themeColors?.newtralDark}>
-                  Reat participants
-                </Typography>
-                <Typography margin="8px 0 0 0" color={themeColors?.newtralDark}>
-                  Read events
-                </Typography>
-              </Col>
-              <S.WebsiteWrap xs={24} md={6}>
-                <S.Website>
-                  <S.Messaging>
-                    <Image src={icWebsite} preview={false} />
-                    <Typography fontWeight={fontWeight?.semiBold}>
-                      {t('modal-view-detail-plugin.website')}
-                    </Typography>
-                  </S.Messaging>
-                  <Typography
-                    margin="8px 0 0 0"
-                    color={themeColors?.newtralDark}
-                  >
-                    Read operators
-                  </Typography>
-                </S.Website>
+            <S.ModalLineBreak />
+          </S.ModalContent>
 
-                <S.Website>
-                  <S.Messaging>
-                    <Image src={icWebsite} preview={false} />
-                    <Typography fontWeight={fontWeight?.semiBold}>
-                      {t('modal-view-detail-plugin.permissions')}
-                    </Typography>
-                  </S.Messaging>
-                  <S.Permissions>
-                    <Typography>
-                      {t('modal-view-detail-plugin.what-are-permissions')}
-                    </Typography>
-                  </S.Permissions>
-                </S.Website>
-              </S.WebsiteWrap> */}
-            </S.ContentHeader>
-          )}
+          <S.ModalDescription>
+            {isLoading ? (
+              <S.Description>
+                <Skeleton active paragraph={{ rows: 20 }} />
+              </S.Description>
+            ) : (
+              <S.Description
+                dangerouslySetInnerHTML={{ __html: card?.desc || '' }}
+              />
+            )}
+          </S.ModalDescription>
+        </ModalCommon>
+      </S.WrapModal>
 
-          <S.ModalLineBreak />
-        </S.ModalContent>
-
-        <S.ModalDescription>
-          {isLoading ? (
-            <S.Description>
-              <Skeleton active paragraph={{ rows: 20 }} />
-            </S.Description>
-          ) : (
-            <S.Description dangerouslySetInnerHTML={{ __html: card?.desc || '' }} />
-          )}
-        </S.ModalDescription>
-      </ModalCommon>
-    </S.WrapModal>
+      {/* Modal xác nhận Uninstall */}
+      <Modal
+        open={isRemoveModalOpen}
+        onCancel={toggleRemoveModal}
+        centered
+        width={440}
+        footer={
+          <S.WrappButton>
+            <Button onClick={toggleRemoveModal}>
+              {t('cancel')}
+            </Button>
+            <Button
+              type="danger"
+              isLoading={loadingRemoveBtn}
+              onClick={handleUninstall}
+            >
+             {t('uninstall')}
+            </Button>
+          </S.WrappButton>
+        }
+      >
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+          <ReactSVG src={icNoitify} />
+          <div>
+            <Typography
+              fontWeight={fontWeight?.semiBold}
+              margin="0 0 12px 0"
+            >
+               Uninstall plugin
+            </Typography>
+            <Typography color="#5B5B5B">
+               Confirm uninstalling the plugin?
+            </Typography>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
 
