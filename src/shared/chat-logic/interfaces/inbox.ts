@@ -1,4 +1,4 @@
-import { MessageSender, MessageStatus, MessageType } from '../enums/chat.enums';
+import { MessageSender, MessageStatus, MessageType } from "../enums/chat.enums";
 
 export interface Contact {
   id: string;
@@ -43,6 +43,8 @@ export interface Message {
   status: MessageStatus;
   metadata?: {
     fileUrl?: string;
+    inputType?: string;
+    placeholder?: string;
   };
   showTime?: boolean;
   showDate?: boolean;

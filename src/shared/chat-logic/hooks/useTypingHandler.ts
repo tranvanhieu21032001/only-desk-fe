@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
+import { emitTypingStart, emitTypingStop } from "../services/socket";
+import { eventBus } from "../services/event-bus";
 import {
-  emitTypingStart,
-  emitTypingStop,
-  listenUserTyping,
-  offUserTyping,
-} from '../services/socket';
+  EVENTBUS_SERVER_TYPING,
+  EVENTBUS_USER_TYPING,
+} from "../constants/event-bus.constants";
 
 interface UseTypingHandlerProps {
   rawConversationId: string;
@@ -55,9 +55,11 @@ export function useTypingHandler({
       setIsTyping(data.isTyping);
     };
 
-    listenUserTyping(handleUserTyping);
+    eventBus.on(EVENTBUS_USER_TYPING, handleUserTyping);
+    eventBus.on(EVENTBUS_SERVER_TYPING, handleUserTyping);
     return () => {
-      offUserTyping(handleUserTyping);
+      eventBus.off(EVENTBUS_USER_TYPING, handleUserTyping);
+      eventBus.off(EVENTBUS_SERVER_TYPING, handleUserTyping);
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
