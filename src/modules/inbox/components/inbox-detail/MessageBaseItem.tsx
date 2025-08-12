@@ -158,6 +158,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             alignItems: 'flex-end',
             justifyContent: 'flex-end',
             gap: 8,
+            width:'100%'
           }}
         >
           {timeWithIcon}
@@ -196,6 +197,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
                 display: 'flex',
                 alignItems: 'flex-end',
                 gap: 4,
+                width:'100%'
               }}
             >
               {renderContent()}
