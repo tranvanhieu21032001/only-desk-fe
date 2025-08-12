@@ -841,3 +841,52 @@ export const DateSeparator = styled.div`
   font-size: 12px;
   margin: 16px 0;
 `;
+
+export const ImageWrapper = styled.div<{ isOwner?: boolean }>`
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: ${(p) => (p.isOwner ? '10px' : '12px')};
+  overflow: hidden;
+  width: 200px;
+  &:hover div.overlay {
+    opacity: 1;
+  }
+`;
+
+export const StyledImage = styled.img<{ isOwner?: boolean }>`
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: ${(p) => (p.isOwner ? '10px' : '12px')};
+  transition: transform 0.3s ease;
+`;
+
+export const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+`;
+
+export const Previewbox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap:4px;
+
+  .ant-splitter{
+  line-height:unset;
+  }
+`
