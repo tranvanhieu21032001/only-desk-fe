@@ -122,7 +122,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
               data-id={msg.id}
               isOwner={isOwner}
             />
-            <S.Overlay className="overlay"><S.Previewbox><ReactSVG src={icEye}/>Preview</S.Previewbox></S.Overlay>
+            <S.Overlay className="overlay"><S.Previewbox><Image src={icEye} preview={false}/>Preview</S.Previewbox></S.Overlay>
           </S.ImageWrapper>
           <div ref={hiddenImageRef} style={{ display: 'none' }}>
             <Image src={msg.metadata.fileUrl} />
@@ -151,7 +151,6 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             alignItems: 'flex-end',
             justifyContent: 'flex-end',
             gap: 8,
-            width: 'fit-content',
           }}
         >
           {timeWithIcon}
@@ -188,7 +187,6 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
                 display: 'flex',
                 alignItems: 'flex-end',
                 gap: 4,
-                width: 'fit-content',
               }}
             >
               {renderContent()}
