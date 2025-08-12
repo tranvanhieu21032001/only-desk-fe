@@ -7,14 +7,10 @@ import * as S from './InboxDetail.styles';
 import icEye from '@/assets/icons/common/ic-eye.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
 import { MessageBaseItemProps } from '@/shared/chat-logic/interfaces/inbox';
-import {
-  MessageSender,
-  MessageType,
-} from '@/shared/chat-logic/enums/chat.enums';
+import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
 import { useAppSelector } from '@/shared/hooks';
 import { getId } from '@/shared/utils/decode';
 import { ReactSVG } from 'react-svg';
-import { SystemAvatar } from '@/shared/components/common/ProfileCard/SystemAvatar';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -128,7 +124,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
               />
               <S.Overlay className="overlay">
                 <S.Previewbox>
-                  <ReactSVG src={icEye} />
+                  <Image src={icEye} preview={false} />
                   Preview
                 </S.Previewbox>
               </S.Overlay>
@@ -162,7 +158,6 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             alignItems: 'flex-end',
             justifyContent: 'flex-end',
             gap: 8,
-            width: 'fit-content',
           }}
         >
           {timeWithIcon}
@@ -175,29 +170,23 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
       <S.MessageRow>
         <S.MessageAvatarWrapper>
           {msg.showTime ? (
-            msg.sender == MessageSender.SYSTEM ? (
-              <SystemAvatar />
-            ) : (
-              <ProfileCard
-                userId={msg.user?.id}
-                contactId={contactId}
-                name={name}
-                avatarUrl={avatar}
-                countryCode={countryCode}
-                hiddenInfo
-                avatarSize={32}
-                flagSize={12}
-              />
-            )
+            <ProfileCard
+              userId={msg.user?.id}
+              contactId={contactId}
+              name={name}
+              avatarUrl={avatar}
+              countryCode={countryCode}
+              hiddenInfo
+              avatarSize={32}
+              flagSize={12}
+            />
           ) : (
             <div style={{ width: 32, height: 32 }} />
           )}
           <S.MessageColumnView>
             {msg.showTime && (
               <S.MessageSenderName>
-                {msg.sender == MessageSender.SYSTEM
-                  ? 'OnlyChat'
-                  : msg.user?.firstName || 'Guest'}
+                {msg.user?.firstName || 'Guest'}
               </S.MessageSenderName>
             )}
             <div
@@ -207,7 +196,6 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
                 display: 'flex',
                 alignItems: 'flex-end',
                 gap: 4,
-                width: 'fit-content',
               }}
             >
               {renderContent()}
