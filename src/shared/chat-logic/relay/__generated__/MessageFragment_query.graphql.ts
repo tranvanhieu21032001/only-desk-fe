@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0a6a12146ecf114d7c406d9f592846b8>>
+ * @generated SignedSource<<2a57eeed1fc898c42a9ee3daaa67cecd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,7 +18,7 @@ export type MessageFragment_query$data = {
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
       readonly node: {
-        readonly content: string | null | undefined;
+        readonly content: string;
         readonly createdAt: any;
         readonly id: string;
         readonly metadata: any | null | undefined;

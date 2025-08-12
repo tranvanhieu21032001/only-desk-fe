@@ -77,12 +77,20 @@ export const closeConversation = (conversationId: string) => {
   getSocket().emit(SOCKET_SEND_EVENT_CLOSE_CONVERSATION, { conversationId });
 };
 
-export const submitInput = (messageId: string, inputValue: string) => {
-  console.log("submitInput", messageId, inputValue);
-  getSocket().emit(SOCKET_SEND_EVENT_GUEST_SUBMIT_INPUT, {
-    messageId,
-    inputValue,
-  });
+export const submitInputToSocket = (
+  messageId: string,
+  inputValue: string,
+  cb?: any
+) => {
+  console.log("submitInputToSocket", messageId, inputValue);
+  getSocket().emit(
+    SOCKET_SEND_EVENT_GUEST_SUBMIT_INPUT,
+    {
+      messageId,
+      inputValue,
+    },
+    cb
+  );
 };
 
 export const emitTypingStart = (conversationId: string) => {

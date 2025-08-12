@@ -45,6 +45,7 @@ export interface Message {
     fileUrl?: string;
     inputType?: string;
     placeholder?: string;
+    inputValue?: string;
   };
   showTime?: boolean;
   showDate?: boolean;

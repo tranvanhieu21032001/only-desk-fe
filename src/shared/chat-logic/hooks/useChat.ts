@@ -1,23 +1,24 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Message, User } from '../interfaces/inbox';
-import { useMessageList } from './useMessageList';
-import { useScrollHandler } from './useScrollHandler';
-import { MessageStatus, MessageType } from '../enums/chat.enums';
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Message, User } from "../interfaces/inbox";
+import { useMessageList } from "./useMessageList";
+import { useScrollHandler } from "./useScrollHandler";
+import { MessageStatus, MessageType } from "../enums/chat.enums";
 import {
   createLocalMessage,
   getId,
   parseGraphQLMessage,
-} from '../helpers/chat.helper';
+} from "../helpers/chat.helper";
 import {
   closeConversation,
   openConversation,
   sendMessageToSocket,
-} from '../services/socket';
+  submitInputToSocket,
+} from "../services/socket";
 
-import { EVENTBUS_INBOX_MESSAGE } from '../constants/event-bus.constants';
-import { useTypingHandler } from './useTypingHandler';
-import { useNotification } from './useNotification';
-import { eventBus } from '../services/event-bus';
+import { EVENTBUS_INBOX_MESSAGE } from "../constants/event-bus.constants";
+import { useTypingHandler } from "./useTypingHandler";
+import { useNotification } from "./useNotification";
+import { eventBus } from "../services/event-bus";
 
 /*
 Features:
@@ -42,8 +43,9 @@ interface UseChatReturn {
     content: string,
     type: MessageType,
     metadata: any,
-    user: User | null | undefined,
+    user: User | null | undefined
   ) => void;
+  submitInput: (messageId: string, inputValue: string) => void;
   hasNewMessage: boolean;
   messages: Message[];
   isFetchingInitial: boolean;
@@ -64,7 +66,7 @@ export function useChat({
   }
   const rawConversationId = useMemo(
     () => getId(stableConversationId.current!),
-    [stableConversationId.current],
+    [stableConversationId.current]
   );
 
   const [hasNewMessage, setHasNewMessage] = useState(false);
@@ -82,7 +84,7 @@ export function useChat({
 
   const { handleUserTyping, isSomeoneTyping, handleUserStopTyping } =
     useTypingHandler({
-      rawConversationId: rawConversationId || '',
+      rawConversationId: rawConversationId || "",
     });
 
   const { notifyNewMessage } = useNotification();
@@ -130,7 +132,7 @@ export function useChat({
     content: string,
     type: MessageType,
     metadata: any,
-    user: User | null | undefined,
+    user: User | null | undefined
   ) => {
     const message = createLocalMessage(content, type, metadata, user);
     addMessage(message);
@@ -158,13 +160,21 @@ export function useChat({
         } else {
           updateMessage(message.id, { status: MessageStatus.FAILED });
         }
-      },
+      }
     );
 
     //callback this event to clear chat input after send message success
     onEndSendMessage?.(message);
 
     scrollToBottomNextFrame(message);
+  };
+
+  const handleSubmitInput = (messageId: string, inputValue: string) => {
+    submitInputToSocket(messageId, inputValue, (res: any) => {
+      if (res?.success && res?.message) {
+        updateMessage(res?.message, { metadata: res?.message?.metadata });
+      }
+    });
   };
 
   useEffect(() => {
@@ -209,6 +219,7 @@ export function useChat({
   return {
     messages,
     sendMessage: handleSendMessage,
+    submitInput: handleSubmitInput,
     scrollToNewMessages: scrollToBottom,
     hasNewMessage,
     isFetchingInitial,
