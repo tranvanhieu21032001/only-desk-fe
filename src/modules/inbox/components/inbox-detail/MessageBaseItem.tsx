@@ -7,10 +7,13 @@ import * as S from './InboxDetail.styles';
 import icEye from '@/assets/icons/common/ic-eye.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
 import { MessageBaseItemProps } from '@/shared/chat-logic/interfaces/inbox';
-import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
+import {
+  MessageSender,
+  MessageType,
+} from '@/shared/chat-logic/enums/chat.enums';
 import { useAppSelector } from '@/shared/hooks';
 import { getId } from '@/shared/utils/decode';
-import { ReactSVG } from 'react-svg';
+import { SystemAvatar } from '@/shared/components/common/ProfileCard/SystemAvatar';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -88,6 +91,23 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             {msg.content}
           </S.MessageBubbleRight>
         );
+      case MessageType.INPUT:
+        return (
+          <S.MessageBubbleRight
+            style={{
+              background: isOwner ? '#e6f4ff' : '#f5f5f5',
+              color: '#222',
+              wordBreak: 'break-word',
+            }}
+          >
+            {msg.content}
+            {!!msg.metadata?.inputValue && (
+              <S.MessageInputValue>
+                {msg.metadata?.inputValue}
+              </S.MessageInputValue>
+            )}
+          </S.MessageBubbleRight>
+        );
       case MessageType.NOTE:
         return (
           <S.NoteContainer>
@@ -147,6 +167,10 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     }
   }
 
+  const senderName =
+    msg.sender == MessageSender.SYSTEM
+      ? 'Only Chat'
+      : msg.user?.firstName || 'Guest';
   if (isOwner) {
     return (
       <S.MessageRowUser>
@@ -158,7 +182,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             alignItems: 'flex-end',
             justifyContent: 'flex-end',
             gap: 8,
-            width:'100%'
+            width: '100%',
           }}
         >
           {timeWithIcon}
@@ -171,24 +195,26 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
       <S.MessageRow>
         <S.MessageAvatarWrapper>
           {msg.showTime ? (
-            <ProfileCard
-              userId={msg.user?.id}
-              contactId={contactId}
-              name={name}
-              avatarUrl={avatar}
-              countryCode={countryCode}
-              hiddenInfo
-              avatarSize={32}
-              flagSize={12}
-            />
+            msg.sender == MessageSender.SYSTEM ? (
+              <SystemAvatar avatarSize={32} />
+            ) : (
+              <ProfileCard
+                userId={msg.user?.id}
+                contactId={contactId}
+                name={name}
+                avatarUrl={avatar}
+                countryCode={countryCode}
+                hiddenInfo
+                avatarSize={32}
+                flagSize={12}
+              />
+            )
           ) : (
             <div style={{ width: 32, height: 32 }} />
           )}
           <S.MessageColumnView>
             {msg.showTime && (
-              <S.MessageSenderName>
-                {msg.user?.firstName || 'Guest'}
-              </S.MessageSenderName>
+              <S.MessageSenderName>{senderName}</S.MessageSenderName>
             )}
             <div
               onMouseEnter={onHoverEnter}
@@ -197,7 +223,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
                 display: 'flex',
                 alignItems: 'flex-end',
                 gap: 4,
-                width:'100%'
+                width: '100%',
               }}
             >
               {renderContent()}

@@ -312,7 +312,7 @@ export const Sidebar = styled.div`
 export const MessageAvatarWrapper = styled.div`
   display: flex;
   gap: 8px;
-  width:100%
+  width: 100%;
 `;
 
 export const MessageSenderName = styled.div`
@@ -884,9 +884,16 @@ export const Previewbox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap:4px;
+  gap: 4px;
 
-  .ant-splitter{
-  line-height:unset;
+  .ant-splitter {
+    line-height: unset;
   }
-`
+`;
+
+export const MessageInputValue = styled.p`
+  border-left: 3px solid #ccc;
+  padding-left: 6px;
+  margin-top: 10px;
+  color: #555;
+`;
