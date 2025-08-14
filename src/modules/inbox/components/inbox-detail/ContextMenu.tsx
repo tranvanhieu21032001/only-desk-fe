@@ -152,6 +152,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 
   return (
     <S.ContextMenu
+     className="context-menu"
       style={{
         top: contextMenu.y,
         left: contextMenu.x,

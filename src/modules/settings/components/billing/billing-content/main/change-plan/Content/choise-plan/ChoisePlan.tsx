@@ -22,7 +22,7 @@ const ChoisePlan = () => {
   const { t } = useTranslation('billing');
   const [plans, setPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadingPlanKey, setLoadingPlanKey] = useState<string | null>(null); // state loading riêng cho nút Buy Now
+  const [loadingPlanKey, setLoadingPlanKey] = useState<string | null>(null);
 
   useEffect(() => {
     getAllPlans()
@@ -44,7 +44,7 @@ const ChoisePlan = () => {
   ];
 
   const handleBuyNow = (planKey: string) => {
-    setLoadingPlanKey(planKey); // bật loading
+    setLoadingPlanKey(planKey);
     checkoutPlan(planKey)
       .then((res) => {
         const url = res?.url;
@@ -58,7 +58,7 @@ const ChoisePlan = () => {
         console.error('Checkout lỗi:', err);
       })
       .finally(() => {
-        setLoadingPlanKey(null); // tắt loading sau khi xong
+        setLoadingPlanKey(null);
       });
   };
 
