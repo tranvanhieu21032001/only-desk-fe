@@ -44,40 +44,50 @@ export function handleIconClickLogic(
   const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
   const isAgent = message.sender === MessageSender.AGENT;
 
-  let x, y;
-
-  if (isAgent) {
-    x = rect.left - MENU_WIDTH - 5;
-    y = rect.top;
-  } else {
-    x = rect.right + 5;
-    y = rect.top;
-  }
-
-  // Check horizontal bounds
-  if (x + MENU_WIDTH > window.innerWidth) {
-    x = window.innerWidth - MENU_WIDTH - 8;
-  }
-  if (x < 8) {
-    x = 8;
-  }
-
-  // Check vertical bounds
-  const menuHeight = isAgent ? 200 : 100; // Approximate height based on menu items
-  if (y + menuHeight > window.innerHeight) {
-    y = window.innerHeight - menuHeight - 8;
-  }
-  if (y < 8) {
-    y = 8;
-  }
-
   setContextMenu({
-    x: x,
-    y: y,
+    x: 0,
+    y: 0,
     visible: true,
     message,
     messageId: message.id,
   });
 
-  setHoveredMessageId(message.id);
+  requestAnimationFrame(() => {
+    const el = document.querySelector('.context-menu') as HTMLElement;
+    const heightMenu = el?.getBoundingClientRect().height ?? 0;
+
+    let x, y;
+    if (isAgent) {
+      x = rect.left - MENU_WIDTH - 5;
+      y = rect.top;
+    } else {
+      x = rect.right + 5;
+      y = rect.top;
+    }
+    if (x + MENU_WIDTH > window.innerWidth) {
+      x = window.innerWidth - MENU_WIDTH - 8;
+    }
+    if (x < 8) {
+      x = 8;
+    }
+    if (y + heightMenu + 100 > window.innerHeight) {
+      if (heightMenu > 50) {
+        y = window.innerHeight - heightMenu - 100 - 8;
+      } else {
+        y = window.innerHeight - heightMenu - 110 - 8;
+      }
+    }
+    if (y < 8) {
+      y = 8;
+    }
+    setContextMenu({
+      x,
+      y,
+      visible: true,
+      message,
+      messageId: message.id,
+    });
+
+    setHoveredMessageId(message.id);
+  });
 }

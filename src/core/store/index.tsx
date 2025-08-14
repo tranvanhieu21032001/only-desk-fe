@@ -17,7 +17,7 @@ import helpdeskArticlesReducer from '@/modules/knowledge-base/store/helpdeskArti
 import operatorsReducer from '@/modules/settings/store/features/operators';
 import knowledgeBaseSettingsReducer from '@/modules/settings/store/features/knowledgebase';
 import helpdeskSettingReducer from '@/modules/knowledge-base/store/helpdeskSettingsSlice';
-import billingReducer from '@/modules/plugins/store/pluginsSlice'
+import pluginsReducer from '@/modules/plugins/store/pluginsSlice'
 
 // Hàm load state từ storage
 export const loadState = () => {
@@ -57,7 +57,7 @@ export const store = configureStore({
     helpdeskSetting: helpdeskSettingReducer,
     knowledgeBaseSettings: knowledgeBaseSettingsReducer,
     inbox: inboxReducer,
-    plugins: billingReducer,
+    plugins: pluginsReducer,
   },
   preloadedState: loadState(),
 });
