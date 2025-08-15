@@ -14,45 +14,7 @@ import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
 // import icCheck from '@/assets/icons/inbox/ic-check.svg';
 import icCloseImage from '@/assets/icons/inbox/ic-close-image.svg';
 import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
-import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
-// import trash from '@/assets/icons/inbox/ic-trash.svg';
-
-interface MessageInputProps {
-  activeTab: string | null;
-  selectedReminder: string | null;
-  inputValue: string;
-  setInputValue: (val: string) => void;
-  setActiveTab: (val: string | null) => void;
-  setSelectedReminder: (val: string | null) => void;
-  onSendMessage: (
-    val: string,
-    type?: MessageType,
-    replyId?: string,
-    metadata?: any,
-  ) => void;
-  onInputChange?: (val: string) => void;
-  replyPreview?: {
-    id: string;
-    author: string;
-    snippet: string;
-    type?: MessageType;
-    fileUrl?: string;
-  } | null;
-  onClearReply?: () => void;
-}
-
-interface FilePreview {
-  id: string;
-  type: 'image';
-  fileUrl: string;
-  localUrl: string;
-  fileName: string;
-  uploading: boolean;
-  progress: number;
-  originFile?: File;
-}
-
-const escapeRegExp = (s: string) => s.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+import { FilePreview, MessageInputProps, MessageType } from '@/shared/chat-logic/enums/chat.enums';
 
 const MessageInput: React.FC<MessageInputProps> = ({
   activeTab,
@@ -65,77 +27,55 @@ const MessageInput: React.FC<MessageInputProps> = ({
   replyPreview,
   onClearReply,
 }) => {
-  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const replyRef = useRef<HTMLParagraphElement>(null);
+
   const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
-  const injectedReplyIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    const stripExistingPrefix = () => {
-      if (!injectedReplyIdRef.current) return;
-      const prefixRe = /^\[Reply:.*?]\s/;
-      if (prefixRe.test(inputValue)) {
-        setInputValue(inputValue.replace(prefixRe, ''));
-      }
-      injectedReplyIdRef.current = null;
-    };
-
-    if (!replyPreview) {
-      stripExistingPrefix();
-      return;
-    }
-
-    if (replyPreview.type === MessageType.IMAGE) {
-      stripExistingPrefix();
-      return;
-    }
-
-    const newPrefix = `[Reply:${replyPreview.snippet}]\n`;
-    const prefixReExact = new RegExp(
-      `^\\[Reply:${escapeRegExp(replyPreview.snippet)}\\]\\s`,
-    );
-    const genericPrefixRe = /^\[Reply:.*?]\n/;
-
-    let nextValue = inputValue;
-    if (genericPrefixRe.test(nextValue) && !prefixReExact.test(nextValue)) {
-      nextValue = nextValue.replace(genericPrefixRe, newPrefix);
-      setInputValue(nextValue);
-      injectedReplyIdRef.current = replyPreview.id || 'text';
-      return;
-    }
-
-    if (!prefixReExact.test(nextValue)) {
-      setInputValue(newPrefix + nextValue);
-      injectedReplyIdRef.current = replyPreview.id || 'text';
-      return;
-    }
-
-    injectedReplyIdRef.current = replyPreview.id || 'text';
-  }, [replyPreview]);
+  const [selectAllMode, setSelectAllMode] = useState(false);
+  const [deleteOnce, setDeleteOnce] = useState(false);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeTab, selectedReminder]);
 
-  const updateFilePreview = (
-    id: string,
-    updater: (item: FilePreview) => Partial<FilePreview>,
-  ) => {
-    setFilePreviews((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, ...updater(item) } : item,
-      ),
+  useEffect(() => {
+    setDeleteOnce(false);
+  }, [replyPreview?.id]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        replyRef.current &&
+        inputRef.current &&
+        !replyRef.current.contains(e.target as Node) &&
+        !inputRef.current.contains(e.target as Node)
+      ) {
+        setSelectAllMode(false);
+        window.getSelection()?.removeAllRanges();
+      }
+    };
+
+    if (selectAllMode) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [selectAllMode]);
+
+  const updateFilePreview = (id: string, updater: (item: FilePreview) => Partial<FilePreview>) => {
+    setFilePreviews(prev =>
+      prev.map(item => (item.id === id ? { ...item, ...updater(item) } : item)),
     );
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files || files.length === 0) return;
+    if (!files?.length) return;
 
-    const imageFiles = Array.from(files).filter((f) =>
-      f.type.startsWith('image/'),
-    );
-    const previews: FilePreview[] = imageFiles.map((file) => ({
+    const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+    const previews: FilePreview[] = imageFiles.map(file => ({
       id: uuidv4(),
       type: 'image',
       fileName: file.name,
@@ -146,21 +86,21 @@ const MessageInput: React.FC<MessageInputProps> = ({
       originFile: file,
     }));
 
-    setFilePreviews((prev) => [...prev, ...previews]);
+    setFilePreviews(prev => [...prev, ...previews]);
 
-    previews.forEach(async (previewItem) => {
-      if (!previewItem.originFile) return;
+    previews.forEach(async item => {
+      if (!item.originFile) return;
       try {
-        const res = await uploadFile(previewItem.originFile, (percent) => {
-          updateFilePreview(previewItem.id, () => ({ progress: percent }));
+        const res = await uploadFile(item.originFile, percent => {
+          updateFilePreview(item.id, () => ({ progress: percent }));
         });
-        updateFilePreview(previewItem.id, () => ({
+        updateFilePreview(item.id, () => ({
           fileUrl: res?.fileUrl || '',
           uploading: false,
           progress: 100,
         }));
       } catch {
-        updateFilePreview(previewItem.id, () => ({ uploading: false }));
+        updateFilePreview(item.id, () => ({ uploading: false }));
       }
     });
 
@@ -168,74 +108,86 @@ const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   const removeFile = (id: string) => {
-    setFilePreviews((prev) => prev.filter((item) => item.id !== id));
+    setFilePreviews(prev => prev.filter(item => item.id !== id));
   };
 
-  const handleSend = async () => {
-    const metadata: any = {};
-    let messageText = inputValue;
-    const replyId = replyPreview?.id || undefined;
-    console.log("replyId", replyId);
-
-    if (replyPreview && replyPreview.type !== MessageType.IMAGE) {
-      const genericPrefixRe = /^\[Reply:.*?]\s/;
-      if (genericPrefixRe.test(messageText)) {
-        messageText = messageText.replace(genericPrefixRe, '');
-      }
-    }
+  const handleSend = () => {
+    const replyId = replyPreview?.id;
 
     if (filePreviews.length > 0) {
-      const uploadingFiles = filePreviews.filter((file) => file.uploading);
-      if (uploadingFiles.length > 0) return;
-
-      for (const item of filePreviews) {
+      if (filePreviews.some(file => file.uploading)) return;
+      filePreviews.forEach(item => {
         if (item.fileUrl) {
-          onSendMessage(messageText, MessageType.IMAGE, replyId, {
-            fileUrl: item.fileUrl,
-            ...metadata,
-          });
+          onSendMessage(inputValue, MessageType.IMAGE, replyId, { fileUrl: item.fileUrl });
         }
-      }
+      });
       setFilePreviews([]);
       setInputValue('');
       onClearReply?.();
-      injectedReplyIdRef.current = null;
       return;
     }
 
-    if (messageText.trim()) {
-      onSendMessage(messageText, MessageType.TEXT, replyId, metadata);
+    if (inputValue.trim()) {
+      onSendMessage(inputValue, MessageType.TEXT, replyId);
       setInputValue('');
       onClearReply?.();
-      injectedReplyIdRef.current = null;
     }
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.currentTarget.value);
     onInputChange?.(e.currentTarget.value);
+    setSelectAllMode(false);
+    setDeleteOnce(false);
   };
 
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    if ((e.key === 'Backspace' || e.key === 'Delete') && replyPreview) {
-      const cursorAtStart =
-        (e.currentTarget.selectionStart ?? 0) === 0 &&
-        (e.currentTarget.selectionEnd ?? 0) === 0;
+  const focusReplyToEnd = () => {
+    if (replyRef.current) {
+      replyRef.current.focus();
+      const range = document.createRange();
+      range.selectNodeContents(replyRef.current);
+      range.collapse(false);
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    }
+  };
 
-      if (cursorAtStart) {
-        e.preventDefault();
-        const genericPrefixRe = /^\[Reply:.*?]\s/;
-        if (genericPrefixRe.test(inputValue)) {
-          setInputValue(inputValue.replace(genericPrefixRe, ''));
-        }
-        injectedReplyIdRef.current = null;
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.ctrlKey && e.key.toLowerCase() === 'a') {
+      e.preventDefault();
+      setSelectAllMode(true);
+      const selection = window.getSelection();
+      if (!selection) return;
+      const range = document.createRange();
+      if (replyRef.current) range.setStartBefore(replyRef.current);
+      else if (inputRef.current) range.setStartBefore(inputRef.current);
+      if (inputRef.current) range.setEndAfter(inputRef.current);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+    if (selectAllMode && (e.key === 'Backspace' || e.key === 'Delete')) {
+      e.preventDefault();
+      setInputValue('');
+      onClearReply?.();
+      setSelectAllMode(false);
+    }
+
+    if ((e.key === 'Backspace' || e.key === 'Delete') && replyPreview && inputValue.length === 0) {
+      e.preventDefault();
+      if (replyPreview.type === MessageType.IMAGE) {
         onClearReply?.();
+        setDeleteOnce(false);
         return;
       }
+      if (!deleteOnce) {
+        focusReplyToEnd();
+        setDeleteOnce(true);
+        return;
+      }
+      onClearReply?.();
+      setDeleteOnce(false);
     }
 
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -244,68 +196,52 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
+  const handleReplyKeyDown = (e: React.KeyboardEvent<HTMLParagraphElement>) => {
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      e.preventDefault();
+      if (deleteOnce) {
+        onClearReply?.();
+        setDeleteOnce(false);
+        setTimeout(() => inputRef.current?.focus(), 0);
+        return;
+      }
+      focusReplyToEnd();
+      setDeleteOnce(true);
+    }
+  };
+
+  const handleCopy = (e: React.ClipboardEvent) => {
+    if (selectAllMode && replyPreview) {
+      e.preventDefault();
+      const fullText =
+        (replyPreview.type === MessageType.IMAGE
+          ? `[Image: ${replyPreview.fileUrl || replyPreview.snippet}]\n`
+          : `[Reply: ${replyPreview.snippet}]\n`) + inputValue;
+      e.clipboardData.setData('text/plain', fullText);
+    }
+  };
+
   const TAB_ACTIONS = [
-    {
-      key: INBOX_TABS.EDIT,
-      icon: editWhite,
-      label: 'Edit',
-      tab: INBOX_TABS.EDIT,
-    },
-    {
-      key: INBOX_TABS.REMINDER,
-      icon: bellWhite,
-      label: 'Reminder',
-      tab: INBOX_TABS.REMINDER,
-    },
-    {
-      key: INBOX_TABS.NOTE,
-      icon: noteWhite,
-      label: 'Note',
-      tab: INBOX_TABS.NOTE,
-    },
+    { key: INBOX_TABS.EDIT, icon: editWhite, label: 'Edit', tab: INBOX_TABS.EDIT },
+    { key: INBOX_TABS.REMINDER, icon: bellWhite, label: 'Reminder', tab: INBOX_TABS.REMINDER },
+    { key: INBOX_TABS.NOTE, icon: noteWhite, label: 'Note', tab: INBOX_TABS.NOTE },
   ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {replyPreview && replyPreview.type === MessageType.IMAGE && (
-        <S.FilePreviewWrapper>
-          <S.ImagePreviewBox>
-            <S.ImagePreview>
-              <Image
-                src={replyPreview.snippet || replyPreview.fileUrl}
-                alt="reply image"
-              />
-            </S.ImagePreview>
-            <S.RemoveImageButton onClick={onClearReply} title="Remove">
-              <img src={icCloseImage} alt="remove" />
-            </S.RemoveImageButton>
-          </S.ImagePreviewBox>
-        </S.FilePreviewWrapper>
-      )}
-
       {filePreviews.length > 0 && (
         <S.FilePreviewWrapper>
-          {filePreviews.map((item) => (
+          {filePreviews.map(item => (
             <S.ImagePreviewBox key={item.id}>
               <S.ImagePreview>
                 <Image src={item.localUrl} alt={item.fileName} />
               </S.ImagePreview>
               {item.uploading ? (
                 <S.ProgressWrapper>
-                  <Spin
-                    indicator={
-                      <LoadingOutlined
-                        style={{ fontSize: 26, color: '#fff' }}
-                        spin
-                      />
-                    }
-                  />
+                  <Spin indicator={<LoadingOutlined style={{ fontSize: 26, color: '#fff' }} spin />} />
                 </S.ProgressWrapper>
               ) : (
-                <S.RemoveImageButton
-                  onClick={() => removeFile(item.id)}
-                  title="Remove"
-                >
+                <S.RemoveImageButton onClick={() => removeFile(item.id)} title="Remove">
                   <img src={icCloseImage} alt="remove" />
                 </S.RemoveImageButton>
               )}
@@ -326,8 +262,9 @@ const MessageInput: React.FC<MessageInputProps> = ({
             style={{ display: 'none' }}
           />
         </S.FileInputLabel>
+
         {TAB_ACTIONS.map(
-          (action) =>
+          action =>
             activeTab === action.tab && (
               <S.TokenBox key={action.key}>
                 <S.TokenIcon src={action.icon} alt={action.label} />
@@ -335,35 +272,73 @@ const MessageInput: React.FC<MessageInputProps> = ({
               </S.TokenBox>
             ),
         )}
+
         <S.InputWrapper>
-          {replyPreview && replyPreview?.type !== MessageType.IMAGE ? (
-            <S.InputTextarea
-              ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-              value={inputValue}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              placeholder="Messages..."
-              style={{ flex: 1 }}
-            />
-          ) : (
-            <S.Input
-              ref={inputRef as React.RefObject<HTMLInputElement>}
-              value={inputValue}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              placeholder="Messages..."
-              style={{ flex: 1 }}
-            />
+          {replyPreview && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '6px',
+                borderRadius: 4,
+                marginBottom: 6,
+              }}
+            >
+              {replyPreview.type === MessageType.IMAGE ? (
+                <div style={{ position: 'relative', width: 'fit-content' }}>
+                  <Image
+                    src={replyPreview.snippet || replyPreview.fileUrl}
+                    alt="reply image"
+                    width={100}
+                    style={{ objectFit: 'cover', borderRadius: 4 }}
+                    preview={false}
+                  />
+                  <S.RemoveImageButton onClick={onClearReply} title="Remove">
+                    <img src={icCloseImage} alt="remove" />
+                  </S.RemoveImageButton>
+                </div>
+              ) : (
+                <p
+                  ref={replyRef}
+                  contentEditable
+                  suppressContentEditableWarning
+                  onKeyDown={handleReplyKeyDown}
+                  tabIndex={0}
+                  style={{
+                    flex: 1,
+                    margin: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    width: 'fit-content',
+                    outline: 'none',
+                    cursor: 'text',
+                    lineHeight: '20px',
+                    paddingLeft: '6px',
+                    borderLeft: '3px solid #ccc',
+                  }}
+                >
+                  {replyPreview.snippet}
+                </p>
+              )}
+            </div>
           )}
+
+          <S.Input
+            ref={inputRef}
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onCopy={handleCopy}
+            placeholder="Messages..."
+            style={{ flex: 1 }}
+          />
         </S.InputWrapper>
+
         <S.InputIconsWrapper>
           <Image src={smile} preview={false} />
-          <Image
-            src={send}
-            preview={false}
-            onClick={handleSend}
-            style={{ cursor: 'pointer' }}
-          />
+          <Image src={send} preview={false} onClick={handleSend} style={{ cursor: 'pointer' }} />
         </S.InputIconsWrapper>
       </S.InputRow>
     </div>

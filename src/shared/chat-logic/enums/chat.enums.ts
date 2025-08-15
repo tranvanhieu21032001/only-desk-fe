@@ -21,3 +21,35 @@ export enum MessageType {
   NOTE = "note",
   RESOLVED = "resolved",
 }
+
+export interface MessageInputProps {
+  activeTab: string | null;
+  selectedReminder: string | null;
+  inputValue: string;
+  setInputValue: (val: string) => void;
+  onSendMessage: (
+    val: string,
+    type?: MessageType,
+    replyId?: string,
+    metadata?: any,
+  ) => void;
+  onInputChange?: (val: string) => void;
+  replyPreview?: {
+    id: string;
+    snippet: string;
+    type?: MessageType;
+    fileUrl?: string;
+  } | null;
+  onClearReply?: () => void;
+}
+
+export interface FilePreview {
+  id: string;
+  type: 'image';
+  fileUrl: string;
+  localUrl: string;
+  fileName: string;
+  uploading: boolean;
+  progress: number;
+  originFile?: File;
+}
