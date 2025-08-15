@@ -46,6 +46,7 @@ import { Message } from '@/shared/chat-logic/interfaces/inbox';
 import { formatDate } from '@/shared/chat-logic/utils/time';
 interface ReplyPreviewState {
   id: string;
+  name?: string;
   type: MessageType;
   snippet?: string;
   fileUrl?: string;
@@ -116,6 +117,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       setReplyPreview({
         id: m.id!,
         type: m.type,
+        name: (m.user?.firstName ?? '') + ' ' + (m.user?.lastName ?? ''),
         snippet:
           m.type === MessageType.IMAGE ? m?.metadata?.fileUrl : m.content,
       });

@@ -1,3 +1,4 @@
+import { Image } from 'antd';
 import styled from 'styled-components';
 
 interface IconProps {
@@ -13,7 +14,14 @@ export const Container = styled.div`
   height: 100%;
   background: #fafafa;
 `;
-
+export const Wrapper = styled.div`
+  width: 100%;
+  background: #f7f8fa;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -319,24 +327,6 @@ export const Input = styled.input<{ $hasEdit?: boolean }>`
   padding-left: ${(props) => (props.$hasEdit ? '110px' : '0')};
 `;
 
-
-export const InputTextarea = styled.textarea<{ $hasEdit?: boolean }>`
-  flex: 1;
-  border: none;
-  background: transparent;
-  outline: none;
-  font-size: 14px;
-  resize: none;
-  overflow: hidden;
-  height: 20px;
-  line-height: 20px;
-  padding-left: ${(props) => (props.$hasEdit ? '110px' : '0')};
-  
-  &::placeholder {
-    line-height: 20px;
-  }
-`;
-
 export const EditToken = styled.div`
   position: absolute;
   top: 50%;
@@ -438,20 +428,24 @@ export const ImagePreview = styled.div`
   }
 `;
 
-export const RemoveImageButton = styled.button`
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 24px;
-  height: 24px;
+export const RemoveImageButton = styled.div`
+  width: 30px;
+  height: 30px;
+  box-shadow:
+    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  background-color: #253a8e;
   border-radius: 50%;
   border: none;
-  background: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 2;
+  img {
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 export const PdfPreviewBox = styled.div`
@@ -696,28 +690,57 @@ export const ProgressCircle = styled.div`
   font-weight: 600;
 `;
 
-
-export const ReplyPreviewWrapper = styled.div`
+// Reply wrapper ngoài cùng
+export const ReplyContainer = styled.div`
   display: flex;
   align-items: center;
-  background: #f1f1f1;
-  padding: 4px 8px;
-  border-radius: 6px;
-  margin-bottom: 4px;
+  gap: 8px;
 `;
 
-export const ReplyImage = styled.img`
-  width: 50px;
-  height: 50px;
+// Box chứa nội dung reply
+export const ReplyBox = styled.div<{ isImage?: boolean }>`
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: ${({ isImage }) => (isImage ? 'space-between' : 'flex-start')};
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background-color: #edf1f8;
+  border-left: 3px solid #253a8e;
+  margin-bottom: 6px;
+  position: relative;
+`;
+
+// Nội dung text trong reply
+export const ReplyTextWrapper = styled.div<{ isImage?: boolean }>`
+  display: flex;
+  flex-direction: ${({ isImage }) => (isImage ? 'row' : 'column')};
+    justify-content: ${({ isImage }) => (isImage ? 'space-between' : 'flex-start')};
+  gap: ${({ isImage }) => (isImage ? '8px' : '4px')};
+  flex: 1;
+`;
+
+export const ReplyName = styled.div`
+  color: #333333;
+  font-weight: 600;
+  font-size: 14px;
+`;
+
+export const ReplySnippet = styled.span`
+  color: #333333;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+export const ReplyImagePreview = styled(Image)`
   object-fit: cover;
   border-radius: 4px;
-  margin-right: 8px;
+  height: 80px;
 `;
 
-export const RemoveReplyButton = styled.button`
-  background: transparent;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  color: #555;
-`;

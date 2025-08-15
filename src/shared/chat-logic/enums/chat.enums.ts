@@ -36,6 +36,7 @@ export interface MessageInputProps {
   onInputChange?: (val: string) => void;
   replyPreview?: {
     id: string;
+    name:string;
     snippet: string;
     type?: MessageType;
     fileUrl?: string;
