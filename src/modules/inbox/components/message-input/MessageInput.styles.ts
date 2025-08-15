@@ -319,6 +319,24 @@ export const Input = styled.input<{ $hasEdit?: boolean }>`
   padding-left: ${(props) => (props.$hasEdit ? '110px' : '0')};
 `;
 
+
+export const InputTextarea = styled.textarea<{ $hasEdit?: boolean }>`
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  resize: none;
+  overflow: hidden;
+  height: 20px;
+  line-height: 20px;
+  padding-left: ${(props) => (props.$hasEdit ? '110px' : '0')};
+  
+  &::placeholder {
+    line-height: 20px;
+  }
+`;
+
 export const EditToken = styled.div`
   position: absolute;
   top: 50%;
@@ -676,4 +694,30 @@ export const ProgressCircle = styled.div`
   font-size: 14px;
   color: #233e93;
   font-weight: 600;
+`;
+
+
+export const ReplyPreviewWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  background: #f1f1f1;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+`;
+
+export const ReplyImage = styled.img`
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 8px;
+`;
+
+export const RemoveReplyButton = styled.button`
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #555;
 `;

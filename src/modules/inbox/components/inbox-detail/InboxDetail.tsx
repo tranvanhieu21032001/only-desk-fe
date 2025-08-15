@@ -36,12 +36,20 @@ import {
 import { handleUpdateConversation } from '../../api/conversations.api';
 import { eventBus } from '@/core/event-bus';
 import { useChat } from '@/shared/chat-logic/hooks/useChat';
-import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
+import {
+  MessageSender,
+  MessageType,
+} from '@/shared/chat-logic/enums/chat.enums';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { MessageBaseItem } from './MessageBaseItem';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
 import { formatDate } from '@/shared/chat-logic/utils/time';
-
+interface ReplyPreviewState {
+  id: string;
+  type: MessageType;
+  snippet?: string;
+  fileUrl?: string;
+}
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar }) => {
     const { t } = useTranslation('inbox');
@@ -100,6 +108,21 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const { selectedConversation } = useAppSelector((state) => state.inbox);
 
     const [isUpdatingResolved, setIsUpdatingResolved] = useState(false);
+    const [replyPreview, setReplyPreview] = useState<ReplyPreviewState | null>(
+      null,
+    );
+
+    const handleStartReply = (m: Message) => {
+      setReplyPreview({
+        id: m.id!,
+        type: m.type,
+        snippet:
+          m.type === MessageType.IMAGE ? m?.metadata?.fileUrl : m.content,
+      });
+    };
+
+    const handleClearReply = () => setReplyPreview(null);
+
     const onMarkAsResolved = async () => {
       if (!selectedConversation?.rawId || !workspaceId) return;
       try {
@@ -304,6 +327,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             onCloseMenu={closeContextMenu}
             MENU_WIDTH={MENU_WIDTH}
             t={t}
+            onReply={handleStartReply}
           />
           <S.Header>
             <S.HeaderLeft>
@@ -445,6 +469,8 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             handleTabClick={handleTabClick}
             INBOX_TABS={INBOX_TABS}
             onInputChange={handleUserTyping}
+            replyPreview={replyPreview}
+            onClearReply={handleClearReply}
           />
         </S.Container>
       </>

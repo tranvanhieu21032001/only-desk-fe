@@ -26,6 +26,8 @@ interface InboxFooterProps {
   handleTabClick: (tab: string) => void;
   INBOX_TABS: Record<string, string>;
   onInputChange: (val: string) => void;
+  replyPreview?: { id: string; html: string } | null;
+  onClearReply?: () => void;
 }
 
 const InboxFooter: React.FC<InboxFooterProps> = ({
@@ -39,6 +41,8 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
   handleTabClick,
   INBOX_TABS,
   onInputChange,
+  replyPreview,
+  onClearReply,
 }) => {
   const actions = [
     {
@@ -117,6 +121,8 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
         setSelectedReminder={setSelectedReminder}
         onSendMessage={onSendMessage}
         onInputChange={onInputChange}
+        replyPreview={replyPreview}
+        onClearReply={onClearReply}
       />
     </S.Footer>
   );
