@@ -44,6 +44,7 @@ import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/eve
 import { MessageBaseItem } from './MessageBaseItem';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
 import { formatDate } from '@/shared/chat-logic/utils/time';
+import { getSenderName } from '../../helpers/getSenderName';
 interface ReplyPreviewState {
   id: string;
   name?: string;
@@ -117,7 +118,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       setReplyPreview({
         id: m.id!,
         type: m.type,
-        name: (m.user?.firstName ?? '') + ' ' + (m.user?.lastName ?? ''),
+        name:getSenderName(m),
         snippet:
           m.type === MessageType.IMAGE ? m?.metadata?.fileUrl : m.content,
       });

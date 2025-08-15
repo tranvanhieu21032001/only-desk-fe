@@ -34,13 +34,7 @@ export interface MessageInputProps {
     metadata?: any,
   ) => void;
   onInputChange?: (val: string) => void;
-  replyPreview?: {
-    id: string;
-    name:string;
-    snippet: string;
-    type?: MessageType;
-    fileUrl?: string;
-  } | null;
+  replyPreview?: ReplyPreviewState | null;
   onClearReply?: () => void;
 }
 
@@ -53,4 +47,12 @@ export interface FilePreview {
   uploading: boolean;
   progress: number;
   originFile?: File;
+}
+
+export interface ReplyPreviewState {
+  id: string;
+  name?: string;
+  type: MessageType;
+  snippet?: string;
+  fileUrl?: string;
 }

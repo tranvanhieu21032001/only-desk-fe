@@ -429,8 +429,8 @@ export const ImagePreview = styled.div`
 `;
 
 export const RemoveImageButton = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   box-shadow:
     rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
     rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
@@ -443,8 +443,8 @@ export const RemoveImageButton = styled.div`
   cursor: pointer;
   z-index: 2;
   img {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
   }
 `;
 
