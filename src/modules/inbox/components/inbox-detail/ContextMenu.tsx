@@ -24,6 +24,7 @@ interface ContextMenuProps {
   onCloseMenu: () => void;
   MENU_WIDTH: number;
   t: (key: string) => string;
+    onReply: (message: Message) => void;
 }
 
 interface MenuItem {
@@ -110,6 +111,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   onCloseMenu,
   MENU_WIDTH,
   t,
+   onReply,
 }) => {
   if (!contextMenu.visible || !contextMenu.message) return null;
 
@@ -118,6 +120,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
       message: contextMenu.message,
       rawConversationId,
       onCloseMenu,
+      onReply
     });
 
   const menuItems = getMenuItems(

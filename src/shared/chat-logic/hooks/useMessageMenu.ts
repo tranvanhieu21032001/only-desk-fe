@@ -5,6 +5,7 @@ interface UseMessageMenuProps {
   message: Message;
   rawConversationId: string;
   onCloseMenu: () => void;
+  onReply: (message: Message) => void;
 }
 
 interface UseMessageMenuReturn {
@@ -21,6 +22,7 @@ export function useMessageMenu({
   message,
   rawConversationId,
   onCloseMenu,
+    onReply,
 }: UseMessageMenuProps): UseMessageMenuReturn {
   const handleCopyText = async (
     onSuccess?: () => void,
@@ -37,7 +39,10 @@ export function useMessageMenu({
     }
   };
 
-  const handleReply = () => console.log('Reply to:', message?.id);
+ const handleReply = () => {
+    onCloseMenu();
+    onReply(message);
+  };
   const handleEdit = () => console.log('Edit message:', message?.id);
   const handleDelete = () => {
     onCloseMenu();
