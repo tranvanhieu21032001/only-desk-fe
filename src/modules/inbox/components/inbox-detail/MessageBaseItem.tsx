@@ -14,6 +14,7 @@ import {
 import { useAppSelector } from '@/shared/hooks';
 import { getId } from '@/shared/utils/decode';
 import { SystemAvatar } from '@/shared/components/common/ProfileCard/SystemAvatar';
+import { getSenderName } from '../../helpers/getSenderName';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -167,10 +168,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     }
   }
 
-  const senderName =
-    msg.sender == MessageSender.SYSTEM
-      ? 'Only Chat'
-      : msg.user?.firstName || 'Guest';
+  const senderName = getSenderName(msg);
   if (isOwner) {
     return (
       <S.MessageRowUser>

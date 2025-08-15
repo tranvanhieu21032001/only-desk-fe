@@ -14,6 +14,7 @@ import tagBlue from '@/assets/icons/inbox/ic-tag-blue.svg';
 import ringBlue from '@/assets/icons/inbox/ic-ring-blue.svg';
 import noteBlue from '@/assets/icons/inbox/ic-note-blue.svg';
 import editBlue from '@/assets/icons/inbox/ic-edit-blue.svg';
+import { ReplyPreviewState } from '@/shared/chat-logic';
 
 interface InboxFooterProps {
   activeTab: string | null;
@@ -26,7 +27,7 @@ interface InboxFooterProps {
   handleTabClick: (tab: string) => void;
   INBOX_TABS: Record<string, string>;
   onInputChange: (val: string) => void;
-  replyPreview?: { id: string; html: string } | null;
+  replyPreview?: ReplyPreviewState | null;
   onClearReply?: () => void;
 }
 
