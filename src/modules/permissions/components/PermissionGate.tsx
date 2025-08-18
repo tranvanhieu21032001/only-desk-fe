@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, isValidElement, cloneElement, ReactElement } from 'react';
 import { useCanAccess } from '../hooks/usePermissions';
 import { UpgradePrompt } from './UpgradePrompt';
 
@@ -33,7 +33,18 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
           upgradeMessage || 'This feature is not available in your current plan'
         }
       >
-        {children}
+        {isValidElement(children)
+          ? cloneElement(children as ReactElement<any>, {
+              onClick: (e: React.MouseEvent) => {
+                e.preventDefault();
+                e.stopPropagation();
+              },
+              style: {
+                ...(children.props as any).style,
+                pointerEvents: 'none',
+              },
+            })
+          : children}
       </UpgradePrompt>
     );
   }

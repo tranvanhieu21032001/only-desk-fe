@@ -1,7 +1,7 @@
 enum ToastMessageType {
   SUCCESS = 'success',
-  ERROR = 'error',
   WARNING = 'warning',
+  ERROR = 'error',
   INFO = 'info',
 }
 
