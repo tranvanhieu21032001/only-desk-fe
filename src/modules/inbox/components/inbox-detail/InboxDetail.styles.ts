@@ -25,6 +25,26 @@ export const Container = styled.div`
   overflow: hidden;
   position: relative;
   background: #fafafa;
+  .ant-tooltip {
+    min-width: 400px !important;
+    color: #fff;
+    border-radius: 6px;
+    .ant-tooltip-inner {
+      background-color: rgba(1, 1, 10, 0.95) !important;
+      backdrop-filter: blur(6px);
+    }
+  }
+  .ant-tooltip .ant-tooltip-inner {
+    background-color: rgba(1, 1, 10, 0.75) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    border-radius: 8px;
+  }
+
+  .ant-tooltip .ant-tooltip-arrow:before {
+    background-color: rgba(1, 1, 10, 0.75) !important;
+  }
 `;
 
 export const Header = styled.div`
@@ -156,26 +176,6 @@ export const Footer = styled.div`
   background: white;
   padding: 8px 16px;
   border-top: 1px solid #eee;
-  .ant-tooltip{
-    min-width:400px !important;
-    color: #fff;
-    border-radius: 6px;
-    .ant-tooltip-inner{
-     background-color: rgba(1, 1, 10, 0.95) !important;
-      backdrop-filter: blur(6px);
-    }
-  }
-    .ant-tooltip .ant-tooltip-inner {
-  background-color: rgba(1, 1, 10, 0.75) !important;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  color: #fff;
-  border-radius: 8px;
-}
-
-.ant-tooltip .ant-tooltip-arrow:before {
-  background-color: rgba(1, 1, 10, 0.75) !important;
-}
 `;
 
 export const ActionIcons = styled.div`
