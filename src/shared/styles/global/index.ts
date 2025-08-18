@@ -174,6 +174,26 @@ const reset = css`
       display: none;
     }
   }
+  .ant-tooltip {
+    min-width: 400px !important;
+    color: #fff;
+    border-radius: 6px;
+    .ant-tooltip-inner {
+      background-color: rgba(1, 1, 10, 0.95) !important;
+      backdrop-filter: blur(6px);
+    }
+  }
+  .ant-tooltip .ant-tooltip-inner {
+    background-color: rgba(1, 1, 10, 0.75) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    border-radius: 8px;
+  }
+
+  .ant-tooltip .ant-tooltip-arrow:before {
+    background-color: rgba(1, 1, 10, 0.75) !important;
+  }
 
   .modal-preview-image {
     .ant-modal-header {
