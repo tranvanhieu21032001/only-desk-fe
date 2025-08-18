@@ -366,12 +366,11 @@ export const ShortcutItem = styled.div`
 `;
 
 export const KnowBaseItem = styled.div`
-  width: 67px;
-  height: 28px;
   color: #186ade;
   background-color: #e8f0fd;
   border: none;
-
+  padding:2px 6px;
+  width:fit-content;
   display: flex;
   justify-content: center;
   border-radius: 8px;
