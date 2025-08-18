@@ -27,7 +27,7 @@ export const endpointContact = {
   UPDATE_A_HELPDESK_ARTICLE: `${prefixContact}/helpdesk/articles/{id}`,
   DELETE_A_HELPDESK_ARTICLE: `${prefixContact}/helpdesk/articles/{id}`,
 
-  // GET_ALL_HELPDESK_CATEGORIES: `${prefixContact}/helpdesk/categories`, // giữ lại nếu cần fallback
+  // GET_ALL_HELPDESK_CATEGORIES: `${prefixContact}/helpdesk/categories`,
   CREATE_A_NEW_HELPDESK_CATEGORY: `${prefixContact}/helpdesk/categories`,
   UPDATE_A_HELPDESK_CATEGORY: `${prefixContact}/helpdesk/categories/{id}`,
   DELETE_A_HELPDESK_CATEGORY: `${prefixContact}/helpdesk/categories/{id}`,

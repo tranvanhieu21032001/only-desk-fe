@@ -82,6 +82,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const footerRef = useRef<HTMLDivElement>(null);
     const [inputValue, setInputValue] = useState('');
     const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
+    const [knowledgeKeyword, setKnowledgeKeyword] = useState('');
     const [_shortcutsPage, setShortcutsPage] = useState(1);
     const [shortcutsHasMore, setShortcutsHasMore] = useState(true);
     const [shortcutsLoading, setShortcutsLoading] = useState(false);
@@ -118,7 +119,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       setReplyPreview({
         id: m.id!,
         type: m.type,
-        name:getSenderName(m),
+        name: getSenderName(m),
         snippet:
           m.type === MessageType.IMAGE ? m?.metadata?.fileUrl : m.content,
       });
@@ -207,6 +208,12 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       }
       // eslint-disable-next-line
     }, [activeTab, shortcutsKeyword]);
+
+    useEffect(() => {
+      if (activeTab === INBOX_TABS.KNOWLEDGE_BASE) {
+        setKnowledgeKeyword(inputValue);
+      }
+    }, [inputValue, activeTab]);
 
     // Scroll load more
     useEffect(() => {
@@ -448,6 +455,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                   inputRef={inputRef}
                   inputValue={inputValue}
                   setSelectedReminder={setSelectedReminder}
+                  knowledgeKeyword={knowledgeKeyword}
                   t={t}
                 />
               </S.TabOverlay>

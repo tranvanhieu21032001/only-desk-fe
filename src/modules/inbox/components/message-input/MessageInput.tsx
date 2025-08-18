@@ -10,6 +10,7 @@ import smile from '@/assets/icons/common/ic-smile.svg';
 import send from '@/assets/icons/common/ic-send.svg';
 import bellWhite from '@/assets/icons/inbox/ic-bell-white.svg';
 import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
+import tagWhite from '@/assets/icons/inbox/ic-tag.svg'
 import icCloseImage from '@/assets/icons/common/ic-close-message.svg';
 import icImage from '@/assets/icons/common/ic-image.svg';
 import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
@@ -147,6 +148,12 @@ const MessageInput: React.FC<MessageInputProps> = ({
       icon: noteWhite,
       label: 'Note',
       tab: INBOX_TABS.NOTE,
+    },
+    {
+      key: INBOX_TABS.KNOWLEDGE_BASE,
+      icon: tagWhite,
+      label: 'Knowledge Base',
+      tab: INBOX_TABS.KNOWLEDGE_BASE,
     },
   ];
 
