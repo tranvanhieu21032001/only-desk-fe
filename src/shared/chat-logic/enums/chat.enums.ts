@@ -30,7 +30,7 @@ export interface MessageInputProps {
   onSendMessage: (
     val: string,
     type?: MessageType,
-    replyId?: string,
+    // replyId?: string,
     metadata?: any,
   ) => void;
   onInputChange?: (val: string) => void;
