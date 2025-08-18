@@ -15,6 +15,7 @@ import ringBlue from '@/assets/icons/inbox/ic-ring-blue.svg';
 import noteBlue from '@/assets/icons/inbox/ic-note-blue.svg';
 import editBlue from '@/assets/icons/inbox/ic-edit-blue.svg';
 import { ReplyPreviewState } from '@/shared/chat-logic';
+import { PermissionGate } from '@/modules/permissions/components/PermissionGate';
 
 interface InboxFooterProps {
   activeTab: string | null;
@@ -100,17 +101,19 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
     <S.Footer>
       <S.ActionIcons>
         {actions.map((action) => (
-          <S.IconProps
-            key={action.key}
-            $isActive={action.isActive}
-            onClick={action.onClick}
-          >
-            <Image
-              src={action.isActive ? action.iconActive : action.icon}
-              preview={false}
-            />
-            {action.label}
-          </S.IconProps>
+          <PermissionGate key={action.key} feature={action.key}>
+            <S.IconProps
+              key={action.key}
+              $isActive={action.isActive}
+              onClick={action.onClick}
+            >
+              <Image
+                src={action.isActive ? action.iconActive : action.icon}
+                preview={false}
+              />
+              {action.label}
+            </S.IconProps>
+          </PermissionGate>
         ))}
       </S.ActionIcons>
       <MessageInput
