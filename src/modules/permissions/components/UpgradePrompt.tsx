@@ -16,6 +16,7 @@ const Wrapper = styled.div`
   cursor: pointer;
   opacity: 0.9;
   transition: opacity 0.2s;
+  width:100%;
   &:hover {
     opacity: 0.6;
   }
@@ -59,8 +60,8 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
         type="primary"
         size="small"
         onClick={(e) => {
-          e.stopPropagation(); // không trigger Wrapper click
-          setOpen(true); // mở modal
+          e.stopPropagation();
+          setOpen(true);
         }}
       >
         Upgrade
