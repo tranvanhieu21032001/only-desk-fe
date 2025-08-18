@@ -10,8 +10,9 @@ import smile from '@/assets/icons/common/ic-smile.svg';
 import send from '@/assets/icons/common/ic-send.svg';
 import bellWhite from '@/assets/icons/inbox/ic-bell-white.svg';
 import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
-import tagWhite from '@/assets/icons/inbox/ic-tag.svg'
+import tagWhite from '@/assets/icons/inbox/ic-tag.svg';
 import icCloseImage from '@/assets/icons/common/ic-close-message.svg';
+import icCloseImage2 from '@/assets/icons/inbox/ic-close-image.svg';
 import icImage from '@/assets/icons/common/ic-image.svg';
 import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
 import {
@@ -95,27 +96,25 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
   const handleSend = () => {
     const replyId = replyPreview?.id;
+    if (inputValue.trim()) {
+      onSendMessage(inputValue, MessageType.TEXT);
+      setInputValue('');
+    }
 
     if (filePreviews.length > 0) {
       if (filePreviews.some((file) => file.uploading)) return;
+
       filePreviews.forEach((item) => {
         if (item.fileUrl) {
-          onSendMessage(inputValue, MessageType.IMAGE, replyId, {
+          onSendMessage('', MessageType.IMAGE, {
             fileUrl: item.fileUrl,
           });
         }
       });
-      setFilePreviews([]);
-      setInputValue('');
-      onClearReply?.();
-      return;
-    }
 
-    if (inputValue.trim()) {
-      onSendMessage(inputValue, MessageType.TEXT, replyId);
-      setInputValue('');
-      onClearReply?.();
+      setFilePreviews([]);
     }
+    onClearReply?.();
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,6 +158,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      {/* File Previews */}
       {filePreviews.length > 0 && (
         <S.FilePreviewWrapper>
           {filePreviews.map((item) => (
@@ -178,18 +178,19 @@ const MessageInput: React.FC<MessageInputProps> = ({
                   />
                 </S.ProgressWrapper>
               ) : (
-                <S.RemoveImageButton
+                <S.RemoveImageButton2
                   onClick={() => removeFile(item.id)}
                   title="Remove"
                 >
-                  <img src={icCloseImage} alt="remove" />
-                </S.RemoveImageButton>
+                  <img src={icCloseImage2} alt="remove" />
+                </S.RemoveImageButton2>
               )}
             </S.ImagePreviewBox>
           ))}
         </S.FilePreviewWrapper>
       )}
 
+      {/* Reply Preview */}
       {replyPreview && (
         <S.ReplyContainer>
           <S.ReplyBox isImage={replyPreview.type === MessageType.IMAGE}>
@@ -202,7 +203,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
                     Image
                   </S.ReplySnippet>
                 </div>
-               <Image
+                <Image
                   src={replyPreview.snippet || replyPreview.fileUrl}
                   alt="reply image"
                   height={80}
@@ -226,6 +227,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
         </S.ReplyContainer>
       )}
 
+      {/* Input Row */}
       <S.InputRow>
         <S.FileInputLabel>
           <Image src={file} preview={false} />
