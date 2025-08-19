@@ -15,7 +15,6 @@ import { useAppSelector } from '@/shared/hooks';
 import { getId } from '@/shared/utils/decode';
 import { SystemAvatar } from '@/shared/components/common/ProfileCard/SystemAvatar';
 import { getSenderName } from '../../helpers/getSenderName';
-import { PermissionGate } from '@/modules/permissions/components/PermissionGate';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,

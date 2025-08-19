@@ -12,8 +12,8 @@ import * as S from '../../pages/inbox-page/InboxPage.styles';
 const DetailSkeleton = () => {
   const { selectedConversation } = useAppSelector((state) => state.inbox);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<string | null>(null);
-  const [selectedReminder, setSelectedReminder] = useState<string | null>(null);
+  const [activeTab, _setActiveTab] = useState<string | null>(null);
+  const [selectedReminder, _setSelectedReminder] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
 
   const toggleSidebar = useCallback(() => {
@@ -93,8 +93,8 @@ const DetailSkeleton = () => {
           selectedReminder={selectedReminder}
           inputValue={inputValue}
           setInputValue={setInputValue}
-          setActiveTab={setActiveTab}
-          setSelectedReminder={setSelectedReminder}
+          // setActiveTab={setActiveTab}
+          // setSelectedReminder={setSelectedReminder}
           onSendMessage={handleSendMessage}
         />
       </DetailS.Footer>
