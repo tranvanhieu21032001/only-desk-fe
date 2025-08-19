@@ -1,8 +1,5 @@
 import React, { ReactNode, useState } from 'react';
 import { Tooltip, Button, Modal } from 'antd';
-// import ToastMessage from '@/shared/components/common/ToastMessage';
-// import { ToastMessageType } from '@/shared/helper/enums/common';
-// import { toast } from 'react-toastify';
 import ChoisePlan from '@/modules/settings/components/billing/billing-content/main/change-plan/Content/choise-plan/ChoisePlan';
 
 import styles from './UpgradePrompt.module.css';
@@ -17,15 +14,6 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
   message,
 }) => {
   const [open, setOpen] = useState(false);
-
-  // const handleClick = () => {
-  //   toast(
-  //     React.createElement(ToastMessage, {
-  //       typeToast: ToastMessageType.WARNING,
-  //       message,
-  //     }),
-  //   );
-  // };
 
   const tooltipContent = (
     <div className={styles.tooltipContent}>
@@ -57,7 +45,7 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
         autoAdjustOverflow={true}
         getPopupContainer={() => document.body}
       >
-          {children}
+        {children}
       </Tooltip>
 
       <Modal

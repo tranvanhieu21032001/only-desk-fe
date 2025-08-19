@@ -1,19 +1,22 @@
-import React, { ReactNode, isValidElement, cloneElement, ReactElement } from 'react';
+import React, {
+  ReactNode,
+  isValidElement,
+  cloneElement,
+  ReactElement,
+} from 'react';
 import { useCanAccess } from '../hooks/usePermissions';
 import { UpgradePrompt } from './UpgradePrompt';
 
 interface PermissionGateProps {
   feature: string;
-  children: ReactNode;
-  fallback?: ReactNode;
-  showUpgradePrompt?: boolean;
+  children:
+    | ReactNode
+    | ((hasPermission: boolean, message?: string) => ReactNode);
 }
 
 export const PermissionGate: React.FC<PermissionGateProps> = ({
   feature,
   children,
-  fallback,
-  showUpgradePrompt = true,
 }) => {
   const { canAccess, isAvailable, upgradeMessage, loading } =
     useCanAccess(feature);
@@ -22,17 +25,25 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
     return <div className="h-8 animate-pulse rounded bg-gray-200"></div>;
   }
 
-  if (canAccess) {
+  if (canAccess && isAvailable) {
     return <>{children}</>;
   }
 
-  if (!isAvailable && showUpgradePrompt) {
+  const message =
+    upgradeMessage || 'This feature is not available in your current plan';
+
+  if (typeof children === 'function') {
     return (
-      <UpgradePrompt
-        message={
-          upgradeMessage || 'This feature is not available in your current plan'
-        }
-      >
+      <>
+        {(children as (hasPermission: boolean, message?: string) => ReactNode)(
+          isAvailable && canAccess,
+          message,
+        )}
+      </>
+    );
+  } else {
+    return (
+      <UpgradePrompt message={message}>
         {isValidElement(children)
           ? cloneElement(children as ReactElement<any>, {
               onClick: (e: React.MouseEvent) => {
@@ -41,13 +52,12 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
               },
               style: {
                 ...(children.props as any).style,
-                // pointerEvents: 'none',
+                opacity: 0.5,
+                cursor: 'not-allowed',
               },
             })
           : children}
       </UpgradePrompt>
     );
   }
-
-  return <>{fallback || null}</>;
 };
