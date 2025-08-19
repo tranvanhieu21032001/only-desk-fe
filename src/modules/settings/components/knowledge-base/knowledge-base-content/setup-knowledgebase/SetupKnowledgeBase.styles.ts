@@ -2,7 +2,7 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { styled } from 'styled-components';
 
 export const KnowledgeBaseInformationContainer = styled.section`
-  height: calc(100vh - 140px);
+  height: calc(100vh - 100px);
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -10,25 +10,25 @@ export const KnowledgeBaseInformationContainer = styled.section`
   }
 
   @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 100px);
   }
 
   @media ${(props) => props?.theme?.breakpoints?.mdMax} {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 100px);
   }
 
   @media ${(props) => props?.theme?.breakpoints?.smMax} {
-    height: calc(100vh - 180px);
+    height: calc(100vh - 120px);
   }
 
   @media ${(props) => props?.theme?.breakpoints?.xsMax} {
-    height: calc(100vh - 220px);
+    height: calc(100vh - 180px);
   }
 `;
 
 export const KnowledgeBaseInformation = styled.div`
   padding: 12px;
-  height: calc(100% - 100px);
+  height: calc(100% - 5px);
   background-color: ${(props) => props?.theme?.colors?.newtralLightest};
 
   .ant-form {

@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { updateKnowledgeBaseSetting } from '@/modules/settings/api/knowledge-base';
 import { Form } from 'antd';
 import { PermissionGate } from '@/modules/permissions/components/PermissionGate';
+import PermissionWarningMessage from '@/shared/components/common/PermissionWarningMessage/PermissionWarningMessage';
 
 const domainRegex = /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
 
@@ -97,7 +98,7 @@ const SetupKnowledgeBase = () => {
         <PermissionGate feature="knowledge_base">
           {(hasPermission: boolean, message?: string) => (
             <>
-              {!hasPermission && <div>{message}</div>}
+              {!hasPermission && <PermissionWarningMessage message={message}/>}
               <Form form={form} layout="vertical">
                 <S.GroupInput
                   style={{
@@ -134,6 +135,7 @@ const SetupKnowledgeBase = () => {
                         domainText={t(
                           'setup-knowledge-base.baseHelpdeskDomain',
                         )}
+                        disabled={!hasPermission}
                         isDomainHidden={false}
                       />
                     </Form.Item>
@@ -166,6 +168,7 @@ const SetupKnowledgeBase = () => {
                         placeholder="help.t2bo.com"
                         size="large"
                         onBlur={() => handleBlur('customDomain')}
+                        disabled={!hasPermission}
                       />
                     </Form.Item>
                   </S.FormField>
