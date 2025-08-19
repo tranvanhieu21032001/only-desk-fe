@@ -41,7 +41,7 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
               },
               style: {
                 ...(children.props as any).style,
-                pointerEvents: 'none',
+                // pointerEvents: 'none',
               },
             })
           : children}

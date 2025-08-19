@@ -18,14 +18,14 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const handleClick = () => {
-    toast(
-      React.createElement(ToastMessage, {
-        typeToast: ToastMessageType.WARNING,
-        message,
-      }),
-    );
-  };
+  // const handleClick = () => {
+  //   toast(
+  //     React.createElement(ToastMessage, {
+  //       typeToast: ToastMessageType.WARNING,
+  //       message,
+  //     }),
+  //   );
+  // };
 
   const tooltipContent = (
     <div className={styles.tooltipContent}>
@@ -55,13 +55,9 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
         color="#fff"
         overlayInnerStyle={{ color: '#000' }}
         autoAdjustOverflow={true}
-        getPopupContainer={(triggerNode) =>
-          triggerNode.parentElement || document.body
-        }
+        getPopupContainer={() => document.body}
       >
-        <div className={styles.wrapper} onClick={handleClick}>
           {children}
-        </div>
       </Tooltip>
 
       <Modal
