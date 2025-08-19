@@ -45,7 +45,7 @@ import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/eve
 import { MessageBaseItem } from './MessageBaseItem';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
 import { formatDate } from '@/shared/chat-logic/utils/time';
-import { getSenderName } from '../../helpers/getSenderName';
+import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar }) => {

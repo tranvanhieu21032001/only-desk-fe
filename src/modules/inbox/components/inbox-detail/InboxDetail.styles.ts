@@ -136,14 +136,7 @@ export const MessageColumnView = styled.div`
   width: 100%;
 `;
 
-export const WrapperMessageLeft = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-`;
-
-export const WrapperMessageRight = styled.div`
+export const WrapperMessage = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
