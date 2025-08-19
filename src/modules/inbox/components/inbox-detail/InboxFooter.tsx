@@ -29,6 +29,7 @@ interface InboxFooterProps {
   onInputChange: (val: string) => void;
   replyPreview?: ReplyPreviewState | null;
   onEndSendMessage?: () => void;
+  footerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 const InboxFooter: React.FC<InboxFooterProps> = ({
@@ -44,6 +45,7 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
   onInputChange,
   replyPreview,
   onEndSendMessage,
+  footerRef,
 }) => {
   const actions = [
     {
@@ -97,7 +99,7 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
   ];
 
   return (
-    <S.Footer>
+    <S.Footer ref={footerRef}>
       <S.ActionIcons>
         {actions.map((action) => (
           <S.IconProps

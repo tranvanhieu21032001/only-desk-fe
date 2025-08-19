@@ -1,25 +1,23 @@
 import React, { useRef, useEffect, useState, ChangeEvent } from 'react';
-import { Image, Spin } from 'antd';
+import { Image } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
-import { LoadingOutlined } from '@ant-design/icons';
 import { uploadFile } from '../../helpers/inbox.logic';
-import { INBOX_TABS } from '../../constants/inbox.constants';
+import { emojiMap, INBOX_TABS, TAB_ACTIONS } from '../../constants/inbox.constants';
 import * as S from './MessageInput.styles';
+
 import file from '@/assets/icons/common/ic-file.svg';
 import smile from '@/assets/icons/common/ic-smile.svg';
 import send from '@/assets/icons/common/ic-send.svg';
-import bellWhite from '@/assets/icons/inbox/ic-bell-white.svg';
-import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
-import tagWhite from '@/assets/icons/inbox/ic-tag.svg';
-import icCloseImage from '@/assets/icons/common/ic-close-message.svg';
-import icCloseImage2 from '@/assets/icons/inbox/ic-close-image.svg';
-import icImage from '@/assets/icons/common/ic-image.svg';
-import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
+
 import {
   FilePreview,
   MessageInputProps,
   MessageType,
 } from '@/shared/chat-logic/enums/chat.enums';
+import FilePreviewList from './components/FilePreviewList';
+import ReplyPreview from './components/ReplyPreview';
+import EmojiPickerWrapper from './components/EmojiPickerWrapper';
+
 
 const MessageInput: React.FC<MessageInputProps> = ({
   activeTab,
@@ -35,11 +33,16 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const escapeRegex = (str: string) =>
+    str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeTab, selectedReminder]);
 
+  // update filePreview
   const updateFilePreview = (
     id: string,
     updater: (item: FilePreview) => Partial<FilePreview>,
@@ -71,6 +74,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
     setFilePreviews((prev) => [...prev, ...previews]);
 
+    // upload
     previews.forEach(async (item) => {
       if (!item.originFile) return;
       try {
@@ -127,8 +131,15 @@ const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.currentTarget.value);
-    onInputChange?.(e.currentTarget.value);
+    let value = e.currentTarget.value;
+
+    Object.entries(emojiMap).forEach(([pattern, emoji]) => {
+      const regex = new RegExp(escapeRegex(pattern), 'g');
+      value = value.replace(regex, emoji);
+    });
+
+    setInputValue(value);
+    onInputChange?.(value);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -138,106 +149,24 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
-  const TAB_ACTIONS = [
-    {
-      key: INBOX_TABS.EDIT,
-      icon: editWhite,
-      label: 'Edit',
-      tab: INBOX_TABS.EDIT,
-    },
-    {
-      key: INBOX_TABS.REMINDER,
-      icon: bellWhite,
-      label: 'Reminder',
-      tab: INBOX_TABS.REMINDER,
-    },
-    {
-      key: INBOX_TABS.NOTE,
-      icon: noteWhite,
-      label: 'Note',
-      tab: INBOX_TABS.NOTE,
-    },
-    {
-      key: INBOX_TABS.KNOWLEDGE_BASE,
-      icon: tagWhite,
-      label: 'Knowledge Base',
-      tab: INBOX_TABS.KNOWLEDGE_BASE,
-    },
-  ];
+  const handleAddEmoji = (emoji: any) => {
+    setInputValue(inputValue + emoji.emoji);
+    setShowEmojiPicker(false);
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {/* File Previews */}
-      {filePreviews.length > 0 && (
-        <S.FilePreviewWrapper>
-          {filePreviews.map((item) => (
-            <S.ImagePreviewBox key={item.id}>
-              <S.ImagePreview>
-                <Image src={item.localUrl} alt={item.fileName} />
-              </S.ImagePreview>
-              {item.uploading ? (
-                <S.ProgressWrapper>
-                  <Spin
-                    indicator={
-                      <LoadingOutlined
-                        style={{ fontSize: 26, color: '#fff' }}
-                        spin
-                      />
-                    }
-                  />
-                </S.ProgressWrapper>
-              ) : (
-                <S.RemoveImageButton2
-                  onClick={() => removeFile(item.id)}
-                  title="Remove"
-                >
-                  <img src={icCloseImage2} alt="remove" />
-                </S.RemoveImageButton2>
-              )}
-            </S.ImagePreviewBox>
-          ))}
-        </S.FilePreviewWrapper>
-      )}
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 4,
+        position: 'relative',
+      }}
+    >
+      <FilePreviewList filePreviews={filePreviews} removeFile={removeFile} />
 
-      {/* Reply Preview */}
-      {replyPreview && (
-        <S.ReplyContainer>
-          <S.ReplyBox isImage={replyPreview.type === MessageType.IMAGE}>
-            {replyPreview.type === MessageType.IMAGE ? (
-              <S.ReplyTextWrapper isImage>
-                <div>
-                  <S.ReplyName>{replyPreview.name || 'Guest'}</S.ReplyName>
-                  <S.ReplySnippet>
-                    <img src={icImage} alt="image icon" />
-                    Image
-                  </S.ReplySnippet>
-                  <S.ReplySnippet>{replyPreview.snippetText}</S.ReplySnippet>
-                </div>
-                <Image
-                  src={replyPreview.snippetUrl}
-                  alt="reply image"
-                  height={80}
-                  style={{
-                    objectFit: 'cover',
-                    borderRadius: 4,
-                  }}
-                  preview={false}
-                />
-              </S.ReplyTextWrapper>
-            ) : (
-              <S.ReplyTextWrapper>
-                <S.ReplyName>{replyPreview.name || 'Guest'}</S.ReplyName>
-                <S.ReplySnippet>{replyPreview.snippetText}</S.ReplySnippet>
-              </S.ReplyTextWrapper>
-            )}
-          </S.ReplyBox>
-          <S.RemoveImageButton onClick={onEndSendMessage} title="Remove">
-            <img src={icCloseImage} alt="remove" />
-          </S.RemoveImageButton>
-        </S.ReplyContainer>
-      )}
+      <ReplyPreview replyPreview={replyPreview} onCancel={onEndSendMessage} />
 
-      {/* Input Row */}
       <S.InputRow>
         <S.FileInputLabel>
           <Image src={file} preview={false} />
@@ -273,7 +202,12 @@ const MessageInput: React.FC<MessageInputProps> = ({
         </S.InputWrapper>
 
         <S.InputIconsWrapper>
-          <Image src={smile} preview={false} />
+          <Image
+            src={smile}
+            preview={false}
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+            style={{ cursor: 'pointer' }}
+          />
           <Image
             src={send}
             preview={false}
@@ -282,6 +216,13 @@ const MessageInput: React.FC<MessageInputProps> = ({
           />
         </S.InputIconsWrapper>
       </S.InputRow>
+
+
+      <EmojiPickerWrapper
+        show={showEmojiPicker}
+        onSelect={handleAddEmoji}
+        onClose={() => setShowEmojiPicker(false)}
+      />
     </div>
   );
 };
