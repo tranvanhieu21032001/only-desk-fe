@@ -29,7 +29,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   onSendMessage,
   onInputChange,
   replyPreview,
-  onClearReply,
+  onEndSendMessage,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -94,27 +94,36 @@ const MessageInput: React.FC<MessageInputProps> = ({
     setFilePreviews((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const replyId = replyPreview?.id;
-    if (inputValue.trim()) {
-      onSendMessage(inputValue, MessageType.TEXT);
-      setInputValue('');
-    }
 
     if (filePreviews.length > 0) {
-      if (filePreviews.some((file) => file.uploading)) return;
+      const uploadingFiles = filePreviews.filter((file) => file.uploading);
+      if (uploadingFiles.length > 0) return;
 
-      filePreviews.forEach((item) => {
+      for (const item of filePreviews) {
         if (item.fileUrl) {
-          onSendMessage('', MessageType.IMAGE, {
-            fileUrl: item.fileUrl,
-          });
+          onSendMessage(
+            inputValue,
+            MessageType.IMAGE,
+            { fileUrl: item.fileUrl },
+            replyId,
+          );
         }
-      });
+      }
 
       setFilePreviews([]);
+      onEndSendMessage?.();
+      return;
     }
-    onClearReply?.();
+
+    if (inputValue.trim()) {
+      if (activeTab === INBOX_TABS.NOTE) {
+        onSendMessage(inputValue, MessageType.NOTE, {}, replyId);
+      } else {
+        onSendMessage(inputValue, MessageType.TEXT, {}, replyId);
+      }
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -202,9 +211,10 @@ const MessageInput: React.FC<MessageInputProps> = ({
                     <img src={icImage} alt="image icon" />
                     Image
                   </S.ReplySnippet>
+                  <S.ReplySnippet>{replyPreview.snippetText}</S.ReplySnippet>
                 </div>
                 <Image
-                  src={replyPreview.snippet || replyPreview.fileUrl}
+                  src={replyPreview.snippetUrl}
                   alt="reply image"
                   height={80}
                   style={{
@@ -217,11 +227,11 @@ const MessageInput: React.FC<MessageInputProps> = ({
             ) : (
               <S.ReplyTextWrapper>
                 <S.ReplyName>{replyPreview.name || 'Guest'}</S.ReplyName>
-                <S.ReplySnippet>{replyPreview.snippet}</S.ReplySnippet>
+                <S.ReplySnippet>{replyPreview.snippetText}</S.ReplySnippet>
               </S.ReplyTextWrapper>
             )}
           </S.ReplyBox>
-          <S.RemoveImageButton onClick={onClearReply} title="Remove">
+          <S.RemoveImageButton onClick={onEndSendMessage} title="Remove">
             <img src={icCloseImage} alt="remove" />
           </S.RemoveImageButton>
         </S.ReplyContainer>

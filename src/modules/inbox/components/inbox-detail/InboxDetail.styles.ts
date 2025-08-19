@@ -15,6 +15,14 @@ export const GlobalStyle = createGlobalStyle`
     height: 100%;
     overflow: hidden;
   }
+  a{
+    text-decoration: underline;
+    color:#1677ff;
+  }
+    a:hover{
+    text-decoration: underline;
+    color:#0656c5;
+  }
 `;
 
 export const Container = styled.div`
@@ -126,6 +134,20 @@ export const MessageColumnView = styled.div`
   flex-direction: column;
   gap: 5px;
   width: 100%;
+`;
+
+export const WrapperMessageLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+`;
+
+export const WrapperMessageRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
 `;
 
 export const MessageBubbleLeft = styled.div`
@@ -369,8 +391,8 @@ export const KnowBaseItem = styled.div`
   color: #186ade;
   background-color: #e8f0fd;
   border: none;
-  padding:2px 6px;
-  width:fit-content;
+  padding: 2px 6px;
+  width: fit-content;
   display: flex;
   justify-content: center;
   border-radius: 8px;

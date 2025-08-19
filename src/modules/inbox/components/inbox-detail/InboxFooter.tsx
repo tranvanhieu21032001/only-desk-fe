@@ -28,14 +28,14 @@ interface InboxFooterProps {
   INBOX_TABS: Record<string, string>;
   onInputChange: (val: string) => void;
   replyPreview?: ReplyPreviewState | null;
-  onClearReply?: () => void;
+  onEndSendMessage?: () => void;
 }
 
 const InboxFooter: React.FC<InboxFooterProps> = ({
   activeTab,
-  setActiveTab,
+  // setActiveTab,
   selectedReminder,
-  setSelectedReminder,
+  // setSelectedReminder,
   inputValue,
   setInputValue,
   onSendMessage,
@@ -43,7 +43,7 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
   INBOX_TABS,
   onInputChange,
   replyPreview,
-  onClearReply,
+  onEndSendMessage,
 }) => {
   const actions = [
     {
@@ -118,12 +118,12 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
         selectedReminder={selectedReminder}
         inputValue={inputValue}
         setInputValue={setInputValue}
-        setActiveTab={setActiveTab}
-        setSelectedReminder={setSelectedReminder}
+        // setActiveTab={setActiveTab}
+        // setSelectedReminder={setSelectedReminder}
         onSendMessage={onSendMessage}
         onInputChange={onInputChange}
         replyPreview={replyPreview}
-        onClearReply={onClearReply}
+        onEndSendMessage={onEndSendMessage}
       />
     </S.Footer>
   );

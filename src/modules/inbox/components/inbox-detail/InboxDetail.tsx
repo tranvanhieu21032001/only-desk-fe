@@ -39,19 +39,14 @@ import { useChat } from '@/shared/chat-logic/hooks/useChat';
 import {
   MessageSender,
   MessageType,
+  ReplyPreviewState,
 } from '@/shared/chat-logic/enums/chat.enums';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { MessageBaseItem } from './MessageBaseItem';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
 import { formatDate } from '@/shared/chat-logic/utils/time';
 import { getSenderName } from '../../helpers/getSenderName';
-interface ReplyPreviewState {
-  id: string;
-  name?: string;
-  type: MessageType;
-  snippet?: string;
-  fileUrl?: string;
-}
+
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar }) => {
     const { t } = useTranslation('inbox');
@@ -120,8 +115,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         id: m.id!,
         type: m.type,
         name: getSenderName(m),
-        snippet:
-          m.type === MessageType.IMAGE ? m?.metadata?.fileUrl : m.content,
+        snippetUrl:
+          m.type === MessageType.IMAGE ? m?.metadata?.fileUrl : undefined,
+        snippetText: m.type === MessageType.IMAGE ? m.content : m.content,
       });
     };
 
@@ -162,8 +158,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
-    const onEndSendMessage = (_message: Message) => {
+    const onEndSendMessage = () => {
       setInputValue('');
+      handleClearReply();
     };
 
     const {
@@ -481,7 +478,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             INBOX_TABS={INBOX_TABS}
             onInputChange={handleUserTyping}
             replyPreview={replyPreview}
-            onClearReply={handleClearReply}
+            onEndSendMessage={onEndSendMessage}
           />
         </S.Container>
       </>

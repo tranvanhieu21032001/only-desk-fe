@@ -43,7 +43,7 @@ interface UseChatReturn {
     content: string,
     type: MessageType,
     metadata: any,
-    user: User | null | undefined
+    user: User | null | undefined,
   ) => void;
   submitInput: (messageId: string, inputValue: string) => void;
   hasNewMessage: boolean;
@@ -132,7 +132,8 @@ export function useChat({
     content: string,
     type: MessageType,
     metadata: any,
-    user: User | null | undefined
+    user: User | null | undefined,
+    replyId?: string
   ) => {
     const message = createLocalMessage(content, type, metadata, user);
     addMessage(message);
@@ -146,6 +147,7 @@ export function useChat({
           content,
           type,
           metadata,
+          replyId
         },
       },
       (res: any) => {

@@ -15,6 +15,7 @@ import { useAppSelector } from '@/shared/hooks';
 import { getId } from '@/shared/utils/decode';
 import { SystemAvatar } from '@/shared/components/common/ProfileCard/SystemAvatar';
 import { getSenderName } from '../../helpers/getSenderName';
+import { renderChatText } from '../../helpers/renderChatText';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -89,7 +90,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
               wordBreak: 'break-word',
             }}
           >
-            {msg.content}
+           {renderChatText(msg.content)}
           </S.MessageBubbleRight>
         );
       case MessageType.INPUT:
@@ -157,10 +158,38 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
         );
 
         if (isOwner) {
-          return <S.MessageImage>{imageWithPreviewOverlay}</S.MessageImage>;
+          return (
+            <S.WrapperMessageRight>
+              {msg.content && (
+                <S.MessageBubbleRight
+                  style={{
+                    background: isOwner ? '#e6f4ff' : '#f5f5f5',
+                    color: '#222',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {msg.content}
+                </S.MessageBubbleRight>
+              )}
+              <S.MessageImage>{imageWithPreviewOverlay}</S.MessageImage>
+            </S.WrapperMessageRight>
+          );
         } else {
           return (
-            <S.MessageImageLeft>{imageWithPreviewOverlay}</S.MessageImageLeft>
+            <S.WrapperMessageLeft>
+              {msg.content && (
+                <S.MessageBubbleRight
+                  style={{
+                    background: isOwner ? '#e6f4ff' : '#f5f5f5',
+                    color: '#222',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {msg.content}
+                </S.MessageBubbleRight>
+              )}
+              <S.MessageImageLeft>{imageWithPreviewOverlay}</S.MessageImageLeft>
+            </S.WrapperMessageLeft>
           );
         }
       default:

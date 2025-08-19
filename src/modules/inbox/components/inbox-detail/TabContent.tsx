@@ -144,7 +144,7 @@ const TabContent: React.FC<TabContentProps> = ({
               <S.ShortcutItem
                 key={article.id}
                 onClick={() => {
-                  const textToInsert = `${article.title} - https://sombes.com/`;
+                  const textToInsert = `${article.title} - <https://example.com|Example website>`;
                   setInputValue(textToInsert);
                   setActiveTab(null);
                 }}
