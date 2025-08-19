@@ -3,23 +3,22 @@ import { Image, Spin } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { LoadingOutlined } from '@ant-design/icons';
 import { uploadFile } from '../../helpers/inbox.logic';
-import { INBOX_TABS } from '../../constants/inbox.constants';
+import { INBOX_TABS, TAB_ACTIONS } from '../../constants/inbox.constants';
 import * as S from './MessageInput.styles';
 import file from '@/assets/icons/common/ic-file.svg';
 import smile from '@/assets/icons/common/ic-smile.svg';
 import send from '@/assets/icons/common/ic-send.svg';
-import bellWhite from '@/assets/icons/inbox/ic-bell-white.svg';
-import editWhite from '@/assets/icons/inbox/ic-edit-white.svg';
-import tagWhite from '@/assets/icons/inbox/ic-tag.svg';
 import icCloseImage from '@/assets/icons/common/ic-close-message.svg';
 import icCloseImage2 from '@/assets/icons/inbox/ic-close-image.svg';
 import icImage from '@/assets/icons/common/ic-image.svg';
-import noteWhite from '@/assets/icons/inbox/ic-note-white.svg';
 import {
   FilePreview,
   MessageInputProps,
   MessageType,
 } from '@/shared/chat-logic/enums/chat.enums';
+
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 
 const MessageInput: React.FC<MessageInputProps> = ({
   activeTab,
@@ -35,6 +34,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -138,35 +138,14 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
-  const TAB_ACTIONS = [
-    {
-      key: INBOX_TABS.EDIT,
-      icon: editWhite,
-      label: 'Edit',
-      tab: INBOX_TABS.EDIT,
-    },
-    {
-      key: INBOX_TABS.REMINDER,
-      icon: bellWhite,
-      label: 'Reminder',
-      tab: INBOX_TABS.REMINDER,
-    },
-    {
-      key: INBOX_TABS.NOTE,
-      icon: noteWhite,
-      label: 'Note',
-      tab: INBOX_TABS.NOTE,
-    },
-    {
-      key: INBOX_TABS.KNOWLEDGE_BASE,
-      icon: tagWhite,
-      label: 'Knowledge Base',
-      tab: INBOX_TABS.KNOWLEDGE_BASE,
-    },
-  ];
+  const handleAddEmoji = (emoji: any) => {
+    setInputValue(inputValue + emoji.native);
+    setShowEmojiPicker(false);
+  };
+
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, position: 'relative' }}>
       {/* File Previews */}
       {filePreviews.length > 0 && (
         <S.FilePreviewWrapper>
@@ -273,7 +252,12 @@ const MessageInput: React.FC<MessageInputProps> = ({
         </S.InputWrapper>
 
         <S.InputIconsWrapper>
-          <Image src={smile} preview={false} />
+          <Image
+            src={smile}
+            preview={false}
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+            style={{ cursor: 'pointer' }}
+          />
           <Image
             src={send}
             preview={false}
@@ -282,6 +266,12 @@ const MessageInput: React.FC<MessageInputProps> = ({
           />
         </S.InputIconsWrapper>
       </S.InputRow>
+
+      {showEmojiPicker && (
+        <div style={{ position: 'absolute', bottom: '40px', right: '0px', zIndex: 999 }}>
+          <Picker data={data} onEmojiSelect={handleAddEmoji} theme="light" />
+        </div>
+      )}
     </div>
   );
 };

@@ -154,7 +154,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     useEffect(() => {
       if (conversationId) dispatch(fetchConversationDetail(conversationId));
-    }, [dispatch, , conversationId]);
+    }, [dispatch, conversationId]);
 
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
@@ -479,6 +479,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             onInputChange={handleUserTyping}
             replyPreview={replyPreview}
             onEndSendMessage={onEndSendMessage}
+            footerRef={footerRef} 
           />
         </S.Container>
       </>
