@@ -32,6 +32,7 @@ export const FilterWrap = styled.div`
   gap: 4px;
   align-items: center;
   justify-content: space-between;
+  margin-bottom:24px;
 
   @media ${(props) => props?.theme?.breakpoints?.smMax} {
     flex-direction: column;

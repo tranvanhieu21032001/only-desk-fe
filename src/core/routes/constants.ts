@@ -67,6 +67,7 @@ const MAIN_ROUTES = {
   WORKSPACE_ADMIN: `${preRouterMain}/admin/workspace`,
   USERS_ADMIN: `${preRouterMain}/admin/users`,
   PLUGINS_ADMIN: `${preRouterMain}/admin/plugins`,
+  INVOICES_ADMIN: `${preRouterMain}/admin/invoices`,
 
   // Settings
   ACCOUNT: `${preRouterMain}/setting-account`,

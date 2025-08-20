@@ -18,8 +18,7 @@ import operatorsReducer from '@/modules/settings/store/features/operators';
 import knowledgeBaseSettingsReducer from '@/modules/settings/store/features/knowledgebase';
 import helpdeskSettingReducer from '@/modules/knowledge-base/store/helpdeskSettingsSlice';
 import pluginsReducer from '@/modules/plugins/store/pluginsSlice'
-
-// Hàm load state từ storage
+import adminWorkspacesReducer from '@/modules/admin/store/adminWorkspacesSlice';
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
     constants.CURRENT_WORKSPACE,
@@ -58,6 +57,7 @@ export const store = configureStore({
     knowledgeBaseSettings: knowledgeBaseSettingsReducer,
     inbox: inboxReducer,
     plugins: pluginsReducer,
+    adminWorkspaces: adminWorkspacesReducer
   },
   preloadedState: loadState(),
 });

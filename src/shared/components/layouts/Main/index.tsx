@@ -589,21 +589,21 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
                   width={24}
                   height={24}
                 />
-                <Typography>Plugins</Typography>
+                <Typography>Subscription</Typography>
               </S.ChildrenMenuLabel>
             </S.ChildrenMenuWrap>
             <S.ChildrenMenuWrap
-              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.CATEGORIES)}
-              $isActive={routePath === MAIN_ROUTES?.CATEGORIES}
+              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.INVOICES_ADMIN)}
+              $isActive={routePath === MAIN_ROUTES?.INVOICES_ADMIN}
             >
               <S.ChildrenMenuLabel>
                 <Image
-                  src={icSettingsDark}
+                  src={icBilling}
                   preview={false}
                   width={24}
                   height={24}
                 />
-                <Typography>Setting</Typography>
+                <Typography>Invoice</Typography>
               </S.ChildrenMenuLabel>
             </S.ChildrenMenuWrap>
           </S.PopoverLabelWrapNoBorder>
