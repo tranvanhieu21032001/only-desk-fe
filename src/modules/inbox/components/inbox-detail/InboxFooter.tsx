@@ -35,7 +35,8 @@ interface InboxFooterProps {
   INBOX_TABS: Record<string, string>;
   onInputChange: (val: string) => void;
   replyPreview?: ReplyPreviewState | null;
-  onClearReply?: () => void;
+  onEndSendMessage?: () => void;
+  footerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 const InboxFooter: React.FC<InboxFooterProps> = ({
@@ -50,7 +51,8 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
   INBOX_TABS,
   onInputChange,
   replyPreview,
-  onClearReply,
+  onEndSendMessage,
+  footerRef,
 }) => {
   const actions = [
     {
@@ -110,7 +112,7 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
   ];
 
   return (
-    <S.Footer>
+    <S.Footer ref={footerRef}>
       <S.ActionIcons>
         {actions.map((action) => (
           <PermissionGate
@@ -143,7 +145,7 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
         onSendMessage={onSendMessage}
         onInputChange={onInputChange}
         replyPreview={replyPreview}
-        onClearReply={onClearReply}
+        onEndSendMessage={onEndSendMessage}
       />
     </S.Footer>
   );

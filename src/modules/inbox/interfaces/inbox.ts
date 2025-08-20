@@ -86,6 +86,7 @@ export interface TabContentProps {
   inputRef: React.RefObject<HTMLInputElement | null>;
   inputValue: string;
   setSelectedReminder: (val: string | null) => void;
+  knowledgeKeyword?: string;
   t: (key: string) => string;
 }
 

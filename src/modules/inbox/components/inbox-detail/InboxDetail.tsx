@@ -39,19 +39,14 @@ import { useChat } from '@/shared/chat-logic/hooks/useChat';
 import {
   // MessageSender,
   MessageType,
+  ReplyPreviewState,
 } from '@/shared/chat-logic/enums/chat.enums';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { MessageBaseItem } from './MessageBaseItem';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
 import { formatDate } from '@/shared/chat-logic/utils/time';
-import { getSenderName } from '../../helpers/getSenderName';
-interface ReplyPreviewState {
-  id: string;
-  name?: string;
-  type: MessageType;
-  snippet?: string;
-  fileUrl?: string;
-}
+import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
+
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar }) => {
     const { t } = useTranslation('inbox');
@@ -82,6 +77,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const footerRef = useRef<HTMLDivElement>(null);
     const [inputValue, setInputValue] = useState('');
     const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
+    const [knowledgeKeyword, setKnowledgeKeyword] = useState('');
     const [_shortcutsPage, setShortcutsPage] = useState(1);
     const [shortcutsHasMore, setShortcutsHasMore] = useState(true);
     const [shortcutsLoading, setShortcutsLoading] = useState(false);
@@ -118,9 +114,10 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       setReplyPreview({
         id: m.id!,
         type: m.type,
-        name:getSenderName(m),
-        snippet:
-          m.type === MessageType.IMAGE ? m?.metadata?.fileUrl : m.content,
+        name: getSenderName(m),
+        snippetUrl:
+          m.type === MessageType.IMAGE ? m?.metadata?.fileUrl : undefined,
+        snippetText: m.type === MessageType.IMAGE ? m.content : m.content,
       });
     };
 
@@ -157,12 +154,13 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
 
     useEffect(() => {
       if (conversationId) dispatch(fetchConversationDetail(conversationId));
-    }, [dispatch, , conversationId]);
+    }, [dispatch, conversationId]);
 
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
-    const onEndSendMessage = (_message: Message) => {
+    const onEndSendMessage = () => {
       setInputValue('');
+      handleClearReply();
     };
 
     const {
@@ -207,6 +205,12 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       }
       // eslint-disable-next-line
     }, [activeTab, shortcutsKeyword]);
+
+    useEffect(() => {
+      if (activeTab === INBOX_TABS.KNOWLEDGE_BASE) {
+        setKnowledgeKeyword(inputValue);
+      }
+    }, [inputValue, activeTab]);
 
     // Scroll load more
     useEffect(() => {
@@ -448,6 +452,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
                   inputRef={inputRef}
                   inputValue={inputValue}
                   setSelectedReminder={setSelectedReminder}
+                  knowledgeKeyword={knowledgeKeyword}
                   t={t}
                 />
               </S.TabOverlay>
@@ -473,7 +478,8 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             INBOX_TABS={INBOX_TABS}
             onInputChange={handleUserTyping}
             replyPreview={replyPreview}
-            onClearReply={handleClearReply}
+            onEndSendMessage={onEndSendMessage}
+            footerRef={footerRef} 
           />
         </S.Container>
       </>

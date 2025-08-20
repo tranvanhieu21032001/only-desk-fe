@@ -448,6 +448,24 @@ export const RemoveImageButton = styled.div`
   }
 `;
 
+export const RemoveImageButton2 = styled.button`
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+`;
+
+
+
 export const PdfPreviewBox = styled.div`
   position: relative;
   width: 320px;

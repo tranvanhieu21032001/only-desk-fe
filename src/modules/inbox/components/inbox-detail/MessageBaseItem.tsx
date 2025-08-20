@@ -6,7 +6,10 @@ import MessageTimeWithIcon from './MessageTimeWithIcon';
 import * as S from './InboxDetail.styles';
 import icEye from '@/assets/icons/common/ic-eye.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
-import { MessageBaseItemProps } from '@/shared/chat-logic/interfaces/inbox';
+import {
+  Message,
+  MessageBaseItemProps,
+} from '@/shared/chat-logic/interfaces/inbox';
 import {
   MessageSender,
   MessageType,
@@ -14,7 +17,8 @@ import {
 import { useAppSelector } from '@/shared/hooks';
 import { getId } from '@/shared/utils/decode';
 import { SystemAvatar } from '@/shared/components/common/ProfileCard/SystemAvatar';
-import { getSenderName } from '../../helpers/getSenderName';
+import { renderMessageContent } from '@/shared/chat-logic/helpers/message-content.helper';
+import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -74,102 +78,6 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
     </div>
   );
 
-  if (msg.type === MessageType.RESOLVED) {
-    return <S.SystemMessage>{msg.content}</S.SystemMessage>;
-  }
-
-  function renderContent() {
-    switch (msg.type) {
-      case MessageType.TEXT:
-        return (
-          <S.MessageBubbleRight
-            style={{
-              background: isOwner ? '#e6f4ff' : '#f5f5f5',
-              color: '#222',
-              wordBreak: 'break-word',
-              width: "fit-content"
-            }}
-          >
-            {msg.content}
-          </S.MessageBubbleRight>
-        );
-      case MessageType.INPUT:
-        return (
-          <S.MessageBubbleRight
-            style={{
-              background: isOwner ? '#e6f4ff' : '#f5f5f5',
-              color: '#222',
-              wordBreak: 'break-word',
-                width: "fit-content"
-            }}
-          >
-            {msg.content}
-            {!!msg.metadata?.inputValue && (
-              <S.MessageInputValue>
-                {msg.metadata?.inputValue}
-              </S.MessageInputValue>
-            )}
-          </S.MessageBubbleRight>
-        );
-      case MessageType.NOTE:
-        return (
-          <S.NoteContainer>
-            <S.NoteRow>
-              <S.NoteBubbleRight>{msg.content}</S.NoteBubbleRight>
-            </S.NoteRow>
-          </S.NoteContainer>
-        );
-      case MessageType.IMAGE:
-        if (!msg.metadata?.fileUrl) return null;
-
-        const hiddenImageRef = useRef<HTMLDivElement>(null);
-
-        const handleClick = () => {
-          hiddenImageRef.current?.querySelector('img')?.click();
-        };
-
-        const imageWithPreviewOverlay = (
-          <Image.PreviewGroup>
-            <S.ImageWrapper
-              isOwner={isOwner}
-              onClick={handleClick}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') handleClick();
-              }}
-            >
-              <S.StyledImage
-                src={msg.metadata.fileUrl}
-                alt="image"
-                data-id={msg.id}
-                isOwner={isOwner}
-              />
-              <S.Overlay className="overlay">
-                <S.Previewbox>
-                  <Image src={icEye} preview={false} />
-                  Preview
-                </S.Previewbox>
-              </S.Overlay>
-            </S.ImageWrapper>
-            <div ref={hiddenImageRef} style={{ display: 'none' }}>
-              <Image src={msg.metadata.fileUrl} />
-            </div>
-          </Image.PreviewGroup>
-        );
-
-        if (isOwner) {
-          return <S.MessageImage>{imageWithPreviewOverlay}</S.MessageImage>;
-        } else {
-          return (
-            <S.MessageImageLeft>{imageWithPreviewOverlay}</S.MessageImageLeft>
-          );
-        }
-      default:
-        return null;
-    }
-  }
-
   const senderName = getSenderName(msg);
   if (isOwner) {
     return (
@@ -185,7 +93,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
           }}
         >
           {timeWithIcon}
-          {renderContent()}
+          <MessageBaseContentItem message={msg} isOwner={isOwner} />
         </div>
       </S.MessageRowUser>
     );
@@ -222,10 +130,10 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
                 display: 'flex',
                 alignItems: 'flex-end',
                 gap: 4,
-                width: 'fit-content'
+                width: 'fit-content',
               }}
             >
-              {renderContent()}
+              <MessageBaseContentItem message={msg} isOwner={isOwner} />
               {timeWithIcon}
             </div>
           </S.MessageColumnView>
@@ -233,4 +141,116 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
       </S.MessageRow>
     );
   }
+};
+
+interface MessageBaseContentItemProps {
+  message: Message;
+  isOwner: boolean;
+}
+
+const MessageBaseContentItem = ({
+  message,
+  isOwner,
+}: MessageBaseContentItemProps): React.ReactNode => {
+  if (message.type == MessageType.NOTE) {
+    return (
+      <S.NoteContainer>
+        <S.NoteRow>
+          <S.NoteBubbleRight>{message.content}</S.NoteBubbleRight>
+        </S.NoteRow>
+      </S.NoteContainer>
+    );
+  }
+
+  if (message.type === MessageType.RESOLVED) {
+    return <S.SystemMessage>{message.content}</S.SystemMessage>;
+  }
+
+  const isBubbleVisible =
+    !!message.content.trim() || !!message.metadata?.inputValue;
+
+  const elements = [];
+
+  if (isBubbleVisible) {
+    elements.push(
+      <S.MessageBubbleRight
+        style={{
+          background: isOwner ? '#e6f4ff' : '#f5f5f5',
+          color: '#222',
+          wordBreak: 'break-word',
+        }}
+      >
+        {renderMessageContent(message.content)}
+        {!!message.metadata?.inputValue && (
+          <S.MessageInputValue>
+            {message.metadata?.inputValue}
+          </S.MessageInputValue>
+        )}
+      </S.MessageBubbleRight>,
+    );
+  }
+  if (message.type == MessageType.IMAGE) {
+    elements.push(<MessageImageItem message={message} isOwner={isOwner} />);
+  }
+
+  if (elements.length == 0) {
+    return null;
+  } else if (elements.length == 1) {
+    return elements;
+  } else {
+    return (
+      <S.WrapperMessage style={!isOwner ? { alignItems: 'flex-start' } : {}}>
+        {elements}
+      </S.WrapperMessage>
+    );
+  }
+};
+
+const MessageImageItem = ({
+  message,
+  isOwner,
+}: MessageBaseContentItemProps): React.ReactNode => {
+  if (!message.metadata?.fileUrl) return null;
+
+  const hiddenImageRef = useRef<HTMLDivElement>(null);
+
+  const handleClick = () => {
+    hiddenImageRef.current?.querySelector('img')?.click();
+  };
+
+  const imageWithPreviewOverlay = (
+    <Image.PreviewGroup>
+      <S.ImageWrapper
+        isOwner={isOwner}
+        onClick={handleClick}
+        role="button"
+        tabIndex={0}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') handleClick();
+        }}
+      >
+        <S.StyledImage
+          src={message.metadata.fileUrl}
+          alt="image"
+          data-id={message.id}
+          isOwner={isOwner}
+        />
+        <S.Overlay className="overlay">
+          <S.Previewbox>
+            <Image src={icEye} preview={false} />
+            Preview
+          </S.Previewbox>
+        </S.Overlay>
+      </S.ImageWrapper>
+      <div ref={hiddenImageRef} style={{ display: 'none' }}>
+        <Image src={message.metadata.fileUrl} />
+      </div>
+    </Image.PreviewGroup>
+  );
+
+  return isOwner ? (
+    <S.MessageImage>{imageWithPreviewOverlay}</S.MessageImage>
+  ) : (
+    <S.MessageImageLeft>{imageWithPreviewOverlay}</S.MessageImageLeft>
+  );
 };

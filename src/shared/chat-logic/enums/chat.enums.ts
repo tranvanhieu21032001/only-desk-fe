@@ -30,12 +30,12 @@ export interface MessageInputProps {
   onSendMessage: (
     val: string,
     type?: MessageType,
-    replyId?: string,
     metadata?: any,
+    replyId?: string,
   ) => void;
   onInputChange?: (val: string) => void;
   replyPreview?: ReplyPreviewState | null;
-  onClearReply?: () => void;
+  onEndSendMessage?: () => void;
 }
 
 export interface FilePreview {
@@ -53,6 +53,6 @@ export interface ReplyPreviewState {
   id: string;
   name?: string;
   type: MessageType;
-  snippet?: string;
-  fileUrl?: string;
+  snippetUrl?: string;
+  snippetText?: string;
 }

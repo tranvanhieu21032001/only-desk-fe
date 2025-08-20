@@ -61,6 +61,7 @@ interface SendMessageSocketPayload {
     content: string;
     type: string;
     metadata: any;
+    replyId?: string;
   };
 }
 

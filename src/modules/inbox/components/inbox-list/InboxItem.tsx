@@ -10,12 +10,23 @@ import { eventBus } from '@/core/event-bus';
 import { Conversation } from '../../interfaces/inbox';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { getFormattedTime } from '@/shared/chat-logic/utils/time';
-import { getLatestMessageContent } from '@/shared/conversations-logic/helpers/conversation.helper';
+import { renderMessagePreview } from '@/shared/chat-logic/helpers/message-content.helper';
 
 type Props = {
   conversation: any;
   activeConversationId: string | null;
   onClickConversation: () => void;
+};
+
+// Helper function to get message preview based on message type
+const getMessagePreview = (latestMessage: any): string => {
+  if (!latestMessage) return 'No message';
+
+  return renderMessagePreview(
+    latestMessage.content || '',
+    latestMessage.type,
+    50,
+  );
 };
 
 const InboxItem: React.FC<Props> = ({
@@ -83,7 +94,7 @@ const InboxItem: React.FC<Props> = ({
       </S.Avatar>
       <S.Content>
         <S.Title>{conversation.contact?.name || DEFAULT_FULL_NAME}</S.Title>
-        <S.Subtitle>{getLatestMessageContent(conversation)}</S.Subtitle>
+        <S.Subtitle>{getMessagePreview(conversation.latestMessage)}</S.Subtitle>
       </S.Content>
       <S.RightSection ref={menuRef}>
         <S.Time className="time">
