@@ -1,40 +1,50 @@
-// import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Image } from 'antd';
-// import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import debounce from 'lodash/debounce';
 
 import Typography from '@/shared/components/common/Typography';
 import Input from '@/shared/components/common/Input';
 import PopoverAction from '@/shared/components/common/Popover';
-
 import icFilter from '@/assets/icons/contact/ic-filter.svg';
 import icArrowDown from '@/assets/icons/contact/ic-arrow-down.svg';
-
 import * as S from './WorkspaceAdmin.styles';
 import WorkspaceTable from '../../components/workspaces/WorkspaceTable';
+import { RootState } from '@/core/store';
+import { fetchWorkspaces } from '../../store/adminWorkspacesSlice';
+import { useAppDispatch } from '@/shared/hooks';
 
 const WorkspaceAdmin = () => {
-  // const { t } = useTranslation('workspace');
+  const dispatch = useAppDispatch();
+  const { workspaces, loading } = useSelector(
+    (state: RootState) => state.adminWorkspaces,
+  );
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 20;
 
-  const dataSource = [
-    {
-      key: '1',
-      websiteUrl: 'https://example.com',
-      websiteID: 'WS123456',
-      contactEmail: 'admin@example.com',
-      owner: 'John Doe',
-      status: 'Active',
-      created: '2024-05-01',
-    },
-    {
-      key: '2',
-      websiteUrl: 'https://another.com',
-      websiteID: 'WS654321',
-      contactEmail: 'owner@another.com',
-      owner: 'Jane Smith',
-      status: 'Inactive',
-      created: '2024-03-15',
-    },
-  ];
+  // Debounced fetch
+  const debouncedFetch = useMemo(
+    () =>
+      debounce((keyword: string, page: number) => {
+        dispatch(fetchWorkspaces({ keyword, page, limit: pageSize }));
+      }, 500),
+    [dispatch],
+  );
+
+  useEffect(() => {
+    debouncedFetch(searchKeyword, currentPage);
+  }, [searchKeyword, currentPage, debouncedFetch]);
+
+  useEffect(() => {
+    return () => {
+      debouncedFetch.cancel();
+    };
+  }, [debouncedFetch]);
+
+  const handleTableChange = (pagination: any) => {
+    setCurrentPage(pagination.current);
+  };
 
   const renderActionFilter = () => (
     <S.FilterActionWrap>
@@ -51,14 +61,21 @@ const WorkspaceAdmin = () => {
     <S.Container>
       <S.FilterWrap>
         <S.InputSearch>
-          <Input prefix placeholder="Search..." onChange={() => {}} />
+          <Input
+            prefix
+            placeholder="Search..."
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+          />
         </S.InputSearch>
         <S.FilterPopoverWrap>
           <S.ButtonFilter
             width="fit-content"
             onClick={() => console.log('Filter')}
             iconPosition="left"
-            icon={<Image src={icFilter} preview={false} width={15} height={18} />}
+            icon={
+              <Image src={icFilter} preview={false} width={15} height={18} />
+            }
           >
             <Typography>Filter</Typography>
           </S.ButtonFilter>
@@ -68,9 +85,15 @@ const WorkspaceAdmin = () => {
             btnContent={
               <S.ButtonAction
                 width="fit-content"
-                onClick={() => {}}
                 iconPosition="left"
-                icon={<Image src={icArrowDown} preview={false} width={20} height={20} />}
+                icon={
+                  <Image
+                    src={icArrowDown}
+                    preview={false}
+                    width={20}
+                    height={20}
+                  />
+                }
               >
                 <Typography>Action</Typography>
               </S.ButtonAction>
@@ -80,7 +103,8 @@ const WorkspaceAdmin = () => {
       </S.FilterWrap>
 
       <WorkspaceTable
-        data={dataSource}
+        data={workspaces}
+        loading={loading}
         onRowSelectionChange={(rows) => console.log('Selected:', rows)}
       />
     </S.Container>

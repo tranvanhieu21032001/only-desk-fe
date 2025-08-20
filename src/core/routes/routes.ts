@@ -63,7 +63,6 @@ const CheckoutSuccess = React.lazy(
     ),
 );
 
-
 //Knowledge Base
 const Articles = React.lazy(
   () => import('@/modules/knowledge-base/pages/articles/Articles'),
@@ -93,6 +92,10 @@ const UsersAdmin = React.lazy(
 
 const PluginsAdmin = React.lazy(
   () => import('@/modules/admin/pages/plugins/PluginsAdmin'),
+);
+
+const InvoicesAdmin = React.lazy(
+  () => import('@/modules/admin/pages/invoices/InvoicesAdmin'),
 );
 
 const AcceptIvitation = React.lazy(
@@ -333,6 +336,12 @@ const routes_main: RouterElementInterface[] = [
     component: PluginsAdmin,
     name: 'plugins-admin',
   },
+  {
+    key: 'invoices-admin',
+    path: MAIN_ROUTES.INVOICES_ADMIN,
+    component: InvoicesAdmin,
+    name: 'invoices-admin',
+  },
 
   //Settings
   {
@@ -353,7 +362,7 @@ const routes_main: RouterElementInterface[] = [
     component: ChangePlan,
     name: 'change-plan',
   },
-    {
+  {
     key: 'checkout-success',
     path: MAIN_ROUTES.CHECKOUT_SUCCESS,
     component: CheckoutSuccess,

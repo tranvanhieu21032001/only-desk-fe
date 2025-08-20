@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Table, Avatar, Dropdown, Menu, Button, Tag } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
+
 const CustomTable = styled(Table)`
   .ant-table-cell {
     padding: 12px !important;
   }
 `;
 
-const UserTable = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+interface UserTableProps {
+  users: any[];
+  loading: boolean;
+  pagination: any;
+  onChange: (pagination: any) => void;
+  selectedRowKeys: React.Key[];
+  onSelectChange: (newSelectedRowKeys: React.Key[]) => void;
+}
 
+const UserTable: React.FC<UserTableProps> = ({
+  users,
+  loading,
+  pagination,
+  onChange,
+  selectedRowKeys,
+  onSelectChange,
+}) => {
   const rowSelection = {
     selectedRowKeys,
-    onChange: (newSelectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(newSelectedRowKeys);
-    },
+    onChange: onSelectChange,
   };
 
   const columns = [
@@ -69,33 +82,18 @@ const UserTable = () => {
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      avatar: 'https://i.pravatar.cc/40',
-      name: 'John Doe',
-      email: 'john@example.com',
-      role: 'Admin',
-      status: 'active',
-      created: '2023-01-01',
-    },
-    {
-      key: '2',
-      avatar: 'https://i.pravatar.cc/41',
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      role: 'User',
-      status: 'inactive',
-      created: '2023-02-01',
-    },
-  ];
-
   return (
     <CustomTable
       rowSelection={rowSelection}
       columns={columns}
-      dataSource={data}
+      dataSource={users}
       rowKey="key"
+      loading={loading}
+      pagination={{
+        ...pagination,
+        showSizeChanger: false,
+      }}
+      onChange={onChange}
     />
   );
 };
