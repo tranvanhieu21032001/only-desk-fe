@@ -90,7 +90,7 @@ import icAllPlugins from '@/assets/icons/layout/ic-all-plugins.svg';
 import icInstalledPlugins from '@/assets/icons/layout/ic-installed-plugins.svg';
 
 //Settings
-import icEmail from '@/assets/icons/layout/ic-email.svg';
+//import icEmail from '@/assets/icons/layout/ic-email.svg';
 import icAccount from '@/assets/icons/layout/ic-account.svg';
 import icBilling from '@/assets/icons/layout/ic-billing.svg';
 import icWorkspace from '@/assets/icons/layout/ic-workspace.svg';
