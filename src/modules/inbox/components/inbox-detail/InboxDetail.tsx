@@ -276,8 +276,10 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         if (
           target &&
           ((target as Element).closest('[data-tab-panel="true"]') ||
-            (target as Element).closest('.ant-modal')) || // <- bỏ qua modal
-            (target as Element).closest('.ant-picker-dropdown')
+            (target as Element).closest('.ant-modal')) ||
+            (target as Element).closest('.ant-picker-dropdown') ||
+            (target as Element).closest('.ant-select-dropdown') ||
+            (target as Element).closest('.ant-select-clear')
         ) {
           return;
         }

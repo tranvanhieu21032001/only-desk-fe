@@ -1,8 +1,7 @@
-// ReminderTab.tsx
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import * as S from '../InboxDetail.styles';
 import dayjs, { Dayjs } from 'dayjs';
-import { Modal, DatePicker, TimePicker, Button } from 'antd';
+import { Modal, DatePicker, Button, Select } from 'antd';
 
 interface ReminderTabProps {
   t: (key: string) => string;
@@ -23,8 +22,9 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [customDate, setCustomDate] = useState<Dayjs | null>(dayjs());
-  const [customTime, setCustomTime] = useState<Dayjs | null>(dayjs());
+  const [customDate, setCustomDate] = useState<Dayjs | null>(null);
+  const [customHour, setCustomHour] = useState<number | null>(null);
+  const [customMinute, setCustomMinute] = useState<number | null>(null);
 
   const reminders = [
     { label: t('inboxDetail.reminder1'), offset: { hours: 1 } },
@@ -52,16 +52,23 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
     setTimeout(() => {
       if (inputRef.current) {
         inputRef.current.focus();
-        inputRef.current.selectionStart = inputRef.current.selectionEnd = reminderText.length;
+        inputRef.current.selectionStart = inputRef.current.selectionEnd =
+          reminderText.length;
       }
     }, 0);
   };
 
+  const handleOpenModal = () => {
+    const now = dayjs();
+    setCustomDate(now);
+    setCustomHour(now.hour());
+    setCustomMinute(now.minute());
+    setModalVisible(true);
+  };
+
   const handleSetCustomDate = () => {
-    if (!customDate || !customTime) return;
-    const dateWithTime = customDate
-      .hour(customTime.hour())
-      .minute(customTime.minute());
+    if (!customDate || customHour === null || customMinute === null) return;
+    const dateWithTime = customDate.hour(customHour).minute(customMinute);
     const reminderText = dateWithTime.format('MM/DD/YYYY HH:mm');
     setInputValue(reminderText);
     setSelectedReminder(reminderText);
@@ -72,10 +79,23 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
     setTimeout(() => {
       if (inputRef.current) {
         inputRef.current.focus();
-        inputRef.current.selectionStart = inputRef.current.selectionEnd = reminderText.length;
+        inputRef.current.selectionStart = inputRef.current.selectionEnd =
+          reminderText.length;
       }
     }, 0);
   };
+
+  const hourOptions = Array.from({ length: 24 }, (_, i) => ({
+    value: i,
+    label: i.toString().padStart(2, '0'),
+  }));
+  const minuteOptions = Array.from({ length: 60 }, (_, i) => ({
+    value: i,
+    label: i.toString().padStart(2, '0'),
+  }));
+
+  const isDisabled =
+    !customDate || customHour === null || customMinute === null;
 
   return (
     <S.TabPanel data-tab-panel="true">
@@ -91,35 +111,70 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
         </S.ShortcutItem>
       ))}
 
-      <S.ShortcutItem onClick={() => setModalVisible(true)}>
+      <S.ShortcutItem onClick={handleOpenModal}>
         <p>At provided date and time</p>
       </S.ShortcutItem>
 
       <Modal
-        title="Select date and time"
+        title="Reminder date"
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
-         getContainer={false}
+        getContainer={false}
+        width={580}
         footer={[
-          <Button key="cancel" onClick={() => setModalVisible(false)}>
+          <Button
+            key="cancel"
+            onClick={() => setModalVisible(false)}
+            style={{ height: 40 }}
+          >
             Cancel
           </Button>,
-          <Button key="set" type="primary" onClick={handleSetCustomDate}>
+          <Button
+            key="set"
+            type="primary"
+            onClick={handleSetCustomDate}
+            style={{ height: 40 }}
+            disabled={isDisabled}
+          >
             Set Date
           </Button>,
         ]}
       >
-        <DatePicker
-          value={customDate}
-          onChange={(d) => setCustomDate(d)}
-          style={{ width: '100%', marginBottom: 12 }}
-        />
-        <TimePicker
-          value={customTime}
-          onChange={(t) => setCustomTime(t)}
-          format="HH:mm"
-          style={{ width: '100%' }}
-        />
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <DatePicker
+            value={customDate}
+            onChange={(d) => setCustomDate(d)}
+            style={{ flex: 1, height: 40 }}
+            allowClear
+          />
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              gap: '8px',
+              alignItems: 'center',
+              
+            }}
+          >
+            <Select
+              placeholder="HH"
+              allowClear
+              value={customHour}
+              onChange={(val) => setCustomHour(val)}
+              options={hourOptions}
+              style={{ flex: 1, height: 40 }}
+            />
+            <span>:</span>
+            <Select
+              placeholder="MM"
+              allowClear
+              value={customMinute}
+              onChange={(val) => setCustomMinute(val)}
+              options={minuteOptions}
+              style={{ flex: 1, height: 40 }}
+            />
+          </div>
+        </div>
       </Modal>
     </S.TabPanel>
   );
