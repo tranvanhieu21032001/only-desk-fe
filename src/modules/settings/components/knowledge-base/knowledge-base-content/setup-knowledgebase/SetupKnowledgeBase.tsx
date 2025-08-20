@@ -18,6 +18,10 @@ import { updateKnowledgeBaseSetting } from '@/modules/settings/api/knowledge-bas
 import { Form } from 'antd';
 import { PermissionGate } from '@/modules/permissions/components/PermissionGate';
 import PermissionWarningMessage from '@/shared/components/common/PermissionWarningMessage/PermissionWarningMessage';
+import {
+  FeatureKey,
+  HelpdeskAction,
+} from '@/modules/permissions/enums/features.enum';
 
 const domainRegex = /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
 
@@ -95,10 +99,13 @@ const SetupKnowledgeBase = () => {
           </Typography>
         </S.KnowledgeBaseInformationLabel>
 
-        <PermissionGate feature="knowledge_base">
+        <PermissionGate
+          feature={FeatureKey.KNOWLEDGE_BASE}
+          action={HelpdeskAction.KNOWLEDGE_BASE_SETTINGS}
+        >
           {(hasPermission: boolean, message?: string) => (
             <>
-              {!hasPermission && <PermissionWarningMessage message={message}/>}
+              {!hasPermission && <PermissionWarningMessage message={message} />}
               <Form form={form} layout="vertical">
                 <S.GroupInput
                   style={{

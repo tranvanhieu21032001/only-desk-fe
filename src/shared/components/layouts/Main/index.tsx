@@ -827,7 +827,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
               <Typography>{t('settings.chatbox')}</Typography>
             </S.ChildrenMenuLabel>
           </S.ChildrenMenuWrap>
-          <S.ChildrenMenuWrap
+          {/* <S.ChildrenMenuWrap
             onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.EMAIL)}
             $isActive={routePath === MAIN_ROUTES?.EMAIL}
           >
@@ -835,7 +835,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
               <Image src={icEmail} preview={false} width={24} height={24} />
               <Typography>{t('settings.email')}</Typography>
             </S.ChildrenMenuLabel>
-          </S.ChildrenMenuWrap>
+          </S.ChildrenMenuWrap> */}
           <S.ChildrenMenuWrap
             onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.KNOWLEDGE_BASE)}
             $isActive={routePath === MAIN_ROUTES?.KNOWLEDGE_BASE}
@@ -850,7 +850,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
               <Typography>{t('settings.knowledge-base')}</Typography>
             </S.ChildrenMenuLabel>
           </S.ChildrenMenuWrap>
-          <S.ChildrenMenuWrap
+          {/* <S.ChildrenMenuWrap
             onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.STATUS_PAGE)}
             $isActive={routePath === MAIN_ROUTES?.STATUS_PAGE}
           >
@@ -863,7 +863,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
               />
               <Typography>{t('settings.status-page')}</Typography>
             </S.ChildrenMenuLabel>
-          </S.ChildrenMenuWrap>
+          </S.ChildrenMenuWrap> */}
         </S.PopoverLabelWrapNoBorder>
       </S.PopoverContent>
     ),

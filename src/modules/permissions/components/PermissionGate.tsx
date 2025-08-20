@@ -4,11 +4,15 @@ import React, {
   cloneElement,
   ReactElement,
 } from 'react';
-import { useCanAccess } from '../hooks/usePermissions';
 import { UpgradePrompt } from './UpgradePrompt';
+import { FeatureKey } from '../enums/features.enum';
+import { usePermissionContext } from '../contexts/PermissionContext';
+import { FeaturePermission } from '../interfaces/permission.interface';
 
 interface PermissionGateProps {
-  feature: string;
+  feature: FeatureKey | undefined;
+  action: string;
+  ignoreCheck?: boolean;
   children:
     | ReactNode
     | ((hasPermission: boolean, message?: string) => ReactNode);
@@ -16,34 +20,39 @@ interface PermissionGateProps {
 
 export const PermissionGate: React.FC<PermissionGateProps> = ({
   feature,
+  action,
+  ignoreCheck,
   children,
 }) => {
-  const { canAccess, isAvailable, upgradeMessage, loading } =
-    useCanAccess(feature);
+  const { permissions } = usePermissionContext();
 
-  if (loading) {
-    return <div className="h-8 animate-pulse rounded bg-gray-200"></div>;
-  }
+  var featurePermission: FeaturePermission | undefined =
+    feature && permissions?.features.find((f) => f.feature === feature);
+  var actionPermission = featurePermission?.actions[action];
 
-  if (canAccess && isAvailable) {
+  var { accessible, available, needUpgrade, message } = actionPermission || {
+    accessible: false,
+    available: false,
+    needUpgrade: false,
+    message: '',
+  };
+
+  if (ignoreCheck || (accessible && available)) {
     return <>{children}</>;
   }
-
-  const message =
-    upgradeMessage || 'This feature is not available in your current plan';
 
   if (typeof children === 'function') {
     return (
       <>
         {(children as (hasPermission: boolean, message?: string) => ReactNode)(
-          isAvailable && canAccess,
+          available && accessible,
           message,
         )}
       </>
     );
   } else {
     return (
-      <UpgradePrompt message={message}>
+      <UpgradePrompt message={message || ''} needUpgrade={needUpgrade}>
         {isValidElement(children)
           ? cloneElement(children as ReactElement<any>, {
               onClick: (e: React.MouseEvent) => {

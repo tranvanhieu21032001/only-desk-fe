@@ -13,26 +13,26 @@ const accountMenus: AccountMenuInterface[] = [
     key: AccountMenusEnums?.ACCOUNT_INFORMATION,
     label: 'account-information',
   },
-  {
-    key: AccountMenusEnums?.NOTIFICATIONS,
-    label: 'notifications',
-  },
-  {
-    key: AccountMenusEnums?.AVAILABILITY,
-    label: 'availability',
-  },
-  {
-    key: AccountMenusEnums?.SECURITY,
-    label: 'security',
-  },
-  {
-    key: AccountMenusEnums?.INTERFACE,
-    label: 'interface',
-  },
-  {
-    key: AccountMenusEnums?.KEYBOARD_SHORTCUTS,
-    label: 'keyboard-shortcuts',
-  },
+  // {
+  //   key: AccountMenusEnums?.NOTIFICATIONS,
+  //   label: 'notifications',
+  // },
+  // {
+  //   key: AccountMenusEnums?.AVAILABILITY,
+  //   label: 'availability',
+  // },
+  // {
+  //   key: AccountMenusEnums?.SECURITY,
+  //   label: 'security',
+  // },
+  // {
+  //   key: AccountMenusEnums?.INTERFACE,
+  //   label: 'interface',
+  // },
+  // {
+  //   key: AccountMenusEnums?.KEYBOARD_SHORTCUTS,
+  //   label: 'keyboard-shortcuts',
+  // },
 ];
 
 const progressEnableTwoFactor = [

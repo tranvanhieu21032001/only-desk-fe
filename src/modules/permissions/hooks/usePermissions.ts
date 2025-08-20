@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
-import {
-  permissionService,
-  WorkspacePermissions,
-  FeaturePermission,
-} from '../services/permissions.service';
+import { permissionService } from '../services/permissions.service';
+import { WorkspacePermissions } from '../interfaces/permission.interface';
 
 export const useWorkspacePermissions = () => {
   const [permissions, setPermissions] = useState<WorkspacePermissions | null>(
@@ -32,44 +29,4 @@ export const useWorkspacePermissions = () => {
   }, []);
 
   return { permissions, loading, error, refetch: () => loadPermissions() };
-};
-
-export const useFeaturePermission = (featureName: string) => {
-  const [permission, setPermission] = useState<FeaturePermission | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadPermission = async () => {
-      try {
-        setLoading(true);
-        const permissions = await permissionService.getWorkspacePermissions();
-        if (!permissions) {
-          return;
-        }
-        const feature = permissions.features.find(
-          (f) => f.feature === featureName,
-        );
-        setPermission(feature || null);
-      } catch (err) {
-        console.error('Failed to load feature permission:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPermission();
-  }, [featureName]);
-
-  return { permission, loading };
-};
-
-export const useCanAccess = (featureName: string) => {
-  const { permission, loading } = useFeaturePermission(featureName);
-
-  return {
-    canAccess: permission?.accessible ?? false,
-    isAvailable: permission?.available ?? false,
-    upgradeMessage: permission?.upgradeMessage,
-    loading,
-  };
 };

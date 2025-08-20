@@ -1,6 +1,6 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useWorkspacePermissions } from '../hooks/usePermissions';
-import { WorkspacePermissions } from '../services/permissions.service';
+import { WorkspacePermissions } from '../interfaces/permission.interface';
 
 interface PermissionContextType {
   permissions: WorkspacePermissions | null;

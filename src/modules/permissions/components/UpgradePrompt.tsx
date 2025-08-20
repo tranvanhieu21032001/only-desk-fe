@@ -7,27 +7,31 @@ import styles from './UpgradePrompt.module.css';
 interface UpgradePromptProps {
   children: ReactNode;
   message: string;
+  needUpgrade?: boolean;
 }
 
 export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
   children,
   message,
+  needUpgrade,
 }) => {
   const [open, setOpen] = useState(false);
 
   const tooltipContent = (
     <div className={styles.tooltipContent}>
       <div className={styles.tooltipMessage}>🔒 {message}</div>
-      <Button
-        type="primary"
-        size="small"
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen(true);
-        }}
-      >
-        Upgrade
-      </Button>
+      {needUpgrade && (
+        <Button
+          type="primary"
+          size="small"
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(true);
+          }}
+        >
+          Upgrade
+        </Button>
+      )}
     </div>
   );
 
