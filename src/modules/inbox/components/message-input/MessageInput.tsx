@@ -150,7 +150,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   const handleAddEmoji = (emoji: any) => {
-    setInputValue(inputValue + emoji.emoji);
+    setInputValue(inputValue + emoji.native);
     setShowEmojiPicker(false);
   };
 
