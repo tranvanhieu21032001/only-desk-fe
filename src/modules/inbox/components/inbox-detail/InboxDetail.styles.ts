@@ -352,7 +352,19 @@ export const TabTitle = styled.div`
   margin-bottom: 8px;
 `;
 
-export const ShortcutItem = styled.div`
+export const TabSubTitle = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 8px;
+`;
+
+interface ShortcutItemProps {
+  $selected?: boolean;
+}
+
+export const ShortcutItem = styled.div<ShortcutItemProps>`
   color: #000;
   padding: 8px 12px;
   border-bottom: 1px solid #eee;
@@ -370,6 +382,10 @@ export const ShortcutItem = styled.div`
     line-height: 23px;
     font-weight: 600;
   }
+
+  background-color: ${({ $selected }) => ($selected ? '#1e2f97' : 'transparent')};
+  color: ${({ $selected }) => ($selected ? '#fff' : '#000')};
+  border-radius: ${({ $selected }) => ($selected ? '8px' : '0')};
 
   &:hover {
     cursor: pointer;

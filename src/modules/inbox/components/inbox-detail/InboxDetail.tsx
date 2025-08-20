@@ -16,7 +16,7 @@ import { InboxFooter } from './InboxFooter';
 import { handleIconClickLogic } from '../../helpers/inbox.logic';
 import RenderSkeleton from './RenderSkeleton';
 import ContextMenu from './ContextMenu';
-import TabContent from './TabContent';
+import TabContent from './tab-content/TabContent';
 
 import * as S from './InboxDetail.styles';
 import { GlobalStyle } from './InboxDetail.styles';
@@ -182,6 +182,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       setActiveTab(activeTab === tab ? null : tab);
       if (tab === INBOX_TABS.EDIT) setInputValue(' ');
       if (tab === INBOX_TABS.NOTE) setInputValue(' ');
+      if (tab !== INBOX_TABS.REMINDER) {
+        setSelectedReminder(null);
+      }
     };
 
     const handleSendMessage = (
@@ -270,7 +273,12 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         if (footerRef.current && footerRef.current.contains(target)) {
           return;
         }
-        if (target && (target as Element).closest('[data-tab-panel="true"]')) {
+        if (
+          target &&
+          ((target as Element).closest('[data-tab-panel="true"]') ||
+            (target as Element).closest('.ant-modal')) || // <- bỏ qua modal
+            (target as Element).closest('.ant-picker-dropdown')
+        ) {
           return;
         }
         setActiveTab(null);
@@ -479,7 +487,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             onInputChange={handleUserTyping}
             replyPreview={replyPreview}
             onEndSendMessage={onEndSendMessage}
-            footerRef={footerRef} 
+            footerRef={footerRef}
           />
         </S.Container>
       </>

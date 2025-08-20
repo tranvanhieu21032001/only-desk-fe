@@ -2,7 +2,11 @@ import React, { useRef, useEffect, useState, ChangeEvent } from 'react';
 import { Image } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { uploadFile } from '../../helpers/inbox.logic';
-import { emojiMap, INBOX_TABS, TAB_ACTIONS } from '../../constants/inbox.constants';
+import {
+  emojiMap,
+  INBOX_TABS,
+  TAB_ACTIONS,
+} from '../../constants/inbox.constants';
 import * as S from './MessageInput.styles';
 
 import file from '@/assets/icons/common/ic-file.svg';
@@ -18,10 +22,11 @@ import FilePreviewList from './components/FilePreviewList';
 import ReplyPreview from './components/ReplyPreview';
 import EmojiPickerWrapper from './components/EmojiPickerWrapper';
 
-
 const MessageInput: React.FC<MessageInputProps> = ({
   activeTab,
   selectedReminder,
+  setSelectedReminder,
+  setActiveTab,
   inputValue,
   setInputValue,
   onSendMessage,
@@ -115,8 +120,9 @@ const MessageInput: React.FC<MessageInputProps> = ({
           );
         }
       }
-
       setFilePreviews([]);
+      setSelectedReminder?.(null);
+      setInputValue('');
       onEndSendMessage?.();
       return;
     }
@@ -127,6 +133,10 @@ const MessageInput: React.FC<MessageInputProps> = ({
       } else {
         onSendMessage(inputValue, MessageType.TEXT, {}, replyId);
       }
+      setSelectedReminder?.(null);
+      setInputValue('');
+      onEndSendMessage?.();
+      setActiveTab?.(null);
     }
   };
 
@@ -149,10 +159,11 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
-  const handleAddEmoji = (emoji: any) => {
-    setInputValue(inputValue + emoji.native);
-    setShowEmojiPicker(false);
-  };
+const handleAddEmoji = (emoji: any) => {
+  setInputValue(inputValue + emoji.native);
+  setShowEmojiPicker(false);
+};
+
 
   return (
     <div
@@ -180,15 +191,30 @@ const MessageInput: React.FC<MessageInputProps> = ({
           />
         </S.FileInputLabel>
 
-        {TAB_ACTIONS.map(
-          (action) =>
-            activeTab === action.tab && (
+        {TAB_ACTIONS.map((action) => {
+          if (action.tab === INBOX_TABS.REMINDER) {
+            if (activeTab === INBOX_TABS.REMINDER || selectedReminder) {
+              return (
+                <S.TokenBox key={action.key}>
+                  <S.TokenIcon src={action.icon} alt={action.label} />
+                  {action.label}
+                </S.TokenBox>
+              );
+            }
+            return null;
+          }
+
+          if (activeTab === action.tab) {
+            return (
               <S.TokenBox key={action.key}>
                 <S.TokenIcon src={action.icon} alt={action.label} />
                 {action.label}
               </S.TokenBox>
-            ),
-        )}
+            );
+          }
+
+          return null;
+        })}
 
         <S.InputWrapper>
           <S.Input
@@ -216,7 +242,6 @@ const MessageInput: React.FC<MessageInputProps> = ({
           />
         </S.InputIconsWrapper>
       </S.InputRow>
-
 
       <EmojiPickerWrapper
         show={showEmojiPicker}
