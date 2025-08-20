@@ -14,6 +14,7 @@ import GlobalStyle from './shared/styles/global/index.ts';
 import App from './App.tsx';
 import { TitleProvider } from './core/context/TitleContext.tsx';
 import environment from './relay/RelayEnvironment.ts';
+import { PermissionProvider } from './modules/permissions/contexts/PermissionContext';
 
 function Index() {
   const [isDarkTheme, setIsDarkTheme] = useState<boolean>(false);
@@ -30,7 +31,9 @@ function Index() {
           <StrictMode>
             <I18nextProvider i18n={i18n}>
               <TitleProvider>
-                <App />
+                <PermissionProvider>
+                  <App />
+                </PermissionProvider>
               </TitleProvider>
               <ToastContainer position="bottom-right" hideProgressBar={true} />
             </I18nextProvider>

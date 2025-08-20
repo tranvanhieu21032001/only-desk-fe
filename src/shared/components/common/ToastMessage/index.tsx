@@ -8,6 +8,7 @@ import * as S from './toast-message.styles';
 
 import icError from '@/assets/icons/common/ic-danger.svg';
 import icSuccess from '@/assets/icons/common/ic-tick.svg';
+import icWarning from '@/assets/icons/common/ic-warning.svg';
 
 interface ToastMessageProps {
   typeToast?: ToastMessageType;
@@ -28,7 +29,22 @@ const ToastMessage: React.FC<ToastMessageProps> = ({ typeToast, message }) => {
                 variant="body-text-larger"
                 fontWeight={fontWeight?.semiBold}
               >
-                {t('success')}
+                {t('info')}
+              </S.ToastLabel>
+              {message && <S.Toast>{message}</S.Toast>}
+            </S.ToastContent>
+          </S.ToastMessageWrap>
+        );
+      case ToastMessageType?.WARNING:
+        return (
+          <S.ToastMessageWrap>
+            <S.ToastIcon src={icWarning} preview={false} />
+            <S.ToastContent>
+              <S.ToastLabel
+                variant="body-text-larger"
+                fontWeight={fontWeight?.semiBold}
+              >
+                {t('warning')}
               </S.ToastLabel>
               {message && <S.Toast>{message}</S.Toast>}
             </S.ToastContent>
@@ -49,6 +65,7 @@ const ToastMessage: React.FC<ToastMessageProps> = ({ typeToast, message }) => {
             </S.ToastContent>
           </S.ToastMessageWrap>
         );
+      case ToastMessageType?.SUCCESS:
       default:
         return (
           <S.ToastMessageWrap>

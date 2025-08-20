@@ -16,6 +16,12 @@ import { RootState } from '@/core/store';
 import { useSelector } from 'react-redux';
 import { updateKnowledgeBaseSetting } from '@/modules/settings/api/knowledge-base';
 import { Form } from 'antd';
+import { PermissionGate } from '@/modules/permissions/components/PermissionGate';
+import PermissionWarningMessage from '@/shared/components/common/PermissionWarningMessage/PermissionWarningMessage';
+import {
+  FeatureKey,
+  HelpdeskAction,
+} from '@/modules/permissions/enums/features.enum';
 
 const domainRegex = /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
 
@@ -93,72 +99,91 @@ const SetupKnowledgeBase = () => {
           </Typography>
         </S.KnowledgeBaseInformationLabel>
 
-        <Form form={form} layout="vertical">
-          <S.GroupInput
-            style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}
-          >
-            <S.FormField style={{ flex: 1 }}>
-              <Typography fontWeight={fontWeight.medium}>
-                <S.FormInput>
-                  {t('setup-knowledge-base.basic-domain')}{' '}
-                  <span style={{ color: 'red' }}>*</span>
-                </S.FormInput>
-              </Typography>
-              <Form.Item
-                name="basicDomain"
-                rules={[
-                  { required: true, message: 'Basic domain is required' },
-                  {
-                    pattern: /^[a-zA-Z0-9-]+$/,
-                    message:
-                      'Basic domain must be alphanumeric (no dots or special characters)',
-                  },
-                ]}
-                validateTrigger="onBlur"
-                style={{ marginBottom: 0, minHeight: '72px' }}
-                extra={null}
-              >
-                <Input
-                  placeholder="e.g., t2bo"
-                  size="large"
-                  onBlur={() => handleBlur('basicDomain')}
-                  domainText={t('setup-knowledge-base.baseHelpdeskDomain')}
-                   isDomainHidden={false}
-                />
-              </Form.Item>
-            </S.FormField>
+        <PermissionGate
+          feature={FeatureKey.KNOWLEDGE_BASE}
+          action={HelpdeskAction.KNOWLEDGE_BASE_SETTINGS}
+        >
+          {(hasPermission: boolean, message?: string) => (
+            <>
+              {!hasPermission && <PermissionWarningMessage message={message} />}
+              <Form form={form} layout="vertical">
+                <S.GroupInput
+                  style={{
+                    display: 'flex',
+                    gap: '24px',
+                    alignItems: 'flex-start',
+                  }}
+                >
+                  <S.FormField style={{ flex: 1 }}>
+                    <Typography fontWeight={fontWeight.medium}>
+                      <S.FormInput>
+                        {t('setup-knowledge-base.basic-domain')}{' '}
+                        <span style={{ color: 'red' }}>*</span>
+                      </S.FormInput>
+                    </Typography>
+                    <Form.Item
+                      name="basicDomain"
+                      rules={[
+                        { required: true, message: 'Basic domain is required' },
+                        {
+                          pattern: /^[a-zA-Z0-9-]+$/,
+                          message:
+                            'Basic domain must be alphanumeric (no dots or special characters)',
+                        },
+                      ]}
+                      validateTrigger="onBlur"
+                      style={{ marginBottom: 0, minHeight: '72px' }}
+                      extra={null}
+                    >
+                      <Input
+                        placeholder="e.g., t2bo"
+                        size="large"
+                        onBlur={() => handleBlur('basicDomain')}
+                        domainText={t(
+                          'setup-knowledge-base.baseHelpdeskDomain',
+                        )}
+                        disabled={!hasPermission}
+                        isDomainHidden={false}
+                      />
+                    </Form.Item>
+                  </S.FormField>
 
-            <S.FormField style={{ flex: 1 }}>
-              <Typography fontWeight={fontWeight.medium}>
-                <S.FormInput>
-                  {t('setup-knowledge-base.custom-domain')}
-                </S.FormInput>
-              </Typography>
-              <Form.Item
-                name="customDomain"
-                rules={[
-                  {
-                    pattern: domainRegex,
-                    message: 'Invalid domain format. Example: help.t2bo.com',
-                  },
-                ]}
-                validateTrigger="onBlur"
-                style={{ marginBottom: 0, minHeight: '72px' }}
-                extra={
-                  <S.Domain style={{ visibility: 'hidden' }}>
-                    placeholder
-                  </S.Domain>
-                }
-              >
-                <Input
-                  placeholder="help.t2bo.com"
-                  size="large"
-                  onBlur={() => handleBlur('customDomain')}
-                />
-              </Form.Item>
-            </S.FormField>
-          </S.GroupInput>
-        </Form>
+                  <S.FormField style={{ flex: 1 }}>
+                    <Typography fontWeight={fontWeight.medium}>
+                      <S.FormInput>
+                        {t('setup-knowledge-base.custom-domain')}
+                      </S.FormInput>
+                    </Typography>
+                    <Form.Item
+                      name="customDomain"
+                      rules={[
+                        {
+                          pattern: domainRegex,
+                          message:
+                            'Invalid domain format. Example: help.t2bo.com',
+                        },
+                      ]}
+                      validateTrigger="onBlur"
+                      style={{ marginBottom: 0, minHeight: '72px' }}
+                      extra={
+                        <S.Domain style={{ visibility: 'hidden' }}>
+                          placeholder
+                        </S.Domain>
+                      }
+                    >
+                      <Input
+                        placeholder="help.t2bo.com"
+                        size="large"
+                        onBlur={() => handleBlur('customDomain')}
+                        disabled={!hasPermission}
+                      />
+                    </Form.Item>
+                  </S.FormField>
+                </S.GroupInput>
+              </Form>
+            </>
+          )}
+        </PermissionGate>
 
         <S.SectionBox>
           <Typography fontWeight={fontWeight.semiBold}>

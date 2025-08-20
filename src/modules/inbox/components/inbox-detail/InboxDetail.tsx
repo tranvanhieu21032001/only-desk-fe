@@ -37,7 +37,7 @@ import { handleUpdateConversation } from '../../api/conversations.api';
 import { eventBus } from '@/core/event-bus';
 import { useChat } from '@/shared/chat-logic/hooks/useChat';
 import {
-  MessageSender,
+  // MessageSender,
   MessageType,
   ReplyPreviewState,
 } from '@/shared/chat-logic/enums/chat.enums';

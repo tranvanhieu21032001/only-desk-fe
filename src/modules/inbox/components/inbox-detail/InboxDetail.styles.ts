@@ -155,7 +155,7 @@ export const MessageBubbleLeft = styled.div`
 
 export const MessageBubbleRight = styled(MessageBubbleLeft)`
   background: #eef2f8;
-  max-width: 70%;
+  max-width: 450px;
 `;
 
 export const MessageTime = styled.div`

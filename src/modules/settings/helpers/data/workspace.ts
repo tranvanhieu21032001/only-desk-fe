@@ -24,22 +24,22 @@ const workspaceMenus: WorkspaceMenuInterface[] = [
     key: WorkspaceMenusEnums?.OPERATOR_TEAMS,
     label: 'operator-teams',
   },
-  {
-    key: WorkspaceMenusEnums?.BILLING_SETTINGS,
-    label: 'billing-settings',
-  },
-  {
-    key: WorkspaceMenusEnums?.TEAM_TRANSPARENCY_LOG,
-    label: 'team-transparency-log',
-  },
-  {
-    key: WorkspaceMenusEnums?.ADVANCED_CONFIGURATION,
-    label: 'advanced-configuration',
-  },
-  {
-    key: WorkspaceMenusEnums?.DATA_LIMIT_LEGAL,
-    label: 'data-limits-legal',
-  },
+  // {
+  //   key: WorkspaceMenusEnums?.BILLING_SETTINGS,
+  //   label: 'billing-settings',
+  // },
+  // {
+  //   key: WorkspaceMenusEnums?.TEAM_TRANSPARENCY_LOG,
+  //   label: 'team-transparency-log',
+  // },
+  // {
+  //   key: WorkspaceMenusEnums?.ADVANCED_CONFIGURATION,
+  //   label: 'advanced-configuration',
+  // },
+  // {
+  //   key: WorkspaceMenusEnums?.DATA_LIMIT_LEGAL,
+  //   label: 'data-limits-legal',
+  // },
   {
     key: WorkspaceMenusEnums?.DANGER_ZONE,
     label: 'danger-zone',

@@ -15,6 +15,13 @@ import ringBlue from '@/assets/icons/inbox/ic-ring-blue.svg';
 import noteBlue from '@/assets/icons/inbox/ic-note-blue.svg';
 import editBlue from '@/assets/icons/inbox/ic-edit-blue.svg';
 import { ReplyPreviewState } from '@/shared/chat-logic';
+import { PermissionGate } from '@/modules/permissions/components/PermissionGate';
+import {
+  FeatureKey,
+  HelpdeskAction,
+  PrivateNoteAction,
+  ShortcutAction,
+} from '@/modules/permissions/enums/features.enum';
 
 interface InboxFooterProps {
   activeTab: string | null;
@@ -71,6 +78,8 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
       iconActive: noteBlue,
       isActive: activeTab === INBOX_TABS.NOTE,
       onClick: () => handleTabClick(INBOX_TABS.NOTE),
+      feature: FeatureKey.PRIVATE_NOTE,
+      action: PrivateNoteAction.SEND_NOTE,
     },
     {
       key: INBOX_TABS.REMINDER,
@@ -87,6 +96,8 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
       iconActive: shorcutBlue,
       isActive: activeTab === INBOX_TABS.SHORTCUTS,
       onClick: () => handleTabClick(INBOX_TABS.SHORTCUTS),
+      feature: FeatureKey.SHORTCUT,
+      action: ShortcutAction.SEND_SHORTCUT_MESSAGE,
     },
     {
       key: INBOX_TABS.KNOWLEDGE_BASE,
@@ -95,6 +106,8 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
       iconActive: tagBlue,
       isActive: activeTab === INBOX_TABS.KNOWLEDGE_BASE,
       onClick: () => handleTabClick(INBOX_TABS.KNOWLEDGE_BASE),
+      feature: FeatureKey.KNOWLEDGE_BASE,
+      action: HelpdeskAction.SEND_KNOWLEDGE_BASE_MESSAGE,
     },
   ];
 
@@ -102,17 +115,24 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
     <S.Footer ref={footerRef}>
       <S.ActionIcons>
         {actions.map((action) => (
-          <S.IconProps
+          <PermissionGate
             key={action.key}
-            $isActive={action.isActive}
-            onClick={action.onClick}
+            feature={action.feature}
+            action={action.action || ''}
+            ignoreCheck={action.feature === undefined}
           >
-            <Image
-              src={action.isActive ? action.iconActive : action.icon}
-              preview={false}
-            />
-            {action.label}
-          </S.IconProps>
+            <S.IconProps
+              key={action.key}
+              $isActive={action.isActive}
+              onClick={action.onClick}
+            >
+              <Image
+                src={action.isActive ? action.iconActive : action.icon}
+                preview={false}
+              />
+              {action.label}
+            </S.IconProps>
+          </PermissionGate>
         ))}
       </S.ActionIcons>
       <MessageInput
