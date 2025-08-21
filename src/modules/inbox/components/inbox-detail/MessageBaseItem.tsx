@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
-import { Image } from 'antd';
+import { Image, Tooltip } from 'antd';
 
 import MessageTimeWithIcon from './MessageTimeWithIcon';
-
 import * as S from './InboxDetail.styles';
 import icEye from '@/assets/icons/common/ic-eye.svg';
 import ProfileCard from '@/shared/components/common/ProfileCard';
@@ -19,6 +18,7 @@ import { getId } from '@/shared/utils/decode';
 import { SystemAvatar } from '@/shared/components/common/ProfileCard/SystemAvatar';
 import { renderMessageContent } from '@/shared/chat-logic/helpers/message-content.helper';
 import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
+import { formatTime } from '@/shared/chat-logic/utils/time';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -46,39 +46,22 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   };
   const onMenuClick = (e: React.MouseEvent) => handleIconClick(e, msg);
 
-  // Common props for MessageTimeWithIcon
-  const timeWithIconProps = {
-    isOwner,
-    hovered,
-    onMenuClick,
-    onHoverEnter,
-    onHoverLeave,
-    createdAt: msg.createdAt,
-    status: msg.status,
-    rightIcon: isOwner,
-  };
-
-  const timeWithIcon = (
-    <div
-      style={{
-        width: 28,
-        flexShrink: 0,
-        opacity: msg.showTime || hovered ? 1 : 0,
-        transition: 'opacity 0.2s',
-        pointerEvents: msg.showTime || hovered ? 'auto' : 'none',
-        display: 'flex',
-        justifyContent: isOwner ? 'flex-end' : 'flex-start',
-      }}
+  const timeTooltip = !msg.showTime ? (
+    <Tooltip
+      title={formatTime(msg.createdAt)}
+      placement={"top"}
+      overlayClassName="tooltip-time-message"
     >
-      <MessageTimeWithIcon
-        {...timeWithIconProps}
-        style={msg.type === MessageType.NOTE ? { marginTop: 4 } : undefined}
-        showTime={msg.showTime}
-      />
-    </div>
+      <div>
+        <MessageBaseContentItem message={msg} isOwner={isOwner} />
+      </div>
+    </Tooltip>
+  ) : (
+    <MessageBaseContentItem message={msg} isOwner={isOwner} />
   );
 
   const senderName = getSenderName(msg);
+
   if (isOwner) {
     return (
       <S.MessageRowUser>
@@ -87,13 +70,27 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
           onMouseLeave={onHoverLeave}
           style={{
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'flex-end',
-            justifyContent: 'flex-end',
-            gap: 8,
+            gap: 2,
           }}
         >
-          {timeWithIcon}
-          <MessageBaseContentItem message={msg} isOwner={isOwner} />
+          <div style={{ display: 'flex', flexDirection:'row-reverse', alignItems: 'flex-end', gap: 8 }}>
+            {timeTooltip}
+            <MessageTimeWithIcon
+              isOwner={isOwner}
+              hovered={hovered}
+              onMenuClick={onMenuClick}
+              onHoverEnter={onHoverEnter}
+              onHoverLeave={onHoverLeave}
+              createdAt={msg.createdAt}
+              status={msg.status}
+              rightIcon
+            />
+          </div>
+          {msg.showTime && (
+            <S.MessageTimeBelow>{formatTime(msg.createdAt)}</S.MessageTimeBelow>
+          )}
         </div>
       </S.MessageRowUser>
     );
@@ -128,13 +125,26 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
               onMouseLeave={onHoverLeave}
               style={{
                 display: 'flex',
-                alignItems: 'flex-end',
-                gap: 4,
-                width: 'fit-content',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: 2,
               }}
             >
-              <MessageBaseContentItem message={msg} isOwner={isOwner} />
-              {timeWithIcon}
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
+                {timeTooltip}
+                <MessageTimeWithIcon
+                  isOwner={isOwner}
+                  hovered={hovered}
+                  onMenuClick={onMenuClick}
+                  onHoverEnter={onHoverEnter}
+                  onHoverLeave={onHoverLeave}
+                  createdAt={msg.createdAt}
+                  status={msg.status}
+                />
+              </div>
+              {msg.showTime && (
+                <S.MessageTimeBelow>{formatTime(msg.createdAt)}</S.MessageTimeBelow>
+              )}
             </div>
           </S.MessageColumnView>
         </S.MessageAvatarWrapper>

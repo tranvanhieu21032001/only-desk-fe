@@ -1,5 +1,6 @@
 import React from 'react';
 import * as S from './InboxDetail.styles';
+import * as CM from '@/shared/styles/themes/ContextMenu.styles'; 
 import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
 import iconReply from '@/assets/icons/inbox/ic-reply.svg';
 import iconEdit from '@/assets/icons/common/ic-edit.svg';
@@ -154,7 +155,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   );
 
   return (
-    <S.ContextMenu
+    <CM.ContextMenu
      className="context-menu"
       style={{
         top: contextMenu.y,
@@ -178,7 +179,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
           return <S.ContextMenuSeparator key={`sep-${idx}`} />;
         }
         return (
-          <S.ContextMenuItem
+          <CM.ContextMenuItem
             key={item.key}
             onClick={item.onClick}
             danger={item.danger}
@@ -186,10 +187,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
           >
             {item.icon && <img src={item.icon} alt={item.label} />}
             {item.label}
-          </S.ContextMenuItem>
+          </CM.ContextMenuItem>
         );
       })}
-    </S.ContextMenu>
+    </CM.ContextMenu>
   );
 };
 
