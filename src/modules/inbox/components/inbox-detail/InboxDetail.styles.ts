@@ -927,3 +927,10 @@ export const MessageInputValue = styled.p`
   margin-top: 10px;
   color: #555;
 `;
+
+export const MessageTimeBelow = styled.div`
+  color: #aaaaaa;
+  font-size:12px;
+   font-style: italic;
+   margin-right: 11px;
+`;

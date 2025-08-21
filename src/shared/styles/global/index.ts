@@ -195,6 +195,15 @@ const reset = css`
   }
 }
 
+.tooltip-time-message{
+  &.ant-tooltip{
+  .ant-tooltip-inner{
+      font-size:12px;
+    font-style: italic;
+    }
+  }
+}
+
 
   .modal-preview-image {
     .ant-modal-header {

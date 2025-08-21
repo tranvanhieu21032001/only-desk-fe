@@ -1,6 +1,6 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 // import { useSelector } from 'react-redux';
 
@@ -24,6 +24,7 @@ const ConversationList: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation('inbox');
   const conversationListWrapperRef = useRef<HTMLDivElement>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
@@ -57,6 +58,27 @@ const ConversationList: React.FC<Props> = ({
   //     eventBus.off(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
   //   };
   // }, [workspaceId, dispatch]);
+
+  useEffect(() => {
+    const el = conversationListWrapperRef.current;
+    if (!el) return;
+
+    let timeout: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      setIsScrolling(true);
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        setIsScrolling(false);
+      }, 300);
+    };
+
+    el.addEventListener('scroll', handleScroll);
+    return () => {
+      el.removeEventListener('scroll', handleScroll);
+      clearTimeout(timeout);
+    };
+  }, []);
 
   const handleConversationClick = (conversationId: string) => {
     // const conversation = conversations.find(
@@ -108,7 +130,10 @@ const ConversationList: React.FC<Props> = ({
     <S.Container>
       <InboxListHeader />
 
-      <S.ConversationListWrapper ref={conversationListWrapperRef}>
+      <S.ConversationListWrapper
+        ref={conversationListWrapperRef}
+        className={isScrolling ? 'scrolling' : ''}
+      >
         {conversations.length === 0 && !isFetchingInitial && (
           <S.AllDataLoaded>{t('inboxList.noConversationYet')}</S.AllDataLoaded>
         )}

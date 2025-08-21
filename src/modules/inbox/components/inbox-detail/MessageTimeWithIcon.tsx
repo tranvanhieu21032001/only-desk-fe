@@ -1,13 +1,10 @@
 import React from 'react';
 import { Tooltip } from 'antd';
-
 import { LoadingOutlined, CloseCircleTwoTone } from '@ant-design/icons';
 
 import * as S from './InboxDetail.styles';
-
 import icBarColumn from '@/assets/icons/common/ic-bar-column.svg';
 import { MessageStatus } from '@/shared/chat-logic/enums/chat.enums';
-import { formatTime } from '@/shared/chat-logic/utils/time';
 
 interface MessageTimeWithIconProps {
   isOwner: boolean;
@@ -18,8 +15,6 @@ interface MessageTimeWithIconProps {
   createdAt: string;
   status: MessageStatus;
   rightIcon?: boolean;
-  style?: React.CSSProperties;
-  showTime?: boolean;
 }
 
 const MessageTimeWithIcon: React.FC<MessageTimeWithIconProps> = ({
@@ -27,36 +22,9 @@ const MessageTimeWithIcon: React.FC<MessageTimeWithIconProps> = ({
   onMenuClick,
   onHoverEnter,
   onHoverLeave,
-  createdAt,
   status,
   rightIcon = false,
-  style,
-  showTime = true,
 }) => {
-  var timeVisible = showTime || hovered;
-  const timeNode = (
-    <S.MessageTime
-      style={
-        rightIcon
-          ? { marginRight: 0, marginLeft: 8, ...style }
-          : { ...style, ...(timeVisible ? {} : { minWidth: 'unset' }) }
-      }
-    >
-      {timeVisible && formatTime(createdAt)}
-      {status === MessageStatus.SENDING && (
-        <LoadingOutlined style={{ marginLeft: 6, fontSize: 12 }} spin />
-      )}
-      {status === MessageStatus.FAILED && (
-        <Tooltip title="Send failed">
-          <CloseCircleTwoTone
-            twoToneColor="#ff4d4f"
-            style={{ marginLeft: 6, fontSize: 12 }}
-          />
-        </Tooltip>
-      )}
-    </S.MessageTime>
-  );
-
   const iconNode = hovered ? (
     <S.MessageHoverIconNearTime onClick={onMenuClick}>
       <img src={icBarColumn} alt="menu" />
@@ -70,16 +38,17 @@ const MessageTimeWithIcon: React.FC<MessageTimeWithIconProps> = ({
       onMouseEnter={onHoverEnter}
       onMouseLeave={onHoverLeave}
     >
-      {rightIcon ? (
-        <>
-          {iconNode}
-          {timeNode}
-        </>
-      ) : (
-        <>
-          {timeNode}
-          {iconNode}
-        </>
+      {rightIcon ? <>{iconNode}</> : <>{iconNode}</>}
+      {status === MessageStatus.SENDING && (
+        <LoadingOutlined style={{ marginLeft: 6, fontSize: 12 }} spin />
+      )}
+      {status === MessageStatus.FAILED && (
+        <Tooltip title="Send failed">
+          <CloseCircleTwoTone
+            twoToneColor="#ff4d4f"
+            style={{ marginLeft: 6, fontSize: 12 }}
+          />
+        </Tooltip>
       )}
     </S.TimeWithIconContainer>
   );

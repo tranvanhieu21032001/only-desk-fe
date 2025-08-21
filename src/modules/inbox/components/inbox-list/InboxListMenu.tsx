@@ -1,5 +1,6 @@
 import { Image } from 'antd';
 import * as S from './InboxList.styles';
+import * as CM from '@/shared/styles/themes/ContextMenu.styles';
 import { useEffect, useRef } from 'react';
 import check from '@/assets/icons/common/ic-check-black.svg';
 import unreadIcon from '@/assets/icons/common/ic-unread.svg';
@@ -153,25 +154,27 @@ const InboxListMenu: React.FC<Props> = ({
       isOpen={true}
       onClick={(e) => e.stopPropagation()}
     >
-      <S.MenuItem onClick={onMarkAsResolved}>
-        <Image src={check} preview={false} />
-        {resolved ? 'Mark as unresolved' : 'Mark as resolved'}
-      </S.MenuItem>
-      {(unreadCount ?? 0) > 0 && (
-        <S.MenuItem onClick={onMarkAsUnread}>
-          <Image src={unreadIcon} preview={false} />
-          Mark as unread
-        </S.MenuItem>
-      )}
-      <S.MenuItem
-        tabIndex={0}
-        role="button"
-        className="delete"
-        onClick={onDelete}
-      >
-        <Image src={deleteIcon} preview={false} />
-        Delete conversation
-      </S.MenuItem>
+      <CM.ContextMenu>
+        <CM.ContextMenuItem onClick={onMarkAsResolved}>
+          <Image height={20} width={20} src={check} preview={false} />
+          <div style={{display:'flex', alignItems:'center'}}>{resolved ? 'Mark as unresolved' : 'Mark as resolved'}</div>
+        </CM.ContextMenuItem>
+        {(unreadCount ?? 0) > 0 && (
+          <CM.ContextMenuItem onClick={onMarkAsUnread}>
+            <Image height={20} width={20} src={unreadIcon} preview={false} />
+            <div style={{display:'flex', alignItems:'center'}}>Mark as unread</div>
+          </CM.ContextMenuItem>
+        )}
+        <CM.ContextMenuItem
+          tabIndex={0}
+          role="button"
+          className="delete"
+          onClick={onDelete}
+        >
+          <Image src={deleteIcon} preview={false} height={20} width={20} />
+          <div style={{display:'flex', alignItems:'center'}}>Delete conversation</div>
+        </CM.ContextMenuItem>
+      </CM.ContextMenu>
     </S.MenuDropdown>
   );
 };

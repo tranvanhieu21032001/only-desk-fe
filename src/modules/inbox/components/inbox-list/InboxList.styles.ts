@@ -804,14 +804,15 @@ export const ConversationListWrapper = styled.div`
     transition: background 0.3s ease;
   }
 
-  &:hover::-webkit-scrollbar-thumb {
+  &.scrolling::-webkit-scrollbar-thumb {
     background: ${(props) => props.theme.colors.primary};
   }
 
-  &::-webkit-scrollbar-thumb:hover {
+  &.scrolling::-webkit-scrollbar-thumb:hover {
     background: ${(props) => props.theme.colors.primary};
   }
 `;
+
 
 export const LoadingMore = styled.div`
   text-align: center;
