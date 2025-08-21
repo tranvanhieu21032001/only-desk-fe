@@ -56,7 +56,7 @@ const WorkspaceTable: React.FC<Props> = ({
       key: 'websiteUrl',
       render: (url: string) =>
         url && url !== '-' ? (
-          <a href={url} target="_blank" rel="noopener noreferrer">
+          <a href={url} target="_blank" style={{ color: '#1890ff', textDecoration: 'underline' }} onClick={(e) => e.stopPropagation()} rel="noopener noreferrer">
             {url}
           </a>
         ) : (

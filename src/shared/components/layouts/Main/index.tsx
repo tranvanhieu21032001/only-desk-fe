@@ -578,9 +578,9 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
             </S.ChildrenMenuWrap>
             <S.ChildrenMenuWrap
               onClick={() =>
-                handleClickChildrenMenu(MAIN_ROUTES?.PLUGINS_ADMIN)
+                handleClickChildrenMenu(MAIN_ROUTES?.SUBSCRIPTIONS_ADMIN)
               }
-              $isActive={routePath === MAIN_ROUTES?.PLUGINS_ADMIN}
+              $isActive={routePath === MAIN_ROUTES?.SUBSCRIPTIONS_ADMIN}
             >
               <S.ChildrenMenuLabel>
                 <Image

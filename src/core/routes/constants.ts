@@ -66,6 +66,7 @@ const MAIN_ROUTES = {
   // Admin
   WORKSPACE_ADMIN: `${preRouterMain}/admin/workspace`,
   USERS_ADMIN: `${preRouterMain}/admin/users`,
+  SUBSCRIPTIONS_ADMIN: `${preRouterMain}/admin/subscriptions`,
   PLUGINS_ADMIN: `${preRouterMain}/admin/plugins`,
   INVOICES_ADMIN: `${preRouterMain}/admin/invoices`,
 
@@ -164,6 +165,14 @@ const getBreadcrumbMap = (t: (key: string) => string): BreadcrumbItem[] => [
   {
     path: MAIN_ROUTES.PLUGINS_ADMIN,
     breadcrumb: [t('breadcrumb.plugins_admin')],
+  },
+    {
+    path: MAIN_ROUTES.INVOICES_ADMIN,
+    breadcrumb: [t('breadcrumb.invoice_admin')],
+  },
+    {
+    path: MAIN_ROUTES.SUBSCRIPTIONS_ADMIN,
+    breadcrumb: [t('breadcrumb.subscriptions_admin')],
   },
 
   // === Settings ===

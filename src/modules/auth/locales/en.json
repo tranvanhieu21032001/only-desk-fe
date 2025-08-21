@@ -187,6 +187,8 @@
     "advanced-settings": "Advanced settings",
     "plugins": "Plugins",
     "all-plugins": "All plugins",
-    "installed_plugins":"Installed plugins"
+    "installed_plugins":"Installed plugins",
+    "invoice_admin":"Invoice Management",
+    "subscriptions_admin":"Subscriptions Management"
   }
 }

@@ -90,6 +90,10 @@ const UsersAdmin = React.lazy(
   () => import('@/modules/admin/pages/users/UserAdmin'),
 );
 
+const SubscriptionsAdmin = React.lazy(
+  () => import('@/modules/admin/pages/subscriptions/SubscriptionsAdmin'),
+);
+
 const PluginsAdmin = React.lazy(
   () => import('@/modules/admin/pages/plugins/PluginsAdmin'),
 );
@@ -329,6 +333,12 @@ const routes_main: RouterElementInterface[] = [
     path: MAIN_ROUTES.USERS_ADMIN,
     component: UsersAdmin,
     name: 'user-admin',
+  },
+  {
+    key: 'user-subscriptions',
+    path: MAIN_ROUTES.SUBSCRIPTIONS_ADMIN,
+    component: SubscriptionsAdmin,
+    name: 'user-subscriptions',
   },
   {
     key: 'plugins-admin',

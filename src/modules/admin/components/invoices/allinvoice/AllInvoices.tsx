@@ -13,6 +13,9 @@ const CustomTable = styled(Table<InvoiceAdmin>)`
   .ant-table-cell {
     padding: 12px !important;
   }
+  .ant-table-row {
+    cursor: pointer;
+  }
 `;
 
 interface InvoiceAdmin {
@@ -74,6 +77,7 @@ const AllInvoices = ({ invoices }: AllInvoicesProps) => {
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: '#1890ff', textDecoration: 'underline' }}
+            onClick={(e) => e.stopPropagation()}
           >
             {websiteURL}
           </a>
@@ -127,7 +131,13 @@ const AllInvoices = ({ invoices }: AllInvoicesProps) => {
       title: 'View',
       key: 'view',
       render: (_, record) => (
-        <Button type="link" onClick={() => showDrawer(record)}>
+        <Button
+          type="link"
+          onClick={(e) => {
+            e.stopPropagation();
+            showDrawer(record);
+          }}
+        >
           <Image preview={false} src={icView} height={24} width={24} />
         </Button>
       ),
@@ -140,6 +150,9 @@ const AllInvoices = ({ invoices }: AllInvoicesProps) => {
         columns={columns}
         dataSource={tableData}
         pagination={false}
+        onRow={(record) => ({
+          onClick: () => showDrawer(record),
+        })}
       />
       <InvoiceDrawer
         open={isDrawerVisible}
