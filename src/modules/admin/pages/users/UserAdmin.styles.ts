@@ -104,3 +104,48 @@ export const ActionButton = styled.div`
     background: #f5f5f5;
   }
 `;
+
+
+export const DrawerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+export const UserHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+`;
+
+export const Avatar = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+`;
+
+export const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 16px;
+`;
+
+export const FormItem = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const TextInput = styled.input`
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+`;
+
+export const SelectInput = styled.select`
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+`;

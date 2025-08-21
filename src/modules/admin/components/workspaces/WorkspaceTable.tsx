@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Table, Tag, Dropdown, Menu } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
+import { Table, Tag, Button, Image } from 'antd';
 import styled from 'styled-components';
-import * as S from './WorkspaceTable.styles';
 import dayjs from 'dayjs';
 import WorkspaceDrawer from './components/WorkspaceDrawer';
+import icView from '@/assets/icons/billing/ic-export.svg';
 
 const TableWrapper = styled.div`
   .ant-table-cell {
@@ -44,13 +43,9 @@ const WorkspaceTable: React.FC<Props> = ({
     }));
   }, [data]);
 
-  const handleMenuClick = (record: any, key: string) => {
-    if (key === 'edit') {
-      setSelectedWorkspace(record);
-      setOpen(true);
-    } else if (key === 'delete') {
-      console.log('Delete:', record);
-    }
+  const handleOpenDrawer = (workspace: any) => {
+    setSelectedWorkspace(workspace);
+    setOpen(true);
   };
 
   const columns = [
@@ -99,22 +94,9 @@ const WorkspaceTable: React.FC<Props> = ({
       title: '',
       key: 'action',
       render: (_: any, record: any) => (
-        <Dropdown
-          overlay={
-            <Menu
-              items={[
-                { key: 'edit', label: 'Edit' },
-                { key: 'delete', label: 'Delete' },
-              ]}
-              onClick={(info) => handleMenuClick(record, info.key)}
-            />
-          }
-          trigger={['click']}
-        >
-          <S.ActionButton>
-            <MoreOutlined />
-          </S.ActionButton>
-        </Dropdown>
+        <Button type="link" onClick={() => handleOpenDrawer(record)}>
+          <Image preview={false} src={icView} height={24} width={24} />
+        </Button>
       ),
     },
   ];
@@ -133,6 +115,9 @@ const WorkspaceTable: React.FC<Props> = ({
         loading={loading}
         rowSelection={rowSelection}
         rowKey="key"
+        onRow={(record) => ({
+          onClick: () => handleOpenDrawer(record),
+        })}
       />
       <WorkspaceDrawer
         open={open}

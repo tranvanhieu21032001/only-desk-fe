@@ -19,6 +19,7 @@ import knowledgeBaseSettingsReducer from '@/modules/settings/store/features/know
 import helpdeskSettingReducer from '@/modules/knowledge-base/store/helpdeskSettingsSlice';
 import pluginsReducer from '@/modules/plugins/store/pluginsSlice'
 import adminWorkspacesReducer from '@/modules/admin/store/adminWorkspacesSlice';
+import adminUserReducer from '@/modules/admin/store/adminUsersSlice';
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
     constants.CURRENT_WORKSPACE,
@@ -57,7 +58,8 @@ export const store = configureStore({
     knowledgeBaseSettings: knowledgeBaseSettingsReducer,
     inbox: inboxReducer,
     plugins: pluginsReducer,
-    adminWorkspaces: adminWorkspacesReducer
+    adminWorkspaces: adminWorkspacesReducer,
+    adminUser : adminUserReducer
   },
   preloadedState: loadState(),
 });

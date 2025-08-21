@@ -76,3 +76,21 @@ export const updateAdminWorkspace = async (
     messageSuccess: 'Workspace updated successfully!',
   });
 };
+
+
+interface UpdateUserPayload {
+  status?: 'active' | 'pending';
+}
+
+export const updateAdminUser = async (
+  userId: string,
+  payload: UpdateUserPayload,
+) => {
+  const data: Partial<UpdateUserPayload> = {};
+  if (payload.status !== undefined) data.status = payload.status;
+
+  return updateRequest(`${ENDPOINTADMIN.ADMIN_USERS}/${userId}`, {
+    data,
+    messageSuccess: 'User updated successfully!',
+  });
+};
