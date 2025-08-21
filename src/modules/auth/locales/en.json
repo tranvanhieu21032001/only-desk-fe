@@ -162,6 +162,8 @@
     "web_content": "Web Content",
     "inbox_messages": "Inbox Messages",
     "account_settings": "Account Settings",
+    "users_admin":"User Management",
+    "workspace_admin":"Workspace Management",
     "integrations": "Integrations",
     "guide": "Guide",
     "help_center": "Help Center",

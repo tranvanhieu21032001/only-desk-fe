@@ -31,7 +31,7 @@ export interface User {
   rawId?: string;
   firstName: string;
   lastName: string;
-  avatar: string;
+  avatar?: string;
   email: string;
 }
 
