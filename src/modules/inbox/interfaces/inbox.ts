@@ -1,29 +1,5 @@
 import { MessageStatus } from '@/shared/chat-logic/enums/chat.enums';
-import { Message } from '@/shared/chat-logic/interfaces/inbox';
-
-export interface Contact {
-  id: string;
-  rawId: string;
-  createdAt: string;
-  updatedAt: string;
-  guestId: string;
-  name: string;
-  email: string;
-  notification: boolean;
-  segments: string[];
-  metadata?: {
-    [key: string]: any;
-  };
-  isOnline: boolean;
-  lastActivityAt: string;
-  workspaceId?: string;
-  avatar?: string;
-  countryCode?: string;
-  countryName?: string;
-  city?: string;
-  browser?: string;
-  os?: string;
-}
+import { Contact, Message } from '@/shared/chat-logic/interfaces/inbox';
 
 export interface User {
   user?: any;

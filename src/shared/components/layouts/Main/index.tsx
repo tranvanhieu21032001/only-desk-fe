@@ -114,7 +114,7 @@ import {
 } from '@/modules/auth/store/selectors';
 import webStorageClient from '@/shared/utils/webStorageClient';
 import { updateRelayEnvironment } from '@/relay/RelayEnvironment';
-import ProfileCard from '../../common/ProfileCard';
+import ProfileCard, { ProfileType } from '../../common/ProfileCard';
 
 interface Props {
   children: React.ReactNode;
@@ -593,16 +593,13 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
               </S.ChildrenMenuLabel>
             </S.ChildrenMenuWrap>
             <S.ChildrenMenuWrap
-              onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.INVOICES_ADMIN)}
+              onClick={() =>
+                handleClickChildrenMenu(MAIN_ROUTES?.INVOICES_ADMIN)
+              }
               $isActive={routePath === MAIN_ROUTES?.INVOICES_ADMIN}
             >
               <S.ChildrenMenuLabel>
-                <Image
-                  src={icBilling}
-                  preview={false}
-                  width={24}
-                  height={24}
-                />
+                <Image src={icBilling} preview={false} width={24} height={24} />
                 <Typography>Invoice</Typography>
               </S.ChildrenMenuLabel>
             </S.ChildrenMenuWrap>
@@ -875,15 +872,14 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
     () => (
       <S.PopoverContent>
         <ProfileCard
-          avatarUrl={userInfo?.avatar || icDefaultAvatar}
-          avatarSize={40}
-          userId={userInfo?.id}
-          name={
-            userInfo?.firstName
-              ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
-              : DEFAULT_FULL_NAME
-          }
-          email={userInfo?.email}
+          profileInfo={{
+            id: userInfo?.id,
+            type: ProfileType.USER,
+            name: `${userInfo?.firstName} ${userInfo?.lastName ?? ''}`.trim(),
+            email: userInfo?.email,
+            avatar: userInfo?.avatar,
+          }}
+          hiddenInfo={false}
         />
 
         <S.Line />
@@ -1020,15 +1016,13 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
           >
             <S.Profiles>
               <ProfileCard
-                avatarUrl={userInfo?.avatar || icDefaultAvatar}
-                avatarSize={40}
-                userId={userInfo?.id}
-                name={
-                  userInfo?.firstName
-                    ? `${userInfo.firstName} ${userInfo.lastName ?? ''}`
-                    : DEFAULT_FULL_NAME
-                }
-                hiddenInfo
+                profileInfo={{
+                  id: userInfo?.id,
+                  type: ProfileType.USER,
+                  name: `${userInfo?.firstName} ${userInfo?.lastName ?? ''}`.trim(),
+                  email: userInfo?.email,
+                  avatar: userInfo?.avatar,
+                }}
               />
             </S.Profiles>
           </Popover>

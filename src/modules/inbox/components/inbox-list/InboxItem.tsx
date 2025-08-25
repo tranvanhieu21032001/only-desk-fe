@@ -1,6 +1,8 @@
 import { Image } from 'antd';
 import * as S from './InboxList.styles';
-import ProfileCard from '@/shared/components/common/ProfileCard';
+import ProfileCard, {
+  ProfileType,
+} from '@/shared/components/common/ProfileCard';
 import InboxListMenu from './InboxListMenu';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { useEffect, useRef, useState } from 'react';
@@ -85,11 +87,14 @@ const InboxItem: React.FC<Props> = ({
     >
       <S.Avatar>
         <ProfileCard
-          contactId={conversation.contact?.id}
-          avatarUrl={conversation.contact?.avatar || avatarDefault}
-          name={conversation.contact?.name}
-          countryCode={conversation.contact?.context?.countryCode || ''}
-          hiddenInfo
+          profileInfo={{
+            id: conversation.contact?.id,
+            type: ProfileType.CONTACT,
+            name: conversation.contact?.name,
+            email: conversation.contact?.email,
+            avatar: conversation.contact?.avatar,
+            context: conversation.contact?.context,
+          }}
         />
       </S.Avatar>
       <S.Content>

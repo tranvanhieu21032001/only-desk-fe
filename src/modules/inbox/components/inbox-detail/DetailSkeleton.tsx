@@ -1,5 +1,7 @@
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
-import ProfileCard from '@/shared/components/common/ProfileCard';
+import ProfileCard, {
+  ProfileType,
+} from '@/shared/components/common/ProfileCard';
 import { useAppSelector } from '@/shared/hooks';
 import { useState, useCallback } from 'react';
 import MessageInput from '../message-input/MessageInput';
@@ -13,7 +15,9 @@ const DetailSkeleton = () => {
   const { selectedConversation } = useAppSelector((state) => state.inbox);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, _setActiveTab] = useState<string | null>(null);
-  const [selectedReminder, _setSelectedReminder] = useState<string | null>(null);
+  const [selectedReminder, _setSelectedReminder] = useState<string | null>(
+    null,
+  );
   const [inputValue, setInputValue] = useState('');
 
   const toggleSidebar = useCallback(() => {
@@ -30,11 +34,14 @@ const DetailSkeleton = () => {
       <DetailS.Header>
         <DetailS.HeaderLeft>
           <ProfileCard
-            contactId={selectedConversation?.contact?.id}
-            name={selectedConversation?.contact?.name || DEFAULT_FULL_NAME}
-            avatarUrl={selectedConversation?.contact?.avatar}
-            countryCode={selectedConversation?.contact?.countryCode}
-            hiddenInfo
+            profileInfo={{
+              id: selectedConversation?.contact?.id,
+              type: ProfileType.CONTACT,
+              name: selectedConversation?.contact?.name,
+              email: selectedConversation?.contact?.email,
+              avatar: selectedConversation?.contact?.avatar,
+              context: selectedConversation?.contact?.context,
+            }}
           />
           <DetailS.Info>
             <DetailS.Name>

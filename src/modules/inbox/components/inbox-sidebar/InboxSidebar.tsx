@@ -4,7 +4,9 @@ import { Form } from 'antd';
 
 import * as S from './InboxSidebar.styles';
 
-import ProfileCard from '@/shared/components/common/ProfileCard';
+import ProfileCard, {
+  ProfileType,
+} from '@/shared/components/common/ProfileCard';
 import UserProfileModal from './components/UserProfileModal';
 import DropdownWithCollapse from './components/DropdownWithCollapse';
 import LocationCollapse from './components/LocationCollapse';
@@ -47,7 +49,8 @@ const InboxSidebar = () => {
     return operators.map((op) => {
       const { user } = op;
       const fullName =
-        [user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'No Name';
+        [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
+        'No Name';
       return {
         id: user?.id ?? '',
         rawId: (user as any)?.rawId ?? '',
@@ -65,7 +68,7 @@ const InboxSidebar = () => {
   useEffect(() => {
     if (selectedConversation?.participants?.length) {
       const rawIds = selectedConversation.participants
-       .map((p) => typeof p === 'string' ? p : p?.id)
+        .map((p) => (typeof p === 'string' ? p : p?.id))
         .filter(Boolean)
         .map((id) => decodeGlobalId(id));
       setParticipants(rawIds);
@@ -121,7 +124,7 @@ const InboxSidebar = () => {
     }
 
     const foundOperator = formattedOperators.find(
-      (op) => op.rawId === assignedToRawId
+      (op) => op.rawId === assignedToRawId,
     );
 
     if (foundOperator) {
@@ -132,13 +135,18 @@ const InboxSidebar = () => {
   const handleAutoUpdateConversation = async (partialData: Partial<any>) => {
     try {
       const conversationId = selectedConversation?.rawId;
-      if (!conversationId || !partialData || Object.keys(partialData).length === 0) return;
+      if (
+        !conversationId ||
+        !partialData ||
+        Object.keys(partialData).length === 0
+      )
+        return;
 
-    const changedFields: Record<string, any> = {};
+      const changedFields: Record<string, any> = {};
 
-    for (const key of Object.keys(partialData)) {
-      const newValue = partialData[key];
-      let oldValue;
+      for (const key of Object.keys(partialData)) {
+        const newValue = partialData[key];
+        let oldValue;
 
         switch (key) {
           case 'assignedToId':
@@ -148,7 +156,9 @@ const InboxSidebar = () => {
             break;
           case 'participantsIds':
             oldValue = (selectedConversation?.participants || [])
-              .map((p) => typeof p !== 'string' ? (p.user as any)?.rawId : undefined)
+              .map((p) =>
+                typeof p !== 'string' ? (p.user as any)?.rawId : undefined,
+              )
               .filter(Boolean);
             break;
           case 'segments':
@@ -167,16 +177,16 @@ const InboxSidebar = () => {
             oldValue = (selectedConversation as any)?.[key];
         }
 
-      if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
-        changedFields[key] = newValue;
+        if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+          changedFields[key] = newValue;
+        }
       }
-    }
 
-    if (Object.keys(changedFields).length === 0) return;
+      if (Object.keys(changedFields).length === 0) return;
 
-    await handleUpdateConversation(conversationId, changedFields, t);
-  } catch {}
-};
+      await handleUpdateConversation(conversationId, changedFields, t);
+    } catch {}
+  };
 
   const handleSelect = (option: any) => {
     setSelected(option);
@@ -210,12 +220,16 @@ const InboxSidebar = () => {
     <S.Container>
       <Form form={form}>
         <ProfileCard
-          contactId={selectedConversation?.contact?.id}
+          profileInfo={{
+            id: selectedConversation?.contact?.id,
+            type: ProfileType.CONTACT,
+            name: selectedConversation?.contact?.name,
+            email: selectedConversation?.contact?.email,
+            avatar: selectedConversation?.contact?.avatar,
+            context: selectedConversation?.contact?.context,
+          }}
           avatarSize={60}
-          email={selectedConversation?.contact?.email}
-          name={selectedConversation?.contact?.name || ''}
-          avatarUrl={selectedConversation?.contact?.avatar}
-          countryCode={selectedConversation?.contact?.countryCode}
+          hiddenInfo={false}
         />
 
         {selectedConversation?.contact?.email ? (
@@ -228,7 +242,10 @@ const InboxSidebar = () => {
               name="email"
               rules={[
                 { required: true, message: 'Please enter an email' },
-                { type: 'email', message: 'Please enter a valid email address' },
+                {
+                  type: 'email',
+                  message: 'Please enter a valid email address',
+                },
               ]}
             >
               <Input
@@ -240,10 +257,7 @@ const InboxSidebar = () => {
         )}
 
         {showModal && (
-          <UserProfileModal
-            isOpen={true}
-            onClose={() => setShowModal(false)}
-          />
+          <UserProfileModal isOpen={true} onClose={() => setShowModal(false)} />
         )}
 
         <DropdownWithCollapse
@@ -291,10 +305,13 @@ const InboxSidebar = () => {
           openCollapse={openCollapse}
           onChange={(newMetadata) => {
             form.setFieldValue('metadata', newMetadata);
-            const metadataObject = newMetadata.reduce((acc: any, { key, value }: any) => {
-              if (key?.trim()) acc[key] = value;
-              return acc;
-            }, {});
+            const metadataObject = newMetadata.reduce(
+              (acc: any, { key, value }: any) => {
+                if (key?.trim()) acc[key] = value;
+                return acc;
+              },
+              {},
+            );
             handleAutoUpdateConversation({ metadata: metadataObject });
           }}
         />

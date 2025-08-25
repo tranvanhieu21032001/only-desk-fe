@@ -1,4 +1,4 @@
-import { MessageSender, MessageStatus, MessageType } from "../enums/chat.enums";
+import { MessageSender, MessageStatus, MessageType } from '../enums/chat.enums';
 
 export interface Contact {
   id: string;
@@ -17,11 +17,17 @@ export interface Contact {
   lastActivityAt: string;
   workspaceId?: string;
   avatar?: string;
-  countryCode?: string;
-  countryName?: string;
-  city?: string;
-  browser?: string;
-  os?: string;
+  context: {
+    countryName?: string | null | undefined;
+    countryCode?: string | null | undefined;
+    city?: string | null | undefined;
+    language?: string | null | undefined;
+    browser?: string | null | undefined;
+    os?: string | null | undefined;
+    timezone?: string | null | undefined;
+    latitude?: number | null | undefined;
+    longitude?: number | null | undefined;
+  };
 }
 
 export interface User {

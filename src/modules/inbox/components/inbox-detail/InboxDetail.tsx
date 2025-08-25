@@ -27,7 +27,9 @@ import barOpen from '@/assets/icons/common/ic-bar-open.svg';
 import barClose from '@/assets/icons/common/ic-bar.svg';
 import icArrowDown from '@/assets/icons/inbox/ic-arrow-down.svg';
 
-import ProfileCard from '@/shared/components/common/ProfileCard';
+import ProfileCard, {
+  ProfileType,
+} from '@/shared/components/common/ProfileCard';
 import {
   fetchConversationDetail,
   updateConversationResolved,
@@ -274,12 +276,12 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           return;
         }
         if (
-          target &&
-          ((target as Element).closest('[data-tab-panel="true"]') ||
-            (target as Element).closest('.ant-modal')) ||
-            (target as Element).closest('.ant-picker-dropdown') ||
-            (target as Element).closest('.ant-select-dropdown') ||
-            (target as Element).closest('.ant-select-clear')
+          (target &&
+            ((target as Element).closest('[data-tab-panel="true"]') ||
+              (target as Element).closest('.ant-modal'))) ||
+          (target as Element).closest('.ant-picker-dropdown') ||
+          (target as Element).closest('.ant-select-dropdown') ||
+          (target as Element).closest('.ant-select-clear')
         ) {
           return;
         }
@@ -349,11 +351,14 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
           <S.Header>
             <S.HeaderLeft>
               <ProfileCard
-                contactId={selectedConversation?.contact?.id}
-                name={selectedConversation?.contact?.name || DEFAULT_FULL_NAME}
-                avatarUrl={selectedConversation?.contact?.avatar}
-                countryCode={selectedConversation?.contact?.countryCode}
-                hiddenInfo
+                profileInfo={{
+                  id: selectedConversation?.contact?.id,
+                  type: ProfileType.CONTACT,
+                  name: selectedConversation?.contact?.name,
+                  email: selectedConversation?.contact?.email,
+                  avatar: selectedConversation?.contact?.avatar,
+                  context: selectedConversation?.contact?.context,
+                }}
               />
               <S.Info>
                 <S.Name>

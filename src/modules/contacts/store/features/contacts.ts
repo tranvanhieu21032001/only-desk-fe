@@ -38,7 +38,10 @@ const initialState: ContactsInitialStateInterface = {
 
 const createContact = createAsyncThunk(
   'contacts/create-contact',
-  async (values: { email: string; name: string; t: TFunction }, { dispatch }) => {
+  async (
+    values: { email: string; name: string; t: TFunction },
+    { dispatch },
+  ) => {
     const { email, name, t } = values;
 
     const result = await postRequest(endpointContact.CREATE_CONTACT, {
@@ -50,12 +53,10 @@ const createContact = createAsyncThunk(
   },
 );
 
-
 const fetchContacts = createAsyncThunk(
   'contacts/get-contacts',
   async (values: { offset?: number; keyword?: string | null } = {}) => {
     const { offset, keyword } = values;
-
     const results = await fetchQuery<ContactsQuery>(
       relayEnvironment,
       contactsQuery,
@@ -122,7 +123,6 @@ const fetchContactProfileCard = createAsyncThunk(
   'contacts/fetch-contact-profile-card',
   async (values: { id: string }) => {
     const { id } = values;
-
     const results = await fetchQuery<ContactProfileCardQuery>(
       relayEnvironment,
       contactProfileCardQuery,
@@ -160,7 +160,8 @@ const slice = createSlice({
 
       state.isLoading = false;
       state.contacts =
-        edges?.map((contact: { node: ContactInterface }) => contact?.node) || [];
+        edges?.map((contact: { node: ContactInterface }) => contact?.node) ||
+        [];
       state.totalDocs = action.payload?.totalCount || 0;
       state.pageInfo = {
         hasNextPage: pageInfo?.hasNextPage || false,

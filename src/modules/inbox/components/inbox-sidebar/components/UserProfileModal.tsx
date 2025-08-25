@@ -20,7 +20,9 @@ import noteBlue from '@/assets/icons/common/ic-note-blue.svg';
 import tagsBlue from '@/assets/icons/common/ic-tags-blue.svg';
 
 import ProfilePreviewModal from '../../profile-preview-modal/ProfilePreviewModal';
-import ProfileCard from '@/shared/components/common/ProfileCard';
+import ProfileCard, {
+  ProfileType,
+} from '@/shared/components/common/ProfileCard';
 import { format } from 'timeago.js';
 import dayjs from 'dayjs';
 import LastReportedLocationBody from '@/shared/components/common/ReportedLocation/LastReportedLocationBody';
@@ -113,13 +115,16 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({
         <S.PanelHeader>
           <S.PanelColumn>
             <ProfileCard
-              contactId={selectedConversation?.contact?.id}
-              avatarSize={40}
-              email={selectedConversation?.contact?.email}
-              name={selectedConversation?.contact?.name || ''}
-              avatarUrl={selectedConversation?.contact?.avatar}
-              countryCode={selectedConversation?.contact?.countryCode}
+              profileInfo={{
+                id: selectedConversation?.contact?.id,
+                type: ProfileType.CONTACT,
+                name: selectedConversation?.contact?.name,
+                email: selectedConversation?.contact?.email,
+                avatar: selectedConversation?.contact?.avatar,
+                context: selectedConversation?.contact?.context,
+              }}
               hiddenLastActive
+              hiddenInfo={false}
             />
             <S.PanelItem>
               <S.PanelP>

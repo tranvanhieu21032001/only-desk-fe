@@ -13,8 +13,15 @@ import {
   listenUserStatus,
   offUserStatus,
 } from '@/shared/chat-logic/services/socket';
+import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 
-interface ContactProfile {
+export enum ProfileType {
+  CONTACT = 'CONTACT',
+  USER = 'USER',
+}
+interface ProfileInfo {
+  id: string;
+  type: ProfileType;
   name?: string;
   email?: string;
   avatar?: string;
@@ -23,22 +30,9 @@ interface ContactProfile {
   };
 }
 
-interface UserProfile {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  avatar?: string;
-}
-
 interface ProfileCardProps {
-  contactId?: string;
-  userId?: string;
+  profileInfo: ProfileInfo;
   avatarSize?: number;
-  name?: string;
-  email?: string;
-  avatarUrl?: string;
-  countryCode?: string;
-  flagSrc?: string;
   flagSize?: number;
   lastActiveStyle?: React.CSSProperties;
   hiddenInfo?: boolean;
@@ -46,17 +40,11 @@ interface ProfileCardProps {
 }
 
 const ProfileCard = ({
-  contactId,
-  userId,
+  profileInfo,
   avatarSize = 40,
-  name,
-  email,
-  avatarUrl,
-  countryCode,
-  flagSrc,
   flagSize = 14,
   lastActiveStyle,
-  hiddenInfo = false,
+  hiddenInfo = true,
   hiddenLastActive = false,
 }: ProfileCardProps) => {
   const dispatch = useAppDispatch();
@@ -71,7 +59,8 @@ const ProfileCard = ({
     countryCode?: string;
   }>({});
 
-  const isDataMissing = !name;
+  const isDataMissing =
+    !profileInfo.name && !profileInfo.email && !profileInfo.avatar;
 
   useEffect(() => {
     if (!isDataMissing) return;
@@ -79,20 +68,34 @@ const ProfileCard = ({
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        if (contactId) {
+        if (profileInfo.type == ProfileType.CONTACT) {
           const res = await dispatch(
-            fetchContactProfileCard({ id: contactId }),
+            fetchContactProfileCard({ id: profileInfo.id }),
           );
-          const data = res.payload as ContactProfile;
+          const data = res.payload as {
+            name?: string;
+            email?: string;
+            avatar?: string;
+            context?: {
+              countryCode?: string;
+            };
+          };
           setFetchedData({
             name: data?.name,
             email: data?.email,
             avatar: data?.avatar,
             countryCode: data?.context?.countryCode,
           });
-        } else if (userId) {
-          const res = await dispatch(fetchUserProfileCard({ id: userId }));
-          const data = res.payload as UserProfile;
+        } else if (profileInfo.type == ProfileType.USER) {
+          const res = await dispatch(
+            fetchUserProfileCard({ id: profileInfo.id }),
+          );
+          const data = res.payload as {
+            firstName?: string;
+            lastName?: string;
+            email?: string;
+            avatar?: string;
+          };
           setFetchedData({
             name: `${data?.firstName ?? ''} ${data?.lastName ?? ''}`.trim(),
             email: data?.email,
@@ -107,7 +110,7 @@ const ProfileCard = ({
     };
 
     fetchData();
-  }, [contactId, userId, isDataMissing, dispatch]);
+  }, [profileInfo.id, profileInfo.type, isDataMissing, dispatch]);
 
   useEffect(() => {
     const handleStatus = (data: {
@@ -117,8 +120,10 @@ const ProfileCard = ({
       lastActivityAt?: string | Date;
     }) => {
       const isTarget =
-        (contactId && data.contactId === contactId) ||
-        (userId && data.userId === userId);
+        (profileInfo.type === ProfileType.CONTACT &&
+          data.contactId === profileInfo.id) ||
+        (profileInfo.type === ProfileType.USER &&
+          data.userId === profileInfo.id);
 
       if (!isTarget) return;
 
@@ -131,17 +136,19 @@ const ProfileCard = ({
 
     listenUserStatus(handleStatus);
     return () => offUserStatus(handleStatus);
-  }, [contactId, userId]);
+  }, [profileInfo.id, profileInfo.type]);
 
-  const avatar = avatarUrl || fetchedData.avatar || defaultAvatar;
-  const displayName = name?.trim() || fetchedData.name?.trim() || '';
-  const displayEmail = email?.trim() || fetchedData.email?.trim() || '';
+  const avatar = profileInfo.avatar || fetchedData.avatar || defaultAvatar;
+  const displayName =
+    profileInfo.name?.trim() || fetchedData.name?.trim() || DEFAULT_FULL_NAME;
+  const displayEmail =
+    profileInfo.email?.trim() || fetchedData.email?.trim() || '';
   const flagIcon =
-    flagSrc ||
     flagList.find(
-      (item) => item.code === (countryCode || fetchedData.countryCode),
-    )?.image ||
-    null;
+      (item) =>
+        item.code ===
+        (profileInfo.context?.countryCode || fetchedData.countryCode),
+    )?.image || null;
 
   return (
     <S.ProfileSection>

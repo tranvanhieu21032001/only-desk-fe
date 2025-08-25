@@ -51,11 +51,7 @@ export const fetchConversationDetail = createAsyncThunk(
         metadata: data?.metadata || {},
         lastActivityAt: data?.lastActivityAt || '',
         avatar: data.contact?.avatar || '',
-        countryCode: data.contact?.context?.countryCode || '',
-        city: data.contact?.context?.city || '',
-        countryName: data.contact?.context?.countryName || '',
-        browser: data.contact?.context?.browser || '',
-        os: data.contact?.context?.os || '',
+        context: data.contact?.context,
         guestId: data.contact?.guestId || '',
         notification: data.contact?.notification || false,
       };
@@ -67,14 +63,16 @@ export const fetchConversationDetail = createAsyncThunk(
         resolved: data.resolved || false,
         assignedTo: data.assignedTo?.id || null,
         participants: data.participants
-          ? [...data.participants] as (User | string)[]
+          ? ([...data.participants] as (User | string)[])
           : undefined,
         lastActivityAt: data.lastActivityAt || '',
       };
 
       return conversation;
     } catch (error: any) {
-      return rejectWithValue(error?.message || 'Error fetching conversation detail');
+      return rejectWithValue(
+        error?.message || 'Error fetching conversation detail',
+      );
     }
   },
 );

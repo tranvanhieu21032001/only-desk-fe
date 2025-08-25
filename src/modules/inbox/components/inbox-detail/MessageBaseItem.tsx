@@ -4,7 +4,9 @@ import { Image, Tooltip } from 'antd';
 import MessageTimeWithIcon from './MessageTimeWithIcon';
 import * as S from './InboxDetail.styles';
 import icEye from '@/assets/icons/common/ic-eye.svg';
-import ProfileCard from '@/shared/components/common/ProfileCard';
+import ProfileCard, {
+  ProfileType,
+} from '@/shared/components/common/ProfileCard';
 import {
   Message,
   MessageBaseItemProps,
@@ -49,7 +51,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   const timeTooltip = !msg.showTime ? (
     <Tooltip
       title={formatTime(msg.createdAt)}
-      placement={"top"}
+      placement={'top'}
       overlayClassName="tooltip-time-message"
     >
       <div>
@@ -75,7 +77,14 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             gap: 2,
           }}
         >
-          <div style={{ display: 'flex', flexDirection:'row-reverse', alignItems: 'flex-end', gap: 8 }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row-reverse',
+              alignItems: 'flex-end',
+              gap: 8,
+            }}
+          >
             {timeTooltip}
             <MessageTimeWithIcon
               isOwner={isOwner}
@@ -103,12 +112,13 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
               <SystemAvatar avatarSize={32} />
             ) : (
               <ProfileCard
-                userId={msg.user?.id}
-                contactId={contactId}
-                name={name}
-                avatarUrl={avatar}
-                countryCode={countryCode}
-                hiddenInfo
+                profileInfo={{
+                  id: contactId || msg.user?.id,
+                  type: contactId ? ProfileType.CONTACT : ProfileType.USER,
+                  name: msg.user?.firstName,
+                  email: msg.user?.email,
+                  avatar: msg.user?.avatar,
+                }}
                 avatarSize={32}
                 flagSize={12}
               />
@@ -143,7 +153,9 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
                 />
               </div>
               {msg.showTime && (
-                <S.MessageTimeBelow>{formatTime(msg.createdAt)}</S.MessageTimeBelow>
+                <S.MessageTimeBelow>
+                  {formatTime(msg.createdAt)}
+                </S.MessageTimeBelow>
               )}
             </div>
           </S.MessageColumnView>
