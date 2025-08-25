@@ -383,7 +383,8 @@ export const ShortcutItem = styled.div<ShortcutItemProps>`
     font-weight: 600;
   }
 
-  background-color: ${({ $selected }) => ($selected ? '#1e2f97' : 'transparent')};
+  background-color: ${({ $selected }) =>
+    $selected ? '#1e2f97' : 'transparent'};
   color: ${({ $selected }) => ($selected ? '#fff' : '#000')};
   border-radius: ${({ $selected }) => ($selected ? '8px' : '0')};
 
@@ -930,7 +931,6 @@ export const MessageInputValue = styled.p`
 
 export const MessageTimeBelow = styled.div`
   color: #aaaaaa;
-  font-size:12px;
-   font-style: italic;
-   margin-right: 11px;
+  font-size: 10px;
+  margin-right: 11px;
 `;
