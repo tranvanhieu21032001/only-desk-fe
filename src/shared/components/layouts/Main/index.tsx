@@ -22,7 +22,7 @@ import {
 } from '@/shared/helper/data/layout';
 import {
   // DEFAULT_EMAIL,
-  DEFAULT_FULL_NAME,
+  // DEFAULT_FULL_NAME,
   EVENTBUS_SOCKET_CONNECT,
   EVENTBUS_SOCKET_DISCONNECT,
 } from '@/core/settings/constants';
@@ -64,7 +64,7 @@ import icUserTick from '@/assets/icons/layout/ic-user-tick.svg';
 import icKnowledge from '@/assets/icons/layout/ic-knowledge.svg';
 // import icPlusCircle from '@/assets/icons/layout/ic-plus-circle.svg';
 
-import icDefaultAvatar from '@/assets/images/avatar-default.png';
+// import icDefaultAvatar from '@/assets/images/avatar-default.png';
 import icDefaultWorkspace from '@/assets/images/workspace-default.png';
 import icInfoAleartRed from '@/assets/icons/common/ic-info-aleart-red.svg';
 import icCloseAleart from '@/assets/icons/common/ic-close-aleart.svg';
@@ -95,7 +95,7 @@ import icAccount from '@/assets/icons/layout/ic-account.svg';
 import icBilling from '@/assets/icons/layout/ic-billing.svg';
 import icWorkspace from '@/assets/icons/layout/ic-workspace.svg';
 import icSettings from '@/assets/icons/layout/ic-settings.svg';
-import icSettingsDark from '@/assets/icons/layout/ic-setting-dark.svg';
+// import icSettingsDark from '@/assets/icons/layout/ic-setting-dark.svg';
 
 //Profiles
 // import flag from '@/assets/icons/common/ic-flag.svg';
@@ -873,7 +873,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
       <S.PopoverContent>
         <ProfileCard
           profileInfo={{
-            id: userInfo?.id,
+            id: userInfo?.id || '',
             type: ProfileType.USER,
             name: `${userInfo?.firstName} ${userInfo?.lastName ?? ''}`.trim(),
             email: userInfo?.email,
@@ -1017,7 +1017,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
             <S.Profiles>
               <ProfileCard
                 profileInfo={{
-                  id: userInfo?.id,
+                  id: userInfo?.id || '',
                   type: ProfileType.USER,
                   name: `${userInfo?.firstName} ${userInfo?.lastName ?? ''}`.trim(),
                   email: userInfo?.email,

@@ -24,7 +24,7 @@ import Input from '@/shared/components/common/Input';
 import { handleEditProfile } from '@/modules/contacts/api/contacts.api';
 import { updateSelectedConversationContact } from '../../store/features/inbox';
 import { decodeGlobalId } from '@/shared/utils/decode';
-import { Contact } from '../../interfaces/inbox';
+import { Contact } from '@/shared/chat-logic';
 
 const InboxSidebar = () => {
   const { t } = useTranslation('inbox');
@@ -157,7 +157,7 @@ const InboxSidebar = () => {
           case 'participantsIds':
             oldValue = (selectedConversation?.participants || [])
               .map((p) =>
-                typeof p !== 'string' ? (p.user as any)?.rawId : undefined,
+                typeof p !== 'string' ? (p as any).user?.rawId : undefined
               )
               .filter(Boolean);
             break;
@@ -221,7 +221,7 @@ const InboxSidebar = () => {
       <Form form={form}>
         <ProfileCard
           profileInfo={{
-            id: selectedConversation?.contact?.id,
+            id: selectedConversation?.contact?.id || '',
             type: ProfileType.CONTACT,
             name: selectedConversation?.contact?.name,
             email: selectedConversation?.contact?.email,

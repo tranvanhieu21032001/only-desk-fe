@@ -1,5 +1,6 @@
+import { User } from '@/shared/interface/user.interface';
 import { MessageSender, MessageStatus, MessageType } from '../enums/chat.enums';
-import { Message, User } from '../interfaces/inbox';
+import { Message } from '../interfaces/inbox';
 
 export function parseEnum<T extends Record<string, string | number>>(
   enumObj: T,

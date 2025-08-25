@@ -7,7 +7,6 @@ import { constants } from '@/core/settings';
 import { useAppDispatch, useModal } from '@/shared/hooks';
 import webStorageClient from '@/shared/utils/webStorageClient';
 import themeColors from '@/shared/styles/themes/default/colors';
-import { UserInforInterface } from '@/modules/auth/models/user';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import { handleUpdateAccountInformation } from '@/modules/settings/api/account';
 
@@ -24,6 +23,7 @@ import ModalEnableTwoFactor from '../modal-enable-two-factor/main/ModalEnableTwo
 import * as S from './AccountInformation.styles';
 
 import imgAvatarDefault from '@/assets/images/settings/ic-avatar-default.png';
+import { User } from '@/shared/interface/user.interface';
 
 function AccountInformation() {
   const { t } = useTranslation('settings');
@@ -31,7 +31,7 @@ function AccountInformation() {
   const dispatch = useAppDispatch();
 
   const avatarWatch = Form.useWatch('avatar', form) || '';
-  const userInfoFromStorage: UserInforInterface = webStorageClient.get(
+  const userInfoFromStorage: User = webStorageClient.get(
     constants.USER_INFO,
   );
 

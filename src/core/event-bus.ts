@@ -4,13 +4,13 @@ import {
   EVENTBUS_SOCKET_DISCONNECT,
   EVENTBUS_SOCKET_CONNECT,
 } from '@/core/settings/constants';
-import { Conversation } from '@/modules/inbox/interfaces/inbox';
 import {
   EVENTBUS_INBOX_MESSAGE,
   EVENTBUS_UPDATED_CONVERSATION,
   EVENTBUS_USER_STATUS,
   EVENTBUS_USER_TYPING,
 } from '@/shared/chat-logic/constants/event-bus.constants';
+import { Conversation } from '@/shared/interface/conversation.interface';
 
 export type AppEvents = {
   [EVENTBUS_INBOX_MESSAGE]: any;

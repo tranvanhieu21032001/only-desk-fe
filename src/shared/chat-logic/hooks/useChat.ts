@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Message, User } from "../interfaces/inbox";
+import { Message } from "../interfaces/inbox";
 import { useMessageList } from "./useMessageList";
 import { useScrollHandler } from "./useScrollHandler";
 import { MessageStatus, MessageType } from "../enums/chat.enums";
@@ -19,6 +19,7 @@ import { EVENTBUS_INBOX_MESSAGE } from "../constants/event-bus.constants";
 import { useTypingHandler } from "./useTypingHandler";
 import { useNotification } from "./useNotification";
 import { eventBus } from "../services/event-bus";
+import { User } from "@/shared/interface/user.interface";
 
 /*
 Features:

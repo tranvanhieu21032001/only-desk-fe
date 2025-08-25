@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Image } from 'antd';
 import { useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
@@ -20,7 +20,7 @@ const WorkspaceAdmin = () => {
     (state: RootState) => state.adminWorkspaces,
   );
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, _setCurrentPage] = useState(1);
   const pageSize = 20;
 
   // Debounced fetch
@@ -42,9 +42,9 @@ const WorkspaceAdmin = () => {
     };
   }, [debouncedFetch]);
 
-  const handleTableChange = (pagination: any) => {
-    setCurrentPage(pagination.current);
-  };
+  // const handleTableChange = (pagination: any) => {
+  //   setCurrentPage(pagination.current);
+  // };
 
   const renderActionFilter = () => (
     <S.FilterActionWrap>

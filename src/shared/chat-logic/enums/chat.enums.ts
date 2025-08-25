@@ -25,7 +25,7 @@ export enum MessageType {
 export interface MessageInputProps {
   activeTab: string | null;
   selectedReminder: string | null;
-  setActiveTab: (tab: string | null) => void;
+  setActiveTab?: (tab: string | null) => void;
   setSelectedReminder?: (reminder: string | null) => void;
   inputValue: string;
   setInputValue: (val: string) => void;

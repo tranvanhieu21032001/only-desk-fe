@@ -35,7 +35,7 @@ const DetailSkeleton = () => {
         <DetailS.HeaderLeft>
           <ProfileCard
             profileInfo={{
-              id: selectedConversation?.contact?.id,
+              id: selectedConversation?.contact?.id ?? "",
               type: ProfileType.CONTACT,
               name: selectedConversation?.contact?.name,
               email: selectedConversation?.contact?.email,

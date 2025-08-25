@@ -1,12 +1,12 @@
 import { useCallback, useEffect } from 'react';
 
 import { useConversationList } from './useConversationList';
-import { Conversation } from '@/shared/chat-logic';
 import { useScrollHandler } from './useScrollHandler';
 import { eventBus } from '@/shared/chat-logic/services/event-bus';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { fetchConversationDetailForList } from '../services/services';
 import { RelayStoreHelper } from '../helpers/relay-store.helper';
+import { Conversation } from '@/shared/interface/conversation.interface';
 
 interface UseConversationsProps {
   isAssignedToMe: boolean | null;

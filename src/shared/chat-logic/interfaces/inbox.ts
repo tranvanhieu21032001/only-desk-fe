@@ -1,3 +1,4 @@
+import { User } from '@/shared/interface/user.interface';
 import { MessageSender, MessageStatus, MessageType } from '../enums/chat.enums';
 
 export interface Contact {
@@ -30,14 +31,6 @@ export interface Contact {
   };
 }
 
-export interface User {
-  id?: string;
-  firstName?: string;
-  lastName?: string;
-  avatar?: string;
-  email?: string;
-}
-
 export interface Message {
   id: string;
   createdAt: string;
@@ -55,19 +48,6 @@ export interface Message {
   };
   showTime?: boolean;
   showDate?: boolean;
-}
-
-export interface Conversation {
-  id: string;
-  rawId: string;
-  contact: Contact;
-  assignedTo: null | string;
-  participants: string[];
-  lastActivityAt: string;
-  latestMessage?: Message;
-  resolved?: boolean;
-  unreadGuestCount?: number;
-  unreadCount?: number;
 }
 
 export interface InboxDetailProps {

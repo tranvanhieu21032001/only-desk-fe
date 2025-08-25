@@ -5,7 +5,6 @@ import historyRoute from './features/historyRoute';
 import webLocalStorage from '@/shared/utils/webLocalStorage';
 import constants from '../settings/constants';
 import {
-  UserInforInterface,
   WorkspaceInterface,
 } from '@/modules/auth/models/user';
 import webStorageClient from '@/shared/utils/webStorageClient';
@@ -20,11 +19,12 @@ import helpdeskSettingReducer from '@/modules/knowledge-base/store/helpdeskSetti
 import pluginsReducer from '@/modules/plugins/store/pluginsSlice'
 import adminWorkspacesReducer from '@/modules/admin/store/adminWorkspacesSlice';
 import adminUserReducer from '@/modules/admin/store/adminUsersSlice';
+import { User } from '@/shared/interface/user.interface';
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
     constants.CURRENT_WORKSPACE,
   );
-  const userInfoFromStorage: UserInforInterface = webStorageClient.get(
+  const userInfoFromStorage: User = webStorageClient.get(
     constants.USER_INFO,
   );
   const isAuthFromStorage: boolean =
