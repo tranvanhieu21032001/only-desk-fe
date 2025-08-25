@@ -6,13 +6,13 @@ import ProfileCard, {
 import InboxListMenu from './InboxListMenu';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { useEffect, useRef, useState } from 'react';
-import avatarDefault from '@/assets/images/avatar-default.png';
+// import avatarDefault from '@/assets/images/avatar-default.png';
 import barColumn from '@/assets/icons/common/ic-bar-column.svg';
 import { eventBus } from '@/core/event-bus';
-import { Conversation } from '../../interfaces/inbox';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { getFormattedTime } from '@/shared/chat-logic/utils/time';
 import { renderMessagePreview } from '@/shared/chat-logic/helpers/message-content.helper';
+import { Conversation } from '@/shared/interface/conversation.interface';
 
 type Props = {
   conversation: any;

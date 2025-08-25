@@ -2,11 +2,11 @@ import { useEffect, useCallback, useMemo, useState } from 'react';
 import { useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { parseGraphQLConversation } from '../helpers/conversation.helper';
-import { Conversation } from '@/shared/chat-logic';
 import { ConversationListQuery } from '../relay/__generated__/ConversationListQuery.graphql';
 import { conversationListQuery } from '../relay/ConversationListQuery';
 import { ConversationFragment_query$key } from '../relay/__generated__/ConversationFragment_query.graphql';
 import { conversationListFragment } from '../relay/ConversationFragment';
+import { Conversation } from '@/shared/interface/conversation.interface';
 
 const CONVERSATIONS_LIMIT = 10;
 

@@ -22,7 +22,7 @@ import Typography from '@/shared/components/common/Typography';
 import * as S from './ContactTable.styles';
 
 import icRemove from '@/assets/icons/contact/ic-remove.svg';
-import icAvatarDefault from '@/assets/images/avatar-default.png';
+// import icAvatarDefault from '@/assets/images/avatar-default.png';
 import icActionRemove from '@/assets/icons/contact/ic-action-remove.svg';
 import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
 

@@ -113,7 +113,7 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
             ) : (
               <ProfileCard
                 profileInfo={{
-                  id: contactId || msg.user?.id,
+                  id: contactId || msg.user?.id || '',
                   type: contactId ? ProfileType.CONTACT : ProfileType.USER,
                   name: msg.user?.firstName,
                   email: msg.user?.email,

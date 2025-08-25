@@ -17,7 +17,7 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
   setInputValue,
   setSelectedReminder,
   inputRef,
-  inputValue,
+  // inputValue,
   setActiveTab,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);

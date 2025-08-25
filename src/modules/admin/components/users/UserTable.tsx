@@ -3,22 +3,23 @@ import { Table, Avatar, Button, Tag, Image } from 'antd';
 import icView from '@/assets/icons/billing/ic-export.svg';
 import styled from 'styled-components';
 import avatarDefault from '@/assets/images/avatar-default.png';
+import { User } from '@/shared/interface/user.interface';
 
-const CustomTable = styled(Table)`
+const CustomTable = styled(Table<User>)`
   .ant-table-cell {
     padding: 12px !important;
   }
 `;
 
 interface UserTableProps {
-  users: any[];
+  users: User[];
   loading: boolean;
   pagination: any;
   onChange: (pagination: any) => void;
   selectedRowKeys: React.Key[];
   onSelectChange: (newSelectedRowKeys: React.Key[]) => void;
-  onRowClick?: (user: any) => void;
-  onViewClick?: (user: any) => void;
+  onRowClick?: (user: User) => void;
+  onViewClick?: (user: User) => void;
 }
 
 const UserTable: React.FC<UserTableProps> = ({
@@ -29,7 +30,7 @@ const UserTable: React.FC<UserTableProps> = ({
   selectedRowKeys,
   onSelectChange,
   onRowClick,
-  onViewClick
+  onViewClick,
 }) => {
   const rowSelection = {
     selectedRowKeys,
@@ -39,11 +40,14 @@ const UserTable: React.FC<UserTableProps> = ({
   const columns = [
     {
       title: 'User',
-      dataIndex: 'name',
-      render: (_: any, record: any) => (
+      dataIndex: 'firstName',
+      render: (_: any, record: User) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Avatar src={record.avatar || avatarDefault} />
-          <span>{record.name}</span>
+          <span>
+            {`${record.firstName || ''} ${record.lastName || ''}`.trim() ||
+              'Guest'}
+          </span>
         </div>
       ),
     },
@@ -58,24 +62,29 @@ const UserTable: React.FC<UserTableProps> = ({
     {
       title: 'Status',
       dataIndex: 'status',
-      render: (status: string) => (
-        <Tag color={status === 'active' ? 'green' : 'red'}>
-          {status.toUpperCase()}
-        </Tag>
-      ),
+      render: (status: string | undefined) =>
+        status ? (
+          <Tag color={status === 'active' ? 'green' : 'red'}>
+            {status.toUpperCase()}
+          </Tag>
+        ) : (
+          <Tag color="default">UNKNOWN</Tag>
+        ),
     },
     {
       title: 'Created',
-      dataIndex: 'created',
+      dataIndex: 'createdAt',
+      render: (createdAt: string | undefined) =>
+        createdAt ? new Date(createdAt).toLocaleDateString() : '—',
     },
     {
       title: 'View',
       key: 'view',
-      render: (_: any, record: any) => (
-      <Button type="link" onClick={() => onViewClick && onViewClick(record)}>
-        <Image preview={false} src={icView} height={24} width={24} />
-      </Button>
-    ),
+      render: (_: any, record: User) => (
+        <Button type="link" onClick={() => onViewClick && onViewClick(record)}>
+          <Image preview={false} src={icView} height={24} width={24} />
+        </Button>
+      ),
     },
   ];
 
@@ -84,7 +93,7 @@ const UserTable: React.FC<UserTableProps> = ({
       rowSelection={rowSelection}
       columns={columns}
       dataSource={users}
-      rowKey="key"
+      rowKey="id"
       loading={loading}
       pagination={{
         ...pagination,
@@ -92,8 +101,8 @@ const UserTable: React.FC<UserTableProps> = ({
       }}
       onChange={onChange}
       onRow={(record) => ({
-      onClick: () => onRowClick && onRowClick(record),
-    })}
+        onClick: () => onRowClick && onRowClick(record),
+      })}
     />
   );
 };

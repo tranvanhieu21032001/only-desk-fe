@@ -1,28 +1,6 @@
 import { MessageStatus } from '@/shared/chat-logic/enums/chat.enums';
-import { Contact, Message } from '@/shared/chat-logic/interfaces/inbox';
+import { Message } from '@/shared/chat-logic/interfaces/inbox';
 
-export interface User {
-  user?: any;
-  id: string;
-  rawId?: string;
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  email: string;
-}
-
-export interface Conversation {
-  id: string;
-  rawId: string;
-  contact: Contact;
-  assignedTo: null | string;
-  participants?: (User | string)[];
-  lastActivityAt: string;
-  latestMessage?: Message;
-  resolved?: boolean;
-  unreadGuestCount?: number;
-  unreadCount?: number;
-}
 
 export interface InboxDetailProps {
   isSidebarOpen: boolean;

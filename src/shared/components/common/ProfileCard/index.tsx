@@ -26,7 +26,15 @@ interface ProfileInfo {
   email?: string;
   avatar?: string;
   context?: {
-    countryCode?: string;
+    countryName?: string | null;
+    countryCode?: string | null;
+    city?: string | null;
+    language?: string | null;
+    browser?: string | null;
+    os?: string | null;
+    timezone?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
   };
 }
 

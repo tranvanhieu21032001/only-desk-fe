@@ -9,7 +9,7 @@ import closeRed from '@/assets/icons/inbox/ic-close-red.svg';
 import defaultAvatar from '@/assets/images/avatar-default.png';
 
 import * as S from '../InboxSidebar.styles';
-import { Contact } from '@/modules/inbox/interfaces/inbox';
+import { Contact } from '@/shared/chat-logic';
 
 interface Props {
   openCollapse: boolean;

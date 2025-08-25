@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 
 import {
-  UserInforInterface,
   WorkspaceInterface,
 } from '@/modules/auth/models/user';
 import { meQuery } from '@/relay/MeQuery';
@@ -15,10 +14,11 @@ import { MeQuery } from '@/relay/__generated__/MeQuery.graphql';
 import { workspaceInfoQuery } from '@/relay/WorkspaceInfoQuery';
 import { WorkspaceInfoQuery } from '@/relay/__generated__/WorkspaceInfoQuery.graphql';
 import { handleSwitchWorkspaceApi } from '@/modules/workspace/api/workspace';
+import { User } from '@/shared/interface/user.interface';
 
 export interface AuthInterface {
   isAuth: boolean;
-  userInfo: UserInforInterface | null;
+  userInfo: User | null;
   isLoading?: boolean;
   workspaces?: WorkspaceInterface[] | [];
   currentWorkspace?: WorkspaceInterface | null;

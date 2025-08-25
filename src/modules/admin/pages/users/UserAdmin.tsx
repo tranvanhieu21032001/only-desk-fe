@@ -9,7 +9,7 @@ import debounce from 'lodash/debounce';
 import icFilter from '@/assets/icons/contact/ic-filter.svg';
 import icArrowDown from '@/assets/icons/contact/ic-arrow-down.svg';
 import UserTable from '../../components/users/UserTable';
-import avatarDefault from '@/assets/images/avatar-default.png';
+// import avatarDefault from '@/assets/images/avatar-default.png';
 
 // Redux
 import { useSelector } from 'react-redux';
@@ -41,7 +41,10 @@ const UserAdmin = () => {
     loadUsers(pagination.current, pagination.pageSize, searchText);
   }, []);
 
-  const handleTableChange = (newPagination: { current: number; pageSize: number }) => {
+  const handleTableChange = (newPagination: {
+    current: number;
+    pageSize: number;
+  }) => {
     loadUsers(newPagination.current, newPagination.pageSize, searchText);
   };
 
@@ -96,7 +99,9 @@ const UserAdmin = () => {
           <S.ButtonFilter
             width="fit-content"
             iconPosition="left"
-            icon={<Image src={icFilter} preview={false} width={15} height={18} />}
+            icon={
+              <Image src={icFilter} preview={false} width={15} height={18} />
+            }
           >
             <Typography>Filter</Typography>
           </S.ButtonFilter>
@@ -108,7 +113,14 @@ const UserAdmin = () => {
                 width="fit-content"
                 onClick={handleFilterUser}
                 iconPosition="left"
-                icon={<Image src={icArrowDown} preview={false} width={20} height={20} />}
+                icon={
+                  <Image
+                    src={icArrowDown}
+                    preview={false}
+                    width={20}
+                    height={20}
+                  />
+                }
               >
                 <Typography>Action</Typography>
               </S.ButtonAction>
@@ -118,11 +130,7 @@ const UserAdmin = () => {
       </S.FilterWrap>
 
       <UserTable
-        users={users.map((u: any) => ({
-          ...u,
-          avatar: u.avatar || avatarDefault,
-          name: u.name || 'Guest',
-        }))}
+        users={users}
         loading={loading}
         pagination={pagination}
         onChange={handleTableChange}

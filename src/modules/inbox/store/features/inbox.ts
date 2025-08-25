@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchQuery } from 'react-relay';
-
-import { Contact, Conversation, User } from '../../interfaces/inbox';
 import relayEnvironment from '@/relay/RelayEnvironment';
 import { CoversationDetailsQuery } from '@/relay/__generated__/CoversationDetailsQuery.graphql';
 import { coversationDetailsQuery } from '@/shared/conversations-logic/relay/CoversationDetailsQuery';
 
 import webStorageClient from '@/shared/utils/webStorageClient';
 import { constants } from '@/core/settings';
+import { Contact } from '@/shared/chat-logic';
+import { User } from '@/shared/interface/user.interface';
+import { Conversation } from '@/shared/interface/conversation.interface';
 
 export interface InboxState {
   selectedConversation: Conversation | null;
@@ -51,7 +52,7 @@ export const fetchConversationDetail = createAsyncThunk(
         metadata: data?.metadata || {},
         lastActivityAt: data?.lastActivityAt || '',
         avatar: data.contact?.avatar || '',
-        context: data.contact?.context,
+        context: data.contact?.context ?? {},
         guestId: data.contact?.guestId || '',
         notification: data.contact?.notification || false,
       };
