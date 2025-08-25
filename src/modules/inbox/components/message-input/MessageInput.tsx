@@ -104,8 +104,6 @@ const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   const handleSend = async () => {
-    const replyId = replyPreview?.id;
-
     if (filePreviews.length > 0) {
       const uploadingFiles = filePreviews.filter((file) => file.uploading);
       if (uploadingFiles.length > 0) return;
@@ -116,7 +114,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
             inputValue,
             MessageType.IMAGE,
             { fileUrl: item.fileUrl },
-            replyId,
+            replyPreview,
           );
         }
       }
@@ -129,9 +127,9 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
     if (inputValue.trim()) {
       if (activeTab === INBOX_TABS.NOTE) {
-        onSendMessage(inputValue, MessageType.NOTE, {}, replyId);
+        onSendMessage(inputValue, MessageType.NOTE, {}, replyPreview);
       } else {
-        onSendMessage(inputValue, MessageType.TEXT, {}, replyId);
+        onSendMessage(inputValue, MessageType.TEXT, {}, replyPreview);
       }
       setSelectedReminder?.(null);
       setInputValue('');
@@ -159,11 +157,10 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
-const handleAddEmoji = (emoji: any) => {
-  setInputValue(inputValue + emoji.native);
-  setShowEmojiPicker(false);
-};
-
+  const handleAddEmoji = (emoji: any) => {
+    setInputValue(inputValue + emoji.native);
+    setShowEmojiPicker(false);
+  };
 
   return (
     <div

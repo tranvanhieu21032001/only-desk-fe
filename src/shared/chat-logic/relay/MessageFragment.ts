@@ -35,6 +35,18 @@ export const messageListFragment = graphql`
             lastName
             avatar
           }
+          replyTo {
+            id
+            content
+            type
+            metadata
+            user {
+              id
+              firstName
+              lastName
+              avatar
+            }
+          }
         }
       }
     }

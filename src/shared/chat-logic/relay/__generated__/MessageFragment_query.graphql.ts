@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2a57eeed1fc898c42a9ee3daaa67cecd>>
+ * @generated SignedSource<<baa13db00a58c2670ef7063f9ad81ef8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -18,10 +18,22 @@ export type MessageFragment_query$data = {
     readonly edges: ReadonlyArray<{
       readonly cursor: string;
       readonly node: {
-        readonly content: string;
+        readonly content: string | null | undefined;
         readonly createdAt: any;
         readonly id: string;
         readonly metadata: any | null | undefined;
+        readonly replyTo: {
+          readonly content: string | null | undefined;
+          readonly id: string;
+          readonly metadata: any | null | undefined;
+          readonly type: MessageTypeEnum | null | undefined;
+          readonly user: {
+            readonly avatar: string | null | undefined;
+            readonly firstName: string | null | undefined;
+            readonly id: string;
+            readonly lastName: string | null | undefined;
+          } | null | undefined;
+        } | null | undefined;
         readonly sender: MessageSender;
         readonly status: MessageStatus;
         readonly type: MessageTypeEnum | null | undefined;
@@ -58,6 +70,48 @@ v1 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "content",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "metadata",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "type",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "firstName",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lastName",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "avatar",
   "storageKey": null
 };
 return {
@@ -166,13 +220,7 @@ return {
               "plural": false,
               "selections": [
                 (v1/*: any*/),
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "content",
-                  "storageKey": null
-                },
+                (v2/*: any*/),
                 {
                   "alias": null,
                   "args": null,
@@ -194,20 +242,8 @@ return {
                   "name": "updatedAt",
                   "storageKey": null
                 },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "metadata",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "type",
-                  "storageKey": null
-                },
+                (v3/*: any*/),
+                (v4/*: any*/),
                 {
                   "alias": null,
                   "args": null,
@@ -231,25 +267,37 @@ return {
                       "name": "rawId",
                       "storageKey": null
                     },
+                    (v5/*: any*/),
+                    (v6/*: any*/),
+                    (v7/*: any*/)
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "Message",
+                  "kind": "LinkedField",
+                  "name": "replyTo",
+                  "plural": false,
+                  "selections": [
+                    (v1/*: any*/),
+                    (v2/*: any*/),
+                    (v4/*: any*/),
+                    (v3/*: any*/),
                     {
                       "alias": null,
                       "args": null,
-                      "kind": "ScalarField",
-                      "name": "firstName",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "lastName",
-                      "storageKey": null
-                    },
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "avatar",
+                      "concreteType": "User",
+                      "kind": "LinkedField",
+                      "name": "user",
+                      "plural": false,
+                      "selections": [
+                        (v1/*: any*/),
+                        (v5/*: any*/),
+                        (v6/*: any*/),
+                        (v7/*: any*/)
+                      ],
                       "storageKey": null
                     }
                   ],
@@ -277,6 +325,6 @@ return {
 };
 })();
 
-(node as any).hash = "14a07bb882efef75dd51a91937a0c70a";
+(node as any).hash = "bba7271f5eea04336b899d0cfb95b0c9";
 
 export default node;

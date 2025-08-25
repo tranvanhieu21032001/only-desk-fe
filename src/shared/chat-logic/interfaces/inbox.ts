@@ -16,6 +16,7 @@ export interface Message {
     placeholder?: string;
     inputValue?: string;
   };
+  replyTo?: Message | null;
   showTime?: boolean;
   showDate?: boolean;
 }

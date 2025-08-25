@@ -27,6 +27,27 @@ const createMessageRecord = (
     userRecord.setValue(msg.user.avatar, 'avatar');
     messageRecord.setLinkedRecord(userRecord, 'user');
   }
+  if (msg.replyTo) {
+    const replyToRecord = store.create(
+      `${msg.id}_replyTo_${msg.replyTo.id}`,
+      'Message',
+    );
+    replyToRecord.setValue(msg.replyTo.id, 'id');
+    replyToRecord.setValue(msg.replyTo.content, 'content');
+    replyToRecord.setValue(msg.replyTo.type, 'type');
+    if (msg.replyTo.user) {
+      const replyToUserRecord = store.create(
+        `${msg.id}_replyTo_user_${msg.replyTo.user.id}`,
+        'User',
+      );
+      replyToUserRecord.setValue(msg.replyTo.user.id, 'id');
+      replyToUserRecord.setValue(msg.replyTo.user.firstName, 'firstName');
+      replyToUserRecord.setValue(msg.replyTo.user.lastName, 'lastName');
+      replyToUserRecord.setValue(msg.replyTo.user.avatar, 'avatar');
+      replyToRecord.setLinkedRecord(replyToUserRecord, 'user');
+    }
+    messageRecord.setLinkedRecord(replyToRecord, 'replyTo');
+  }
   return messageRecord;
 };
 

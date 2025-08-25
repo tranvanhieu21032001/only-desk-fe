@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<09049fb22a3ef532f144add4b5c83f68>>
+ * @generated SignedSource<<9fde41ce3fa7688484cac1d3ece9cfcd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -63,6 +63,48 @@ v2 = {
   "args": null,
   "kind": "ScalarField",
   "name": "id",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "content",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "metadata",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "type",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "firstName",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "lastName",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "avatar",
   "storageKey": null
 };
 return {
@@ -144,13 +186,7 @@ return {
                 "plural": false,
                 "selections": [
                   (v2/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "content",
-                    "storageKey": null
-                  },
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -172,20 +208,8 @@ return {
                     "name": "updatedAt",
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "metadata",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "type",
-                    "storageKey": null
-                  },
+                  (v4/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -209,25 +233,37 @@ return {
                         "name": "rawId",
                         "storageKey": null
                       },
+                      (v6/*: any*/),
+                      (v7/*: any*/),
+                      (v8/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Message",
+                    "kind": "LinkedField",
+                    "name": "replyTo",
+                    "plural": false,
+                    "selections": [
+                      (v2/*: any*/),
+                      (v3/*: any*/),
+                      (v5/*: any*/),
+                      (v4/*: any*/),
                       {
                         "alias": null,
                         "args": null,
-                        "kind": "ScalarField",
-                        "name": "firstName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "lastName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "avatar",
+                        "concreteType": "User",
+                        "kind": "LinkedField",
+                        "name": "user",
+                        "plural": false,
+                        "selections": [
+                          (v2/*: any*/),
+                          (v6/*: any*/),
+                          (v7/*: any*/),
+                          (v8/*: any*/)
+                        ],
                         "storageKey": null
                       }
                     ],
@@ -263,16 +299,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d0f1619cb7a709fbcb731c312db49497",
+    "cacheID": "44662d73972b5863dfaaaa180abee548",
     "id": null,
     "metadata": {},
     "name": "MessageFragmentPaginationQuery",
     "operationKind": "query",
-    "text": "query MessageFragmentPaginationQuery(\n  $after: String\n  $conversationId: ID!\n  $first: Float = 20\n) {\n  ...MessageFragment_query_1QmmIs\n}\n\nfragment MessageFragment_query_1QmmIs on Query {\n  messages(conversationId: $conversationId, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        content\n        sender\n        createdAt\n        updatedAt\n        metadata\n        type\n        status\n        user {\n          id\n          rawId\n          firstName\n          lastName\n          avatar\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query MessageFragmentPaginationQuery(\n  $after: String\n  $conversationId: ID!\n  $first: Float = 20\n) {\n  ...MessageFragment_query_1QmmIs\n}\n\nfragment MessageFragment_query_1QmmIs on Query {\n  messages(conversationId: $conversationId, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        content\n        sender\n        createdAt\n        updatedAt\n        metadata\n        type\n        status\n        user {\n          id\n          rawId\n          firstName\n          lastName\n          avatar\n        }\n        replyTo {\n          id\n          content\n          type\n          metadata\n          user {\n            id\n            firstName\n            lastName\n            avatar\n          }\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "14a07bb882efef75dd51a91937a0c70a";
+(node as any).hash = "bba7271f5eea04336b899d0cfb95b0c9";
 
 export default node;

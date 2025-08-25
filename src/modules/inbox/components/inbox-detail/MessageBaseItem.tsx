@@ -21,6 +21,7 @@ import { SystemAvatar } from '@/shared/components/common/ProfileCard/SystemAvata
 import { renderMessageContent } from '@/shared/chat-logic/helpers/message-content.helper';
 import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
 import { formatTime } from '@/shared/chat-logic/utils/time';
+import ReplyPreview from '../message-input/components/ReplyPreview';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -37,9 +38,6 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   );
 
   const contactId = isOwner ? undefined : selectedConversation?.contact?.id;
-  const name = msg.user?.firstName || selectedConversation?.contact?.name || '';
-  const avatar = msg.user?.avatar || selectedConversation?.contact?.avatar;
-  const countryCode = undefined;
 
   const hovered = hoveredMessageId === msg.id;
   const onHoverEnter = () => setHoveredMessageId(msg.id);
@@ -202,6 +200,9 @@ const MessageBaseContentItem = ({
           wordBreak: 'break-word',
         }}
       >
+        {message.replyTo && (
+          <ReplyPreview replyPreview={message.replyTo} showCancel={false} />
+        )}
         {renderMessageContent(message.content)}
         {!!message.metadata?.inputValue && (
           <S.MessageInputValue>

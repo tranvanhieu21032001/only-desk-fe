@@ -45,6 +45,7 @@ interface UseChatReturn {
     type: MessageType,
     metadata: any,
     user: User | null | undefined,
+    replyTo?: Message | null,
   ) => void;
   submitInput: (messageId: string, inputValue: string) => void;
   hasNewMessage: boolean;
@@ -134,9 +135,9 @@ export function useChat({
     type: MessageType,
     metadata: any,
     user: User | null | undefined,
-    replyId?: string,
+    replyTo?: Message | null,
   ) => {
-    const message = createLocalMessage(content, type, metadata, user);
+    const message = createLocalMessage(content, type, metadata, user, replyTo);
     addMessage(message);
 
     handleUserStopTyping();
@@ -148,7 +149,7 @@ export function useChat({
           content,
           type,
           metadata,
-          replyId,
+          replyToId: getId(replyTo?.id),
         },
       },
       (res: any) => {

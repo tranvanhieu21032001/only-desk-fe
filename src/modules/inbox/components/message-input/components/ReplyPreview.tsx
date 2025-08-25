@@ -4,13 +4,21 @@ import * as S from '../MessageInput.styles';
 import icImage from '@/assets/icons/common/ic-image.svg';
 import icCloseImage from '@/assets/icons/common/ic-close-message.svg';
 import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
+import { Message } from '@/shared/chat-logic';
+import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
+import { renderMessageContent } from '@/shared/chat-logic/helpers/message-content.helper';
 
 interface ReplyPreviewProps {
-  replyPreview: any;
+  replyPreview?: Message | null;
   onCancel?: () => void;
+  showCancel?: boolean;
 }
 
-const ReplyPreview: React.FC<ReplyPreviewProps> = ({ replyPreview, onCancel }) => {
+const ReplyPreview: React.FC<ReplyPreviewProps> = ({
+  replyPreview,
+  onCancel,
+  showCancel = true,
+}) => {
   if (!replyPreview) return null;
 
   return (
@@ -19,14 +27,22 @@ const ReplyPreview: React.FC<ReplyPreviewProps> = ({ replyPreview, onCancel }) =
         {replyPreview.type === MessageType.IMAGE ? (
           <S.ReplyTextWrapper isImage>
             <div>
-              <S.ReplyName>{replyPreview.name || 'Guest'}</S.ReplyName>
+              <S.ReplyName>{getSenderName(replyPreview)}</S.ReplyName>
+              {replyPreview.content.length == 0 && (
+                <S.ReplySnippet>
+                  <img src={icImage} alt="image icon" /> Image
+                </S.ReplySnippet>
+              )}
               <S.ReplySnippet>
-                <img src={icImage} alt="image icon" /> Image
+                {renderMessageContent(replyPreview.content)}
               </S.ReplySnippet>
-              <S.ReplySnippet>{replyPreview.snippetText}</S.ReplySnippet>
             </div>
             <Image
-              src={replyPreview.snippetUrl}
+              src={
+                replyPreview.type === MessageType.IMAGE
+                  ? replyPreview?.metadata?.fileUrl
+                  : undefined
+              }
               alt="reply image"
               height={80}
               style={{ objectFit: 'cover', borderRadius: 4 }}
@@ -35,14 +51,18 @@ const ReplyPreview: React.FC<ReplyPreviewProps> = ({ replyPreview, onCancel }) =
           </S.ReplyTextWrapper>
         ) : (
           <S.ReplyTextWrapper>
-            <S.ReplyName>{replyPreview.name || 'Guest'}</S.ReplyName>
-            <S.ReplySnippet>{replyPreview.snippetText}</S.ReplySnippet>
+            <S.ReplyName>{getSenderName(replyPreview)}</S.ReplyName>
+            <S.ReplySnippet>
+              {renderMessageContent(replyPreview.content)}
+            </S.ReplySnippet>
           </S.ReplyTextWrapper>
         )}
       </S.ReplyBox>
-      <S.RemoveImageButton onClick={onCancel} title="Remove">
-        <img src={icCloseImage} alt="remove" />
-      </S.RemoveImageButton>
+      {showCancel && (
+        <S.RemoveImageButton onClick={onCancel} title="Remove">
+          <img src={icCloseImage} alt="remove" />
+        </S.RemoveImageButton>
+      )}
     </S.ReplyContainer>
   );
 };

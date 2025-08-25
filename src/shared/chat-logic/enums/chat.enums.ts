@@ -1,25 +1,27 @@
+import { Message } from '../interfaces/inbox';
+
 export enum MessageSender {
-  GUEST = "guest",
-  AGENT = "agent",
-  SYSTEM = "system",
+  GUEST = 'guest',
+  AGENT = 'agent',
+  SYSTEM = 'system',
 }
 
 export enum MessageStatus {
-  SENDING = "sending",
-  SENT = "sent",
-  DELIVERED = "delivered",
-  READ = "read",
-  FAILED = "failed",
+  SENDING = 'sending',
+  SENT = 'sent',
+  DELIVERED = 'delivered',
+  READ = 'read',
+  FAILED = 'failed',
 }
 
 export enum MessageType {
-  TEXT = "text",
-  INPUT = "input",
-  FILE = "file",
-  IMAGE = "image",
-  SYSTEM = "system",
-  NOTE = "note",
-  RESOLVED = "resolved",
+  TEXT = 'text',
+  INPUT = 'input',
+  FILE = 'file',
+  IMAGE = 'image',
+  SYSTEM = 'system',
+  NOTE = 'note',
+  RESOLVED = 'resolved',
 }
 
 export interface MessageInputProps {
@@ -33,10 +35,10 @@ export interface MessageInputProps {
     val: string,
     type?: MessageType,
     metadata?: any,
-    replyId?: string,
+    replyTo?: Message | null,
   ) => void;
   onInputChange?: (val: string) => void;
-  replyPreview?: ReplyPreviewState | null;
+  replyPreview?: Message | null;
   onEndSendMessage?: () => void;
 }
 
@@ -49,12 +51,4 @@ export interface FilePreview {
   uploading: boolean;
   progress: number;
   originFile?: File;
-}
-
-export interface ReplyPreviewState {
-  id: string;
-  name?: string;
-  type: MessageType;
-  snippetUrl?: string;
-  snippetText?: string;
 }

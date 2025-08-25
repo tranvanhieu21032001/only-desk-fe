@@ -41,7 +41,6 @@ import { useChat } from '@/shared/chat-logic/hooks/useChat';
 import {
   // MessageSender,
   MessageType,
-  ReplyPreviewState,
 } from '@/shared/chat-logic/enums/chat.enums';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { MessageBaseItem } from './MessageBaseItem';
@@ -108,20 +107,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const { selectedConversation } = useAppSelector((state) => state.inbox);
 
     const [isUpdatingResolved, setIsUpdatingResolved] = useState(false);
-    const [replyPreview, setReplyPreview] = useState<ReplyPreviewState | null>(
-      null,
-    );
-
-    const handleStartReply = (m: Message) => {
-      setReplyPreview({
-        id: m.id!,
-        type: m.type,
-        name: getSenderName(m),
-        snippetUrl:
-          m.type === MessageType.IMAGE ? m?.metadata?.fileUrl : undefined,
-        snippetText: m.type === MessageType.IMAGE ? m.content : m.content,
-      });
-    };
+    const [replyPreview, setReplyPreview] = useState<Message | null>(null);
 
     const handleClearReply = () => setReplyPreview(null);
 
@@ -193,8 +179,9 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       content: string,
       type: MessageType,
       metadata: any = {},
+      replyTo?: Message | null,
     ) => {
-      sendMessage(content, type, metadata, userInfo);
+      sendMessage(content, type, metadata, userInfo, replyTo);
     };
 
     useEffect(() => {
@@ -346,7 +333,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             onCloseMenu={closeContextMenu}
             MENU_WIDTH={MENU_WIDTH}
             t={t}
-            onReply={handleStartReply}
+            onReply={setReplyPreview}
           />
           <S.Header>
             <S.HeaderLeft>

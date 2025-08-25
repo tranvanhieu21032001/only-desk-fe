@@ -43,6 +43,7 @@ export function parseGraphQLMessage(node: any): Message {
     status:
       parseEnum(MessageStatus, node.status?.toLowerCase()) ??
       MessageStatus.SENT,
+    replyTo: node.replyTo ? parseGraphQLMessage(node.replyTo) : null,
   };
 
   return message;
@@ -53,6 +54,7 @@ export function createLocalMessage(
   type: MessageType,
   metadata: any,
   user: User | null | undefined,
+  replyTo?: Message | null,
 ): Message {
   const now = new Date();
   const temp_id = now.toISOString();
@@ -75,6 +77,7 @@ export function createLocalMessage(
     updatedAt: now.toISOString(),
     metadata,
     status: MessageStatus.SENDING,
+    replyTo,
   };
 
   return newMessage;
