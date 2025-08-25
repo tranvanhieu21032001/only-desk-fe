@@ -10,7 +10,7 @@ import {
   EVENTBUS_USER_STATUS,
   EVENTBUS_USER_TYPING,
 } from '@/shared/chat-logic/constants/event-bus.constants';
-import { Conversation } from '@/shared/interface/conversation.interface';
+import { Conversation } from '@/shared/interfaces/conversation.interface';
 
 export type AppEvents = {
   [EVENTBUS_INBOX_MESSAGE]: any;

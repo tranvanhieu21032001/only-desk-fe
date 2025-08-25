@@ -1,10 +1,7 @@
 import { TFunction } from 'i18next';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import {
-  ContactInterface,
-  ContactsInitialStateInterface,
-} from '../../models/contacts.model';
+import { ContactsInitialStateInterface } from '../../models/contacts.model';
 import { PAGE, PAGE_SIZE } from '@/shared/constant/common';
 import { contactsQuery } from '@/relay/ContactsQuery';
 import relayEnvironment from '@/relay/RelayEnvironment';
@@ -18,6 +15,7 @@ import { ContactDetailsQuery } from '@/relay/__generated__/ContactDetailsQuery.g
 import { UserProfileCardQuery } from '@/relay/__generated__/UserProfileCardQuery.graphql';
 import { ContactProfileCardQuery } from '@/relay/__generated__/ContactProfileCardQuery.graphql';
 import { fetchQuery } from 'react-relay';
+import { Contact } from '@/shared/interfaces/contact.interface';
 
 const initialState: ContactsInitialStateInterface = {
   isLoading: false,
@@ -160,8 +158,7 @@ const slice = createSlice({
 
       state.isLoading = false;
       state.contacts =
-        edges?.map((contact: { node: ContactInterface }) => contact?.node) ||
-        [];
+        edges?.map((contact: { node: Contact }) => contact?.node) || [];
       state.totalDocs = action.payload?.totalCount || 0;
       state.pageInfo = {
         hasNextPage: pageInfo?.hasNextPage || false,

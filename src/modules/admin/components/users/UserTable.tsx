@@ -3,7 +3,7 @@ import { Table, Avatar, Button, Tag, Image } from 'antd';
 import icView from '@/assets/icons/billing/ic-export.svg';
 import styled from 'styled-components';
 import avatarDefault from '@/assets/images/avatar-default.png';
-import { User } from '@/shared/interface/user.interface';
+import { User } from '@/shared/interfaces/user.interface';
 
 const CustomTable = styled(Table<User>)`
   .ant-table-cell {

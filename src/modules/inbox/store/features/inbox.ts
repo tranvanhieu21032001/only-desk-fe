@@ -7,8 +7,8 @@ import { coversationDetailsQuery } from '@/shared/conversations-logic/relay/Cove
 import webStorageClient from '@/shared/utils/webStorageClient';
 import { constants } from '@/core/settings';
 import { Contact } from '@/shared/chat-logic';
-import { User } from '@/shared/interface/user.interface';
-import { Conversation } from '@/shared/interface/conversation.interface';
+import { User } from '@/shared/interfaces/user.interface';
+import { Conversation } from '@/shared/interfaces/conversation.interface';
 
 export interface InboxState {
   selectedConversation: Conversation | null;

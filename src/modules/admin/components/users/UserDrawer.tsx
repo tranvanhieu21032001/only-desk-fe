@@ -7,7 +7,7 @@ import { useAppDispatch } from '@/shared/hooks';
 import { updateUser } from '../../store/adminUsersSlice';
 import avatarDefault from '@/assets/images/avatar-default.png';
 import Typography from '@/shared/components/common/Typography';
-import { User } from '@/shared/interface/user.interface';
+import { User } from '@/shared/interfaces/user.interface';
 
 interface Props {
   open: boolean;
@@ -88,13 +88,15 @@ const UserDrawer: React.FC<Props> = ({ open, onClose, user }) => {
                 <Input
                   value={
                     isDate && user[key as keyof User]
-                      ? new Date(user[key as keyof User] as string).toLocaleString()
+                      ? new Date(
+                          user[key as keyof User] as string,
+                        ).toLocaleString()
                       : user[key as keyof User] !== null &&
-                        user[key as keyof User] !== undefined
-                      ? Array.isArray(user[key as keyof User])
-                        ? (user[key as keyof User] as string[]).join(', ')
-                        : user[key as keyof User]!.toString()
-                      : ''
+                          user[key as keyof User] !== undefined
+                        ? Array.isArray(user[key as keyof User])
+                          ? (user[key as keyof User] as string[]).join(', ')
+                          : user[key as keyof User]!.toString()
+                        : ''
                   }
                   disabled
                 />

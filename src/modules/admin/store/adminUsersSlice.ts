@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getAdminUsers, updateAdminUser } from '../api/admin';
 import avatarDefault from '@/assets/images/avatar-default.png';
-import { User } from '@/shared/interface/user.interface';
+import { User } from '@/shared/interfaces/user.interface';
 
 interface Pagination {
   current: number;

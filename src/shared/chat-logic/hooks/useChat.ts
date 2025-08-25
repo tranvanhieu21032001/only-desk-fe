@@ -1,25 +1,25 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Message } from "../interfaces/inbox";
-import { useMessageList } from "./useMessageList";
-import { useScrollHandler } from "./useScrollHandler";
-import { MessageStatus, MessageType } from "../enums/chat.enums";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Message } from '../interfaces/inbox';
+import { useMessageList } from './useMessageList';
+import { useScrollHandler } from './useScrollHandler';
+import { MessageStatus, MessageType } from '../enums/chat.enums';
 import {
   createLocalMessage,
   getId,
   parseGraphQLMessage,
-} from "../helpers/chat.helper";
+} from '../helpers/chat.helper';
 import {
   closeConversation,
   openConversation,
   sendMessageToSocket,
   submitInputToSocket,
-} from "../services/socket";
+} from '../services/socket';
 
-import { EVENTBUS_INBOX_MESSAGE } from "../constants/event-bus.constants";
-import { useTypingHandler } from "./useTypingHandler";
-import { useNotification } from "./useNotification";
-import { eventBus } from "../services/event-bus";
-import { User } from "@/shared/interface/user.interface";
+import { EVENTBUS_INBOX_MESSAGE } from '../constants/event-bus.constants';
+import { useTypingHandler } from './useTypingHandler';
+import { useNotification } from './useNotification';
+import { eventBus } from '../services/event-bus';
+import { User } from '@/shared/interfaces/user.interface';
 
 /*
 Features:
@@ -67,7 +67,7 @@ export function useChat({
   }
   const rawConversationId = useMemo(
     () => getId(stableConversationId.current!),
-    [stableConversationId.current]
+    [stableConversationId.current],
   );
 
   const [hasNewMessage, setHasNewMessage] = useState(false);
@@ -85,7 +85,7 @@ export function useChat({
 
   const { handleUserTyping, isSomeoneTyping, handleUserStopTyping } =
     useTypingHandler({
-      rawConversationId: rawConversationId || "",
+      rawConversationId: rawConversationId || '',
     });
 
   const { notifyNewMessage } = useNotification();
@@ -134,7 +134,7 @@ export function useChat({
     type: MessageType,
     metadata: any,
     user: User | null | undefined,
-    replyId?: string
+    replyId?: string,
   ) => {
     const message = createLocalMessage(content, type, metadata, user);
     addMessage(message);
@@ -148,7 +148,7 @@ export function useChat({
           content,
           type,
           metadata,
-          replyId
+          replyId,
         },
       },
       (res: any) => {
@@ -163,7 +163,7 @@ export function useChat({
         } else {
           updateMessage(message.id, { status: MessageStatus.FAILED });
         }
-      }
+      },
     );
 
     //callback this event to clear chat input after send message success

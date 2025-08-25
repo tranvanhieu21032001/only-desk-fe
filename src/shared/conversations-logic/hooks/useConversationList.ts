@@ -6,7 +6,7 @@ import { ConversationListQuery } from '../relay/__generated__/ConversationListQu
 import { conversationListQuery } from '../relay/ConversationListQuery';
 import { ConversationFragment_query$key } from '../relay/__generated__/ConversationFragment_query.graphql';
 import { conversationListFragment } from '../relay/ConversationFragment';
-import { Conversation } from '@/shared/interface/conversation.interface';
+import { Conversation } from '@/shared/interfaces/conversation.interface';
 
 const CONVERSATIONS_LIMIT = 10;
 

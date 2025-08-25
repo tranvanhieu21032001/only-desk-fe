@@ -1,35 +1,5 @@
-import { User } from '@/shared/interface/user.interface';
+import { User } from '@/shared/interfaces/user.interface';
 import { MessageSender, MessageStatus, MessageType } from '../enums/chat.enums';
-
-export interface Contact {
-  id: string;
-  rawId: string;
-  createdAt: string;
-  updatedAt: string;
-  guestId: string;
-  name: string;
-  email: string;
-  notification: boolean;
-  segments: string[];
-  metadata?: {
-    [key: string]: any;
-  };
-  isOnline: boolean;
-  lastActivityAt: string;
-  workspaceId?: string;
-  avatar?: string;
-  context: {
-    countryName?: string | null | undefined;
-    countryCode?: string | null | undefined;
-    city?: string | null | undefined;
-    language?: string | null | undefined;
-    browser?: string | null | undefined;
-    os?: string | null | undefined;
-    timezone?: string | null | undefined;
-    latitude?: number | null | undefined;
-    longitude?: number | null | undefined;
-  };
-}
 
 export interface Message {
   id: string;

@@ -1,4 +1,4 @@
-import { User } from '@/shared/interface/user.interface';
+import { User } from '@/shared/interfaces/user.interface';
 import { MessageSender, MessageStatus, MessageType } from '../enums/chat.enums';
 import { Message } from '../interfaces/inbox';
 

@@ -12,7 +12,7 @@ import { eventBus } from '@/core/event-bus';
 import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/event-bus.constants';
 import { getFormattedTime } from '@/shared/chat-logic/utils/time';
 import { renderMessagePreview } from '@/shared/chat-logic/helpers/message-content.helper';
-import { Conversation } from '@/shared/interface/conversation.interface';
+import { Conversation } from '@/shared/interfaces/conversation.interface';
 
 type Props = {
   conversation: any;

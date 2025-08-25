@@ -1,6 +1,8 @@
+import { Contact } from '@/shared/interfaces/contact.interface';
+
 export interface ContactsInitialStateInterface {
   isLoading?: boolean;
-  contacts?: ContactInterface[];
+  contacts?: Contact[];
   totalDocs?: number;
   pageInfo: {
     hasNextPage: boolean;
@@ -8,7 +10,7 @@ export interface ContactsInitialStateInterface {
     startCursor: string;
     endCursor: string;
   };
-  contactDetails: ContactInterface | null;
+  contactDetails: Contact | null;
   isDetails: boolean;
   metadata: {
     key: string;
@@ -18,33 +20,10 @@ export interface ContactsInitialStateInterface {
   contactProfile: any | null;
 }
 
-export interface ContactInterface {
-  id: string;
-  companyInfo: {
-    name: string;
-    position: string;
-    department: string;
-    [key: string]: any;
-  };
-  context: {
-    countryName: string;
-    countryCode: string;
-    city: string;
-    language: string;
-  };
-  email: string;
-  name: string;
-  address: string;
-  segments: string[];
-  lastActivityAt: string;
-  avatar?: string;
-  [key: string]: any;
-}
-
 export interface ResultFetchContactsInterface {
   contacts: {
     edges: {
-      node: ContactInterface;
+      node: Contact;
     };
     totalDocs: number;
   };

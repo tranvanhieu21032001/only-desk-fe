@@ -11,7 +11,6 @@ import {
   actionUpdateContactDetails,
   handleRemoveContactAction,
 } from '../../store/features/contacts';
-import { ContactInterface } from '../../models/contacts.model';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import themeColors from '@/shared/styles/themes/default/colors';
 
@@ -33,6 +32,7 @@ import Button from '@/shared/components/common/Button';
 import ProfileCard, {
   ProfileType,
 } from '@/shared/components/common/ProfileCard';
+import { Contact } from '@/shared/interfaces/contact.interface';
 
 interface ContactTableProps {
   onSelectedChange?: (ids: string[]) => void;
@@ -50,7 +50,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
 
   /** Handlers */
-  function handleRemoveContact(record: ContactInterface) {
+  function handleRemoveContact(record: Contact) {
     dispatch(actionUpdateContactDetails(record));
     setIsRemoveModalOpen(true);
   }
@@ -68,7 +68,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
     setIsRemoveModalOpen(false);
   }
 
-  function handleViewContactProfile(record: ContactInterface) {
+  function handleViewContactProfile(record: Contact) {
     dispatch(actionUpdateContactDetails(record));
     navigate(MAIN_ROUTES.CONTACT_DETAILS.replace(':id', record.id));
   }
@@ -80,7 +80,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
       minWidth: 200,
       width: 200,
       fixed: 'left',
-      render: (record: ContactInterface) => (
+      render: (record: Contact) => (
         <S.FullNameColumn>
           <ProfileCard
             profileInfo={{
@@ -111,7 +111,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
       key: 'location',
       minWidth: 200,
       width: 200,
-      render: (record: ContactInterface) => {
+      render: (record: Contact) => {
         const flagIcon = flagList.find(
           (item) => item.code === record?.context?.countryCode,
         )?.image;
@@ -135,7 +135,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
       key: 'company',
       minWidth: 200,
       width: 200,
-      render: (record: ContactInterface) => (
+      render: (record: Contact) => (
         <S.TooltipColumn title={record?.companyInfo?.company}>
           {record?.companyInfo?.company || (
             <Typography color={themeColors?.newtralDark}>Unknown</Typography>
@@ -148,7 +148,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
       key: 'segments',
       minWidth: 230,
       width: 230,
-      render: (record: ContactInterface) => (
+      render: (record: Contact) => (
         <S.SegmentColumn>
           {record?.segments?.length ? (
             record.segments.map((segment: string, idx: number) => (
@@ -169,7 +169,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
       key: 'lastActive',
       minWidth: 120,
       width: 120,
-      render: (record: ContactInterface) => (
+      render: (record: Contact) => (
         <S.TooltipColumn title={record?.lastActivityAt}>
           {record?.lastActivityAt
             ? dayjs(record.lastActivityAt).format('DD/MM/YYYY HH:mm')
@@ -180,7 +180,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
     {
       minWidth: 50,
       width: 50,
-      render: (record: ContactInterface) => (
+      render: (record: Contact) => (
         <S.LocationColumn onClick={(e) => e.stopPropagation()}>
           <PopoverAction
             placement="bottomRight"
@@ -210,7 +210,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
   ];
 
   const rowSelection = {
-    onChange: (_keys: React.Key[], selectedRows: ContactInterface[]) => {
+    onChange: (_keys: React.Key[], selectedRows: Contact[]) => {
       const rawIds = selectedRows.map((row) => row.rawId);
       onSelectedChange?.(rawIds);
     },
@@ -224,7 +224,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
         totalDocs={totalDocs || 0}
         rowSelection={rowSelection}
         loading={isLoading}
-        onRow={(record: ContactInterface) => ({
+        onRow={(record: Contact) => ({
           onClick: () => handleViewContactProfile(record),
           style: { cursor: 'pointer' },
         })}

@@ -1,4 +1,4 @@
-import { Conversation } from "@/shared/interface/conversation.interface";
+import { Conversation } from '@/shared/interfaces/conversation.interface';
 
 export function parseGraphQLConversation(node: any): Conversation {
   let parsedMetadata = node.metadata;

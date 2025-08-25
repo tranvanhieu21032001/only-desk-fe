@@ -1,9 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 
-import {
-  WorkspaceInterface,
-} from '@/modules/auth/models/user';
+import { WorkspaceInterface } from '@/modules/auth/models/user';
 import { meQuery } from '@/relay/MeQuery';
 import { fetchQuery } from 'react-relay';
 import { constants } from '@/core/settings';
@@ -14,7 +12,7 @@ import { MeQuery } from '@/relay/__generated__/MeQuery.graphql';
 import { workspaceInfoQuery } from '@/relay/WorkspaceInfoQuery';
 import { WorkspaceInfoQuery } from '@/relay/__generated__/WorkspaceInfoQuery.graphql';
 import { handleSwitchWorkspaceApi } from '@/modules/workspace/api/workspace';
-import { User } from '@/shared/interface/user.interface';
+import { User } from '@/shared/interfaces/user.interface';
 
 export interface AuthInterface {
   isAuth: boolean;
@@ -128,7 +126,7 @@ const slice = createSlice({
         ...(state.workspaces || []),
         {
           id: action.payload?.id,
-          rawId:action.payload?.rawId,
+          rawId: action.payload?.rawId,
           logo: action.payload?.logo,
           name: action.payload?.name,
           websiteID: action.payload?.websiteID,

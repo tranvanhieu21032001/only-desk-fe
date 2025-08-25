@@ -1,7 +1,7 @@
 import { commitLocalUpdate } from 'react-relay';
 import { ConnectionHandler, RecordSourceSelectorProxy } from 'relay-runtime';
 import environment from '@/relay/RelayEnvironment';
-import { Conversation } from '@/shared/interface/conversation.interface';
+import { Conversation } from '@/shared/interfaces/conversation.interface';
 
 const addOrMoveConversationToTop = (
   conversation: Conversation,

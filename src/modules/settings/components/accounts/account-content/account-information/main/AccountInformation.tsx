@@ -23,7 +23,7 @@ import ModalEnableTwoFactor from '../modal-enable-two-factor/main/ModalEnableTwo
 import * as S from './AccountInformation.styles';
 
 import imgAvatarDefault from '@/assets/images/settings/ic-avatar-default.png';
-import { User } from '@/shared/interface/user.interface';
+import { User } from '@/shared/interfaces/user.interface';
 
 function AccountInformation() {
   const { t } = useTranslation('settings');
@@ -31,9 +31,7 @@ function AccountInformation() {
   const dispatch = useAppDispatch();
 
   const avatarWatch = Form.useWatch('avatar', form) || '';
-  const userInfoFromStorage: User = webStorageClient.get(
-    constants.USER_INFO,
-  );
+  const userInfoFromStorage: User = webStorageClient.get(constants.USER_INFO);
 
   const { visible: modalEnableTwoFactor, toggle: handleEnableTwoFactor } =
     useModal();

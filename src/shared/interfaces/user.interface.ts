@@ -1,4 +1,4 @@
-export interface UserInforInterface {
+export interface User {
   id: string;
   rawId?: string;
   email?: string;
@@ -11,9 +11,6 @@ export interface UserInforInterface {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
-}
-
-export interface User extends UserInforInterface {
   status?: string;
   isOnline?: boolean;
   lastActivityAt?: string;
