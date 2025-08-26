@@ -44,7 +44,9 @@ type Workspace implements Node {
   contactPhone: String
   owner: User
   status: WorkspaceStatus
-  role: WorkspaceMemberRole
+  role: RoleKey
+  plan: PlanKey
+  trialEndsAt: DateTime
   metadata: JSON
   rawId: String!
 }
@@ -58,9 +60,18 @@ enum WorkspaceStatus {
 }
 
 """Type of member"""
-enum WorkspaceMemberRole {
+enum RoleKey {
   ADMIN
+  OWNER
   DEVELOPER
+}
+
+"""Plan of workspace"""
+enum PlanKey {
+  FREE
+  MINI
+  ESSENTIALS
+  PLUS
 }
 
 """
@@ -77,7 +88,7 @@ type WorkspaceMember implements Node {
   id: ID!
   user: User
   workspace: Workspace
-  role: WorkspaceMemberRole
+  role: RoleKey
   status: WorkspaceMemberStatus
   createdAt: DateTime
   updatedAt: DateTime
@@ -124,7 +135,7 @@ type Contact implements Node {
   id: ID!
   guestId: String
   avatar: String
-  name: String!
+  name: String
   email: String
   phoneNumber: String
   address: String
@@ -224,10 +235,12 @@ enum MessageSender {
 """Type of message content"""
 enum MessageTypeEnum {
   TEXT
+  INPUT
   FILE
   IMAGE
   SYSTEM
   NOTE
+  REMINDER
   RESOLVED
 }
 

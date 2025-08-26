@@ -126,8 +126,11 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
 
     if (inputValue.trim()) {
+      console.log('activeTab', activeTab);
       if (activeTab === INBOX_TABS.NOTE) {
         onSendMessage(inputValue, MessageType.NOTE, {}, replyPreview);
+      } else if (activeTab === INBOX_TABS.REMINDER) {
+        onSendMessage(inputValue, MessageType.REMINDER, {}, replyPreview);
       } else {
         onSendMessage(inputValue, MessageType.TEXT, {}, replyPreview);
       }

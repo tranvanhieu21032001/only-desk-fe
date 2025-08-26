@@ -12,6 +12,7 @@ export enum FeatureKey {
   //plugins
   SHORTCUT = 'shortcut',
   PRIVATE_NOTE = 'private_note',
+  REMINDER = 'reminder',
 }
 
 export enum PrivateNoteAction {
@@ -27,4 +28,8 @@ export enum HelpdeskAction {
   MANAGE_KNOWLEDGE_BASE = 'manage_knowledge_base',
   KNOWLEDGE_BASE_SETTINGS = 'knowledge_base_settings',
   SEND_KNOWLEDGE_BASE_MESSAGE = 'send_knowledge_base_message',
+}
+
+export enum ReminderAction {
+  SET_REMINDER = 'set_reminder',
 }

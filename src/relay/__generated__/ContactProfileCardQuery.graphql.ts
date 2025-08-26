@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7935685916ca892ed808614499cbefe4>>
+ * @generated SignedSource<<7962085491a1aa381cace8b539c2a5c2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -23,7 +23,7 @@ export type ContactProfileCardQuery$data = {
     readonly id?: string;
     readonly isOnline?: boolean;
     readonly lastActivityAt?: any | null | undefined;
-    readonly name?: string;
+    readonly name?: string | null | undefined;
     readonly rawId?: string;
   } | null | undefined;
 };

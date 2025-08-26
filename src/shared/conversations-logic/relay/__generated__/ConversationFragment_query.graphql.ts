@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d4fcdafc4eaa7b96248831ff5ef741e6>>
+ * @generated SignedSource<<44f29f82aa8b824c4bbc480669b5e897>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 // @ts-nocheck
 
 import { ReaderFragment } from 'relay-runtime';
-export type MessageTypeEnum = "FILE" | "IMAGE" | "NOTE" | "RESOLVED" | "SYSTEM" | "TEXT" | "%future added value";
+export type MessageTypeEnum = "FILE" | "IMAGE" | "INPUT" | "NOTE" | "REMINDER" | "RESOLVED" | "SYSTEM" | "TEXT" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type ConversationFragment_query$data = {
   readonly conversations: {
@@ -27,7 +27,7 @@ export type ConversationFragment_query$data = {
           readonly email: string | null | undefined;
           readonly id: string;
           readonly isOnline: boolean;
-          readonly name: string;
+          readonly name: string | null | undefined;
           readonly rawId: string;
         } | null | undefined;
         readonly id: string;

@@ -20,6 +20,7 @@ import {
   FeatureKey,
   HelpdeskAction,
   PrivateNoteAction,
+  ReminderAction,
   ShortcutAction,
 } from '@/modules/permissions/enums/features.enum';
 
@@ -93,6 +94,7 @@ const InboxFooter: React.FC<InboxFooterProps> = ({
       iconActive: ringBlue,
       isActive: activeTab === INBOX_TABS.REMINDER,
       onClick: () => handleTabClick(INBOX_TABS.REMINDER),
+      action: ReminderAction.SET_REMINDER,
     },
     {
       key: INBOX_TABS.SHORTCUTS,

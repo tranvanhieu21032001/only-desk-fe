@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<97534c46df17f0f3850f28ccb92e3a92>>
+ * @generated SignedSource<<bbb8b7baf429e2a47d9f222593531f46>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from 'relay-runtime';
-export type MessageTypeEnum = "FILE" | "IMAGE" | "NOTE" | "RESOLVED" | "SYSTEM" | "TEXT" | "%future added value";
+export type MessageTypeEnum = "FILE" | "IMAGE" | "INPUT" | "NOTE" | "REMINDER" | "RESOLVED" | "SYSTEM" | "TEXT" | "%future added value";
 export type CoversationDetailsForListQuery$variables = {
   id: string;
 };
@@ -26,7 +26,7 @@ export type CoversationDetailsForListQuery$data = {
       readonly email: string | null | undefined;
       readonly id: string;
       readonly isOnline: boolean;
-      readonly name: string;
+      readonly name: string | null | undefined;
       readonly rawId: string;
     } | null | undefined;
     readonly id?: string;

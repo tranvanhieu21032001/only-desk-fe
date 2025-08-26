@@ -21,6 +21,7 @@ export enum MessageType {
   IMAGE = 'image',
   SYSTEM = 'system',
   NOTE = 'note',
+  REMINDER = 'reminder',
   RESOLVED = 'resolved',
 }
 

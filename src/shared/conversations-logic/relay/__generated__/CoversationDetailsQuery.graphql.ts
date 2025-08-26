@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f92fd8876c7629f0c7dba04813faf24d>>
+ * @generated SignedSource<<bc5e27867335b3e34330839e4f5514a3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -35,7 +35,7 @@ export type CoversationDetailsQuery$data = {
       readonly guestId: string | null | undefined;
       readonly id: string;
       readonly isOnline: boolean;
-      readonly name: string;
+      readonly name: string | null | undefined;
       readonly notification: boolean;
       readonly rawId: string;
     } | null | undefined;

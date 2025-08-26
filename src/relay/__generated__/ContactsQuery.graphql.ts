@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7ae9971caef06297c1e01b86c3751996>>
+ * @generated SignedSource<<3fbe14af8528050eefecfa476e6c4e0d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -37,7 +37,7 @@ export type ContactsQuery$data = {
         readonly email: string | null | undefined;
         readonly id: string;
         readonly lastActivityAt: any | null | undefined;
-        readonly name: string;
+        readonly name: string | null | undefined;
         readonly rawId: string;
         readonly segments: ReadonlyArray<string>;
       };

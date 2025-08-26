@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<874d814f73089f467084bd644755322a>>
+ * @generated SignedSource<<608488fde954ea2fd36498251a2d3fda>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -44,7 +44,7 @@ export type ContactDetailsQuery$data = {
     readonly isOnline?: boolean;
     readonly lastActivityAt?: any | null | undefined;
     readonly metadata?: any;
-    readonly name?: string;
+    readonly name?: string | null | undefined;
     readonly notes?: string | null | undefined;
     readonly notification?: boolean;
     readonly phoneNumber?: string | null | undefined;
