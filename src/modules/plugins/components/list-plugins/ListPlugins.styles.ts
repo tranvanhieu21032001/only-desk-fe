@@ -105,7 +105,6 @@ export const Plugins = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(356px, 1fr));
   gap: 12px;
-  height: calc(100vh - 200px);
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -119,19 +118,10 @@ export const Plugins = styled.div`
 
   @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
     grid-template-columns: repeat(2, 1fr);
-    height: calc(100vh - 300px);
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.lgMax} {
-    height: calc(100vh - 350px);
   }
 
   @media ${(props) => props?.theme?.breakpoints?.mdMax} {
     grid-template-columns: repeat(1, 1fr);
-  }
-
-  @media ${(props) => props?.theme?.breakpoints?.smMax} {
-    height: calc(100vh - 400px);
   }
 `;
 

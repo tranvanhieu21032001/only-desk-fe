@@ -28,7 +28,7 @@ export const CardPluginsContainer = styled.section<{ $isInstalled: boolean }>`
   border-radius: 12px;
   cursor: pointer;
   min-width: 356px;
-  max-height: 255px;
+  height: 255px;
 
   &:hover {
     transform: translateY(-5px);
