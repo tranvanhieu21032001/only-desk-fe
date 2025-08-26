@@ -103,7 +103,7 @@ export const Plugins = styled.div`
   margin-top: 7px;
   padding-top: 6px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(356px, 1fr));
   gap: 12px;
   height: calc(100vh - 200px);
   overflow-y: auto;
