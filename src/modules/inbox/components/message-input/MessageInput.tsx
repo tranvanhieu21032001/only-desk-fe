@@ -21,6 +21,9 @@ import {
 import FilePreviewList from './components/FilePreviewList';
 import ReplyPreview from './components/ReplyPreview';
 import EmojiPickerWrapper from './components/EmojiPickerWrapper';
+import { toast } from 'react-toastify';
+import ToastMessage from '@/shared/components/common/ToastMessage';
+import { ToastMessageType } from '@/shared/helper/enums/common';
 
 const MessageInput: React.FC<MessageInputProps> = ({
   activeTab,
@@ -103,43 +106,63 @@ const MessageInput: React.FC<MessageInputProps> = ({
     setFilePreviews((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleSend = async () => {
-    if (filePreviews.length > 0) {
-      const uploadingFiles = filePreviews.filter((file) => file.uploading);
-      if (uploadingFiles.length > 0) return;
+const handleSend = async () => {
+  if (filePreviews.length > 0) {
+    const uploadingFiles = filePreviews.filter((file) => file.uploading);
+    if (uploadingFiles.length > 0) return;
 
-      for (const item of filePreviews) {
-        if (item.fileUrl) {
-          onSendMessage(
-            inputValue,
-            MessageType.IMAGE,
-            { fileUrl: item.fileUrl },
-            replyPreview,
-          );
-        }
+    for (const item of filePreviews) {
+      if (item.fileUrl) {
+        onSendMessage(
+          inputValue,
+          MessageType.IMAGE,
+          { fileUrl: item.fileUrl },
+          replyPreview,
+        );
       }
-      setFilePreviews([]);
-      setSelectedReminder?.(null);
-      setInputValue('');
-      onEndSendMessage?.();
-      return;
     }
+    setFilePreviews([]);
+    setSelectedReminder?.(null);
+    setInputValue('');
+    onEndSendMessage?.();
+    return;
+  }
 
-    if (inputValue.trim()) {
-      // console.log('activeTab', activeTab);
-      if (activeTab === INBOX_TABS.NOTE) {
-        onSendMessage(inputValue, MessageType.NOTE, {}, replyPreview);
-      } else if (activeTab === INBOX_TABS.REMINDER) {
-        onSendMessage(inputValue, MessageType.REMINDER, {}, replyPreview);
-      } else {
-        onSendMessage(inputValue, MessageType.TEXT, {}, replyPreview);
-      }
-      setSelectedReminder?.(null);
-      setInputValue('');
-      onEndSendMessage?.();
-      setActiveTab?.(null);
+  if (activeTab === INBOX_TABS.REMINDER) {
+  if (!inputValue.trim()) {
+    toast(
+      <ToastMessage
+        typeToast={ToastMessageType.ERROR}
+        message="No note is written for the reminder. Please write a note following the date."
+      />,
+    );
+    return;
+  }
+
+  onSendMessage(
+    inputValue,
+    MessageType.REMINDER,
+    { reminderTime: selectedReminder },
+    replyPreview,
+  );
+  setSelectedReminder?.(null);
+  setInputValue('');
+  onEndSendMessage?.();
+  setActiveTab?.(null);
+  return;
+}
+  if (inputValue.trim()) {
+    if (activeTab === INBOX_TABS.NOTE) {
+      onSendMessage(inputValue, MessageType.NOTE, {}, replyPreview);
+    } else {
+      onSendMessage(inputValue, MessageType.TEXT, {}, replyPreview);
     }
-  };
+    setSelectedReminder?.(null);
+    setInputValue('');
+    onEndSendMessage?.();
+    setActiveTab?.(null);
+  }
+};
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.currentTarget.value;
@@ -215,7 +238,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
           return null;
         })}
-
+        {!!selectedReminder && <span style={{marginRight:'8px'}}>{selectedReminder}</span>}
         <S.InputWrapper>
           <S.Input
             ref={inputRef}

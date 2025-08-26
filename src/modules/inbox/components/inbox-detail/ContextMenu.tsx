@@ -5,6 +5,7 @@ import { MessageType } from '@/shared/chat-logic/enums/chat.enums';
 import iconReply from '@/assets/icons/inbox/ic-reply.svg';
 import iconEdit from '@/assets/icons/common/ic-edit.svg';
 import iconCopy from '@/assets/icons/common/ic-copy.svg';
+import iconinfo from '@/assets/icons/common/ic-info-circle.svg';
 import iconDelete from '@/assets/icons/common/ic-delete.svg';
 import { useMessageMenu } from '@/shared/chat-logic/hooks/useMessageMenu';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
@@ -25,7 +26,8 @@ interface ContextMenuProps {
   onCloseMenu: () => void;
   MENU_WIDTH: number;
   t: (key: string) => string;
-    onReply: (message: Message) => void;
+  onReply: (message: Message) => void;
+  onInfo: (message: Message) => void;
 }
 
 interface MenuItem {
@@ -42,6 +44,7 @@ const getMenuItems = (
   message: Message,
   handlers: {
     handleReply: () => void;
+    handleInfo:()=> void;
     handleDelete: () => void;
     handleCopyText: () => void;
     handleEdit: () => void;
@@ -50,7 +53,7 @@ const getMenuItems = (
 ): MenuItem[] => {
   const isOwner = false;
   const isCopyTextSupported =
-    message.type === MessageType.NOTE || message.type === MessageType.TEXT;
+    message.type === MessageType.NOTE || message.type === MessageType.TEXT || message.type === MessageType.REMINDER;
 
   const menus: MenuItem[] = [
     {
@@ -58,6 +61,14 @@ const getMenuItems = (
       icon: iconReply,
       label: t('inboxDetail.reply'),
       onClick: handlers.handleReply,
+      danger: false,
+      type: 'item',
+    },
+    {
+      key: 'info',
+      icon: iconinfo,
+      label: t('inboxDetail.info'),
+      onClick: handlers.handleInfo,
       danger: false,
       type: 'item',
     },
@@ -112,22 +123,25 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   onCloseMenu,
   MENU_WIDTH,
   t,
-   onReply,
+  onReply,
+  onInfo
 }) => {
   if (!contextMenu.visible || !contextMenu.message) return null;
 
-  const { handleCopyText, handleReply, handleEdit, handleDelete } =
+  const { handleCopyText, handleReply, handleInfo, handleEdit, handleDelete } =
     useMessageMenu({
       message: contextMenu.message,
       rawConversationId,
       onCloseMenu,
-      onReply
+      onReply,
+      onInfo
     });
 
   const menuItems = getMenuItems(
     contextMenu.message,
     {
       handleReply,
+      handleInfo,
       handleDelete,
       handleCopyText: () =>
         handleCopyText(

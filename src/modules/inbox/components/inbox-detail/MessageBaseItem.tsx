@@ -22,6 +22,7 @@ import { renderMessageContent } from '@/shared/chat-logic/helpers/message-conten
 import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
 import { formatTime } from '@/shared/chat-logic/utils/time';
 import ReplyPreview from '../message-input/components/ReplyPreview';
+import icCalendar from '@/assets/icons/common/ic-calendar.svg';
 
 export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   msg,
@@ -198,10 +199,20 @@ const MessageBaseContentItem = ({
           background: isOwner ? '#e6f4ff' : '#f5f5f5',
           color: '#222',
           wordBreak: 'break-word',
+          ...(message.metadata?.reminderTime && {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+          }),
         }}
       >
         {message.replyTo && (
           <ReplyPreview replyPreview={message.replyTo} showCancel={false} />
+        )}
+        {message.metadata?.reminderTime && (
+          <div className="iconCalendar" style={{ width: 20, height: 20 }}>
+            <Image src={icCalendar} preview={false} width={20} height={20} />
+          </div>
         )}
         {renderMessageContent(message.content)}
         {!!message.metadata?.inputValue && (

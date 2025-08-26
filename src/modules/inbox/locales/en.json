@@ -107,6 +107,7 @@
     "failedToCopyTextDesc": "Failed to copy text. Please try again.",
     "copyText": "Copy text",
     "edit": "Edit",
+    "info":"Info",
     "delete": "Delete"
   },
 

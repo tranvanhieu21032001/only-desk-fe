@@ -46,7 +46,8 @@ import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/eve
 import { MessageBaseItem } from './MessageBaseItem';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
 import { formatDate } from '@/shared/chat-logic/utils/time';
-import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
+import MessageInfoModal from './modal-info/MessageInfoModal';
+// import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar }) => {
@@ -87,6 +88,10 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(
       null,
     );
+    const [infoModalVisible, setInfoModalVisible] = React.useState(false);
+    const [selectedMessage, setSelectedMessage] =
+      React.useState<Message | null>(null);
+
     const [contextMenu, setContextMenu] = useState<{
       x: number;
       y: number;
@@ -272,6 +277,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
         ) {
           return;
         }
+        setSelectedReminder(null);
         setActiveTab(null);
       };
 
@@ -334,6 +340,10 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             MENU_WIDTH={MENU_WIDTH}
             t={t}
             onReply={setReplyPreview}
+            onInfo={(message) => {
+              setSelectedMessage(message);
+              setInfoModalVisible(true);
+            }}
           />
           <S.Header>
             <S.HeaderLeft>
@@ -484,6 +494,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             footerRef={footerRef}
           />
         </S.Container>
+        <MessageInfoModal visible={infoModalVisible} message={selectedMessage} onClose={() => setInfoModalVisible(false)}/>
       </>
     );
   },

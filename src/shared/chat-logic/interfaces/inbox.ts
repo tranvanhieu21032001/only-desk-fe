@@ -15,6 +15,7 @@ export interface Message {
     inputType?: string;
     placeholder?: string;
     inputValue?: string;
+    reminderTime?:string;
   };
   replyTo?: Message | null;
   showTime?: boolean;
