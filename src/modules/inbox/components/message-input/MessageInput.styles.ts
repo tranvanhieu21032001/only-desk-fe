@@ -708,10 +708,11 @@ export const ProgressCircle = styled.div`
   font-weight: 600;
 `;
 
-// Reply wrapper ngoài cùng
 export const ReplyContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap:wrap;
+  width:100%;
   gap: 8px;
 `;
 
@@ -750,7 +751,7 @@ export const ReplySnippet = styled.span`
   font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: wrap;
   display: flex;
   align-items: center;
   gap: 4px;
