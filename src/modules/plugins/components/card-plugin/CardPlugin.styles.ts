@@ -27,7 +27,7 @@ export const CardPluginsContainer = styled.section<{ $isInstalled: boolean }>`
   padding: 24px;
   border-radius: 12px;
   cursor: pointer;
-  min-width: 356px;
+  // max-width: 356px;
   height: 255px;
 
   &:hover {

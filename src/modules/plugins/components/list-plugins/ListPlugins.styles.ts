@@ -103,9 +103,10 @@ export const Plugins = styled.div`
   margin-top: 7px;
   padding-top: 6px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(356px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(356px, 1fr));
   gap: 12px;
   overflow-y: auto;
+  justify-content: start;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -113,25 +114,31 @@ export const Plugins = styled.div`
   }
 
   @media ${(props) => props?.theme?.breakpoints?.xxxlMax} {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
 
   @media ${(props) => props?.theme?.breakpoints?.xxlMax} {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 
   @media ${(props) => props?.theme?.breakpoints?.mdMax} {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  @media ${(props) => props?.theme?.breakpoints?.smMax} {
     grid-template-columns: repeat(1, 1fr);
   }
 `;
 
 
+
+
 export const EmptyWrap = styled.div`
-  margin-top:24px;
+  margin-top: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width:100%;
-  gap:12px;
+  width: 100%;
+  gap: 12px;
 `;
