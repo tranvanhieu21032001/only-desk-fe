@@ -156,6 +156,11 @@ export const MessageBubbleLeft = styled.div`
 export const MessageBubbleRight = styled(MessageBubbleLeft)`
   background: #eef2f8;
   max-width: 450px;
+  .iconCalendar .ant-image{
+  line-height:unset;
+      display: flex;
+    align-items: center;
+  }
 `;
 
 export const MessageTime = styled.div`

@@ -24,7 +24,7 @@ import Input from '@/shared/components/common/Input';
 import { handleEditProfile } from '@/modules/contacts/api/contacts.api';
 import { updateSelectedConversationContact } from '../../store/features/inbox';
 import { decodeGlobalId } from '@/shared/utils/decode';
-import { Contact } from '@/shared/chat-logic';
+import { Contact } from '@/shared/interfaces/contact.interface';
 
 const InboxSidebar = () => {
   const { t } = useTranslation('inbox');

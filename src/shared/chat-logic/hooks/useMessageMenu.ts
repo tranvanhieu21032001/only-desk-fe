@@ -6,6 +6,7 @@ interface UseMessageMenuProps {
   rawConversationId: string;
   onCloseMenu: () => void;
   onReply: (message: Message) => void;
+  onInfo: (message: Message) => void;
 }
 
 interface UseMessageMenuReturn {
@@ -14,6 +15,7 @@ interface UseMessageMenuReturn {
     onError?: (error: any) => void,
   ) => void;
   handleReply: () => void;
+  handleInfo:()=> void;
   handleEdit: () => void;
   handleDelete: () => void;
 }
@@ -22,7 +24,8 @@ export function useMessageMenu({
   message,
   rawConversationId,
   onCloseMenu,
-    onReply,
+  onReply,
+  onInfo,
 }: UseMessageMenuProps): UseMessageMenuReturn {
   const handleCopyText = async (
     onSuccess?: () => void,
@@ -43,6 +46,12 @@ export function useMessageMenu({
     onCloseMenu();
     onReply(message);
   };
+
+   const handleInfo = () => {
+    console.log("dágdhasd");
+     onCloseMenu();
+    onInfo(message);
+  };
   const handleEdit = () => console.log('Edit message:', message?.id);
   const handleDelete = () => {
     onCloseMenu();
@@ -51,6 +60,7 @@ export function useMessageMenu({
   return {
     handleCopyText,
     handleReply,
+    handleInfo,
     handleEdit,
     handleDelete,
   };
