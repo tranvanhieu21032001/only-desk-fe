@@ -5,7 +5,6 @@ import { Modal, DatePicker, Button, Select } from 'antd';
 
 interface ReminderTabProps {
   t: (key: string) => string;
-  setInputValue: (value: string | ((prev: string) => string)) => void;
   setSelectedReminder: (reminder: string) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
   inputValue: string;
@@ -14,9 +13,8 @@ interface ReminderTabProps {
 
 const ReminderTab: React.FC<ReminderTabProps> = ({
   t,
-  setInputValue,
   setSelectedReminder,
-  inputRef
+  inputRef,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -42,7 +40,6 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
     if (offset.weeks) date = date.add(offset.weeks, 'week');
 
     const reminderText = date.format('MM/DD/YYYY HH:mm');
-    // setInputValue(reminderText);
     setSelectedReminder(reminderText);
     setSelectedIndex(index);
     // setActiveTab(null);
@@ -68,7 +65,6 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
     if (!customDate || customHour === null || customMinute === null) return;
     const dateWithTime = customDate.hour(customHour).minute(customMinute);
     const reminderText = dateWithTime.format('MM/DD/YYYY HH:mm');
-    // setInputValue(reminderText);
     setSelectedReminder(reminderText);
     setSelectedIndex(null);
     setModalVisible(false);
@@ -151,7 +147,6 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
               display: 'flex',
               gap: '8px',
               alignItems: 'center',
-              
             }}
           >
             <Select

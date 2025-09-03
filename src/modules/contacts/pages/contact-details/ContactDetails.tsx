@@ -53,6 +53,7 @@ import icNoitify from '@/assets/icons/contact/ic-notify-contact.svg';
 import flagList from '@/shared/helper/data/flagIcon';
 import { format } from 'timeago.js';
 import Modal from '@/shared/components/common/Modal';
+import { getId } from '@/shared/utils/decode';
 
 function ContactDetails() {
   const { t } = useTranslation('contacts');
@@ -488,7 +489,9 @@ function ContactDetails() {
             </Button>
             <Button
               type="danger"
-              onClick={() => handleConfirmRemove(contactDetails?.rawId)}
+              onClick={() =>
+                handleConfirmRemove(getId(contactDetails?.id) || '')
+              }
             >
               {t('contact-profile.remove')}
             </Button>

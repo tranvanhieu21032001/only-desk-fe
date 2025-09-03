@@ -8,15 +8,18 @@ interface LocationCollapseProps {
   openCollapse: boolean;
 }
 
-const LocationCollapse: React.FC<LocationCollapseProps> = ({ openCollapse }) => {
-const { selectedConversation } = useAppSelector((state) => state.inbox);
-
+const LocationCollapse: React.FC<LocationCollapseProps> = ({
+  openCollapse,
+}) => {
+  const { selectedConversation } = useAppSelector((state) => state.inbox);
 
   return (
     <Collapse title="Main Information">
       {openCollapse && (
         <S.SectionContent>
-          <LastReportedLocationBody context={selectedConversation?.contact}/>
+          <LastReportedLocationBody
+            context={selectedConversation?.contact?.context}
+          />
         </S.SectionContent>
       )}
     </Collapse>

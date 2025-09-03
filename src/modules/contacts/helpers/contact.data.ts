@@ -9,6 +9,7 @@ import icConfigure from '@/assets/icons/contact/ic-configure.svg';
 import icSelectFile from '@/assets/icons/contact/ic-select-file.svg';
 import { FormTypeEnums } from '@/shared/helper/enums/common';
 import { LabeledValue } from 'antd/es/select';
+import { CompanyInfo, Contact } from '@/shared/interfaces/contact.interface';
 
 const progressImport = [
   {
@@ -58,7 +59,7 @@ const lastReportedLocation = [
     label: 'Country',
     value: 'New York, USA',
   },
-   {
+  {
     key: 'city',
     label: 'City',
     value: 'New York, USA',
@@ -75,7 +76,17 @@ const lastReportedLocation = [
   },
 ];
 
-const contactInformationMockup = [
+export type ContactField = keyof Contact;
+export interface ContactFormItem {
+  key: ContactField;
+  label: string;
+  value: string;
+  type: FormTypeEnums;
+  placeholder?: string;
+  disable?: boolean;
+}
+
+const contactInformationMockup: ContactFormItem[] = [
   {
     key: 'name',
     label: 'name',
@@ -138,55 +149,58 @@ const contactInformationMockup = [
   },
 ];
 
-const companyMockup = [
+export type ContactCompanyField = keyof CompanyInfo;
+export interface ContactCompanyFormItem {
+  key: ContactCompanyField;
+  label: string;
+  value?: string;
+  type: FormTypeEnums;
+  placeholder?: string;
+  disable?: boolean;
+}
+
+const companyMockup: ContactCompanyFormItem[] = [
   {
     key: 'company',
     label: 'company',
     type: FormTypeEnums.INPUT,
     placeholder: 'enter-company-name',
-    fieldName: 'company',
   },
   {
     key: 'jobTitle',
     label: 'jobTitle',
     type: FormTypeEnums.INPUT,
     placeholder: 'enter-jobTitle',
-    fieldName: 'jobTitle',
   },
   {
     key: 'jobRole',
     label: 'jobRole',
     type: FormTypeEnums.INPUT,
     placeholder: 'enter-jobRole',
-    fieldName: 'jobRole',
   },
   {
-    key: 'websiteCompany',
+    key: 'website',
     label: 'website',
     type: FormTypeEnums.INPUT,
     placeholder: 'enter-website',
-    fieldName: 'website',
   },
   {
-    key: 'cityCompany',
+    key: 'city',
     label: 'city-label',
     type: FormTypeEnums.INPUT,
     placeholder: 'enter-city',
-    fieldName: 'city',
   },
   {
-    key: 'countryCompany',
+    key: 'country',
     label: 'country',
     type: FormTypeEnums.INPUT,
     placeholder: 'enter-country',
-    fieldName: 'country',
   },
   {
-    key: 'employeesCompany',
+    key: 'employees',
     label: 'employees',
     type: FormTypeEnums.PHONE_NUMBER,
     placeholder: 'enter-employees',
-    fieldName: 'employees',
   },
 ];
 

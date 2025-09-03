@@ -6,6 +6,7 @@ import { websiteRegex } from '@/shared/regex';
 import { useAppSelector } from '@/shared/hooks';
 
 import {
+  ContactFormItem,
   contactInformationMockup,
   genderOptions,
 } from '@/modules/contacts/helpers/contact.data';
@@ -29,7 +30,7 @@ function ContactInformation() {
     (state) => state.contacts,
   );
 
-  const renderForm = (field: any) => {
+  const renderForm = (field: ContactFormItem) => {
     switch (field?.type) {
       case FormTypeEnums.INPUT:
         return (
@@ -101,7 +102,7 @@ function ContactInformation() {
         return (
           <Typography>
             {contactDetails?.[field?.key]
-              ? dayjs(contactDetails[field.key]).format(
+              ? dayjs(contactDetails[field.key] as string).format(
                   DATE_TIME_FORMAT.EURO_DATE_TIME_FORMAT,
                 )
               : '-'}
@@ -111,19 +112,21 @@ function ContactInformation() {
       default:
         return (
           <Typography>
-            {contactDetails?.[field?.key] || '-'}
+            {(contactDetails?.[field?.key] as string) || '-'}
           </Typography>
         );
     }
   };
 
-  const renderDetails = (field: any) => {
+  const renderDetails = (field: ContactFormItem) => {
     const value = contactDetails?.[field?.key];
 
     switch (field?.type) {
       case FormTypeEnums.CREATE_DATE:
         return value
-          ? dayjs(value).format(DATE_TIME_FORMAT.EURO_DATE_TIME_FORMAT)
+          ? dayjs(value as string).format(
+              DATE_TIME_FORMAT.EURO_DATE_TIME_FORMAT,
+            )
           : '-';
 
       case FormTypeEnums.SWITCH:
@@ -178,8 +181,8 @@ function ContactInformation() {
               ) : (
                 <S.ContentWrap key={item.key}>
                   <Typography>{t(`contact-profile.${item.label}`)}</Typography>
-                  <Tooltip title={renderDetails(item)}>
-                    <Typography>{renderDetails(item)}</Typography>
+                  <Tooltip title={renderDetails(item) as string}>
+                    <Typography>{renderDetails(item) as string}</Typography>
                   </Tooltip>
                 </S.ContentWrap>
               ),

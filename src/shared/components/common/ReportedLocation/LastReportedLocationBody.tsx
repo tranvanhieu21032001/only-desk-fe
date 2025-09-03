@@ -15,22 +15,13 @@ import utc from 'dayjs/plugin/utc';
 import timezonePlugin from 'dayjs/plugin/timezone';
 
 import * as S from './LastReportedLocation.styles';
+import { ContactContext } from '@/shared/interfaces/contact.interface';
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
 
-interface ContextType {
-  city?: string;
-  countryName?: string;
-  timezone?: string;
-  language?: string;
-  os?: string;
-  browser?: string;
-  countryCode?: string;
-}
-
 interface LastReportedLocationBodyProps {
-  context?: ContextType;
+  context?: ContactContext;
   isLoading?: boolean;
 }
 
@@ -50,7 +41,6 @@ const getTimeInTimezone = (tz: string) => {
     return '-';
   }
 };
-
 
 function LastReportedLocationBody({
   context,
@@ -76,7 +66,15 @@ function LastReportedLocationBody({
     );
   }
 
-  const { city, countryName: country, timezone, language, os: device, browser, countryCode } = context;
+  const {
+    city,
+    countryName: country,
+    timezone,
+    language,
+    os: device,
+    browser,
+    countryCode,
+  } = context;
 
   const flagIcon = flagList.find((item) => item.code === countryCode)?.image;
 
@@ -98,9 +96,7 @@ function LastReportedLocationBody({
               height={23}
             />
           )}
-          <Typography>
-            {[city, country].filter(Boolean).join(', ')}
-          </Typography>
+          <Typography>{[city, country].filter(Boolean).join(', ')}</Typography>
         </div>
       ),
     },
@@ -158,7 +154,7 @@ function LastReportedLocationBody({
               <Typography>{value || '-'}</Typography>
             )}
           </S.ContentWrap>
-        ) : null
+        ) : null,
       )}
     </>
   );

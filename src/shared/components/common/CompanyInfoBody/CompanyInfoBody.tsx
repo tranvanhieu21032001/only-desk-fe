@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { websiteRegex } from '@/shared/regex';
 import { useAppSelector } from '@/shared/hooks';
 import { FormTypeEnums } from '@/shared/helper/enums/common';
-import { companyMockup } from '@/modules/contacts/helpers/contact.data';
+import {
+  companyMockup,
+  ContactCompanyFormItem,
+} from '@/modules/contacts/helpers/contact.data';
 import { FormFieldKeyEnums } from '@/modules/contacts/helpers/contact.enums';
 
 import Input from '@/shared/components/common/Input';
@@ -22,7 +25,7 @@ function CompanyInfoBody({ isLoading, isDetails }: Props) {
   const { t } = useTranslation('contacts');
   const { contactDetails } = useAppSelector((state) => state.contacts);
 
-  const renderForm = (field: any) => {
+  const renderForm = (field: ContactCompanyFormItem) => {
     switch (field.type) {
       case FormTypeEnums.INPUT:
         return (
@@ -66,7 +69,7 @@ function CompanyInfoBody({ isLoading, isDetails }: Props) {
       default:
         return (
           <Typography>
-            {contactDetails?.companyInfo?.[field.fieldName] || '-'}
+            {contactDetails?.companyInfo?.[field.key] || '-'}
           </Typography>
         );
     }
@@ -105,7 +108,7 @@ function CompanyInfoBody({ isLoading, isDetails }: Props) {
           <S.ContentWrap key={item.key}>
             <Typography>{t(`contact-profile.${item.label}`)}</Typography>
             <Typography>
-              {contactDetails?.companyInfo?.[item.fieldName] || '-'}
+              {contactDetails?.companyInfo?.[item.key] || '-'}
             </Typography>
           </S.ContentWrap>
         ),

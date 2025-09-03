@@ -1,5 +1,6 @@
-import { Contact, Message } from "../chat-logic";
-import { User } from "./user.interface";
+import { Message } from '../chat-logic';
+import { Contact } from './contact.interface';
+import { User } from './user.interface';
 
 export interface Conversation {
   id: string;

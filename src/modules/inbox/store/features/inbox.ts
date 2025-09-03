@@ -6,9 +6,9 @@ import { coversationDetailsQuery } from '@/shared/conversations-logic/relay/Cove
 
 import webStorageClient from '@/shared/utils/webStorageClient';
 import { constants } from '@/core/settings';
-import { Contact } from '@/shared/chat-logic';
 import { User } from '@/shared/interfaces/user.interface';
 import { Conversation } from '@/shared/interfaces/conversation.interface';
+import { Contact, ContactContext } from '@/shared/interfaces/contact.interface';
 
 export interface InboxState {
   selectedConversation: Conversation | null;
@@ -52,7 +52,7 @@ export const fetchConversationDetail = createAsyncThunk(
         metadata: data?.metadata || {},
         lastActivityAt: data?.lastActivityAt || '',
         avatar: data.contact?.avatar || '',
-        context: data.contact?.context ?? {},
+        context: (data.contact?.context || {}) as ContactContext,
         guestId: data.contact?.guestId || '',
         notification: data.contact?.notification || false,
       };

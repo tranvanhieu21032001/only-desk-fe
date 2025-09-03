@@ -33,6 +33,7 @@ import ProfileCard, {
   ProfileType,
 } from '@/shared/components/common/ProfileCard';
 import { Contact } from '@/shared/interfaces/contact.interface';
+import { getId } from '@/shared/utils/decode';
 
 interface ContactTableProps {
   onSelectedChange?: (ids: string[]) => void;
@@ -211,7 +212,7 @@ function ContactTable({ onSelectedChange }: ContactTableProps) {
 
   const rowSelection = {
     onChange: (_keys: React.Key[], selectedRows: Contact[]) => {
-      const rawIds = selectedRows.map((row) => row.rawId);
+      const rawIds = selectedRows.map((row) => getId(row.id) || '');
       onSelectedChange?.(rawIds);
     },
   };

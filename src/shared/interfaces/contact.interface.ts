@@ -1,3 +1,8 @@
+export enum ContactGender {
+  MALE = 'male',
+  FEMALE = 'female',
+}
+
 export interface ContactContext {
   ip?: string;
   countryCode?: string;
@@ -29,6 +34,7 @@ export interface Contact {
   updatedAt?: string;
   guestId?: string;
   name?: string;
+  gender?: ContactGender;
   email?: string;
   avatar?: string;
   phoneNumber?: string;

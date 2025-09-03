@@ -9,7 +9,8 @@ import closeRed from '@/assets/icons/inbox/ic-close-red.svg';
 import defaultAvatar from '@/assets/images/avatar-default.png';
 
 import * as S from '../InboxSidebar.styles';
-import { Contact } from '@/shared/chat-logic';
+import { Contact } from '@/shared/interfaces/contact.interface';
+import { getId } from '@/shared/utils/decode';
 
 interface Props {
   openCollapse: boolean;
@@ -27,15 +28,16 @@ const ConversationParticipantsSection: React.FC<Props> = ({
   onConfirmAddParticipants,
 }) => {
   const { t } = useTranslation('inbox');
-  const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
+  const [selectedValue, setSelectedValue] = useState<string | undefined>(
+    undefined,
+  );
 
   // Tìm email theo rawId
   const emailById = (id: string) =>
     operators.find((c) => c.rawId === id)?.email || 'Unknown';
 
-  // Tạo options cho dropdown, bỏ qua người đã có trong participants
   const operatorOptions = operators
-    .filter((c) => !participants.includes(c.rawId))
+    .filter((c) => !participants.includes(getId(c.id) || ''))
     .map((contact) => ({
       label: (
         <S.OptionContent>
