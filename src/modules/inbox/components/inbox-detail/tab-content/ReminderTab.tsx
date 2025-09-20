@@ -15,6 +15,7 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
   t,
   setSelectedReminder,
   inputRef,
+  setActiveTab,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -42,7 +43,7 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
     const reminderText = date.format('MM/DD/YYYY HH:mm');
     setSelectedReminder(reminderText);
     setSelectedIndex(index);
-    // setActiveTab(null);
+    setActiveTab(null);
 
     setTimeout(() => {
       if (inputRef.current) {
@@ -68,7 +69,7 @@ const ReminderTab: React.FC<ReminderTabProps> = ({
     setSelectedReminder(reminderText);
     setSelectedIndex(null);
     setModalVisible(false);
-    // setActiveTab(null);
+    setActiveTab(null);
 
     setTimeout(() => {
       if (inputRef.current) {
