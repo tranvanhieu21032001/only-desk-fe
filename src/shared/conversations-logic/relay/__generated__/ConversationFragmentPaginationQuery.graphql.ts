@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a9a800731fceec9601b896a68a270a47>>
+ * @generated SignedSource<<eb64b72b6fcca96ea1cfc53ff003c965>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,10 +10,13 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
+export type ConversationFilter = "ALL" | "MOST_RECENT" | "RESOLVED" | "UNREAD" | "UNRESOLVED" | "%future added value";
 export type ConversationFragmentPaginationQuery$variables = {
   after?: string | null | undefined;
   assignedToMe?: boolean | null | undefined;
+  filter?: ConversationFilter | null | undefined;
   first?: number | null | undefined;
+  keyword?: string | null | undefined;
 };
 export type ConversationFragmentPaginationQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"ConversationFragment_query">;
@@ -36,9 +39,19 @@ var v0 = [
     "name": "assignedToMe"
   },
   {
+    "defaultValue": "ALL",
+    "kind": "LocalArgument",
+    "name": "filter"
+  },
+  {
     "defaultValue": 10,
     "kind": "LocalArgument",
     "name": "first"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "keyword"
   }
 ],
 v1 = [
@@ -54,8 +67,18 @@ v1 = [
   },
   {
     "kind": "Variable",
+    "name": "filter",
+    "variableName": "filter"
+  },
+  {
+    "kind": "Variable",
     "name": "first",
     "variableName": "first"
+  },
+  {
+    "kind": "Variable",
+    "name": "keyword",
+    "variableName": "keyword"
   }
 ],
 v2 = {
@@ -155,6 +178,41 @@ return {
                   {
                     "alias": null,
                     "args": null,
+                    "kind": "ScalarField",
+                    "name": "subject",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resolved",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "metadata",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "lastActivityAt",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "unreadCount",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
                     "concreteType": "Contact",
                     "kind": "LinkedField",
                     "name": "contact",
@@ -209,41 +267,6 @@ return {
                         "storageKey": null
                       }
                     ],
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "subject",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "resolved",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "metadata",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "lastActivityAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "unreadCount",
                     "storageKey": null
                   },
                   {
@@ -304,7 +327,9 @@ return {
         "alias": null,
         "args": (v1/*: any*/),
         "filters": [
-          "assignedToMe"
+          "assignedToMe",
+          "keyword",
+          "filter"
         ],
         "handle": "connection",
         "key": "ConversationFragment_conversations",
@@ -314,16 +339,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "7fb3ea408206f0dac81fcaaee8e0f4d8",
+    "cacheID": "8d2bccf9672ae1f2285626e127907970",
     "id": null,
     "metadata": {},
     "name": "ConversationFragmentPaginationQuery",
     "operationKind": "query",
-    "text": "query ConversationFragmentPaginationQuery(\n  $after: String\n  $assignedToMe: Boolean = false\n  $first: Float = 10\n) {\n  ...ConversationFragment_query_Bk7iV\n}\n\nfragment ConversationFragment_query_Bk7iV on Query {\n  conversations(assignedToMe: $assignedToMe, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          avatar\n          name\n          isOnline\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        lastActivityAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          type\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationFragmentPaginationQuery(\n  $after: String\n  $assignedToMe: Boolean = false\n  $filter: ConversationFilter = ALL\n  $first: Float = 10\n  $keyword: String\n) {\n  ...ConversationFragment_query_4F2xnU\n}\n\nfragment ConversationFragment_query_4F2xnU on Query {\n  conversations(assignedToMe: $assignedToMe, first: $first, after: $after, keyword: $keyword, filter: $filter) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        subject\n        resolved\n        metadata\n        lastActivityAt\n        unreadCount\n        contact {\n          id\n          rawId\n          avatar\n          name\n          isOnline\n          email\n          context {\n            countryCode\n          }\n        }\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          type\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "51252a14193ac95637a93924093d2aff";
+(node as any).hash = "7f40a15674244ad8cfab4188159eef70";
 
 export default node;

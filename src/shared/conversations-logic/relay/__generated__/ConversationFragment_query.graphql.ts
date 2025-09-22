@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<44f29f82aa8b824c4bbc480669b5e897>>
+ * @generated SignedSource<<b72b591e1dd4675714074228aca52e46>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -88,9 +88,19 @@ return {
       "name": "assignedToMe"
     },
     {
+      "defaultValue": "ALL",
+      "kind": "LocalArgument",
+      "name": "filter"
+    },
+    {
       "defaultValue": 10,
       "kind": "LocalArgument",
       "name": "first"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "keyword"
     }
   ],
   "kind": "Fragment",
@@ -125,6 +135,16 @@ return {
           "kind": "Variable",
           "name": "assignedToMe",
           "variableName": "assignedToMe"
+        },
+        {
+          "kind": "Variable",
+          "name": "filter",
+          "variableName": "filter"
+        },
+        {
+          "kind": "Variable",
+          "name": "keyword",
+          "variableName": "keyword"
         }
       ],
       "concreteType": "ConversationConnection",
@@ -182,6 +202,41 @@ return {
               "selections": [
                 (v1/*: any*/),
                 (v2/*: any*/),
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "subject",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "resolved",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "metadata",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "lastActivityAt",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "unreadCount",
+                  "storageKey": null
+                },
                 {
                   "alias": null,
                   "args": null,
@@ -244,41 +299,6 @@ return {
                 {
                   "alias": null,
                   "args": null,
-                  "kind": "ScalarField",
-                  "name": "subject",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "resolved",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "metadata",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "lastActivityAt",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "unreadCount",
-                  "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
                   "concreteType": "User",
                   "kind": "LinkedField",
                   "name": "assignedTo",
@@ -335,6 +355,6 @@ return {
 };
 })();
 
-(node as any).hash = "51252a14193ac95637a93924093d2aff";
+(node as any).hash = "7f40a15674244ad8cfab4188159eef70";
 
 export default node;
