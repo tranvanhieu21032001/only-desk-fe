@@ -62,6 +62,14 @@ export const MessageBaseItem: React.FC<MessageBaseItemProps> = ({
   );
 
   const senderName = getSenderName(msg);
+  
+  if (msg.type === MessageType.RESOLVED) {
+    return (
+      <S.SystemMessageRow>
+        <S.DateDivider>{msg.content}</S.DateDivider>
+      </S.SystemMessageRow>
+    );
+  }
 
   if (isOwner) {
     return (
