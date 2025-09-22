@@ -332,6 +332,7 @@ type HelpdeskArticle implements Node {
   title: String!
   content: String!
   slug: String!
+  url: String!
   category: HelpdeskCategory
   section: HelpdeskCategorySection
   tags: [String!]!
@@ -388,7 +389,7 @@ type Query {
   me: User
   workspaces: [Workspace!]!
   operators: [WorkspaceMember!]!
-  conversations(assignedToMe: Boolean, first: Float, after: String, last: Float, before: String): ConversationConnection!
+  conversations(assignedToMe: Boolean, filter: ConversationFilter, keyword: String, first: Float, after: String, last: Float, before: String): ConversationConnection!
   messages(conversationId: ID!, first: Float, after: String, last: Float, before: String): MessageConnection!
   contacts(args: PaginationArgs!, keyword: String): ContactPagination!
   liveContacts(first: Float, after: String, last: Float, before: String): ContactConnection!
@@ -403,6 +404,14 @@ type Query {
   helpdeskPublicSettings: HelpdeskSettings!
   helpdeskCategories: [HelpdeskCategory!]!
   helpdeskSettings: HelpdeskSettings!
+}
+
+enum ConversationFilter {
+  ALL
+  UNREAD
+  UNRESOLVED
+  RESOLVED
+  MOST_RECENT
 }
 
 input PaginationArgs {

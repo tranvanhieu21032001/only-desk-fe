@@ -1,6 +1,6 @@
+import React, { useRef, useState, useEffect } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 // import { useSelector } from 'react-redux';
 
@@ -58,6 +58,13 @@ const ConversationList: React.FC<Props> = ({
   //     eventBus.off(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
   //   };
   // }, [workspaceId, dispatch]);
+
+  useEffect(() => {
+    if (!activeConversationId && conversations.length > 0) {
+      const firstConversationId = conversations[0].id;
+      navigate(`?conversationId=${firstConversationId}`, { replace: true });
+    }
+  }, [activeConversationId, conversations, navigate]);
 
   useEffect(() => {
     const el = conversationListWrapperRef.current;
