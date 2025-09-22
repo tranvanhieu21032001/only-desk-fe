@@ -25,6 +25,8 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
   children,
 }) => {
   const { permissions } = usePermissionContext();
+  // console.log("permissions", permissions);
+  
 
   var featurePermission: FeaturePermission | undefined =
     feature && permissions?.features.find((f) => f.feature === feature);
@@ -37,36 +39,38 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
     message: '',
   };
 
-  if (ignoreCheck || (accessible && available)) {
-    return <>{children}</>;
-  }
-
+  const hasPermission = ignoreCheck || (accessible && available);
+  
   if (typeof children === 'function') {
     return (
       <>
         {(children as (hasPermission: boolean, message?: string) => ReactNode)(
-          available && accessible,
+          hasPermission,
           message,
         )}
       </>
     );
-  } else {
-    return (
-      <UpgradePrompt message={message || ''} needUpgrade={needUpgrade}>
-        {isValidElement(children)
-          ? cloneElement(children as ReactElement<any>, {
-              onClick: (e: React.MouseEvent) => {
-                e.preventDefault();
-                e.stopPropagation();
-              },
-              style: {
-                ...(children.props as any).style,
-                opacity: 0.5,
-                cursor: 'not-allowed',
-              },
-            })
-          : children}
-      </UpgradePrompt>
-    );
   }
+
+  if (hasPermission) {
+    return <>{children}</>;
+  }
+
+  return (
+    <UpgradePrompt message={message || ''} needUpgrade={needUpgrade}>
+      {isValidElement(children)
+        ? cloneElement(children as ReactElement<any>, {
+            onClick: (e: React.MouseEvent) => {
+              e.preventDefault();
+              e.stopPropagation();
+            },
+            style: {
+              ...(children.props as any).style,
+              opacity: 0.5,
+              cursor: 'not-allowed',
+            },
+          })
+        : children}
+    </UpgradePrompt>
+  );
 };
