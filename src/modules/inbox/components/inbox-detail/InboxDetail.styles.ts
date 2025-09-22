@@ -939,3 +939,9 @@ export const MessageTimeBelow = styled.div`
   font-size: 10px;
   margin-right: 11px;
 `;
+
+export const SystemMessageRow = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: center;
+`;
