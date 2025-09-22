@@ -1,4 +1,7 @@
 import React from 'react';
+import { PermissionGate } from '@/modules/permissions/components/PermissionGate';
+import { FeatureKey } from '@/modules/permissions/enums/features.enum';
+import Forbidden from '@/modules/admin/Forbidden';
 
 import { AUTH_ROUTES, MAIN_ROUTES } from './constants';
 import { RouterElementInterface } from './model';
@@ -105,6 +108,46 @@ const InvoicesAdmin = React.lazy(
 const AcceptIvitation = React.lazy(
   () => import('@/modules/auth/pages/accept-invitation/AcceptiIvitation'),
 );
+
+// Admin permission guard using PermissionGate (no JSX in .ts file)
+const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }) =>
+  React.createElement(
+    PermissionGate as any,
+    { feature: FeatureKey.ADMIN_PANEL, action: 'access' },
+    ((has: boolean) =>
+      has ? children : React.createElement(Forbidden as any)) as any,
+  );
+
+const WorkSpaceAdminGuarded: React.FC = () =>
+  React.createElement(
+    AdminGuard,
+    null,
+    React.createElement(WorkSpaceAdmin as any),
+  );
+
+const UsersAdminGuarded: React.FC = () =>
+  React.createElement(AdminGuard, null, React.createElement(UsersAdmin as any));
+
+const SubscriptionsAdminGuarded: React.FC = () =>
+  React.createElement(
+    AdminGuard,
+    null,
+    React.createElement(SubscriptionsAdmin as any),
+  );
+
+const PluginsAdminGuarded: React.FC = () =>
+  React.createElement(
+    AdminGuard,
+    null,
+    React.createElement(PluginsAdmin as any),
+  );
+
+const InvoicesAdminGuarded: React.FC = () =>
+  React.createElement(
+    AdminGuard,
+    null,
+    React.createElement(InvoicesAdmin as any),
+  );
 
 const routes_admin: RouterElementInterface[] = [];
 
@@ -325,31 +368,31 @@ const routes_main: RouterElementInterface[] = [
   {
     key: 'workspace-admin',
     path: MAIN_ROUTES.WORKSPACE_ADMIN,
-    component: WorkSpaceAdmin,
+    component: WorkSpaceAdminGuarded,
     name: 'workspace-admin',
   },
   {
     key: 'user-admin',
     path: MAIN_ROUTES.USERS_ADMIN,
-    component: UsersAdmin,
+    component: UsersAdminGuarded,
     name: 'user-admin',
   },
   {
     key: 'user-subscriptions',
     path: MAIN_ROUTES.SUBSCRIPTIONS_ADMIN,
-    component: SubscriptionsAdmin,
+    component: SubscriptionsAdminGuarded,
     name: 'user-subscriptions',
   },
   {
     key: 'plugins-admin',
     path: MAIN_ROUTES.PLUGINS_ADMIN,
-    component: PluginsAdmin,
+    component: PluginsAdminGuarded,
     name: 'plugins-admin',
   },
   {
     key: 'invoices-admin',
     path: MAIN_ROUTES.INVOICES_ADMIN,
-    component: InvoicesAdmin,
+    component: InvoicesAdminGuarded,
     name: 'invoices-admin',
   },
 

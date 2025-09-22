@@ -112,6 +112,9 @@ import {
   selectCurrentWorkspaceId,
   selectIsLoading,
 } from '@/modules/auth/store/selectors';
+import { PermissionGate } from '@/modules/permissions/components/PermissionGate';
+import { FeatureKey } from '@/modules/permissions/enums/features.enum';
+
 import webStorageClient from '@/shared/utils/webStorageClient';
 import { updateRelayEnvironment } from '@/relay/RelayEnvironment';
 import ProfileCard, { ProfileType } from '../../common/ProfileCard';
@@ -988,13 +991,32 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
           <S.MenuWrapper>
             {menus?.map((menu) => (
               <S.MenuIconWrap key={menu?.key}>
-                {renderMenu({
-                  key: menu.key,
-                  icon: menu.icon,
-                  children: menu.children,
-                  childrenPath: menu.childrenPath || [],
-                  redirect: menu?.redirect,
-                })}
+                {menu.key === 'admin' ? (
+                  <PermissionGate
+                    feature={FeatureKey.ADMIN_PANEL}
+                    action="access"
+                  >
+                    {(has: boolean) =>
+                      has
+                        ? renderMenu({
+                            key: menu.key,
+                            icon: menu.icon,
+                            children: menu.children,
+                            childrenPath: menu.childrenPath || [],
+                            redirect: menu?.redirect,
+                          })
+                        : null
+                    }
+                  </PermissionGate>
+                ) : (
+                  renderMenu({
+                    key: menu.key,
+                    icon: menu.icon,
+                    children: menu.children,
+                    childrenPath: menu.childrenPath || [],
+                    redirect: menu?.redirect,
+                  })
+                )}
               </S.MenuIconWrap>
             ))}
           </S.MenuWrapper>
