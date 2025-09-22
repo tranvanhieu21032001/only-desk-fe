@@ -10,17 +10,22 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as S from './InboxList.styles';
 
 import InboxItem from './InboxItem';
-import InboxListHeader from './InboxListHeader';
+
 import { useConversations } from '@/shared/conversations-logic/hooks/useConversations';
+import { ConversationFilterEnum } from '@/shared/helper/enums/common';
 
 type Props = {
   onSelectConversation?: (conversation: any) => void;
   isAssignedToMe: boolean | null;
+  filter: string;
+  keyword: string;
 };
 
 const ConversationList: React.FC<Props> = ({
   onSelectConversation: _onSelectConversation,
   isAssignedToMe,
+  filter,
+  keyword,
 }) => {
   const { t } = useTranslation('inbox');
   const conversationListWrapperRef = useRef<HTMLDivElement>(null);
@@ -29,9 +34,16 @@ const ConversationList: React.FC<Props> = ({
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
 
+  const filterEnum: ConversationFilterEnum | undefined =
+    filter.toUpperCase() in ConversationFilterEnum
+      ? (filter.toUpperCase() as ConversationFilterEnum)
+      : undefined;
+
   const { conversations, isFetchingInitial, isLoadingNext } = useConversations({
     isAssignedToMe,
     conversationContainerRef: conversationListWrapperRef,
+    filter: filterEnum,
+    keyword,
   });
 
   // const workspaceId = useSelector(selectCurrentWorkspaceId);
@@ -130,47 +142,47 @@ const ConversationList: React.FC<Props> = ({
     //     onSelectConversation(conversation);
     //   }
     // }
-    navigate(`?conversationId=${conversationId}`);
+    // navigate(`?conversationId=${conversationId}`);
+    const params = new URLSearchParams(searchParams);
+    params.set('conversationId', conversationId);
+    navigate({ search: params.toString() });
   };
 
-  return (
-    <S.Container>
-      <InboxListHeader />
 
-      <S.ConversationListWrapper
-        ref={conversationListWrapperRef}
-        className={isScrolling ? 'scrolling' : ''}
-      >
-        {conversations.length === 0 && !isFetchingInitial && (
-          <S.AllDataLoaded>{t('inboxList.noConversationYet')}</S.AllDataLoaded>
-        )}
-        {conversations.map((conversation) => {
-          return (
-            <InboxItem
-              key={conversation.id}
-              conversation={conversation}
-              onClickConversation={() => {
-                handleConversationClick(conversation.id);
-              }}
-              activeConversationId={activeConversationId}
-            />
-          );
-        })}
-        {isLoadingNext && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '20px',
-              width: '100%',
+  return (
+    <S.ConversationListWrapper
+      ref={conversationListWrapperRef}
+      className={isScrolling ? 'scrolling' : ''}
+    >
+      {conversations.length === 0 && !isFetchingInitial && (
+        <S.AllDataLoaded>{t('inboxList.noConversationYet')}</S.AllDataLoaded>
+      )}
+      {conversations.map((conversation) => {
+        return (
+          <InboxItem
+            key={conversation.id}
+            conversation={conversation}
+            onClickConversation={() => {
+              handleConversationClick(conversation.id);
             }}
-          >
-            <LoadingOutlined spin style={{ fontSize: 24, color: '#999' }} />
-          </div>
-        )}
-      </S.ConversationListWrapper>
-    </S.Container>
+            activeConversationId={activeConversationId}
+          />
+        );
+      })}
+      {isLoadingNext && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '20px',
+            width: '100%',
+          }}
+        >
+          <LoadingOutlined spin style={{ fontSize: 24, color: '#999' }} />
+        </div>
+      )}
+    </S.ConversationListWrapper>
   );
 };
 

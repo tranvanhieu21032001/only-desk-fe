@@ -6,12 +6,20 @@ export const conversationListFragment = graphql`
     assignedToMe: { type: "Boolean", defaultValue: false }
     first: { type: "Float", defaultValue: 10 }
     after: { type: "String" }
+    keyword: { type: "String" }
+    filter: { type: "ConversationFilter", defaultValue: ALL }
   )
   @refetchable(queryName: "ConversationFragmentPaginationQuery") {
-    conversations(assignedToMe: $assignedToMe, first: $first, after: $after)
+    conversations(
+      assignedToMe: $assignedToMe
+      first: $first
+      after: $after
+      keyword: $keyword
+      filter: $filter
+    )
       @connection(
         key: "ConversationFragment_conversations"
-        filters: ["assignedToMe"]
+        filters: ["assignedToMe", "keyword", "filter"]
       ) {
       pageInfo {
         hasNextPage
@@ -22,6 +30,11 @@ export const conversationListFragment = graphql`
         node {
           id
           rawId
+          subject
+          resolved
+          metadata
+          lastActivityAt
+          unreadCount
           contact {
             id
             rawId
@@ -33,11 +46,6 @@ export const conversationListFragment = graphql`
               countryCode
             }
           }
-          subject
-          resolved
-          metadata
-          lastActivityAt
-          unreadCount
           assignedTo {
             id
           }

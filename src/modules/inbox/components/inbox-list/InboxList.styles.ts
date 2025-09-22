@@ -15,13 +15,12 @@ export const Container = styled.div`
 export const SearchFilterWrapper = styled.div`
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  padding: 12px;
   align-items: center;
   width: 100%;
-  position: sticky;
   top: 0;
   z-index: 2;
-  background: ${(props) => props?.theme?.colors?.newtralLightest};
+  // background: ${(props) => props?.theme?.colors?.newtralLightest};
 `;
 
 export const SearchInputWrapper = styled.div`
@@ -129,7 +128,7 @@ export const NotificationItem = styled.div<{ $active?: boolean }>`
   align-items: center;
   padding: 12px;
   border-radius: ${(props) => props?.theme?.radius?.mediumRadius};
-  margin-bottom: 12px;
+  margin: 12px;
   cursor: pointer;
 
   &:hover {
@@ -650,9 +649,9 @@ export const FilterRadioLabel = styled.label<{ selected?: boolean }>`
     margin-right: 10px;
     border: 2px solid
       ${(props) =>
-        props?.selected
-          ? props?.theme?.colors?.borderDark
-          : props?.theme?.colors?.newtralDark};
+    props?.selected
+      ? props?.theme?.colors?.borderDark
+      : props?.theme?.colors?.newtralDark};
     border-radius: 50%;
     background-color: ${(props) => props?.theme?.colors?.newtralLightest};
     position: relative;
@@ -788,6 +787,7 @@ export const ConversationListWrapper = styled.div`
   flex: 1;
   overflow-y: auto;
   min-height: 0;
+  height: 100%;
 
   /* Custom scrollbar */
   &::-webkit-scrollbar {

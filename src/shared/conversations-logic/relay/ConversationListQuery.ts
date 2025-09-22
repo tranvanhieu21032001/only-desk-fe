@@ -5,8 +5,16 @@ export const conversationListQuery = graphql`
     $first: Float
     $after: String
     $assignedToMe: Boolean
+    $keyword: String
+    $filter: ConversationFilter
   ) {
     ...ConversationFragment_query
-      @arguments(assignedToMe: $assignedToMe, first: $first, after: $after)
+      @arguments(
+        assignedToMe: $assignedToMe
+        first: $first
+        after: $after
+        keyword: $keyword
+        filter: $filter
+      )
   }
 `;
