@@ -62,7 +62,7 @@ const fetchContacts = createAsyncThunk(
         args: { first: PAGE_SIZE, offset: offset ?? PAGE },
         keyword: keyword ?? null,
       },
-      { fetchPolicy: 'network-only' },
+      { fetchPolicy: 'store-or-network' },
     ).toPromise();
     return results?.contacts;
   },

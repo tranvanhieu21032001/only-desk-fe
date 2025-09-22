@@ -82,12 +82,34 @@ function Contacts() {
 
   useEffect(() => {
     if (!currentWorkspace) return;
-    setInitialLoading(true);
-    triggerSearch(keyword, Number(page) || PAGE);
-  }, [currentWorkspace, page, keyword, triggerSearch]);
+    const hasCached = (contacts?.length || 0) > 0;
+    // Only show initial loading if we have no cached contacts
+    setInitialLoading(!hasCached);
+    // If we already have cached data, refresh in background (debounced)
+    if (hasCached) {
+      triggerSearch(keyword, Number(page) || PAGE);
+    }
+  }, [currentWorkspace, page, keyword, triggerSearch, contacts?.length]);
+
+  // Immediate fetch on first load when no cached contacts, to ensure we hit the server
+  useEffect(() => {
+    if (!currentWorkspace) return;
+    if ((contacts?.length || 0) === 0) {
+      // Cancel any pending debounced fetch to avoid duplicate call
+      // @ts-ignore - debounce provides cancel
+      triggerSearch.cancel?.();
+      setInitialLoading(true);
+      const currentPage = Number(page) || PAGE;
+      const offset = (currentPage - 1) * PAGE_SIZE;
+      dispatch(fetchContacts({ keyword, offset })).finally(() => {
+        setInitialLoading(false);
+      });
+    }
+  }, [currentWorkspace, contacts?.length]);
 
   const renderContactContent = useMemo(() => {
-    if (initialLoading || isLoading) {
+    // Show skeleton only when we have no data yet and are loading
+    if ((initialLoading || isLoading) && (contacts?.length || 0) === 0) {
       return <Skeleton active paragraph={{ rows: 8 }} />;
     }
     if (isEmpty(contacts)) return <ContactEmpty />;
