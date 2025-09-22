@@ -16,6 +16,7 @@ export const categoriesQuery = graphql`
         content
         viewCount
         status
+        url
         defaultLanguage
         createdAt
         updatedAt
@@ -31,6 +32,7 @@ export const categoriesQuery = graphql`
           title
           status
           content
+          url
           defaultLanguage
           viewCount
           createdAt

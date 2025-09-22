@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3d6ecd805be9cd4ccc2e54a2c8ab039c>>
+ * @generated SignedSource<<c9c96b0be567055b5d9ae7b08e767031>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -22,6 +22,7 @@ export type CategoriesQuery$data = {
       readonly status: ArticleStatus | null | undefined;
       readonly title: string;
       readonly updatedAt: any | null | undefined;
+      readonly url: string;
       readonly viewCount: number;
     }> | null | undefined;
     readonly createdAt: any | null | undefined;
@@ -39,6 +40,7 @@ export type CategoriesQuery$data = {
         readonly status: ArticleStatus | null | undefined;
         readonly title: string;
         readonly updatedAt: any | null | undefined;
+        readonly url: string;
         readonly viewCount: number;
       }> | null | undefined;
       readonly createdAt: any | null | undefined;
@@ -122,10 +124,17 @@ v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
+  "name": "url",
+  "storageKey": null
+},
+v10 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
   "name": "defaultLanguage",
   "storageKey": null
 },
-v10 = [
+v11 = [
   {
     "alias": null,
     "args": null,
@@ -167,6 +176,7 @@ v10 = [
           (v7/*: any*/),
           (v8/*: any*/),
           (v9/*: any*/),
+          (v10/*: any*/),
           (v2/*: any*/),
           (v3/*: any*/)
         ],
@@ -198,6 +208,7 @@ v10 = [
               (v8/*: any*/),
               (v6/*: any*/),
               (v9/*: any*/),
+              (v10/*: any*/),
               (v7/*: any*/),
               (v2/*: any*/),
               (v3/*: any*/)
@@ -217,7 +228,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "CategoriesQuery",
-    "selections": (v10/*: any*/),
+    "selections": (v11/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -226,19 +237,19 @@ return {
     "argumentDefinitions": [],
     "kind": "Operation",
     "name": "CategoriesQuery",
-    "selections": (v10/*: any*/)
+    "selections": (v11/*: any*/)
   },
   "params": {
-    "cacheID": "3b2eca17bcd3722a05509570836b1679",
+    "cacheID": "5f7f2932e9fdf71fb165b7eae579d9f7",
     "id": null,
     "metadata": {},
     "name": "CategoriesQuery",
     "operationKind": "query",
-    "text": "query CategoriesQuery {\n  helpdeskCategories {\n    id\n    name\n    image\n    desc\n    createdAt\n    updatedAt\n    articles {\n      id\n      rawId\n      title\n      content\n      viewCount\n      status\n      defaultLanguage\n      createdAt\n      updatedAt\n    }\n    sections {\n      id\n      name\n      createdAt\n      updatedAt\n      articles {\n        id\n        rawId\n        title\n        status\n        content\n        defaultLanguage\n        viewCount\n        createdAt\n        updatedAt\n      }\n    }\n  }\n}\n"
+    "text": "query CategoriesQuery {\n  helpdeskCategories {\n    id\n    name\n    image\n    desc\n    createdAt\n    updatedAt\n    articles {\n      id\n      rawId\n      title\n      content\n      viewCount\n      status\n      url\n      defaultLanguage\n      createdAt\n      updatedAt\n    }\n    sections {\n      id\n      name\n      createdAt\n      updatedAt\n      articles {\n        id\n        rawId\n        title\n        status\n        content\n        url\n        defaultLanguage\n        viewCount\n        createdAt\n        updatedAt\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6b7c955124930fd86084ce0616add174";
+(node as any).hash = "adc42400db6454cdbe14e97b5dbb6e30";
 
 export default node;

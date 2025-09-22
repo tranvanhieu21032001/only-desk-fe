@@ -41,6 +41,8 @@ export const TAB_ACTIONS = [
   },
 ];
 
+export const MAIN_DOMAIN = 'sombes.com'
+
 export const emojiMap: Record<string, string> = {
   '<3': '❤️',
   ':)': '😀',

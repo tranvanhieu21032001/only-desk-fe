@@ -22,6 +22,7 @@ import {
   FeatureKey,
   HelpdeskAction,
 } from '@/modules/permissions/enums/features.enum';
+import { MAIN_DOMAIN } from '@/modules/inbox/constants/inbox.constants';
 
 const domainRegex = /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
 
@@ -139,9 +140,7 @@ const SetupKnowledgeBase = () => {
                         placeholder="e.g., t2bo"
                         size="large"
                         onBlur={() => handleBlur('basicDomain')}
-                        domainText={t(
-                          'setup-knowledge-base.baseHelpdeskDomain',
-                        )}
+                        domainText={MAIN_DOMAIN}
                         disabled={!hasPermission}
                         isDomainHidden={false}
                       />
