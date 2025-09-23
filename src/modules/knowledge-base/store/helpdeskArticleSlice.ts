@@ -1,77 +1,75 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getAllHelpdeskArticles } from '@/modules/knowledge-base/api/knowledgebase.api';
-import {
-    HelpdeskArticle,
-    HelpdeskArticleListResponse,
-} from '@/modules/knowledge-base/interface';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getAllArticles } from "@/modules/knowledge-base/api/knowledgebase.api";
+import { HelpdeskArticle } from "@/modules/knowledge-base/interface";
+import { RootState } from "@/core/store";
 
-interface HelpdeskArticleState {
-    items: HelpdeskArticle[];
-    total: number;
-    page: number;
-    limit: number;
-    loading: boolean;
-    error: string | null;
+// -------------------- STATE --------------------
+export interface HelpdeskArticleState {
+  items: HelpdeskArticle[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: HelpdeskArticleState = {
-    items: [],
-    total: 0,
-    page: 1,
-    limit: 10,
-    loading: false,
-    error: null,
+  items: [],
+  loading: false,
+  error: null,
 };
 
+// -------------------- ASYNC THUNK --------------------
 export const fetchHelpdeskArticles = createAsyncThunk<
-  HelpdeskArticleListResponse,
-  { page?: number; limit?: number; status?: string; lang?: string } | undefined,
+  HelpdeskArticle[],
+  { keyword?: string } | undefined,
   { rejectValue: string }
->('helpdesk/fetchArticles', async (params, { rejectWithValue }) => {
+>("helpdesk/fetchArticles", async (params, { rejectWithValue }) => {
   try {
-    const page = params?.page || 1;
-    const limit = params?.limit || 10;
-    const status = params?.status || '';
-    const lang = params?.lang || 'en';
-    const response = await getAllHelpdeskArticles(page, limit, status, lang);
-    return response;
+    const keyword = params?.keyword ?? "";
+    return await getAllArticles(keyword);
   } catch (error: any) {
-    return rejectWithValue(error.message || 'Failed to fetch helpdesk articles');
+    return rejectWithValue(
+      error.message || "Failed to fetch helpdesk articles"
+    );
   }
 });
 
-
+// -------------------- SLICE --------------------
 const helpdeskArticleSlice = createSlice({
-    name: 'helpdeskArticles',
-    initialState,
-    reducers: {
-        clearArticles(state) {
-            state.items = [];
-            state.total = 0;
-            state.page = 1;
-            state.loading = false;
-            state.error = null;
-        },
+  name: "helpdeskArticles",
+  initialState,
+  reducers: {
+    clearArticles(state) {
+      state.items = [];
+      state.loading = false;
+      state.error = null;
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(fetchHelpdeskArticles.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(fetchHelpdeskArticles.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items = action.payload.data;
-                state.total = action.payload.total;
-                state.page = action.payload.page;
-            })
-            .addCase(fetchHelpdeskArticles.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload ?? 'Unknown error';
-            });
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchHelpdeskArticles.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchHelpdeskArticles.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetchHelpdeskArticles.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Unknown error";
+      });
+  },
 });
 
-export const { clearArticles } = helpdeskArticleSlice.actions;
+// -------------------- SELECTORS --------------------
+export const selectArticles = (state: RootState) =>
+  state.helpdeskArticles.items;
 
+export const selectArticlesLoading = (state: RootState) =>
+  state.helpdeskArticles.loading;
+
+export const selectArticlesError = (state: RootState) =>
+  state.helpdeskArticles.error;
+
+// -------------------- EXPORT --------------------
+export const { clearArticles } = helpdeskArticleSlice.actions;
 export default helpdeskArticleSlice.reducer;

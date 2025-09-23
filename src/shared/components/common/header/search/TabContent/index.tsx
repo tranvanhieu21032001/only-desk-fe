@@ -1,11 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-
-import {
-  ContactCardInterface,
-  KnowledgeBaseCardInterface,
-  MessageCardInterface,
-  PluginCardInterface,
-} from '@/shared/model/header.model';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/core/store';
 import { TabEnums } from '@/shared/helper/enums/header';
 
 import PluginCard from '../PluginCard';
@@ -14,122 +9,66 @@ import ContactCard from '../ContactCard';
 import KnowledgeBaseCard from '../KnowledgeBaseCard';
 
 import * as S from './tab.styled';
-
-import icMessage from '@/assets/icons/auth/ic-adobe.svg';
-import icAvatar from '@/assets/icons/header/ic-message-card-mockup.svg';
+import { Skeleton } from 'antd';
 
 interface TabContentProps {
   type: TabEnums;
+  onCloseTab?: () => void;
 }
 
-function TabContent({ type }: TabContentProps) {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+function TabContent({ type, onCloseTab }: TabContentProps) {
+  const { searchResults: pluginResults, loading: pluginLoading } = useSelector(
+    (state: RootState) => state.plugins
+  );
+  const { data: messageResults, loading: messageLoading } = useSelector(
+    (state: RootState) => state.message
+  );
+  const { items: articleResults, loading: articleLoading } = useSelector(
+    (state: RootState) => state.helpdeskArticles
+  );
+  const { searchResults: contactResults, isLoading: contactLoading } = useSelector(
+    (state: RootState) => state.contacts
+  );
 
-  const [messages, setMessages] = useState<MessageCardInterface[]>([]);
-  const [contacts, setContacts] = useState<ContactCardInterface[]>([]);
-  const [plugins, setPlugins] = useState<PluginCardInterface[]>([]);
-  const [knowledgeBase, setKnowledgeBase] = useState<
-    KnowledgeBaseCardInterface[]
-  >([]);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 600);
-
-    return () => clearTimeout(timer);
-  }, [type]);
-
-  useEffect(() => {
-    setMessages([
-      {
-        id: '1',
-        label: 'Admin 1',
-        time: '10m',
-        description: 'John Smith submitted web form',
-        avatar: icAvatar,
-      },
-    ]);
-
-    setContacts([
-      {
-        id: '1',
-        label: 'Admin 1',
-        description: 'John Smith submitted web form',
-        avatar: icAvatar,
-      },
-    ]);
-
-    setPlugins([
-      {
-        id: '1',
-        label: 'Admin 1',
-        description: 'John Smith submitted web form',
-        avatar: icMessage,
-      },
-    ]);
-
-    setKnowledgeBase([
-      {
-        id: '1',
-        label: 'Admin 1',
-      },
-    ]);
-  }, []);
+  const isLoading = useMemo(() => {
+    switch (type) {
+      case TabEnums.MESSAGES:
+        return messageLoading;
+      case TabEnums.CONTACTS:
+        return contactLoading;
+      case TabEnums.KNOWLEDGE_BASE:
+        return articleLoading;
+      case TabEnums.PLUGINS:
+        return pluginLoading;
+      default:
+        return false;
+    }
+  }, [type, messageLoading, contactLoading, articleLoading, pluginLoading]);
 
   const renderContent = useMemo(() => {
     switch (type) {
-      case TabEnums?.MESSAGES:
-        return Array(5)
-          ?.fill(0)
-          ?.map(() => (
-            <MessageCard
-              key={messages?.[0]?.id}
-              {...messages?.[0]}
-              isLoading={isLoading}
-            />
-          ));
-      case TabEnums?.CONTACTS:
-        return Array(5)
-          ?.fill(0)
-          ?.map(() => (
-            <ContactCard
-              key={contacts?.[0]?.id}
-              {...contacts?.[0]}
-              isLoading={isLoading}
-            />
-          ));
-
-      case TabEnums?.KNOWLEDGE_BASE:
-        return Array(5)
-          ?.fill(0)
-          ?.map(() => (
-            <KnowledgeBaseCard
-              key={knowledgeBase?.[0]?.id}
-              {...knowledgeBase?.[0]}
-              isLoading={isLoading}
-            />
-          ));
-
-      case TabEnums?.PLUGINS:
-        return Array(5)
-          ?.fill(0)
-          ?.map(() => (
-            <PluginCard
-              key={plugins?.[0]?.id}
-              {...plugins?.[0]}
-              isLoading={isLoading}
-            />
-          ));
-
+      case TabEnums.MESSAGES:
+        return messageResults?.map((item) => (
+          <MessageCard key={item.id} data={item} isLoading={isLoading} onCloseTab={onCloseTab}/>
+        ));
+      case TabEnums.CONTACTS:
+        return contactResults?.map((item) => (
+          <ContactCard key={item.id} data={item} isLoading={isLoading} onCloseTab={onCloseTab}/>
+        ));
+      case TabEnums.KNOWLEDGE_BASE:
+        return articleResults?.map((item) => (
+          <KnowledgeBaseCard key={item.id} data={item} isLoading={isLoading} onCloseTab={onCloseTab}/>
+        ));
+      case TabEnums.PLUGINS:
+        return pluginResults?.map((item) => (
+          <PluginCard key={item.id} data={item} isLoading={isLoading} onCloseTab={onCloseTab}/>
+        ));
       default:
-        break;
+        return null;
     }
-  }, [type, isLoading]);
+  }, [type, messageResults, contactResults, articleResults, pluginResults, isLoading]);
 
-  return <S.TabCardContentWrap>{renderContent}</S.TabCardContentWrap>;
+  return <S.TabCardContentWrap>{isLoading ? <Skeleton /> : renderContent}</S.TabCardContentWrap>;
 }
 
 export default TabContent;

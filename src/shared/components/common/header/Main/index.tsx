@@ -49,11 +49,12 @@ const Header: React.FC = () => {
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState(notificationOptions);
   const [isLoading] = useState<boolean>(false);
+  const [searchVisible, setSearchVisible] = useState(false);
 
   const { visible: addContact, toggle: handleOpenModalAddContact } = useModal();
-    const location = useLocation();
-    const currentPath = location.pathname;
-    const isCategoriesPage = currentPath === '/categories';
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const isCategoriesPage = currentPath === '/categories';
 
   const removeTag = (index: number) => {
     const newTags = tags.filter((_, i) => i !== index);
@@ -114,7 +115,9 @@ const Header: React.FC = () => {
       <S.RightSection ref={dropdownRef}>
         <S.SearchPopover
           trigger="click"
-          content={<Search />}
+          open={searchVisible}
+          onOpenChange={(visible) => setSearchVisible(visible)}
+          content={<Search onCloseSearch={() => setSearchVisible(false)} />}
           rootClassName="search-header"
         >
           <Image src={search} preview={false} />

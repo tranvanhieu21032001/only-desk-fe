@@ -37,6 +37,7 @@ export const getAllPlugins = async (variables: {
   after?: string;
   last?: number;
   before?: string;
+  keyword?: string
 }): Promise<AllpluginsQuery['response']['plugins']> => {
   const data = await fetchQuery<AllpluginsQuery>(
     RelayEnvironment,

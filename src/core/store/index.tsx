@@ -11,6 +11,7 @@ import contactsReducer from '@/modules/contacts/store/features/contacts';
 import inboxReducer, {
   initialState as inboxInitialState,
 } from '@/modules/inbox/store/features/inbox';
+import messageRudecer from '@/modules/inbox/store/features/message'
 import helpdeskCategorySlice from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import helpdeskArticlesReducer from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 import operatorsReducer from '@/modules/settings/store/features/operators';
@@ -55,6 +56,7 @@ export const store = configureStore({
     helpdeskSetting: helpdeskSettingReducer,
     knowledgeBaseSettings: knowledgeBaseSettingsReducer,
     inbox: inboxReducer,
+    message: messageRudecer,
     plugins: pluginsReducer,
     adminWorkspaces: adminWorkspacesReducer,
     adminUser: adminUserReducer,

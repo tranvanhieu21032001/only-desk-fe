@@ -6,8 +6,9 @@ export const allPluginsQuery = graphql`
     $after: String
     $last: Float
     $before: String
+    $keyword: String
   ) {
-    plugins(first: $first, after: $after, last: $last, before: $before) {
+    plugins(first: $first, after: $after, last: $last, before: $before, keyword: $keyword) {
       edges {
         node {
           id

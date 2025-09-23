@@ -1,13 +1,12 @@
 import {
   deleteRequest,
-  getRequest,
   postRequest,
   updateRequest,
 } from '@/core/services/requests';
 
 import {
+  HelpdeskArticle,
   HelpdeskArticleCreatePayload,
-  HelpdeskArticleListResponse,
   HelpdeskCategoryCreatePayload,
   HelpdeskSectionCreatePayload,
 } from '../interface';
@@ -18,6 +17,8 @@ import { CategoriesQuery } from '@/relay/__generated__/CategoriesQuery.graphql';
 import { categoriesQuery } from '@/relay/CategoriesQuery';
 import { HelpdeskSettingsQuery } from '@/relay/__generated__/HelpdeskSettingsQuery.graphql';
 import { helpdeskSettingsQuery } from '@/relay/HelpdeskSettingsQuery';
+import { ArticlesQuery } from '@/relay/__generated__/ArticlesQuery.graphql';
+import { articlesQuery } from '@/relay/ArticlesQuery';
 
 const prefixContact: string = '';
 
@@ -38,15 +39,26 @@ export const endpointContact = {
 };
 
 // ---------- ARTICLES ----------
-export const getAllHelpdeskArticles = async (
-  page: number = 1,
-  limit: number = 10,
-  status: string = '',
-  lang: string = 'en'
-): Promise<HelpdeskArticleListResponse> => {
-  const url = `${endpointContact.GET_ALL_HELPDESK_ARTICLE}?page=${page}&limit=${limit}&status=${status}&lang=${lang}`;
-  return await getRequest<HelpdeskArticleListResponse>(url);
+export const getAllArticles = async (
+  keyword?: string
+): Promise<HelpdeskArticle[]> => {
+  const data = await fetchQuery<ArticlesQuery>(
+    RelayEnvironment,
+    articlesQuery,
+    { keyword }
+  ).toPromise();
+
+  if (!data) throw new Error("No data returned from Relay query.");
+
+  const nodes =
+    data.helpdeskArticles?.edges?.flatMap((edge) =>
+      edge?.node ? [edge.node] : []
+    ) ?? [];
+
+  return nodes;
 };
+
+
 
 export const createHelpdeskArticle = async (
   data: HelpdeskArticleCreatePayload
@@ -64,7 +76,7 @@ export const updateHelpdeskArticle = async (
 
 export const deleteHelpdeskArticle = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_ARTICLE.replace('{id}', id);
-  return await deleteRequest(url, {messageSuccess: 'Article deleted successfully'});
+  return await deleteRequest(url, { messageSuccess: 'Article deleted successfully' });
 };
 
 export const getAllHelpdeskCategories = async (): Promise<CategoriesQuery['response']['helpdeskCategories']> => {
@@ -89,7 +101,7 @@ export const updateHelpdeskCategory = async (
 
 export const deleteHelpdeskCategory = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_CATEGORY.replace('{id}', id);
-  return await deleteRequest(url, {messageSuccess: 'Category deleted successfully'});
+  return await deleteRequest(url, { messageSuccess: 'Category deleted successfully' });
 };
 
 // ---------- SECTIONS ----------
@@ -109,7 +121,7 @@ export const updateHelpdeskSection = async (
 
 export const deleteHelpdeskSection = async (id: string): Promise<any> => {
   const url = endpointContact.DELETE_A_HELPDESK_SECTIONS.replace('{id}', id);
-  return await deleteRequest(url, {messageSuccess: 'Section deleted successfully'});
+  return await deleteRequest(url, { messageSuccess: 'Section deleted successfully' });
 };
 
 export const fetchHelpdeskSettings = async (): Promise<HelpdeskSettingsQuery['response']['helpdeskSettings']> => {

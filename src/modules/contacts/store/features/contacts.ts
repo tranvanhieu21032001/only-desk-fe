@@ -17,7 +17,11 @@ import { ContactProfileCardQuery } from '@/relay/__generated__/ContactProfileCar
 import { fetchQuery } from 'react-relay';
 import { Contact } from '@/shared/interfaces/contact.interface';
 
-const initialState: ContactsInitialStateInterface = {
+const initialState: ContactsInitialStateInterface & {
+  searchResults: Contact[];
+  searchLoading: boolean;
+  searchError: string | null;
+} = {
   isLoading: false,
   contacts: [],
   totalDocs: 0,
@@ -32,6 +36,10 @@ const initialState: ContactsInitialStateInterface = {
   metadata: [],
   userProfile: null,
   contactProfile: null,
+
+  searchResults: [],
+  searchLoading: false,
+  searchError: null,
 };
 
 const createContact = createAsyncThunk(
@@ -63,6 +71,23 @@ const fetchContacts = createAsyncThunk(
         keyword: keyword ?? null,
       },
       { fetchPolicy: 'store-or-network' },
+    ).toPromise();
+    return results?.contacts;
+  },
+);
+
+const fetchSearchContacts = createAsyncThunk(
+  'contacts/search-contacts',
+  async (values: { keyword: string }) => {
+    const { keyword } = values;
+    const results = await fetchQuery<ContactsQuery>(
+      relayEnvironment,
+      contactsQuery,
+      {
+        args: { first: PAGE_SIZE, offset: PAGE },
+        keyword,
+      },
+      { fetchPolicy: 'network-only' },
     ).toPromise();
     return results?.contacts;
   },
@@ -172,6 +197,22 @@ const slice = createSlice({
       state.contacts = [];
     });
 
+    builder.addCase(fetchSearchContacts.pending, (state) => {
+      state.searchLoading = true;
+      state.searchError = null;
+    });
+    builder.addCase(fetchSearchContacts.fulfilled, (state, action: any) => {
+      const edges = action.payload?.edges || [];
+      state.searchLoading = false;
+      state.searchResults =
+        edges?.map((contact: { node: Contact }) => contact?.node) || [];
+    });
+    builder.addCase(fetchSearchContacts.rejected, (state, action) => {
+      state.searchLoading = false;
+      state.searchResults = [];
+      state.searchError = action.error.message || 'Failed to search contacts';
+    });
+
     // Create contact
     builder.addCase(createContact.pending, (state) => {
       state.isLoading = true;
@@ -245,6 +286,7 @@ export const {
 export {
   createContact,
   fetchContacts,
+  fetchSearchContacts,
   handleRemoveContactAction,
   fetchDetailsContact,
   fetchUserProfileCard,

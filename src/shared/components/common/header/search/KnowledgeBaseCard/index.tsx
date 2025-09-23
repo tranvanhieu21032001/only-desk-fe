@@ -2,17 +2,25 @@ import { Fragment } from 'react';
 import { Skeleton } from 'antd';
 
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
-
 import Typography from '../../../Typography';
 
 import * as S from './card.styled';
+import { HelpdeskArticle } from '@/modules/knowledge-base/interface';
 
 interface KnowledgeBaseCardProps {
-  label: string;
+  data: HelpdeskArticle;
   isLoading?: boolean;
+  onCloseTab?: () => void;
 }
 
-function KnowledgeBaseCard({ label, isLoading }: KnowledgeBaseCardProps) {
+function KnowledgeBaseCard({ data, isLoading, onCloseTab }: KnowledgeBaseCardProps) {
+  const handleClick = () => {
+     if (data?.url) {
+      onCloseTab?.();
+      window.open(data.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
     <Fragment>
       {isLoading ? (
@@ -22,9 +30,14 @@ function KnowledgeBaseCard({ label, isLoading }: KnowledgeBaseCardProps) {
           </S.Label>
         </S.MessageCardContainer>
       ) : (
-        <S.MessageCardContainer>
+        <S.MessageCardContainer
+          onClick={handleClick}
+          style={{ cursor: 'pointer' }}
+        >
           <S.Label>
-            <Typography fontWeight={fontWeight?.semiBold}>{label}</Typography>
+            <Typography fontWeight={fontWeight?.semiBold}>
+              {data?.title}
+            </Typography>
           </S.Label>
         </S.MessageCardContainer>
       )}

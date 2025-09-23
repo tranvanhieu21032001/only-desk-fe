@@ -391,10 +391,11 @@ type Query {
   operators: [WorkspaceMember!]!
   conversations(assignedToMe: Boolean, filter: ConversationFilter, keyword: String, first: Float, after: String, last: Float, before: String): ConversationConnection!
   messages(conversationId: ID!, first: Float, after: String, last: Float, before: String): MessageConnection!
+  searchMessages(keyword: String!, first: Float, after: String, last: Float, before: String): MessageConnection!
   contacts(args: PaginationArgs!, keyword: String): ContactPagination!
   liveContacts(first: Float, after: String, last: Float, before: String): ContactConnection!
   node(id: ID!): Node
-  plugins(first: Float, after: String, last: Float, before: String): PluginConnection!
+  plugins(first: Float, after: String, last: Float, before: String, keyword: String): PluginConnection!
   installedPlugins: [Plugin!]!
   helpdeskPublicCategories: [HelpdeskCategory!]!
   helpdeskArticles(first: Float, after: String, last: Float, before: String, keyword: String, popular: Boolean): HelpdeskArticleConnection!

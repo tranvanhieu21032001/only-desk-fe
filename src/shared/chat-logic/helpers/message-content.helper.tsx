@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 
 export function renderMessageContent(text: string): ReactNode[] {
-  const lines = text.split('\n');
+  const lines = text?.split('\n');
 
-  return lines.map((line, index) => {
+  return lines?.map((line, index) => {
     // Monospace block: ```...```
     if (line.startsWith('```') && line.endsWith('```')) {
-      const content = line.slice(3, -3);
+      const content = line?.slice(3, -3);
       return (
         <pre
           key={index}

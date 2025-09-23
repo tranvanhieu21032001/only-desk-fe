@@ -1,10 +1,10 @@
 import { debounce } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CloseOutlined } from '@ant-design/icons';
-import { Tabs, TabsProps } from 'antd';
+import { Image, Tabs, TabsProps } from 'antd';
 import { ReactSVG } from 'react-svg';
-
+import empty from '@/assets/images/contact/img-contact-empty.png';
 import TabContent from '../TabContent';
 import { TabEnums } from '@/shared/helper/enums/header';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
@@ -18,91 +18,169 @@ import icMessage from '@/assets/icons/header/ic-message.svg';
 import icContact from '@/assets/icons/header/ic-contact.svg';
 import icPlugins from '@/assets/icons/header/ic-plugins.svg';
 import icKnowledge from '@/assets/icons/header/ic-knowledge.svg';
+import { fetchHelpdeskArticles } from '@/modules/knowledge-base/store/helpdeskArticleSlice';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks';
+import { useSelector } from 'react-redux';
+import { fetchSearchPlugins } from '@/modules/plugins/store/pluginsSlice';
+import { fetchSearchMessages } from '@/modules/inbox/store/features/message';
+import { RootState } from '@/core/store';
+import { fetchSearchContacts } from '@/modules/contacts/store/features/contacts';
+import themeColors from '@/shared/styles/themes/default/colors';
+import styled from 'styled-components';
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
 
-function Search() {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+`;
+function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
   const { t } = useTranslation('header');
-  const [params, setParams] = useState<{
-    search: string;
-    tab: string;
-  }>({
+  const dispatch = useAppDispatch();
+
+  const [params, setParams] = useState<{ search: string; tab: string }>({
     search: '',
-    tab: TabEnums?.ALL,
+    tab: TabEnums.ALL,
   });
 
+  const { searchResults: pluginResults } = useSelector((state: RootState) => state.plugins);
+  const { data: allMessage } = useSelector((state: RootState) => state.message);
+  const { items: allArticles } = useSelector((state: RootState) => state.helpdeskArticles);
+  const { searchResults: contactResults } = useAppSelector((state: RootState) => state.contacts);
+
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setParams((prev) => ({ ...prev, search: value }));
+
+      if (!value.trim()) {
+        dispatch({ type: 'plugins/clearSearchResults' });
+        dispatch({ type: 'contacts/clearSearchResults' });
+        dispatch({ type: 'message/clearSearchResults' });
+        dispatch({ type: 'helpdeskArticles/clearSearchResults' });
+        return;
+      }
+      dispatch(fetchHelpdeskArticles({ keyword: value }));
+      dispatch(fetchSearchPlugins({ keyword: value }));
+      dispatch(fetchSearchMessages({ keyword: value, first: 10 }));
+      dispatch(fetchSearchContacts({ keyword: value }));
+    }, 600),
+    [dispatch]
+  );
+
+
+  function onChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
+    handleSearch(e.target.value);
+  }
+
+  function handleCloseTab() {
+    onCloseSearch?.();
+  }
+
+
+  const activeTabs = useMemo(() => {
+    if (!params.search.trim()) return [];
+    const tabs: string[] = [];
+    if (allMessage?.length > 0) tabs.push(TabEnums.MESSAGES);
+    if (contactResults?.length > 0) tabs.push(TabEnums.CONTACTS);
+    if (allArticles?.length > 0) tabs.push(TabEnums.KNOWLEDGE_BASE);
+    if (pluginResults?.length > 0) tabs.push(TabEnums.PLUGINS);
+    return tabs;
+  }, [params.search, allMessage, contactResults, allArticles, pluginResults]);
+
+
+  const shouldShowAll = activeTabs.length > 1;
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setParams((prev) => ({
-        ...prev,
-        isLoading: true,
-      }));
-    }, 600);
+    if (activeTabs.length === 1) {
+      setParams((prev) => ({ ...prev, tab: activeTabs[0] }));
+    } else if (activeTabs.length > 1) {
+      setParams((prev) => ({ ...prev, tab: TabEnums.ALL }));
+    }
+  }, [activeTabs])
 
-    return () => clearTimeout(timer);
-  }, []);
+  const items: TabsProps['items'] = useMemo(() => {
+    const dynamicTabs: TabsProps['items'] = [];
 
-  const handleSearch = debounce(() => {}, 600);
+    if (shouldShowAll) {
+      dynamicTabs.push({
+        key: TabEnums.ALL,
+        label: (
+          <S.LabelTab>
+            <Typography fontWeight={fontWeight?.semiBold}>
+              {t('header.tabs.all')}
+            </Typography>
+          </S.LabelTab>
+        ),
+        children: <TabAllContent {...params} onParams={setParams} onCloseTab={handleCloseTab} />,
+      });
+    }
 
-  const items: TabsProps['items'] = [
-    {
-      key: TabEnums?.ALL,
-      label: (
-        <S.LabelTab>
-          <Typography fontWeight={fontWeight?.semiBold}>
-            {t('header.tabs.all')}
-          </Typography>
-        </S.LabelTab>
-      ),
-      children: <TabAllContent {...params} onParams={setParams} />,
-    },
-    {
-      key: TabEnums?.MESSAGES,
-      label: (
-        <S.LabelTab>
-          <ReactSVG src={icMessage} />
-          <Typography fontWeight={fontWeight?.semiBold}>
-            {t('header.tabs.messages')}
-          </Typography>
-        </S.LabelTab>
-      ),
-      children: <TabContent type={TabEnums?.MESSAGES} />,
-    },
-    {
-      key: TabEnums?.CONTACTS,
-      label: (
-        <S.LabelTab>
-          <ReactSVG src={icContact} />
-          <Typography fontWeight={fontWeight?.semiBold}>
-            {t('header.tabs.contacts')}
-          </Typography>
-        </S.LabelTab>
-      ),
-      children: <TabContent type={TabEnums?.CONTACTS} />,
-    },
-    {
-      key: TabEnums?.KNOWLEDGE_BASE,
-      label: (
-        <S.LabelTab>
-          <ReactSVG src={icKnowledge} />
-          <Typography fontWeight={fontWeight?.semiBold}>
-            {t('header.tabs.knowledge-base')}
-          </Typography>
-        </S.LabelTab>
-      ),
-      children: <TabContent type={TabEnums?.KNOWLEDGE_BASE} />,
-    },
-    {
-      key: TabEnums?.PLUGINS,
-      label: (
-        <S.LabelTab>
-          <ReactSVG src={icPlugins} />
-          <Typography fontWeight={fontWeight?.semiBold}>
-            {t('header.tabs.plugins')}
-          </Typography>
-        </S.LabelTab>
-      ),
-      children: <TabContent type={TabEnums?.PLUGINS} />,
-    },
-  ];
+    if (activeTabs.includes(TabEnums.MESSAGES)) {
+      dynamicTabs.push({
+        key: TabEnums.MESSAGES,
+        label: (
+          <S.LabelTab>
+            <ReactSVG src={icMessage} />
+            <Typography fontWeight={fontWeight?.semiBold}>
+              {t('header.tabs.messages')}
+            </Typography>
+          </S.LabelTab>
+        ),
+        children: <TabContent type={TabEnums.MESSAGES} onCloseTab={handleCloseTab} />,
+      });
+    }
+
+    if (activeTabs.includes(TabEnums.CONTACTS)) {
+      dynamicTabs.push({
+        key: TabEnums.CONTACTS,
+        label: (
+          <S.LabelTab>
+            <ReactSVG src={icContact} />
+            <Typography fontWeight={fontWeight?.semiBold}>
+              {t('header.tabs.contacts')}
+            </Typography>
+          </S.LabelTab>
+        ),
+        children: <TabContent type={TabEnums.CONTACTS} onCloseTab={handleCloseTab} />,
+      });
+    }
+
+    if (activeTabs.includes(TabEnums.KNOWLEDGE_BASE)) {
+      dynamicTabs.push({
+        key: TabEnums.KNOWLEDGE_BASE,
+        label: (
+          <S.LabelTab>
+            <ReactSVG src={icKnowledge} />
+            <Typography fontWeight={fontWeight?.semiBold}>
+              {t('header.tabs.knowledge-base')}
+            </Typography>
+          </S.LabelTab>
+        ),
+        children: <TabContent type={TabEnums.KNOWLEDGE_BASE} onCloseTab={handleCloseTab} />,
+      });
+    }
+
+    if (activeTabs.includes(TabEnums.PLUGINS)) {
+      dynamicTabs.push({
+        key: TabEnums.PLUGINS,
+        label: (
+          <S.LabelTab>
+            <ReactSVG src={icPlugins} />
+            <Typography fontWeight={fontWeight?.semiBold}>
+              {t('header.tabs.plugins')}
+            </Typography>
+          </S.LabelTab>
+        ),
+        children: <TabContent type={TabEnums.PLUGINS} onCloseTab={handleCloseTab} />,
+      });
+    }
+
+    return dynamicTabs;
+  }, [shouldShowAll, activeTabs, params, t]);
 
   function handleChangeTab(key: string) {
     setParams((prev) => ({
@@ -117,21 +195,31 @@ function Search() {
         <S.SearchInput
           prefix
           placeholder={t('header.search')}
-          onChange={handleSearch}
+          onChange={onChangeInput}
           allowClear={{ clearIcon: <CloseOutlined /> }}
         />
       </S.SearchInputWrap>
 
       <S.SearchTabs>
-        <S.SearchCount>
-          <Typography>100 {t('header.tabs.results')}</Typography>
-        </S.SearchCount>
-        <Tabs
-          activeKey={params?.tab}
-          defaultActiveKey={params?.tab}
-          items={items}
-          onChange={handleChangeTab}
-        />
+        {activeTabs.length === 0 ? (
+         <Wrapper>
+      <Image src={empty} height={200} width={200} preview={false} />
+      <Typography
+        color={themeColors?.primary}
+        variant="h5"
+        fontWeight={fontWeight.semiBold}
+      >
+        No results found
+      </Typography>
+    </Wrapper>
+        ) : (
+          <Tabs
+            activeKey={params.tab}
+            items={items}
+            onChange={handleChangeTab}
+          />
+        )}
+
       </S.SearchTabs>
     </S.SearchContainer>
   );

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<398ce845737b5ee9492e6d241f1c3bd7>>
+ * @generated SignedSource<<ca9749fe0395e83065a40c62ba2d2962>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,6 +15,7 @@ export type AllpluginsQuery$variables = {
   after?: string | null | undefined;
   before?: string | null | undefined;
   first?: number | null | undefined;
+  keyword?: string | null | undefined;
   last?: number | null | undefined;
 };
 export type AllpluginsQuery$data = {
@@ -65,9 +66,14 @@ v2 = {
 v3 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "keyword"
+},
+v4 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "last"
 },
-v4 = [
+v5 = [
   {
     "alias": null,
     "args": [
@@ -85,6 +91,11 @@ v4 = [
         "kind": "Variable",
         "name": "first",
         "variableName": "first"
+      },
+      {
+        "kind": "Variable",
+        "name": "keyword",
+        "variableName": "keyword"
       },
       {
         "kind": "Variable",
@@ -238,12 +249,13 @@ return {
       (v0/*: any*/),
       (v1/*: any*/),
       (v2/*: any*/),
-      (v3/*: any*/)
+      (v3/*: any*/),
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
     "name": "AllpluginsQuery",
-    "selections": (v4/*: any*/),
+    "selections": (v5/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -252,24 +264,25 @@ return {
     "argumentDefinitions": [
       (v2/*: any*/),
       (v0/*: any*/),
-      (v3/*: any*/),
-      (v1/*: any*/)
+      (v4/*: any*/),
+      (v1/*: any*/),
+      (v3/*: any*/)
     ],
     "kind": "Operation",
     "name": "AllpluginsQuery",
-    "selections": (v4/*: any*/)
+    "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "7f5eb2d913c9a5f9e7ae663e5108395d",
+    "cacheID": "93c48b0a85f938863855767a19596767",
     "id": null,
     "metadata": {},
     "name": "AllpluginsQuery",
     "operationKind": "query",
-    "text": "query AllpluginsQuery(\n  $first: Float\n  $after: String\n  $last: Float\n  $before: String\n) {\n  plugins(first: $first, after: $after, last: $last, before: $before) {\n    edges {\n      node {\n        id\n        key\n        name\n        isInstalled\n        shortDesc\n        version\n        category\n        type\n        iconUrl\n        docUrl\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
+    "text": "query AllpluginsQuery(\n  $first: Float\n  $after: String\n  $last: Float\n  $before: String\n  $keyword: String\n) {\n  plugins(first: $first, after: $after, last: $last, before: $before, keyword: $keyword) {\n    edges {\n      node {\n        id\n        key\n        name\n        isInstalled\n        shortDesc\n        version\n        category\n        type\n        iconUrl\n        docUrl\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      startCursor\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b2754b3c6d72211eec7e5495f6ba0416";
+(node as any).hash = "0221a378a6c9e02f0c5395d1ddec8ff4";
 
 export default node;

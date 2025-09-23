@@ -1,5 +1,6 @@
 import { Image, Skeleton } from 'antd';
 import { Fragment } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
@@ -9,20 +10,24 @@ import Typography from '../../../Typography';
 import * as S from './card.styled';
 
 import icImageDefault from '@/assets/icons/common/ic-image-default.jpeg';
+import { PluginItem } from '@/modules/plugins/store/pluginsSlice';
 
 interface PluginCardProps {
-  label: string;
-  description: string;
-  avatar: string;
+  data: PluginItem;
   isLoading?: boolean;
+  onCloseTab?: () => void;
 }
 
-function PluginCard({
-  label,
-  description,
-  avatar,
-  isLoading,
-}: PluginCardProps) {
+function PluginCard({ data, isLoading, onCloseTab }: PluginCardProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (data?.id) {
+      onCloseTab?.()
+      navigate(`/plugins?type=all-plugins&pluginId=${data.id}`);
+    }
+  };
+
   return (
     <Fragment>
       {isLoading ? (
@@ -47,9 +52,12 @@ function PluginCard({
           </S.ContentCardWrap>
         </S.MessageCardContainer>
       ) : (
-        <S.MessageCardContainer>
+        <S.MessageCardContainer
+          onClick={handleClick}
+          style={{ cursor: 'pointer' }}
+        >
           <Image
-            src={avatar}
+            src={data?.iconUrl}
             preview={false}
             width={40}
             height={40}
@@ -62,7 +70,7 @@ function PluginCard({
             <S.LabelCardWrap>
               <S.Label>
                 <Typography fontWeight={fontWeight?.semiBold}>
-                  {label}
+                  {data?.name}
                 </Typography>
               </S.Label>
             </S.LabelCardWrap>
@@ -72,7 +80,7 @@ function PluginCard({
                 color={themeColors?.newtralLight}
                 variant="caption-small"
               >
-                {description}
+                {data?.shortDesc}
               </Typography>
             </S.Description>
           </S.ContentCardWrap>
