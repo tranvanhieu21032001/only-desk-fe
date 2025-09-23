@@ -19,6 +19,7 @@ import InboxListSkeleton from '../../components/inbox-list/InboxListSkeleton';
 import { RootState } from '@/core/store';
 import { toggleSidebar } from '../../store/features/inbox';
 import InboxListHeader from '../../components/inbox-list/InboxListHeader';
+import { ConversationFilterEnum } from '@/shared/helper/enums/common';
 
 const MainInbox: React.FC = () => {
   const dispatch = useDispatch();
@@ -37,12 +38,12 @@ const MainInbox: React.FC = () => {
     dispatch(toggleSidebar());
   }, [dispatch]);
 
-  const [filter, setFilter] = useState<string>(searchParams.get('filter') || 'ALL');
+  const [filter, setFilter] = useState<string>(searchParams.get('filter') || ConversationFilterEnum.ALL);
   const [keyword, setKeyword] = useState<string>(searchParams.get('keyword') || '');
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    setFilter(params.get('filter') || 'ALL');
+    setFilter(params.get('filter') || ConversationFilterEnum.ALL);
     setKeyword(params.get('keyword') || '');
   }, [location.search]);
 

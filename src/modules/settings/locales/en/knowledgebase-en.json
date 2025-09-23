@@ -16,7 +16,6 @@
         "instruction-4": "Wait for DNS to propagate (this may take a few hours). Use the Verify domain setup button below",
         "verify-button": "Verify Domain Setup",
         "view-button": "View Online",
-        "auto-save": "Automatically saved",
-        "baseHelpdeskDomain":"sombes.com"
+        "auto-save": "Automatically saved"
     }
 }
