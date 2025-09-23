@@ -15,4 +15,13 @@ enum FormTypeEnums {
   WEBSITE = 'website',
 }
 
-export { ToastMessageType, FormTypeEnums };
+ enum ConversationFilterEnum {
+  ALL = 'ALL',
+  UNREAD = 'UNREAD',
+  UNRESOLVED = 'UNRESOLVED',
+  RESOLVED = 'RESOLVED',
+  MOST_RECENT = 'MOST_RECENT',
+}
+
+
+export { ToastMessageType, FormTypeEnums, ConversationFilterEnum };

@@ -24,6 +24,7 @@ const KnowledgeBaseTab: React.FC<KnowledgeBaseTabProps> = ({
     (state: RootState) => state.helpdeskCategory
   );
 
+    
   const [isFiltering, setIsFiltering] = useState(false);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ const KnowledgeBaseTab: React.FC<KnowledgeBaseTabProps> = ({
       categoryName: cat.name,
     }));
   });
-
+  
   const filteredArticles = knowledgeKeyword
     ? allArticles.filter((a) =>
         a.title.toLowerCase().includes(knowledgeKeyword.toLowerCase())
@@ -72,7 +73,7 @@ const KnowledgeBaseTab: React.FC<KnowledgeBaseTabProps> = ({
           <S.ShortcutItem
             key={article.id}
             onClick={() => {
-              const textToInsert = `${article.title} - <https://example.com|Example website>`;
+              const textToInsert = `<${article?.url} | ${article.title}>`;
               setInputValue(textToInsert);
               setActiveTab(null);
             }}

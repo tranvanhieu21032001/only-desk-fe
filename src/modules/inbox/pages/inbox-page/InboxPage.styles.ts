@@ -24,8 +24,40 @@ export const InboxList = styled.div`
   height: 100%;
   background-color: #f9f9f9;
   border-right: 1px solid #ddd;
-  overflow-y: auto;
+  overflow-y: hidden;
   transition: width 0.1s ease;
+`;
+
+
+export const ConversationListWrapper = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding:12px;
+  margin:12px 0;
+
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+    transition: background 0.3s ease;
+  }
+
+  &.scrolling::-webkit-scrollbar-thumb {
+    background: ${(props) => props.theme.colors.primary};
+  }
+
+  &.scrolling::-webkit-scrollbar-thumb:hover {
+    background: ${(props) => props.theme.colors.primary};
+  }
 `;
 
 

@@ -91,8 +91,6 @@ export const filterOptions = [
   'Unresolved',
   'Resolved',
   'Most recent',
-  'Longest waiting',
-  'Mentions',
 ];
 
 export const mockOperators = [

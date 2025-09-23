@@ -1,26 +1,57 @@
 import { Image } from 'antd';
 import * as S from './InboxList.styles';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import search from '@/assets/icons/common/ic-search.svg';
 import arrowDown from '@/assets/icons/common/ic-arrow-down.svg';
 import { filterOptions } from '@/core/settings/options';
 import { useTranslation } from 'react-i18next';
+import debounce from 'lodash/debounce';
 
-const InboxListHeader = () => {
+type InboxListHeaderProps = {
+  onSearchChange: (keyword: string) => void;
+  onFilterChange: (filter: string) => void;
+  selectedFilter: string;
+  searchValue: string;
+};
+
+const InboxListHeader: React.FC<InboxListHeaderProps> = ({
+  onSearchChange,
+  onFilterChange,
+  selectedFilter,
+  searchValue,
+}) => {
   const { t } = useTranslation('inbox');
   const filterRef = useRef<HTMLDivElement>(null);
   const [isAllDropdownOpen, setIsAllDropdownOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState('All');
+
+  const [localKeyword, setLocalKeyword] = useState(searchValue || '');
+
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        onSearchChange(value);
+      }, 600),
+    [onSearchChange]
+  );
+
+  useEffect(() => {
+    setLocalKeyword(searchValue);
+  }, [searchValue]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalKeyword(value);
+    debouncedSearch(value);
+  };
 
   const handleSelectFilter = (filter: string) => {
-    setSelectedFilter(filter);
+    onFilterChange(filter);
     setIsAllDropdownOpen(false);
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-
       if (filterRef.current && !filterRef.current.contains(target)) {
         setIsAllDropdownOpen(false);
       }
@@ -32,20 +63,28 @@ const InboxListHeader = () => {
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
   return (
     <S.SearchFilterWrapper>
       <S.SearchInputWrapper>
         <S.SearchIcon>
           <Image src={search} alt="Search icon" preview={false} />
         </S.SearchIcon>
-        <S.SearchInput placeholder={t('inboxList.search')} />
+        <S.SearchInput
+          placeholder={t('inboxList.search')}
+          onChange={handleInputChange}
+          value={localKeyword}
+        />
       </S.SearchInputWrapper>
 
       <S.FilterWrapper ref={filterRef}>
         <S.ButtonDropdown
-          onClick={() => {
-            setIsAllDropdownOpen((prev) => !prev);
-          }}
+          onClick={() => setIsAllDropdownOpen((prev) => !prev)}
         >
           <Image src={arrowDown} alt="Arrow down icon" preview={false} />{' '}
           {selectedFilter}

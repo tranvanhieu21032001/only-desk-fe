@@ -1,6 +1,6 @@
-import React, { useCallback, Suspense, } from 'react';
+import React, { useCallback, Suspense, useState, useEffect } from 'react';
 import { Splitter } from 'antd';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 // import ConversationListPaginationQuery from '@/relay/__generated__/ConversationListPaginationQuery.graphql';
@@ -18,10 +18,13 @@ import DetailSkeleton from '../../components/inbox-detail/DetailSkeleton';
 import InboxListSkeleton from '../../components/inbox-list/InboxListSkeleton';
 import { RootState } from '@/core/store';
 import { toggleSidebar } from '../../store/features/inbox';
+import InboxListHeader from '../../components/inbox-list/InboxListHeader';
+import { ConversationFilterEnum } from '@/shared/helper/enums/common';
 
 const MainInbox: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const activeConversationId = searchParams.get('conversationId');
 
@@ -35,6 +38,32 @@ const MainInbox: React.FC = () => {
     dispatch(toggleSidebar());
   }, [dispatch]);
 
+  const [filter, setFilter] = useState<string>(searchParams.get('filter') || ConversationFilterEnum.ALL);
+  const [keyword, setKeyword] = useState<string>(searchParams.get('keyword') || '');
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setFilter(params.get('filter') || ConversationFilterEnum.ALL);
+    setKeyword(params.get('keyword') || '');
+  }, [location.search]);
+
+  const updateURL = ({ filter: newFilter, keyword: newKeyword }: { filter?: string; keyword?: string }) => {
+    const params = new URLSearchParams(location.search);
+    if (newFilter !== undefined) params.set('filter', newFilter);
+    if (newKeyword !== undefined) params.set('keyword', newKeyword);
+    navigate({ search: params.toString() }, { replace: true });
+  };
+
+  const handleFilterChange = (newFilter: string) => {
+    setFilter(newFilter);
+    updateURL({ filter: newFilter });
+  };
+
+  const handleSearchChange = (newKeyword: string) => {
+    setKeyword(newKeyword);
+    updateURL({ keyword: newKeyword });
+  };
+
   return (
     <S.InboxWrapper>
       <S.CustomSplitter>
@@ -45,8 +74,18 @@ const MainInbox: React.FC = () => {
             defaultSize={DEFAULT_RESIZER_CONFIG.DEFAULT_WIDTH}
           >
             <S.InboxList>
+              <InboxListHeader
+                onSearchChange={handleSearchChange}
+                onFilterChange={handleFilterChange}
+                selectedFilter={filter}
+                searchValue={keyword}
+              />
               <Suspense fallback={<InboxListSkeleton />}>
-                <ConversationList isAssignedToMe={isAssignedToMePage} />
+                <ConversationList
+                  isAssignedToMe={isAssignedToMePage}
+                  filter={filter}
+                  keyword={keyword}
+                />
               </Suspense>
             </S.InboxList>
           </Splitter.Panel>

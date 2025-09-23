@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c46cc2a9b611459b4613d7c1d7ca66f3>>
+ * @generated SignedSource<<b1511dd9a17a4e625ee0b6075b2b2fc3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,10 +10,13 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
+export type ConversationFilter = "ALL" | "MOST_RECENT" | "RESOLVED" | "UNREAD" | "UNRESOLVED" | "%future added value";
 export type ConversationListQuery$variables = {
   after?: string | null | undefined;
   assignedToMe?: boolean | null | undefined;
+  filter?: ConversationFilter | null | undefined;
   first?: number | null | undefined;
+  keyword?: string | null | undefined;
 };
 export type ConversationListQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"ConversationFragment_query">;
@@ -37,9 +40,19 @@ v1 = {
 v2 = {
   "defaultValue": null,
   "kind": "LocalArgument",
+  "name": "filter"
+},
+v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
   "name": "first"
 },
-v3 = [
+v4 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "keyword"
+},
+v5 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -52,18 +65,28 @@ v3 = [
   },
   {
     "kind": "Variable",
+    "name": "filter",
+    "variableName": "filter"
+  },
+  {
+    "kind": "Variable",
     "name": "first",
     "variableName": "first"
+  },
+  {
+    "kind": "Variable",
+    "name": "keyword",
+    "variableName": "keyword"
   }
 ],
-v4 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v5 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -75,14 +98,16 @@ return {
     "argumentDefinitions": [
       (v0/*: any*/),
       (v1/*: any*/),
-      (v2/*: any*/)
+      (v2/*: any*/),
+      (v3/*: any*/),
+      (v4/*: any*/)
     ],
     "kind": "Fragment",
     "metadata": null,
     "name": "ConversationListQuery",
     "selections": [
       {
-        "args": (v3/*: any*/),
+        "args": (v5/*: any*/),
         "kind": "FragmentSpread",
         "name": "ConversationFragment_query"
       }
@@ -93,16 +118,18 @@ return {
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [
-      (v2/*: any*/),
+      (v3/*: any*/),
       (v0/*: any*/),
-      (v1/*: any*/)
+      (v1/*: any*/),
+      (v4/*: any*/),
+      (v2/*: any*/)
     ],
     "kind": "Operation",
     "name": "ConversationListQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v5/*: any*/),
         "concreteType": "ConversationConnection",
         "kind": "LinkedField",
         "name": "conversations",
@@ -156,8 +183,43 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/),
-                  (v5/*: any*/),
+                  (v6/*: any*/),
+                  (v7/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "subject",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "resolved",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "metadata",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "lastActivityAt",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "unreadCount",
+                    "storageKey": null
+                  },
                   {
                     "alias": null,
                     "args": null,
@@ -166,8 +228,8 @@ return {
                     "name": "contact",
                     "plural": false,
                     "selections": [
-                      (v4/*: any*/),
-                      (v5/*: any*/),
+                      (v6/*: any*/),
+                      (v7/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -220,47 +282,12 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "kind": "ScalarField",
-                    "name": "subject",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "resolved",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "metadata",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "lastActivityAt",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "unreadCount",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
                     "concreteType": "User",
                     "kind": "LinkedField",
                     "name": "assignedTo",
                     "plural": false,
                     "selections": [
-                      (v4/*: any*/)
+                      (v6/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -286,7 +313,7 @@ return {
                         "name": "type",
                         "storageKey": null
                       },
-                      (v4/*: any*/)
+                      (v6/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -308,9 +335,11 @@ return {
       },
       {
         "alias": null,
-        "args": (v3/*: any*/),
+        "args": (v5/*: any*/),
         "filters": [
-          "assignedToMe"
+          "assignedToMe",
+          "keyword",
+          "filter"
         ],
         "handle": "connection",
         "key": "ConversationFragment_conversations",
@@ -320,16 +349,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "490ab25daaf57c26c2720f10cda25b82",
+    "cacheID": "c2b61ece99c9e23115fffc2cbfb28f7f",
     "id": null,
     "metadata": {},
     "name": "ConversationListQuery",
     "operationKind": "query",
-    "text": "query ConversationListQuery(\n  $first: Float\n  $after: String\n  $assignedToMe: Boolean\n) {\n  ...ConversationFragment_query_Bk7iV\n}\n\nfragment ConversationFragment_query_Bk7iV on Query {\n  conversations(assignedToMe: $assignedToMe, first: $first, after: $after) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        contact {\n          id\n          rawId\n          avatar\n          name\n          isOnline\n          email\n          context {\n            countryCode\n          }\n        }\n        subject\n        resolved\n        metadata\n        lastActivityAt\n        unreadCount\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          type\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
+    "text": "query ConversationListQuery(\n  $first: Float\n  $after: String\n  $assignedToMe: Boolean\n  $keyword: String\n  $filter: ConversationFilter\n) {\n  ...ConversationFragment_query_4F2xnU\n}\n\nfragment ConversationFragment_query_4F2xnU on Query {\n  conversations(assignedToMe: $assignedToMe, first: $first, after: $after, keyword: $keyword, filter: $filter) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      cursor\n      node {\n        id\n        rawId\n        subject\n        resolved\n        metadata\n        lastActivityAt\n        unreadCount\n        contact {\n          id\n          rawId\n          avatar\n          name\n          isOnline\n          email\n          context {\n            countryCode\n          }\n        }\n        assignedTo {\n          id\n        }\n        latestMessage {\n          content\n          type\n          id\n        }\n        __typename\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "af7da1041846c1d56ccb02d1ad712448";
+(node as any).hash = "b2ff3821f9d5561dcc89170fcc122c99";
 
 export default node;
