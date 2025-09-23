@@ -17,11 +17,15 @@ import { ContactProfileCardQuery } from '@/relay/__generated__/ContactProfileCar
 import { fetchQuery } from 'react-relay';
 import { Contact } from '@/shared/interfaces/contact.interface';
 
-const initialState: ContactsInitialStateInterface & {
+interface ContactsSearchState {
   searchResults: Contact[];
   searchLoading: boolean;
   searchError: string | null;
-} = {
+  searchOffset: number;
+  hasMore: boolean;
+}
+
+const initialState: ContactsInitialStateInterface & ContactsSearchState = {
   isLoading: false,
   contacts: [],
   totalDocs: 0,
@@ -40,6 +44,8 @@ const initialState: ContactsInitialStateInterface & {
   searchResults: [],
   searchLoading: false,
   searchError: null,
+  searchOffset: 0,
+  hasMore: true,
 };
 
 const createContact = createAsyncThunk(
@@ -76,22 +82,31 @@ const fetchContacts = createAsyncThunk(
   },
 );
 
-const fetchSearchContacts = createAsyncThunk(
-  'contacts/search-contacts',
-  async (values: { keyword: string }) => {
-    const { keyword } = values;
+const fetchSearchContacts = createAsyncThunk<
+  { contacts: Contact[] },
+  { keyword: string; offset?: number },
+  { rejectValue: string }
+>('contacts/search-contacts', async (values, { rejectWithValue }) => {
+  const { keyword, offset = 0 } = values;
+  try {
     const results = await fetchQuery<ContactsQuery>(
       relayEnvironment,
       contactsQuery,
       {
-        args: { first: PAGE_SIZE, offset: PAGE },
+        args: { first: PAGE_SIZE, offset },
         keyword,
       },
       { fetchPolicy: 'network-only' },
-    ).toPromise();
-    return results?.contacts;
-  },
-);
+    ).toPromise();   
+    if (!results?.contacts) {
+      return rejectWithValue('No data found');
+    }
+    const contacts = results.contacts.edges?.map((edge) => edge?.node as Contact) || [];
+    return { contacts };
+  } catch (error: any) {
+    return rejectWithValue(error.message || 'Failed to search contacts');
+  }
+});
 
 const handleRemoveContactAction = createAsyncThunk(
   'contacts/remove-contact',
@@ -170,6 +185,13 @@ const slice = createSlice({
     actionUpdateContactDetails: (state, action) => {
       state.contactDetails = action.payload;
     },
+    resetSearchContacts: (state) => {
+      state.searchResults = [];
+      state.searchLoading = false;
+      state.searchError = null;
+      state.searchOffset = 0;
+      state.hasMore = true;
+    }
   },
 
   extraReducers: (builder) => {
@@ -197,20 +219,31 @@ const slice = createSlice({
       state.contacts = [];
     });
 
-    builder.addCase(fetchSearchContacts.pending, (state) => {
-      state.searchLoading = true;
+    builder.addCase(fetchSearchContacts.pending, (state, action) => {
+      if (action.meta.arg.offset === 0) {
+        state.searchLoading = true;
+      }
       state.searchError = null;
     });
     builder.addCase(fetchSearchContacts.fulfilled, (state, action: any) => {
-      const edges = action.payload?.edges || [];
+      const { contacts } = action.payload;
       state.searchLoading = false;
-      state.searchResults =
-        edges?.map((contact: { node: Contact }) => contact?.node) || [];
+      
+      const isInitialSearch = action.meta.arg.offset === 0;
+      if (isInitialSearch) {
+        state.searchResults = contacts;
+      } else {
+        state.searchResults.push(...contacts);
+      }
+      
+      state.searchOffset = state.searchOffset + PAGE_SIZE;
+      state.hasMore = contacts.length === PAGE_SIZE;
     });
     builder.addCase(fetchSearchContacts.rejected, (state, action) => {
       state.searchLoading = false;
       state.searchResults = [];
-      state.searchError = action.error.message || 'Failed to search contacts';
+      state.searchError = action.payload || 'Failed to search contacts';
+      state.hasMore = false;
     });
 
     // Create contact
@@ -281,6 +314,7 @@ export const {
   actionUpdateIsDetails,
   actionUpdateIsLoading,
   actionUpdateContactDetails,
+  resetSearchContacts,
 } = slice.actions;
 
 export {

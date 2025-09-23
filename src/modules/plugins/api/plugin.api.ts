@@ -1,6 +1,6 @@
 import { fetchQuery } from 'react-relay';
 import RelayEnvironment from '@/relay/RelayEnvironment';
-import { AllpluginsQuery } from '@/relay/__generated__/AllpluginsQuery.graphql';
+import { AllpluginsQuery, AllpluginsQuery$variables } from '@/relay/__generated__/AllpluginsQuery.graphql';
 import { allPluginsQuery } from '@/relay/AllpluginsQuery';
 import { PluginDetailQuery } from '@/relay/__generated__/PluginDetailQuery.graphql';
 import { pluginDetailQuery } from '@/relay/PluginDetailQuery';
@@ -32,20 +32,16 @@ export interface PluginDetail {
   __typename?: string;
 }
 
-export const getAllPlugins = async (variables: {
-  first?: number;
-  after?: string;
-  last?: number;
-  before?: string;
-  keyword?: string
-}): Promise<AllpluginsQuery['response']['plugins']> => {
+export const getAllPlugins = async (
+  variables: AllpluginsQuery$variables,
+): Promise<AllpluginsQuery['response']['plugins']> => {
   const data = await fetchQuery<AllpluginsQuery>(
     RelayEnvironment,
     allPluginsQuery,
-    variables
+    variables,
   ).toPromise();
 
-  if (!data) {
+  if (!data || !data.plugins) {
     throw new Error('No data returned from allPluginsQuery.');
   }
 
@@ -88,14 +84,14 @@ export const installPlugin = async (pluginKey: string) => {
     data: {
       pluginKey,
     },
-     messageSuccess:'Plugin installed successfully',
+    messageSuccess: 'Plugin installed successfully',
     enableFlashMessageError: true,
   });
 };
 
 export const uninstallPlugin = async (pluginKey: string) => {
   return deleteRequest(`${ENDPOINT.UNINSTALL_PLUGIN}/${pluginKey}/uninstall`, {
-    messageSuccess:'Plugin uninstalled successfully',
+    messageSuccess: 'Plugin uninstalled successfully',
     enableFlashMessageError: true,
   });
 };

@@ -8,7 +8,6 @@ import {
   PluginDetail,
 } from '../api/plugin.api';
 import { PAGE_SIZE } from '@/shared/constant/common';
-import { Plugin } from '@/core/model/common';
 
 export interface PluginItem {
   id?: string;
@@ -33,6 +32,8 @@ interface PluginsState {
   searchResults: PluginItem[];
   searchLoading: boolean;
   searchError?: string | null;
+  endCursor: string | null;
+  hasNextPage: boolean;
 }
 
 const initialState: PluginsState = {
@@ -48,6 +49,8 @@ const initialState: PluginsState = {
   searchResults: [],
   searchLoading: false,
   searchError: null,
+  endCursor: null,
+  hasNextPage: true,
 };
 
 export const fetchPlugins = createAsyncThunk('plugins/fetchAll', async () => {
@@ -96,13 +99,21 @@ export const fetchPluginDetail = createAsyncThunk<
 });
 
 export const fetchSearchPlugins = createAsyncThunk<
-  Plugin[],
-  { keyword: string },
+  { plugins: PluginItem[], endCursor: string | null, hasNextPage: boolean },
+  { keyword: string, after?: string | null },
   { rejectValue: string }
->('plugins/fetchSearch', async ({ keyword }, { rejectWithValue }) => {
+>('plugins/fetchSearch', async ({ keyword, after }, { rejectWithValue }) => {
   try {
-    const res = await getAllPlugins({ first: PAGE_SIZE, keyword });
-    return (res?.edges || []).map((edge: any) => edge.node as Plugin);
+    const res = await getAllPlugins({ first: PAGE_SIZE, keyword, after });
+    
+    const plugins = (res?.edges || []).map((edge: any) => edge.node as PluginItem);
+    
+    return {
+      plugins,
+      endCursor: res?.pageInfo?.endCursor || null,
+      hasNextPage: res?.pageInfo?.hasNextPage || false
+    };
+
   } catch (error: any) {
     return rejectWithValue(error.message || 'Failed to search plugins');
   }
@@ -116,6 +127,8 @@ const pluginsSlice = createSlice({
       state.searchResults = [];
       state.searchLoading = false;
       state.searchError = null;
+      state.endCursor = null;
+      state.hasNextPage = true;
     },
   },
   extraReducers: (builder) => {
@@ -215,9 +228,19 @@ const pluginsSlice = createSlice({
       })
       .addCase(
         fetchSearchPlugins.fulfilled,
-        (state, action: PayloadAction<PluginItem[]>) => {
-          state.searchResults = action.payload;
+        (state, action) => {
           state.searchLoading = false;
+          
+          const isInitialSearch = !action.meta.arg.after;
+          
+          if (isInitialSearch) {
+            state.searchResults = action.payload.plugins;
+          } else {
+            state.searchResults = [...state.searchResults, ...action.payload.plugins];
+          }
+
+          state.endCursor = action.payload.endCursor;
+          state.hasNextPage = action.payload.hasNextPage;
         },
       )
       .addCase(fetchSearchPlugins.rejected, (state, action) => {

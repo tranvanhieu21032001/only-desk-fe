@@ -47,10 +47,10 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
     tab: TabEnums.ALL,
   });
 
-  const { searchResults: pluginResults } = useSelector((state: RootState) => state.plugins);
-  const { data: allMessage } = useSelector((state: RootState) => state.message);
-  const { items: allArticles } = useSelector((state: RootState) => state.helpdeskArticles);
-  const { searchResults: contactResults } = useAppSelector((state: RootState) => state.contacts);
+  const { searchResults: pluginResults, loading: pluginLoading } = useSelector((state: RootState) => state.plugins);
+  const { data: allMessage, loading: messageLoading } = useSelector((state: RootState) => state.message);
+  const { items: allArticles, loading: articleLoading } = useSelector((state: RootState) => state.helpdeskArticles);
+  const { searchResults: contactResults, isLoading: contactLoading } = useAppSelector((state: RootState) => state.contacts);
 
   const handleSearch = useCallback(
     debounce((value: string) => {
@@ -59,13 +59,13 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
       if (!value.trim()) {
         dispatch({ type: 'plugins/clearSearchResults' });
         dispatch({ type: 'contacts/clearSearchResults' });
-        dispatch({ type: 'message/clearSearchResults' });
+        dispatch({ type: 'message/clearSearchMessages' });
         dispatch({ type: 'helpdeskArticles/clearSearchResults' });
         return;
       }
       dispatch(fetchHelpdeskArticles({ keyword: value }));
       dispatch(fetchSearchPlugins({ keyword: value }));
-      dispatch(fetchSearchMessages({ keyword: value, first: 10 }));
+      dispatch(fetchSearchMessages({ keyword: value }));
       dispatch(fetchSearchContacts({ keyword: value }));
     }, 600),
     [dispatch]
@@ -84,23 +84,20 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
   const activeTabs = useMemo(() => {
     if (!params.search.trim()) return [];
     const tabs: string[] = [];
-    if (allMessage?.length > 0) tabs.push(TabEnums.MESSAGES);
-    if (contactResults?.length > 0) tabs.push(TabEnums.CONTACTS);
-    if (allArticles?.length > 0) tabs.push(TabEnums.KNOWLEDGE_BASE);
-    if (pluginResults?.length > 0) tabs.push(TabEnums.PLUGINS);
+    if (allMessage?.length > 0 || messageLoading) tabs.push(TabEnums.MESSAGES);
+    if (contactResults?.length > 0 || contactLoading) tabs.push(TabEnums.CONTACTS);
+    if (allArticles?.length > 0 || articleLoading) tabs.push(TabEnums.KNOWLEDGE_BASE);
+    if (pluginResults?.length > 0 || pluginLoading) tabs.push(TabEnums.PLUGINS);
     return tabs;
-  }, [params.search, allMessage, contactResults, allArticles, pluginResults]);
-
+  }, [params.search, allMessage, contactResults, allArticles, pluginResults, messageLoading, contactLoading, articleLoading, pluginLoading]);
 
   const shouldShowAll = activeTabs.length > 1;
+useEffect(() => {
+  if (activeTabs.length === 1 && params.tab !== activeTabs[0]) {
+    setParams((prev) => ({ ...prev, tab: activeTabs[0] }));
+  }
+}, [activeTabs, params.tab])
 
-  useEffect(() => {
-    if (activeTabs.length === 1) {
-      setParams((prev) => ({ ...prev, tab: activeTabs[0] }));
-    } else if (activeTabs.length > 1) {
-      setParams((prev) => ({ ...prev, tab: TabEnums.ALL }));
-    }
-  }, [activeTabs])
 
   const items: TabsProps['items'] = useMemo(() => {
     const dynamicTabs: TabsProps['items'] = [];
@@ -130,7 +127,7 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
             </Typography>
           </S.LabelTab>
         ),
-        children: <TabContent type={TabEnums.MESSAGES} onCloseTab={handleCloseTab} />,
+        children: <TabContent type={TabEnums.MESSAGES} search={params.search} onCloseTab={handleCloseTab} />,
       });
     }
 
@@ -145,7 +142,7 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
             </Typography>
           </S.LabelTab>
         ),
-        children: <TabContent type={TabEnums.CONTACTS} onCloseTab={handleCloseTab} />,
+        children: <TabContent type={TabEnums.CONTACTS} search={params.search} onCloseTab={handleCloseTab} />,
       });
     }
 
@@ -160,7 +157,7 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
             </Typography>
           </S.LabelTab>
         ),
-        children: <TabContent type={TabEnums.KNOWLEDGE_BASE} onCloseTab={handleCloseTab} />,
+        children: <TabContent type={TabEnums.KNOWLEDGE_BASE} search={params.search} onCloseTab={handleCloseTab} />,
       });
     }
 
@@ -175,7 +172,7 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
             </Typography>
           </S.LabelTab>
         ),
-        children: <TabContent type={TabEnums.PLUGINS} onCloseTab={handleCloseTab} />,
+        children: <TabContent type={TabEnums.PLUGINS} search={params.search} onCloseTab={handleCloseTab} />,
       });
     }
 
@@ -202,16 +199,16 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
 
       <S.SearchTabs>
         {activeTabs.length === 0 ? (
-         <Wrapper>
-      <Image src={empty} height={200} width={200} preview={false} />
-      <Typography
-        color={themeColors?.primary}
-        variant="h5"
-        fontWeight={fontWeight.semiBold}
-      >
-        No results found
-      </Typography>
-    </Wrapper>
+          <Wrapper>
+            <Image src={empty} height={200} width={200} preview={false} />
+            <Typography
+              color={themeColors?.primary}
+              variant="h5"
+              fontWeight={fontWeight.semiBold}
+            >
+              No results found
+            </Typography>
+          </Wrapper>
         ) : (
           <Tabs
             activeKey={params.tab}

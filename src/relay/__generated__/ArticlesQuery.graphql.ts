@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b87920d0504baf368cb2df80c4c7e6f8>>
+ * @generated SignedSource<<e974f0196e3c226c0f0198140575bb5b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,6 +10,8 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 export type ArticlesQuery$variables = {
+  after?: string | null | undefined;
+  first?: number | null | undefined;
   keyword?: string | null | undefined;
 };
 export type ArticlesQuery$data = {
@@ -24,6 +26,10 @@ export type ArticlesQuery$data = {
         readonly url: string;
       };
     }>;
+    readonly pageInfo: {
+      readonly endCursor: string | null | undefined;
+      readonly hasNextPage: boolean;
+    };
   };
 };
 export type ArticlesQuery = {
@@ -32,17 +38,35 @@ export type ArticlesQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "keyword"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "after"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "first"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "keyword"
+},
+v3 = [
   {
     "alias": null,
     "args": [
+      {
+        "kind": "Variable",
+        "name": "after",
+        "variableName": "after"
+      },
+      {
+        "kind": "Variable",
+        "name": "first",
+        "variableName": "first"
+      },
       {
         "kind": "Variable",
         "name": "keyword",
@@ -117,6 +141,31 @@ v1 = [
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "PageInfo",
+        "kind": "LinkedField",
+        "name": "pageInfo",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "hasNextPage",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "endCursor",
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
       }
     ],
     "storageKey": null
@@ -124,32 +173,40 @@ v1 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "ArticlesQuery",
-    "selections": (v1/*: any*/),
+    "selections": (v3/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Operation",
     "name": "ArticlesQuery",
-    "selections": (v1/*: any*/)
+    "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "061e9d781584f8b8bb49a3505fc53c94",
+    "cacheID": "23f2a0f7693992ac50479b72d6cca6d6",
     "id": null,
     "metadata": {},
     "name": "ArticlesQuery",
     "operationKind": "query",
-    "text": "query ArticlesQuery(\n  $keyword: String\n) {\n  helpdeskArticles(keyword: $keyword) {\n    edges {\n      node {\n        id\n        title\n        content\n        url\n        createdAt\n        updatedAt\n      }\n    }\n  }\n}\n"
+    "text": "query ArticlesQuery(\n  $first: Float\n  $after: String\n  $keyword: String\n) {\n  helpdeskArticles(first: $first, after: $after, keyword: $keyword) {\n    edges {\n      node {\n        id\n        title\n        content\n        url\n        createdAt\n        updatedAt\n      }\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "f758d87ebe210c5992c2efd9f46e2c66";
+(node as any).hash = "1a6eca4f052477063e2552a81c892bd6";
 
 export default node;

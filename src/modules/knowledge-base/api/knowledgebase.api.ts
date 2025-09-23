@@ -5,7 +5,6 @@ import {
 } from '@/core/services/requests';
 
 import {
-  HelpdeskArticle,
   HelpdeskArticleCreatePayload,
   HelpdeskCategoryCreatePayload,
   HelpdeskSectionCreatePayload,
@@ -17,7 +16,7 @@ import { CategoriesQuery } from '@/relay/__generated__/CategoriesQuery.graphql';
 import { categoriesQuery } from '@/relay/CategoriesQuery';
 import { HelpdeskSettingsQuery } from '@/relay/__generated__/HelpdeskSettingsQuery.graphql';
 import { helpdeskSettingsQuery } from '@/relay/HelpdeskSettingsQuery';
-import { ArticlesQuery } from '@/relay/__generated__/ArticlesQuery.graphql';
+import { ArticlesQuery, ArticlesQuery$variables } from '@/relay/__generated__/ArticlesQuery.graphql';
 import { articlesQuery } from '@/relay/ArticlesQuery';
 
 const prefixContact: string = '';
@@ -40,22 +39,16 @@ export const endpointContact = {
 
 // ---------- ARTICLES ----------
 export const getAllArticles = async (
-  keyword?: string
-): Promise<HelpdeskArticle[]> => {
+  variables: ArticlesQuery$variables
+): Promise<ArticlesQuery['response']['helpdeskArticles']> => {
   const data = await fetchQuery<ArticlesQuery>(
     RelayEnvironment,
     articlesQuery,
-    { keyword }
+    variables
   ).toPromise();
 
-  if (!data) throw new Error("No data returned from Relay query.");
-
-  const nodes =
-    data.helpdeskArticles?.edges?.flatMap((edge) =>
-      edge?.node ? [edge.node] : []
-    ) ?? [];
-
-  return nodes;
+  if (!data || !data.helpdeskArticles) throw new Error("No data returned from Relay query.");
+  return data.helpdeskArticles;
 };
 
 

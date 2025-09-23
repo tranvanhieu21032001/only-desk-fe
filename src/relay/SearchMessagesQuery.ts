@@ -1,25 +1,30 @@
 import { graphql } from 'react-relay';
 
 export const searchMessageQuery = graphql`
-query SearchMessagesQuery($keyword: String!, $first: Float) {
-  searchMessages(keyword: $keyword, first: $first) {
-    edges{
-	    node{
+  query SearchMessagesQuery($keyword: String!, $first: Float, $after: String) {
+    searchMessages(keyword: $keyword, first: $first, after: $after) {
+      edges {
+        node {
+          id
+          content
+          user {
             id
-            content
-            user{
-                id
-                firstName
-                lastName
-                avatar
-            }
-            conversation{
-                id
-            }
-            sender
-            createdAt
+            firstName
+            lastName
+            avatar
+          }
+          conversation {
+            id
+          }
+          sender
+          createdAt
         }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
-}
-`
+`;

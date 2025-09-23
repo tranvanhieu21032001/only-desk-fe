@@ -1,6 +1,7 @@
 import { SearchMessagesQuery } from '@/relay/__generated__/SearchMessagesQuery.graphql';
 import relayEnvironment from '@/relay/RelayEnvironment';
 import { searchMessageQuery } from '@/relay/SearchMessagesQuery';
+import { PAGE_SIZE } from '@/shared/constant/common';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchQuery } from 'react-relay';
 
@@ -18,23 +19,33 @@ export interface SearchMessageProps {
   createdAt:string;
 }
 
+interface SearchMessagesState {
+  data: SearchMessageProps[];
+  loading: boolean;
+  error: string | null;
+  endCursor: string | null;
+  hasNextPage: boolean;
+}
+
 export const fetchSearchMessages = createAsyncThunk(
   'messages/fetchSearchMessages',
   async (
-    { keyword, first }: { keyword: string; first?: number },
+    { keyword, after }: { keyword: string; after?: string | null },
     { rejectWithValue },
   ) => {
     try {
       const result = await fetchQuery<SearchMessagesQuery>(
         relayEnvironment,
         searchMessageQuery,
-        { keyword, first },
+        { keyword, first: PAGE_SIZE, after },
         { fetchPolicy: 'network-only' },
       ).toPromise();
 
-      if (!result?.searchMessages) return [];
+      if (!result?.searchMessages) {
+        return { messages: [], endCursor: null, hasNextPage: false };
+      }
 
-      const edges = result.searchMessages.edges || [];
+      const { edges = [], pageInfo } = result.searchMessages;
 
       const messages: SearchMessageProps[] = edges.map((edge) => {
         const node = edge?.node;
@@ -54,8 +65,13 @@ export const fetchSearchMessages = createAsyncThunk(
           createdAt: node.createdAt || ''
         };
       }).filter(Boolean) as SearchMessageProps[];
+      
+      return {
+        messages,
+        endCursor: pageInfo?.endCursor || null,
+        hasNextPage: pageInfo?.hasNextPage || false
+      };
 
-      return messages;
     } catch (error: any) {
       return rejectWithValue(error?.message || 'Error searching messages');
     }
@@ -65,15 +81,19 @@ export const fetchSearchMessages = createAsyncThunk(
 const searchMessagesSlice = createSlice({
   name: 'searchMessages',
   initialState: {
-    data: [] as SearchMessageProps[],
+    data: [],
     loading: false,
-    error: null as string | null,
-  },
+    error: null,
+    endCursor: null,
+    hasNextPage: true,
+  } as SearchMessagesState,
   reducers: {
     clearSearchMessages: (state) => {
       state.data = [];
       state.error = null;
       state.loading = false;
+      state.endCursor = null;
+      state.hasNextPage = true;
     },
   },
   extraReducers: (builder) => {
@@ -84,7 +104,15 @@ const searchMessagesSlice = createSlice({
       })
       .addCase(fetchSearchMessages.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        const isInitialSearch = !action.meta.arg.after;
+
+        if (isInitialSearch) {
+          state.data = action.payload.messages;
+        } else {
+          state.data = [...state.data, ...action.payload.messages];
+        }
+        state.endCursor = action.payload.endCursor;
+        state.hasNextPage = action.payload.hasNextPage;
       })
       .addCase(fetchSearchMessages.rejected, (state, action) => {
         state.loading = false;

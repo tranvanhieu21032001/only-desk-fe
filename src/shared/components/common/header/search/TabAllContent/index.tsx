@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import { Row, Skeleton } from 'antd';
 
 import { TabEnums } from '@/shared/helper/enums/header';
-import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 
 import PluginCard from '../PluginCard';
@@ -114,18 +113,7 @@ function TabAllContent({ search, onParams, onCloseTab }: TabAllContentProps) {
                     <ReactSVG src={section.icon} />
                     {section.label}
                   </Typography>
-                  {section.loading ? (
-                    <Skeleton.Input
-                      active
-                      style={{ minWidth: 80, maxWidth: 80, height: 20 }}
-                    />
-                  ) : (
-                    <Typography color={themeColors?.newtralDark}>
-                      {section.results.length} {t('header.all-tab.results')}
-                    </Typography>
-                  )}
                 </S.TabLabel>
-
                 <S.TabCardContentWrap>
                   {section.loading
                     ? Array(2)
@@ -142,21 +130,15 @@ function TabAllContent({ search, onParams, onCloseTab }: TabAllContentProps) {
                         .map((item) => section.renderItem(item))}
                 </S.TabCardContentWrap>
               </S.TabSection>
-
               <S.ViewMoreResults>
-                {section.loading ? (
-                  <Skeleton.Input
-                    active
-                    style={{ minWidth: 120, maxWidth: 120, height: 20 }}
-                  />
-                ) : (
+                {section.loading || section.results.length > 2 ? (
                   <Typography
                     fontWeight={fontWeight?.semiBold}
                     onClick={() => handleViewAll(section.key)}
                   >
                     {t('header.all-tab.view-more')}
                   </Typography>
-                )}
+                ) : null}
               </S.ViewMoreResults>
             </S.TabWrap>
           </S.TabContent>

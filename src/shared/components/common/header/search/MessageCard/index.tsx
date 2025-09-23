@@ -1,4 +1,4 @@
-import { Skeleton } from 'antd';
+import { Image, Skeleton } from 'antd';
 import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ import { formatTime } from '@/shared/chat-logic/utils/time';
 import { renderMessageContent } from '@/shared/chat-logic/helpers/message-content.helper';
 import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
 import { SystemAvatar } from '../../../ProfileCard/SystemAvatar';
-import ProfileCard, { ProfileType } from '../../../ProfileCard';
+import avatarDefault from '@/assets/images/avatar-default.png';
 import { MessageSender } from '@/shared/chat-logic';
 
 interface MessageCardProps {
@@ -24,11 +24,10 @@ interface MessageCardProps {
 
 function MessageCard({ data, isLoading, onCloseTab }: MessageCardProps) {
   const navigate = useNavigate();
-console.log("data", data);
 
   const handleClick = () => {
-    navigate(`/inbox?conversationId=${data.conversationId}`);
     onCloseTab?.();
+    navigate(`/inbox?conversationId=${data.conversationId}`);
   };
 
   return (
@@ -64,19 +63,15 @@ console.log("data", data);
           style={{ cursor: 'pointer' }}
         >
           {data?.sender == MessageSender.SYSTEM ? (
-              <SystemAvatar avatarSize={32} />
-            ) : (
-              <ProfileCard
-                profileInfo={{
-                  id: data?.user?.id || '',
-                  type: data?.user?.id ? ProfileType.CONTACT : ProfileType.USER,
-                  name: data?.user?.firstName,
-                  avatar: data?.user?.avatar,
-                }}
-                avatarSize={32}
-                flagSize={12}
-              />
-            )}
+            <SystemAvatar avatarSize={32} />
+          ) : (
+            <Image
+              src={data?.user?.avatar || avatarDefault}
+              alt="Avatar"
+              width={32}
+              height={32}
+              style={{ borderRadius: 9999, objectFit: "cover" }}
+            />)}
 
           <S.ContentCardWrap>
             <S.LabelCardWrap>
