@@ -53,8 +53,7 @@ import flagList from '@/shared/helper/data/flagIcon';
 import { format } from 'timeago.js';
 import Modal from '@/shared/components/common/Modal';
 import { getId } from '@/shared/utils/decode';
-import { useMutation } from 'react-relay';
-import { createConversationForContactMutation } from '@/relay/CreateConversationForContactMutation';
+import { useCreateConversation } from '../../helpers/conversation.helper';
 
 function ContactDetails() {
   const { t } = useTranslation('contacts');
@@ -65,9 +64,7 @@ function ContactDetails() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const [commitCreateConversation, isInFlight] = useMutation(
-    createConversationForContactMutation,
-  );
+  const { createConversation, isInFlight } = useCreateConversation();
 
   const { isLoading, contactDetails, isDetails } = useAppSelector(
     (state) => state.contacts,
@@ -193,21 +190,8 @@ function ContactDetails() {
     }
   }
   function handleConversation() {
-    if (contactDetails?.id) {
-      if (contactDetails?.id) {
-        commitCreateConversation({
-          variables: {
-            contactId: contactDetails?.id,
-          },
-          onCompleted: (response: any) => {
-            const newConversationId = response.createConversationForContact.id;
-            navigate(`/inbox?conversationId=${newConversationId}`);
-          },
-          onError: (error) => {
-            console.error("Error creating new conversation:", error);
-          },
-        });
-      }
+     if (contactDetails?.id) {
+      createConversation(contactDetails.id);
     }
   }
 

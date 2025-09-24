@@ -1,8 +1,8 @@
-import { Image, Skeleton } from 'antd';
+import { Image, Skeleton, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { PlusOutlined } from '@ant-design/icons';
 import { format } from 'timeago.js';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 import themeColors from '@/shared/styles/themes/default/colors';
 import Typography from '@/shared/components/common/Typography';
@@ -13,6 +13,9 @@ import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
 import ProfileCard, { ProfileType } from '@/shared/components/common/ProfileCard';
 import defaultAvatar from '@/assets/images/avatar-default.png';
 import { LastConversations } from '@/shared/interfaces/conversation.interface';
+import { useCreateConversation } from '@/modules/contacts/helpers/conversation.helper';
+import { useAppSelector } from '@/shared/hooks';
+
 interface ConversationProps {
   isLoading?: boolean;
   conversations?: LastConversations;
@@ -20,14 +23,23 @@ interface ConversationProps {
 
 function Conversation({ isLoading, conversations }: ConversationProps) {
   const { t } = useTranslation('contacts');
+  const { createConversation, isInFlight } = useCreateConversation();
   const hasConversations = conversations && conversations.length > 0;
   const navigate = useNavigate();
+  const { contactDetails } = useAppSelector((state) => state.contacts);
 
   const handleCardClick = (conversationId: string) => {
     navigate(`/inbox?conversationId=${conversationId}`);
   };
 
+  const handleNewConversation = () => {
+    if (contactDetails?.id) {
+      createConversation(contactDetails?.id);
+    }
+  };
+
   return (
+    <Spin spinning={isInFlight} size="default">
     <S.Container>
       <S.Header>
         <S.HeaderWrap>
@@ -43,7 +55,7 @@ function Conversation({ isLoading, conversations }: ConversationProps) {
             </S.ConversationCount>
           )}
         </S.HeaderWrap>
-        <S.HeaderActionWrap>
+        <S.HeaderActionWrap onClick={handleNewConversation}>
           <PlusOutlined />
           <Typography variant="h5" color={themeColors?.secondaryDarker}>
             {t('contact-profile.new-conversation')}
@@ -104,6 +116,7 @@ function Conversation({ isLoading, conversations }: ConversationProps) {
         )}
       </S.Body>
     </S.Container>
+    </Spin>
   );
 }
 

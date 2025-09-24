@@ -161,7 +161,8 @@
     "confirm-delete-conctacts-des":"Delete the selected contacts and all their data permanently?",
     "and-its-data": "and its data will be permanently deleted.",
     "cancel": "Cancel",
-    "remove": "Remove contact"
+    "remove": "Remove contact",
+    "no-conversations":"No Conversations"
   },
   "remove-contact-success": "Contact removed successfully",
   "gender-options": {
