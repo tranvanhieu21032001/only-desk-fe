@@ -1,4 +1,4 @@
-import { Image, Skeleton } from 'antd'; 
+import { Skeleton } from 'antd'; 
 import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
  
