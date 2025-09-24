@@ -22,7 +22,6 @@ import iconApple from '@/assets/icons/setting/ic-apple-operator.svg';
 import iconCheckDefault from '@/assets/icons/setting/ic-tick-white.svg';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import {
-  addOperatorToWorkspace,
   fetchOperators,
   Operator,
   removeOperatorFromWorkspace,
@@ -40,7 +39,7 @@ const WorkspaceOperatorTeams = () => {
   // const [isPublic, setIsPublic] = useState(true);
   // const [disableConditions] = useState(false);
   const dispatch = useAppDispatch();
-  const { operators, isAdding, isFetching,isRemoving, isUpdating } = useAppSelector((state) => state.operators);
+  const { operators, isFetching,isRemoving, isUpdating } = useAppSelector((state) => state.operators);
   useEffect(() => {
     dispatch(fetchOperators());
   }, [dispatch]);
