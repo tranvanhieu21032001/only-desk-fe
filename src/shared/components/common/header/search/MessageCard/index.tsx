@@ -1,5 +1,6 @@
 import { Image, Skeleton } from 'antd';
 import { Fragment } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
@@ -7,28 +8,33 @@ import fontWeight from '@/shared/styles/themes/default/fontWeight';
 import Typography from '../../../Typography';
 
 import * as S from './message-card.styled';
+import { SearchMessageProps } from '@/modules/inbox/store/features/message';
+import { formatTime } from '@/shared/chat-logic/utils/time';
+import { renderMessageContent } from '@/shared/chat-logic/helpers/message-content.helper';
+import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
+import { SystemAvatar } from '../../../ProfileCard/SystemAvatar';
+import avatarDefault from '@/assets/images/avatar-default.png';
+import { MessageSender } from '@/shared/chat-logic';
 
-interface MessageProps {
-  label: string;
-  time: string;
-  description: string;
-  avatar: string;
+interface MessageCardProps {
+  data: SearchMessageProps;
   isLoading?: boolean;
+  onCloseTab?: () => void;
 }
 
-function MessageCard({
-  label,
-  time,
-  description,
-  avatar,
-  isLoading,
-}: MessageProps) {
+function MessageCard({ data, isLoading, onCloseTab }: MessageCardProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    onCloseTab?.();
+    navigate(`/inbox?conversationId=${data.conversationId}`);
+  };
+
   return (
     <Fragment>
       {isLoading ? (
         <S.MessageCardContainer>
           <Skeleton.Image active style={{ width: 38, height: 38 }} />
-
           <S.ContentCardWrap>
             <S.LabelCardWrap>
               <S.Label>
@@ -44,7 +50,6 @@ function MessageCard({
                 />
               </S.Label>
             </S.LabelCardWrap>
-
             <S.Description>
               <S.Label>
                 <Skeleton.Input active style={{ width: 40, height: 18 }} />
@@ -53,14 +58,26 @@ function MessageCard({
           </S.ContentCardWrap>
         </S.MessageCardContainer>
       ) : (
-        <S.MessageCardContainer>
-          <Image src={avatar} preview={false} width={40} height={40} />
+        <S.MessageCardContainer
+          onClick={handleClick}
+          style={{ cursor: 'pointer' }}
+        >
+          {data?.sender == MessageSender.SYSTEM ? (
+            <SystemAvatar avatarSize={32} />
+          ) : (
+            <Image
+              src={data?.user?.avatar || avatarDefault}
+              alt="Avatar"
+              width={32}
+              height={32}
+              style={{ borderRadius: 9999, objectFit: "cover" }}
+            />)}
 
           <S.ContentCardWrap>
             <S.LabelCardWrap>
               <S.Label>
                 <Typography fontWeight={fontWeight?.semiBold}>
-                  {label}
+                  {getSenderName(data)}
                 </Typography>
               </S.Label>
               <S.Time>
@@ -68,7 +85,7 @@ function MessageCard({
                   color={themeColors?.newtralLight}
                   variant="caption-small"
                 >
-                  {time}
+                  {formatTime(data?.createdAt)}
                 </Typography>
               </S.Time>
             </S.LabelCardWrap>
@@ -78,7 +95,7 @@ function MessageCard({
                 color={themeColors?.newtralLight}
                 variant="caption-small"
               >
-                {description}
+                {renderMessageContent(data?.content)}
               </Typography>
             </S.Description>
           </S.ContentCardWrap>

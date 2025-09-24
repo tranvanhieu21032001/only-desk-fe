@@ -28,6 +28,12 @@ interface PluginsState {
   detail?: PluginDetail | null;
   detailLoading: boolean;
   detailError?: string | null;
+
+  searchResults: PluginItem[];
+  searchLoading: boolean;
+  searchError?: string | null;
+  endCursor: string | null;
+  hasNextPage: boolean;
 }
 
 const initialState: PluginsState = {
@@ -39,6 +45,12 @@ const initialState: PluginsState = {
   detail: null,
   detailLoading: false,
   detailError: null,
+
+  searchResults: [],
+  searchLoading: false,
+  searchError: null,
+  endCursor: null,
+  hasNextPage: true,
 };
 
 export const fetchPlugins = createAsyncThunk('plugins/fetchAll', async () => {
@@ -86,10 +98,39 @@ export const fetchPluginDetail = createAsyncThunk<
   }
 });
 
+export const fetchSearchPlugins = createAsyncThunk<
+  { plugins: PluginItem[], endCursor: string | null, hasNextPage: boolean },
+  { keyword: string, after?: string | null },
+  { rejectValue: string }
+>('plugins/fetchSearch', async ({ keyword, after }, { rejectWithValue }) => {
+  try {
+    const res = await getAllPlugins({ first: PAGE_SIZE, keyword, after });
+    
+    const plugins = (res?.edges || []).map((edge: any) => edge.node as PluginItem);
+    
+    return {
+      plugins,
+      endCursor: res?.pageInfo?.endCursor || null,
+      hasNextPage: res?.pageInfo?.hasNextPage || false
+    };
+
+  } catch (error: any) {
+    return rejectWithValue(error.message || 'Failed to search plugins');
+  }
+});
+
 const pluginsSlice = createSlice({
   name: 'plugins',
   initialState,
-  reducers: {},
+  reducers: {
+    resetSearchPlugins: (state) => {
+      state.searchResults = [];
+      state.searchLoading = false;
+      state.searchError = null;
+      state.endCursor = null;
+      state.hasNextPage = true;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Fetch all plugins
@@ -179,8 +220,38 @@ const pluginsSlice = createSlice({
           action.payload ||
           action.error.message ||
           'Failed to fetch plugin detail';
+      })
+
+      .addCase(fetchSearchPlugins.pending, (state) => {
+        state.searchLoading = true;
+        state.searchError = null;
+      })
+      .addCase(
+        fetchSearchPlugins.fulfilled,
+        (state, action) => {
+          state.searchLoading = false;
+          
+          const isInitialSearch = !action.meta.arg.after;
+          
+          if (isInitialSearch) {
+            state.searchResults = action.payload.plugins;
+          } else {
+            state.searchResults = [...state.searchResults, ...action.payload.plugins];
+          }
+
+          state.endCursor = action.payload.endCursor;
+          state.hasNextPage = action.payload.hasNextPage;
+        },
+      )
+      .addCase(fetchSearchPlugins.rejected, (state, action) => {
+        state.searchLoading = false;
+        state.searchError =
+          action.payload ||
+          action.error.message ||
+          'Failed to search plugins';
       });
   },
 });
 
+export const { resetSearchPlugins } = pluginsSlice.actions;
 export default pluginsSlice.reducer;

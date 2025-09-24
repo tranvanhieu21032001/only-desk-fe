@@ -2,7 +2,7 @@ export interface HelpdeskArticle {
   id: string;
   title: string;
   content: string;
-  categoryId: string;
+  url:string;
   createdAt: string;
   updatedAt: string;
 }

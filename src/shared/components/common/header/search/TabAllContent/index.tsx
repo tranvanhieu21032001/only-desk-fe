@@ -1,16 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { ReactSVG } from 'react-svg';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Row, Skeleton } from 'antd';
 
-import {
-  ContactCardInterface,
-  KnowledgeBaseCardInterface,
-  MessageCardInterface,
-  PluginCardInterface,
-} from '@/shared/model/header.model';
 import { TabEnums } from '@/shared/helper/enums/header';
-import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
 
 import PluginCard from '../PluginCard';
@@ -21,280 +14,135 @@ import MessageCard from '@/shared/components/common/header/search/MessageCard/in
 
 import * as S from './tab-content.styled';
 
-import icAdobe from '@/assets/icons/auth/ic-adobe.svg';
 import icMessage from '@/assets/icons/header/ic-message.svg';
 import icContact from '@/assets/icons/header/ic-contact.svg';
 import icPlugins from '@/assets/icons/header/ic-plugins.svg';
 import icKnowledge from '@/assets/icons/header/ic-knowledge.svg';
-import icAvatar from '@/assets/icons/header/ic-message-card-mockup.svg';
+
+import { RootState } from '@/core/store';
+import { useSelector } from 'react-redux';
+import { useAppSelector } from '@/shared/hooks';
 
 interface TabAllContentProps {
   search: string;
-  tab: string;
   onParams?: any;
+  onCloseTab?: () => void;
 }
 
-function TabAllContent({ onParams }: TabAllContentProps) {
+function TabAllContent({ search, onParams, onCloseTab }: TabAllContentProps) {
   const { t } = useTranslation('header');
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [messages, setMessages] = useState<MessageCardInterface[]>([]);
-  const [contacts, setContacts] = useState<ContactCardInterface[]>([]);
-  const [plugins, setPlugins] = useState<PluginCardInterface[]>([]);
-  const [knowledgeBase, setKnowledgeBase] = useState<
-    KnowledgeBaseCardInterface[]
-  >([]);
+  const { searchResults: pluginResults, loading: pluginLoading } = useSelector(
+    (state: RootState) => state.plugins
+  );
+  const { data: messageResults, loading: messageLoading } = useSelector(
+    (state: RootState) => state.message
+  );
+  const { items: articleResults, loading: articleLoading } = useSelector(
+    (state: RootState) => state.helpdeskArticles
+  );
+  const { searchResults: contactResults, isLoading: contactLoading } = useAppSelector(
+    (state: RootState) => state.contacts
+  );
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+  if (!search.trim()) return null;
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    setMessages([
+  const sections = useMemo(() => {
+    return [
       {
-        id: '1',
-        label: 'Admin 1',
-        time: '10m',
-        description: 'John Smith submitted web form',
-        avatar: icAvatar,
+        key: TabEnums.MESSAGES,
+        label: t('header.all-tab.messages'),
+        icon: icMessage,
+        results: messageResults || [],
+        loading: messageLoading,
+        renderItem: (item: any) => <MessageCard key={item.id} data={item} onCloseTab={onCloseTab}/>,
       },
-    ]);
-
-    setContacts([
       {
-        id: '1',
-        label: 'Admin 1',
-        description: 'John Smith submitted web form',
-        avatar: icAvatar,
+        key: TabEnums.KNOWLEDGE_BASE,
+        label: t('header.all-tab.knowledge-base'),
+        icon: icKnowledge,
+        results: articleResults || [],
+        loading: articleLoading,
+        renderItem: (item: any) => <KnowledgeBaseCard key={item.id} data={item} onCloseTab={onCloseTab}/>,
       },
-    ]);
-
-    setPlugins([
       {
-        id: '1',
-        label: 'Admin 1',
-        description: 'John Smith submitted web form',
-        avatar: icAdobe,
+        key: TabEnums.CONTACTS,
+        label: t('header.all-tab.contacts'),
+        icon: icContact,
+        results: contactResults || [],
+        loading: contactLoading,
+        renderItem: (item: any) => <ContactCard key={item.id} data={item} onCloseTab={onCloseTab}/>,
       },
-    ]);
-
-    setKnowledgeBase([
       {
-        id: '1',
-        label: 'Admin 1',
+        key: TabEnums.PLUGINS,
+        label: t('header.all-tab.plugins'),
+        icon: icPlugins,
+        results: pluginResults || [],
+        loading: pluginLoading,
+        renderItem: (item: any) => <PluginCard key={item.id} data={item} onCloseTab={onCloseTab}/>,
       },
-    ]);
-  }, []);
+    ].filter((s) => s.results.length > 0 || s.loading);
+  }, [
+    messageResults,
+    articleResults,
+    contactResults,
+    pluginResults,
+    messageLoading,
+    articleLoading,
+    contactLoading,
+    pluginLoading,
+    t,
+  ]);
 
   function handleViewAll(type: TabEnums) {
-    //Handle later
     onParams?.((prev: { search: string; tab: string }) => ({
       ...prev,
-      tab: type as string,
+      tab: type,
     }));
   }
 
   return (
     <S.TabAllContainer>
       <Row gutter={[24, 24]} justify="space-between">
-        <S.TabContent xs={24} lg={12}>
-          <S.TabWrap>
-            <S.TabSection>
-              <S.TabLabel>
-                <Typography fontWeight={fontWeight?.semiBold} color="#253a8e">
-                  <ReactSVG src={icMessage} />
-                  {t('header.all-tab.messages')}
-                </Typography>
-                {isLoading ? (
-                  <Skeleton.Input
-                    active
-                    style={{ minWidth: 80, maxWidth: 80, height: 20 }}
-                  />
-                ) : (
-                  <Typography color={themeColors?.newtralDark}>
-                    10 {t('header.all-tab.results')}
+        {sections.map((section) => (
+          <S.TabContent xs={24} lg={12} key={section.key}>
+            <S.TabWrap>
+              <S.TabSection>
+                <S.TabLabel>
+                  <Typography fontWeight={fontWeight?.semiBold} color="#253a8e">
+                    <ReactSVG src={section.icon} />
+                    {section.label}
                   </Typography>
-                )}
-              </S.TabLabel>
-
-              <S.TabCardContentWrap>
-                {Array(2)
-                  ?.fill(0)
-                  ?.map(() => (
-                    <MessageCard
-                      key={messages?.[0]?.id}
-                      {...messages?.[0]}
-                      isLoading={isLoading}
-                    />
-                  ))}
-              </S.TabCardContentWrap>
-            </S.TabSection>
-            <S.ViewMoreResults>
-              {isLoading ? (
-                <Skeleton.Input
-                  active
-                  style={{ minWidth: 120, maxWidth: 120, height: 20 }}
-                />
-              ) : (
-                <Typography
-                  fontWeight={fontWeight?.semiBold}
-                  onClick={() => handleViewAll(TabEnums?.MESSAGES)}
-                >
-                  {t('header.all-tab.view-more')}
-                </Typography>
-              )}
-            </S.ViewMoreResults>
-          </S.TabWrap>
-
-          <S.TabWrap>
-            <S.TabSection>
-              <S.TabLabel>
-                <Typography fontWeight={fontWeight?.semiBold} color="#253a8e">
-                  <ReactSVG src={icKnowledge} />
-                  {t('header.all-tab.knowledge-base')}
-                </Typography>
-                {isLoading ? (
-                  <Skeleton.Input
-                    active
-                    style={{ minWidth: 80, maxWidth: 80, height: 20 }}
-                  />
-                ) : (
-                  <Typography color={themeColors?.newtralDark}>
-                    8 {t('header.all-tab.results')}
+                </S.TabLabel>
+                <S.TabCardContentWrap>
+                  {section.loading
+                    ? Array(2)
+                        .fill(0)
+                        .map((_, idx) => (
+                          <Skeleton.Input
+                            key={idx}
+                            active
+                            style={{ width: '100%', height: 60, marginBottom: 8 }}
+                          />
+                        ))
+                    : section.results
+                        .slice(0, 2)
+                        .map((item) => section.renderItem(item))}
+                </S.TabCardContentWrap>
+              </S.TabSection>
+              <S.ViewMoreResults>
+                {section.loading || section.results.length > 2 ? (
+                  <Typography
+                    fontWeight={fontWeight?.semiBold}
+                    onClick={() => handleViewAll(section.key)}
+                  >
+                    {t('header.all-tab.view-more')}
                   </Typography>
-                )}
-              </S.TabLabel>
-
-              <S.TabCardContentWrap>
-                {Array(2)
-                  ?.fill(0)
-                  ?.map(() => (
-                    <KnowledgeBaseCard
-                      key={knowledgeBase?.[0]?.id}
-                      {...knowledgeBase?.[0]}
-                      isLoading={isLoading}
-                    />
-                  ))}
-              </S.TabCardContentWrap>
-            </S.TabSection>
-            <S.ViewMoreResults>
-              {isLoading ? (
-                <Skeleton.Input
-                  active
-                  style={{ minWidth: 120, maxWidth: 120, height: 20 }}
-                />
-              ) : (
-                <Typography
-                  fontWeight={fontWeight?.semiBold}
-                  onClick={() => handleViewAll(TabEnums?.KNOWLEDGE_BASE)}
-                >
-                  {t('header.all-tab.view-more')}
-                </Typography>
-              )}
-            </S.ViewMoreResults>
-          </S.TabWrap>
-        </S.TabContent>
-        <S.TabContent xs={24} lg={12}>
-          <S.TabWrap>
-            <S.TabSection>
-              <S.TabLabel>
-                <Typography fontWeight={fontWeight?.semiBold} color="#253a8e">
-                  <ReactSVG src={icContact} />
-                  {t('header.all-tab.contacts')}
-                </Typography>
-                {isLoading ? (
-                  <Skeleton.Input
-                    active
-                    style={{ minWidth: 80, maxWidth: 80, height: 20 }}
-                  />
-                ) : (
-                  <Typography color={themeColors?.newtralDark}>
-                    1 {t('header.all-tab.results')}
-                  </Typography>
-                )}
-              </S.TabLabel>
-
-              <S.TabCardContentWrap>
-                {Array(1)
-                  ?.fill(0)
-                  ?.map(() => (
-                    <ContactCard
-                      key={contacts?.[0]?.id}
-                      {...contacts?.[0]}
-                      isLoading={isLoading}
-                    />
-                  ))}
-              </S.TabCardContentWrap>
-            </S.TabSection>
-
-            <S.ViewMoreResults>
-              {isLoading ? (
-                <Skeleton.Input
-                  active
-                  style={{ minWidth: 120, maxWidth: 120, height: 20 }}
-                />
-              ) : (
-                <Typography
-                  fontWeight={fontWeight?.semiBold}
-                  onClick={() => handleViewAll(TabEnums?.CONTACTS)}
-                >
-                  {t('header.all-tab.view-more')}
-                </Typography>
-              )}
-            </S.ViewMoreResults>
-          </S.TabWrap>
-          <S.TabWrap>
-            <S.TabSection>
-              <S.TabLabel>
-                <Typography fontWeight={fontWeight?.semiBold} color="#253a8e">
-                  <ReactSVG src={icPlugins} />
-                  {t('header.all-tab.plugins')}
-                </Typography>
-                {isLoading ? (
-                  <Skeleton.Input
-                    active
-                    style={{ minWidth: 80, maxWidth: 80, height: 20 }}
-                  />
-                ) : (
-                  <Typography color={themeColors?.newtralDark}>
-                    10 {t('header.all-tab.results')}
-                  </Typography>
-                )}
-              </S.TabLabel>
-
-              <S.TabCardContentWrap>
-                {Array(2)
-                  ?.fill(0)
-                  ?.map(() => (
-                    <PluginCard
-                      key={plugins?.[0]?.id}
-                      {...plugins?.[0]}
-                      isLoading={isLoading}
-                    />
-                  ))}
-              </S.TabCardContentWrap>
-            </S.TabSection>
-            <S.ViewMoreResults>
-              {isLoading ? (
-                <Skeleton.Input
-                  active
-                  style={{ minWidth: 120, maxWidth: 120, height: 20 }}
-                />
-              ) : (
-                <Typography
-                  fontWeight={fontWeight?.semiBold}
-                  onClick={() => handleViewAll(TabEnums?.PLUGINS)}
-                >
-                  {t('header.all-tab.view-more')}
-                </Typography>
-              )}
-            </S.ViewMoreResults>
-          </S.TabWrap>
-        </S.TabContent>
+                ) : null}
+              </S.ViewMoreResults>
+            </S.TabWrap>
+          </S.TabContent>
+        ))}
       </Row>
     </S.TabAllContainer>
   );

@@ -2,7 +2,8 @@ import { Image, Skeleton, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { EyeOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { useModal } from '@/shared/hooks';
 import { CardPluginInterface } from '../../model/allPlugins';
@@ -34,8 +35,8 @@ interface CardPluginProps {
 function CardPlugin({ isLoading, card }: CardPluginProps) {
   const { t } = useTranslation('plugins');
   const dispatch = useDispatch<AppDispatch>();
-  const { visible: viewDetailModal, toggle: handleOpenModalViewDetail } =
-    useModal();
+  const { visible: viewDetailModal, toggle: handleOpenModalViewDetail } = useModal();
+  const location = useLocation();
 
   const [loadingInstall, setLoadingInstall] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
@@ -73,6 +74,14 @@ function CardPlugin({ isLoading, card }: CardPluginProps) {
   function handleView() {
     handleOpenModalViewDetail();
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const pluginId = params.get('pluginId');
+    if (pluginId && pluginId === card?.id && !viewDetailModal) {
+      handleOpenModalViewDetail();
+    }
+  }, [location.search, card?.id]);
 
   const renderAction = () => {
     if (!card?.isInstalled) {
@@ -117,7 +126,7 @@ function CardPlugin({ isLoading, card }: CardPluginProps) {
 
   return (
     <>
-      <S.CardPluginsContainer $isInstalled={false}>
+      <S.CardPluginsContainer $isInstalled={!!card?.isInstalled}>
         {isLoading ? (
           <S.CardPluginSkeleton>
             <S.CardHeader>
