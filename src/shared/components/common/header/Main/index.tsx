@@ -35,7 +35,6 @@ import AddOperatorModal from '@/modules/settings/components/workspaces/workspace
 
 const Header: React.FC = () => {
   const { t } = useTranslation('inbox');
-  const { t: tSettingWorkspace } = useTranslation('settingWorkspace');
 
   const { title } = useTitle();
   const dispatch = useAppDispatch();
@@ -241,7 +240,6 @@ const Header: React.FC = () => {
       <AddOperatorModal
         isOpen={isOpenAddOperator}
         onClose={() => setIsOpenAddOperator(false)}
-        t={tSettingWorkspace}
       />
       {addContact && (
         <ModalAddContact

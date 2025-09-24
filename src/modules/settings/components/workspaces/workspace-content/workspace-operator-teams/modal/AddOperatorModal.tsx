@@ -9,16 +9,16 @@ import Input from '@/shared/components/common/Input';
 import { useState } from 'react';
 import { useAppDispatch } from '@/shared/hooks';
 import { addOperatorToWorkspace } from '@/modules/settings/store/features/operators';
-import { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  t: TFunction;
 };
 
-const AddOperatorModal = ({ isOpen, onClose, onSuccess, t }: Props) => {
+const AddOperatorModal = ({ isOpen, onClose, onSuccess}: Props) => {
+  const { t } = useTranslation('settingWorkspace');
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);

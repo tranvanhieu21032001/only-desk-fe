@@ -311,7 +311,6 @@ const WorkspaceOperatorTeams = () => {
        <AddOperatorModal
         isOpen={isOpenAddOperator}
         onClose={() => setIsOpenAddOperator(false)}
-        t={t}
       />
 
       <EditOperatorModal
