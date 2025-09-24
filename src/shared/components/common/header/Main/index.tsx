@@ -1,4 +1,4 @@
-import { Image } from 'antd';
+import { Form, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import React, { useState, useRef, useEffect } from 'react';
 
@@ -34,9 +34,12 @@ import bellBlue from '@/assets/icons/common/ic-notification-blue.svg';
 import { createContact } from '@/modules/contacts/store/features/contacts';
 import { ReactSVG } from 'react-svg';
 import { useLocation } from 'react-router-dom';
+import AddOperatorModal from '@/modules/settings/components/workspaces/workspace-content/workspace-operator-teams/modal/AddOperatorModal';
+import { addOperatorToWorkspace } from '@/modules/settings/store/features/operators';
 
 const Header: React.FC = () => {
   const { t } = useTranslation('inbox');
+  const { t: tSettingWorkspace } = useTranslation('settingWorkspace');
 
   const { title } = useTitle();
   const dispatch = useAppDispatch();
@@ -50,6 +53,9 @@ const Header: React.FC = () => {
   const [notifications, setNotifications] = useState(notificationOptions);
   const [isLoading] = useState<boolean>(false);
   const [searchVisible, setSearchVisible] = useState(false);
+  const [isOpenAddOperator, setIsOpenAddOperator] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [addForm] = Form.useForm();
 
   const { visible: addContact, toggle: handleOpenModalAddContact } = useModal();
   const location = useLocation();
@@ -63,6 +69,21 @@ const Header: React.FC = () => {
 
   const clearAll = () => {
     setTags([]);
+  };
+
+  const handleFinish = async (values: unknown) => {
+    const { email, role } = values as { email: string; role: string };
+    setIsAdding(true);
+    await dispatch(
+      addOperatorToWorkspace({
+        email,
+        role,
+        t,
+      }),
+    ).unwrap();
+    setIsAdding(false);
+    setIsOpenAddOperator(false);
+    addForm?.resetFields();
   };
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -202,7 +223,12 @@ const Header: React.FC = () => {
               <ReactSVG src={icAddContact} />
               {t('header.addNewContact')}
             </S.DropdownItem>
-            <S.DropdownItem>
+            <S.DropdownItem
+              onClick={() => {
+                setIsOpenAddOperator(true);
+                setDropdownOpen(false);
+              }}
+            >
               <ReactSVG src={team} />
               {t('header.inviteTeamMembers')}
             </S.DropdownItem>
@@ -309,6 +335,14 @@ const Header: React.FC = () => {
         </CreateConversationModal>
       </S.RightSection>
 
+      <AddOperatorModal
+        isOpen={isOpenAddOperator}
+        onClose={() => setIsOpenAddOperator(false)}
+        isLoading={isAdding}
+        form={addForm}
+        handleFinish={handleFinish}
+        t={tSettingWorkspace}
+      />
       {addContact && (
         <ModalAddContact
           open={addContact}
