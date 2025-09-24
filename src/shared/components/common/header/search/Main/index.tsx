@@ -2,7 +2,7 @@ import { debounce } from 'lodash';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CloseOutlined } from '@ant-design/icons';
-import { Image, Tabs, TabsProps } from 'antd';
+import { Image, Tabs, TabsProps, Skeleton } from 'antd';
 import { ReactSVG } from 'react-svg';
 import empty from '@/assets/images/contact/img-contact-empty.png';
 import TabContent from '../TabContent';
@@ -24,7 +24,7 @@ import { useSelector } from 'react-redux';
 import { fetchSearchPlugins } from '@/modules/plugins/store/pluginsSlice';
 import { fetchSearchMessages } from '@/modules/inbox/store/features/message';
 import { RootState } from '@/core/store';
-import { fetchSearchContacts } from '@/modules/contacts/store/features/contacts';
+import { fetchSearchContacts, resetSearchContacts } from '@/modules/contacts/store/features/contacts';
 import themeColors from '@/shared/styles/themes/default/colors';
 import styled from 'styled-components';
 const Wrapper = styled.div`
@@ -56,16 +56,18 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
     debounce((value: string) => {
       setParams((prev) => ({ ...prev, search: value }));
 
+      dispatch({ type: 'plugins/clearSearchResults' });
+      dispatch({ type: 'contacts/clearSearchResults' });
+      dispatch({ type: 'message/clearSearchMessages' });
+      dispatch({ type: 'helpdeskArticles/clearSearchResults' });
+
       if (!value.trim()) {
-        dispatch({ type: 'plugins/clearSearchResults' });
-        dispatch({ type: 'contacts/clearSearchResults' });
-        dispatch({ type: 'message/clearSearchMessages' });
-        dispatch({ type: 'helpdeskArticles/clearSearchResults' });
         return;
       }
       dispatch(fetchHelpdeskArticles({ keyword: value }));
       dispatch(fetchSearchPlugins({ keyword: value }));
       dispatch(fetchSearchMessages({ keyword: value }));
+      dispatch(resetSearchContacts());
       dispatch(fetchSearchContacts({ keyword: value }));
     }, 600),
     [dispatch]
@@ -80,14 +82,21 @@ function Search({ onCloseSearch }: { onCloseSearch?: () => void }) {
     onCloseSearch?.();
   }
 
+  const isSearching =
+    messageLoading || contactLoading || articleLoading || pluginLoading;
 
   const activeTabs = useMemo(() => {
     if (!params.search.trim()) return [];
     const tabs: string[] = [];
-    if (allMessage?.length > 0 || messageLoading) tabs.push(TabEnums.MESSAGES);
-    if (contactResults?.length > 0 || contactLoading) tabs.push(TabEnums.CONTACTS);
-    if (allArticles?.length > 0 || articleLoading) tabs.push(TabEnums.KNOWLEDGE_BASE);
-    if (pluginResults?.length > 0 || pluginLoading) tabs.push(TabEnums.PLUGINS);
+
+    if (!messageLoading && allMessage?.length > 0) tabs.push(TabEnums.MESSAGES);
+    if (!contactLoading && contactResults?.length > 0)
+      tabs.push(TabEnums.CONTACTS);
+    if (!articleLoading && allArticles?.length > 0)
+      tabs.push(TabEnums.KNOWLEDGE_BASE);
+    if (!pluginLoading && pluginResults?.length > 0)
+      tabs.push(TabEnums.PLUGINS);
+
     return tabs;
   }, [params.search, allMessage, contactResults, allArticles, pluginResults, messageLoading, contactLoading, articleLoading, pluginLoading]);
 
@@ -198,7 +207,11 @@ useEffect(() => {
       </S.SearchInputWrap>
 
       <S.SearchTabs>
-        {activeTabs.length === 0 ? (
+        {isSearching ? (
+          <Wrapper>
+            <Skeleton active paragraph={{ rows: 4 }} style={{ width: '60%' }} />
+          </Wrapper>
+        ) : activeTabs.length === 0 ? (
           <Wrapper>
             <Image src={empty} height={200} width={200} preview={false} />
             <Typography
