@@ -420,3 +420,7 @@ input PaginationArgs {
   offset: Int = 0
   last: Int
 }
+
+type Mutation {
+  createConversationForContact(contactId: ID!): Conversation!
+}

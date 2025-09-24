@@ -40,7 +40,6 @@ import LastReportedLocation from '../../components/contact-details/last-reported
 import * as S from './ContactDetails.styles';
 
 import icUser from '@/assets/icons/contact/ic-user.svg';
-import icPhone from '@/assets/icons/contact/ic-phone.svg';
 import icLeft from '@/assets/icons/contact/ic-arrow-left.svg';
 import icContact from '@/assets/icons/contact/ic-contact.svg';
 import icAvatarDefault from '@/assets/images/avatar-default.png';
@@ -54,6 +53,7 @@ import flagList from '@/shared/helper/data/flagIcon';
 import { format } from 'timeago.js';
 import Modal from '@/shared/components/common/Modal';
 import { getId } from '@/shared/utils/decode';
+import { useCreateConversation } from '../../helpers/conversation.helper';
 
 function ContactDetails() {
   const { t } = useTranslation('contacts');
@@ -64,6 +64,7 @@ function ContactDetails() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
+  const { createConversation, isInFlight } = useCreateConversation();
 
   const { isLoading, contactDetails, isDetails } = useAppSelector(
     (state) => state.contacts,
@@ -186,13 +187,12 @@ function ContactDetails() {
   function handleSendMessage() {
     if (contactDetails?.lastConversations && contactDetails.lastConversations.length > 0) {
       navigate(`/inbox?conversationId=${contactDetails.lastConversations[0].id}`);
-    } 
+    }
   }
   function handleConversation() {
-    //TODO handle later
-  }
-  function handleCall() {
-    //TODO handle later
+     if (contactDetails?.id) {
+      createConversation(contactDetails.id);
+    }
   }
 
   const breadcrumbContactDetails = [
@@ -393,6 +393,7 @@ function ContactDetails() {
                   width="fit-content"
                   onClick={handleConversation}
                   iconPosition="left"
+                  isLoading={isInFlight}
                   icon={
                     <Image
                       src={icConversation}
@@ -404,23 +405,6 @@ function ContactDetails() {
                 >
                   <Typography fontWeight={fontWeight?.semiBold}>
                     {t('contact-profile.new-conversation')}
-                  </Typography>
-                </S.ButtonFilter>
-                <S.ButtonFilter
-                  width="fit-content"
-                  onClick={handleCall}
-                  iconPosition="left"
-                  icon={
-                    <Image
-                      src={icPhone}
-                      preview={false}
-                      width={15}
-                      height={18}
-                    />
-                  }
-                >
-                  <Typography fontWeight={fontWeight?.semiBold}>
-                    {t('contact-profile.start-a-call')}
                   </Typography>
                 </S.ButtonFilter>
                 <PopoverAction
