@@ -247,10 +247,12 @@ function ContactDetails() {
     });
   };
 
-  const countryCode = contactDetails?.context?.language
-    ?.split('-')?.[1]
-    ?.toUpperCase();
-  const flagIcon = flagList.find((item) => item.code === countryCode)?.image;
+  const countryCode = contactDetails?.context?.countryCode
+  const flagIcon = flagList.find(
+    (item) => item.code.toUpperCase() === countryCode?.toUpperCase()
+  )?.image;
+
+
 
   return (
     <S.ContactsContainer>
