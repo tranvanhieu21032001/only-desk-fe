@@ -184,7 +184,9 @@ function ContactDetails() {
   };
 
   function handleSendMessage() {
-    //TODO handle later
+    if (contactDetails?.lastConversations && contactDetails.lastConversations.length > 0) {
+      navigate(`/inbox?conversationId=${contactDetails.lastConversations[0].id}`);
+    } 
   }
   function handleConversation() {
     //TODO handle later
@@ -453,7 +455,7 @@ function ContactDetails() {
             </Col>
             <Col xs={24} lg={14} xl={12}>
               <Data form={form} />
-              <Conversation isLoading={isLoading} />
+              <Conversation isLoading={isLoading} conversations={contactDetails?.lastConversations} />
               {/* <PageVisitedRecently isLoading={isLoading} /> */}
               {/* <Campaign isLoading={isLoading} /> */}
               <PrivateNotepad />

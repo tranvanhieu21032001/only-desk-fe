@@ -1,10 +1,9 @@
 // TabContent.tsx
-import React, { useEffect } from 'react';
+import React from 'react';
 import ShortcutsTab from './ShortcutsTab';
 import ReminderTab from './ReminderTab';
 import KnowledgeBaseTab from './KnowledgeBaseTab';
 import { TabContentProps } from '@/modules/inbox/interfaces/inbox';
-import { useAppDispatch } from '@/shared/hooks';
 
 const TabContent: React.FC<TabContentProps> = (props) => {
   const { activeTab, INBOX_TABS } = props;

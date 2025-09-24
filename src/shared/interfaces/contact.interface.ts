@@ -1,3 +1,5 @@
+import { LastConversations } from "./conversation.interface";
+
 export enum ContactGender {
   MALE = 'male',
   FEMALE = 'female',
@@ -41,13 +43,14 @@ export interface Contact {
   address?: string;
   website?: string;
   notification?: boolean;
+  lastConversations?: LastConversations;
   segments: string[];
   metadata?: {
     [key: string]: any;
   };
   notes?: string;
   isOnline: boolean;
-  lastActivityAt: string;
+  lastActivityAt?: string;
   workspaceId?: string;
   context?: ContactContext;
   companyInfo?: CompanyInfo;
