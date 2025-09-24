@@ -1,4 +1,4 @@
-import { Form, Image } from 'antd';
+import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import React, { useState, useRef, useEffect } from 'react';
 
@@ -9,11 +9,7 @@ import CreateConversationModal from '../../Modal';
 import { useAppDispatch, useModal } from '@/shared/hooks';
 import ModalAddContact from '@/modules/contacts/components/modal-add-contact/ModalAddContact';
 
-import {
-  conversationOptions,
-  notificationOptions,
-  participant,
-} from '@/core/settings/options';
+import { notificationOptions } from '@/core/settings/options';
 import { useTitle } from '@/core/context/TitleContext';
 
 import * as S from './header.styles';
