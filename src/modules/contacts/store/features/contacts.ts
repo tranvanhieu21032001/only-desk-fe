@@ -65,44 +65,67 @@ const createContact = createAsyncThunk(
   },
 );
 
-const fetchContacts = createAsyncThunk(
+type FetchContactsParams = {
+  keyword?: string | null;
+  offset?: number;
+  fetchPolicy?: 'store-or-network' | 'network-only';
+  mapEdges?: boolean;
+};
+
+async function getContacts({
+  keyword = null,
+  offset = 0,
+  fetchPolicy = 'store-or-network',
+  mapEdges = false,
+}: FetchContactsParams): Promise<{ contacts: Contact[] } | any> {
+  const results = await fetchQuery<ContactsQuery>(
+    relayEnvironment,
+    contactsQuery,
+    {
+      args: { first: PAGE_SIZE, offset },
+      keyword,
+    },
+    { fetchPolicy },
+  ).toPromise();
+
+  if (!results?.contacts) return null;
+
+  if (mapEdges) {
+    const contacts = results.contacts.edges?.map((edge) => edge?.node as Contact) || [];
+    return { contacts };
+  }
+  return results.contacts;
+}
+
+
+ const fetchContacts = createAsyncThunk(
   'contacts/get-contacts',
   async (values: { offset?: number; keyword?: string | null } = {}) => {
-    const { offset, keyword } = values;
-    const results = await fetchQuery<ContactsQuery>(
-      relayEnvironment,
-      contactsQuery,
-      {
-        args: { first: PAGE_SIZE, offset: offset ?? PAGE },
-        keyword: keyword ?? null,
-      },
-      { fetchPolicy: 'store-or-network' },
-    ).toPromise();
-    return results?.contacts;
+    return getContacts({
+      keyword: values.keyword ?? null,
+      offset: values.offset ?? PAGE,
+      fetchPolicy: 'store-or-network',
+      mapEdges: false,
+    });
   },
 );
 
-const fetchSearchContacts = createAsyncThunk<
+ const fetchSearchContacts = createAsyncThunk<
   { contacts: Contact[] },
   { keyword: string; offset?: number },
   { rejectValue: string }
 >('contacts/search-contacts', async (values, { rejectWithValue }) => {
-  const { keyword, offset = 0 } = values;
   try {
-    const results = await fetchQuery<ContactsQuery>(
-      relayEnvironment,
-      contactsQuery,
-      {
-        args: { first: PAGE_SIZE, offset },
-        keyword,
-      },
-      { fetchPolicy: 'network-only' },
-    ).toPromise();   
-    if (!results?.contacts) {
-      return rejectWithValue('No data found');
-    }
-    const contacts = results.contacts.edges?.map((edge) => edge?.node as Contact) || [];
-    return { contacts };
+    const data = await getContacts({
+      keyword: values.keyword,
+      offset: values.offset ?? 0,
+      fetchPolicy: 'network-only',
+      mapEdges: true,
+    });
+
+    if (!data) return rejectWithValue('No data found');
+
+    return data; // { contacts: Contact[] }
   } catch (error: any) {
     return rejectWithValue(error.message || 'Failed to search contacts');
   }
