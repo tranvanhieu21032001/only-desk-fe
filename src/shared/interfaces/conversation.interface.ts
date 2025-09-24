@@ -14,3 +14,5 @@ export interface Conversation {
   unreadGuestCount?: number;
   unreadCount?: number;
 }
+
+export type LastConversations = Conversation[];

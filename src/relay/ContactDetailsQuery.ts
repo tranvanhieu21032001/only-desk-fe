@@ -19,6 +19,21 @@ export const contactDetailsQuery = graphql`
         updatedAt
         isOnline
         segments
+        lastConversations{
+          id
+          latestMessage{
+						id
+            content
+            createdAt
+            user{
+              id
+              email
+              firstName
+              lastName
+              avatar
+            }
+          }
+        }
         notes
         metadata 
         companyInfo {
