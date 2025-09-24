@@ -1,4 +1,4 @@
-import { Image } from 'antd';
+import { Form, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import React, { useState, useRef, useEffect } from 'react';
 
@@ -22,18 +22,16 @@ import flag from '@/assets/icons/common/ic-flag.svg';
 import bell from '@/assets/icons/common/ic-bell.svg';
 import team from '@/assets/icons/common/ic-team.svg';
 import search from '@/assets/icons/common/ic-search.svg';
-import arrDown from '@/assets/icons/common/ic-arrow-down.svg';
 import defaultAvatar from '@/assets/images/avatar-default.png';
 import addCircle from '@/assets/icons/common/ic-add-white.svg';
 import addHeader from '@/assets/icons/common/ic-add-header.svg';
-import closeModal from '@/assets/icons/common/ic-close-modal.svg';
 import icAddContact from '@/assets/icons/common/ic-add-contact.svg';
-import closeCircle from '@/assets/icons/common/ic-close-circle.svg';
 import conversation from '@/assets/icons/common/ic-conversation.svg';
 import bellBlue from '@/assets/icons/common/ic-notification-blue.svg';
 import { createContact } from '@/modules/contacts/store/features/contacts';
 import { ReactSVG } from 'react-svg';
 import { useLocation } from 'react-router-dom';
+import AddOperatorModal from '@/modules/settings/components/workspaces/workspace-content/workspace-operator-teams/modal/AddOperatorModal';
 
 const Header: React.FC = () => {
   const { t } = useTranslation('inbox');
@@ -43,27 +41,16 @@ const Header: React.FC = () => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selected, setSelected] = useState('');
-  const [selectDropdownOpen, setSelectDropdownOpen] = useState(false);
-  const [tags, setTags] = useState(participant);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState(notificationOptions);
   const [isLoading] = useState<boolean>(false);
   const [searchVisible, setSearchVisible] = useState(false);
+  const [isOpenAddOperator, setIsOpenAddOperator] = useState(false);
 
   const { visible: addContact, toggle: handleOpenModalAddContact } = useModal();
   const location = useLocation();
   const currentPath = location.pathname;
   const isCategoriesPage = currentPath === '/categories';
-
-  const removeTag = (index: number) => {
-    const newTags = tags.filter((_, i) => i !== index);
-    setTags(newTags);
-  };
-
-  const clearAll = () => {
-    setTags([]);
-  };
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
@@ -72,7 +59,6 @@ const Header: React.FC = () => {
     setDropdownOpen((prev) => !prev);
   };
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -202,7 +188,12 @@ const Header: React.FC = () => {
               <ReactSVG src={icAddContact} />
               {t('header.addNewContact')}
             </S.DropdownItem>
-            <S.DropdownItem>
+            <S.DropdownItem
+              onClick={() => {
+                setIsOpenAddOperator(true);
+                setDropdownOpen(false);
+              }}
+            >
               <ReactSVG src={team} />
               {t('header.inviteTeamMembers')}
             </S.DropdownItem>
@@ -228,40 +219,6 @@ const Header: React.FC = () => {
           <S.FormWrapper>
             <S.FormGap>
               <S.Label>
-                Type of conversation <span>*</span>
-              </S.Label>
-
-              <S.DropdownRow>
-                <S.DropdownHeader
-                  onClick={() => setSelectDropdownOpen(!selectDropdownOpen)}
-                >
-                  <span>{selected || 'Choose type of conversation'}</span>
-
-                  <S.ArrowIcon isOpen={selectDropdownOpen}>
-                    <Image src={arrDown} preview={false} />
-                  </S.ArrowIcon>
-                </S.DropdownHeader>
-
-                {selectDropdownOpen && (
-                  <S.DropdownList>
-                    {conversationOptions.map((option, idx) => (
-                      <S.DropdownItem
-                        key={idx}
-                        onClick={() => {
-                          setSelected(option);
-                          setSelectDropdownOpen(false);
-                        }}
-                      >
-                        {option}
-                      </S.DropdownItem>
-                    ))}
-                  </S.DropdownList>
-                )}
-              </S.DropdownRow>
-            </S.FormGap>
-
-            <S.FormGap>
-              <S.Label>
                 Email of the user <span>*</span>
               </S.Label>
               <S.Input type="email" placeholder="Enter the email of the user" />
@@ -276,39 +233,14 @@ const Header: React.FC = () => {
                 placeholder="Enter the full name of the user"
               />
             </S.FormGap>
-
-            <S.FormGap>
-              <S.Label>A participant</S.Label>
-              <S.TagsWrapper>
-                {tags.map((tag, index) => (
-                  <S.Tag key={index}>
-                    {tag}
-                    <S.RemoveTagButton onClick={() => removeTag(index)}>
-                      <S.RemoveImage>
-                        <Image src={closeModal} preview={false} />
-                      </S.RemoveImage>
-                    </S.RemoveTagButton>
-                  </S.Tag>
-                ))}
-                {tags.length > 0 && (
-                  <S.ClearAllButton onClick={clearAll}>
-                    <Image src={closeCircle} preview={false} />
-                  </S.ClearAllButton>
-                )}
-              </S.TagsWrapper>
-            </S.FormGap>
-
-            <S.FormGap>
-              <S.Label>Subject of the email (if any)</S.Label>
-              <S.Input
-                type="text"
-                placeholder="Enter the subject of the email"
-              />
-            </S.FormGap>
           </S.FormWrapper>
         </CreateConversationModal>
       </S.RightSection>
 
+      <AddOperatorModal
+        isOpen={isOpenAddOperator}
+        onClose={() => setIsOpenAddOperator(false)}
+      />
       {addContact && (
         <ModalAddContact
           open={addContact}

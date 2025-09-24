@@ -89,21 +89,6 @@ const WorkspaceOperatorTeams = () => {
   // const [role, setRole] = useState<string | undefined>(undefined);
   const [password, setPassword] = useState('');
   const [twoFA, setTwoFA] = useState(['', '', '', '', '', '']);
- const handleFinish = async (values: unknown) => {
-  const { email, role } = values as { email: string; role: string };
-
-  await dispatch(
-    addOperatorToWorkspace({
-      email,
-      role,
-      t,
-    }),
-  ).unwrap();
-
-  setIsOpenAddOperator(false);
-  addForm.resetFields();
-};
-
 
   const openRemoveModal = (op: Operator) => {
     setSelectedOperator(op);
@@ -323,13 +308,9 @@ const WorkspaceOperatorTeams = () => {
         </S.ModalEmpty>
       </Modal>
 
-      <AddOperatorModal
+       <AddOperatorModal
         isOpen={isOpenAddOperator}
         onClose={() => setIsOpenAddOperator(false)}
-        isLoading={isAdding}
-        form={addForm}
-        handleFinish={handleFinish}
-        t={t}
       />
 
       <EditOperatorModal
