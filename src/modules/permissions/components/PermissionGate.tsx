@@ -31,6 +31,9 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
 }) => {
   const { permissions } = usePermissionContext();
   // console.log("permissions", permissions);
+   if (!permissions) {
+    return null;
+  }
 
   var featurePermission: FeaturePermission | undefined =
     feature && permissions?.features.find((f) => f.feature === feature);
