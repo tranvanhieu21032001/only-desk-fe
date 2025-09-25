@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import icWarning from "@/assets/icons/common/ic-warning-message.svg";
-import { Button, Modal } from "antd";
-import ChoisePlan from "@/modules/settings/components/billing/billing-content/main/change-plan/Content/choise-plan/ChoisePlan";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import icWarning from '@/assets/icons/common/ic-warning-message.svg';
+import { Button, Modal } from 'antd';
+import ChoisePlan from '@/modules/settings/components/billing/billing-content/main/change-plan/Content/choise-plan/ChoisePlan';
 
 interface PermissionWarningMessageProps {
   message?: string;
+  needUpgrade?: boolean;
 }
 
 const Wrapper = styled.div`
@@ -36,7 +37,8 @@ const Icon = styled.img`
 `;
 
 const PermissionWarningMessage: React.FC<PermissionWarningMessageProps> = ({
-  message = "This feature is not available in your current plan",
+  message = 'This feature is not available in your current plan',
+  needUpgrade = false,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -47,16 +49,18 @@ const PermissionWarningMessage: React.FC<PermissionWarningMessageProps> = ({
           <Icon src={icWarning} alt="warning" />
           <span>{message}</span>
         </ContentWrapper>
-        <Button
-          type="primary"
-          size="middle"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsModalOpen(true);
-          }}
-        >
-          Upgrade
-        </Button>
+        {needUpgrade && (
+          <Button
+            type="primary"
+            size="middle"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalOpen(true);
+            }}
+          >
+            Upgrade
+          </Button>
+        )}
       </Wrapper>
       <Modal
         title="Upgrade Plan"

@@ -4,18 +4,23 @@ import React, {
   cloneElement,
   ReactElement,
 } from 'react';
+
+export type PermissionGateRender = (
+  hasPermission: boolean,
+  message?: string,
+  needUpgrade?: boolean,
+) => ReactNode;
+
 import { UpgradePrompt } from './UpgradePrompt';
 import { FeatureKey } from '../enums/features.enum';
 import { usePermissionContext } from '../contexts/PermissionContext';
 import { FeaturePermission } from '../interfaces/permission.interface';
 
-interface PermissionGateProps {
+export interface PermissionGateProps {
   feature: FeatureKey | undefined;
   action: string;
   ignoreCheck?: boolean;
-  children:
-    | ReactNode
-    | ((hasPermission: boolean, message?: string) => ReactNode);
+  children: ReactNode | PermissionGateRender;
 }
 
 export const PermissionGate: React.FC<PermissionGateProps> = ({
@@ -26,7 +31,6 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
 }) => {
   const { permissions } = usePermissionContext();
   // console.log("permissions", permissions);
-  
 
   var featurePermission: FeaturePermission | undefined =
     feature && permissions?.features.find((f) => f.feature === feature);
@@ -40,13 +44,14 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
   };
 
   const hasPermission = ignoreCheck || (accessible && available);
-  
+
   if (typeof children === 'function') {
     return (
       <>
-        {(children as (hasPermission: boolean, message?: string) => ReactNode)(
+        {(children as PermissionGateRender)(
           hasPermission,
           message,
+          needUpgrade,
         )}
       </>
     );

@@ -17,12 +17,12 @@ import { useSelector } from 'react-redux';
 import { updateKnowledgeBaseSetting } from '@/modules/settings/api/knowledge-base';
 import { Form } from 'antd';
 import { PermissionGate } from '@/modules/permissions/components/PermissionGate';
-import PermissionWarningMessage from '@/shared/components/common/PermissionWarningMessage/PermissionWarningMessage';
 import {
   FeatureKey,
   HelpdeskAction,
 } from '@/modules/permissions/enums/features.enum';
 import { MAIN_DOMAIN } from '@/modules/inbox/constants/inbox.constants';
+import PermissionWarningMessage from '@/modules/permissions/components/PermissionWarningMessage';
 
 const domainRegex = /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
 
@@ -104,9 +104,18 @@ const SetupKnowledgeBase = () => {
           feature={FeatureKey.KNOWLEDGE_BASE}
           action={HelpdeskAction.KNOWLEDGE_BASE_SETTINGS}
         >
-          {(hasPermission: boolean, message?: string) => (
+          {(
+            hasPermission: boolean,
+            message?: string,
+            needUpgrade?: boolean,
+          ) => (
             <>
-              {!hasPermission && <PermissionWarningMessage message={message} />}
+              {!hasPermission && (
+                <PermissionWarningMessage
+                  message={message}
+                  needUpgrade={needUpgrade}
+                />
+              )}
               <Form form={form} layout="vertical">
                 <S.GroupInput
                   style={{
