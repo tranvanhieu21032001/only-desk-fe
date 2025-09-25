@@ -25,22 +25,8 @@ import {
   fetchHelpdeskCategories,
   updateArticle,
 } from '@/modules/knowledge-base/store/helpdeskCategorySlice';
+import { AllArticleInterface } from '@/modules/knowledge-base/models/article.model';
 
-export interface AllArticleInterface {
-  key: string;
-  title: string;
-  content: string;
-  status: string;
-  statistic: string;
-  created: string;
-  lastUpdate: string;
-  category: string;
-  categoryId: string;
-  sectionId?: string;
-  defaultLanguage?: string;
-  isCategoryRow?: boolean;
-  translations?: Record<string, { title: string; content: string }>;
-}
 
 interface ModalEditArticlesProps {
   open: boolean;
@@ -99,7 +85,7 @@ function ModalEditArticles({ open, onCancel, article }: ModalEditArticlesProps) 
       const trans = article.translations?.[lang];
 
       setLanguage(lang);
-      setCategory(article.categoryId);
+      setCategory(article.categoryId || '');
       setArticleTitle(trans?.title || article.title || '');
       setSection(article.sectionId || '');
     }
