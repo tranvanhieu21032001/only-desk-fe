@@ -20,7 +20,7 @@ import iconBar from '@/assets/icons/setting/ic-bar.svg';
 
 import type { Shortcut, ShortcutsList } from '@/modules/settings/models/chatbox.model';
 import { KEY_PAGE } from '@/shared/constant/common';
-import { SHORT_CUTS_PAGE } from '@/core/settings/constants';
+import { constants } from '@/core/settings';
 
 const MessageShortcuts: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -39,7 +39,7 @@ const MessageShortcuts: React.FC = () => {
 
   const [shortcuts, setShortcuts] = useState<Shortcut[]>(() => {
     if (page === 1) {
-      const cached = localStorage.getItem(SHORT_CUTS_PAGE);
+      const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
       if (cached) {
         const parsed = JSON.parse(cached) as ShortcutsList;
         return parsed.data || [];
@@ -50,7 +50,7 @@ const MessageShortcuts: React.FC = () => {
 
   const [totalDocs, setTotalDocs] = useState(() => {
     if (page === 1) {
-      const cached = localStorage.getItem(SHORT_CUTS_PAGE);
+      const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
       if (cached) {
         const parsed = JSON.parse(cached) as ShortcutsList;
         return parsed.total || 0;
@@ -61,7 +61,7 @@ const MessageShortcuts: React.FC = () => {
 
   const fetchShortcuts = (page = 1, useCache = true) => {
     if (page === 1 && useCache) {
-      const cached = localStorage.getItem(SHORT_CUTS_PAGE);
+      const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
       if (cached) {
         const parsed = JSON.parse(cached) as ShortcutsList;
         setShortcuts(parsed.data || []);
@@ -76,7 +76,7 @@ const MessageShortcuts: React.FC = () => {
         setTotalDocs(res.total || 0);
 
         if (page === 1) {
-          localStorage.setItem(SHORT_CUTS_PAGE, JSON.stringify(res));
+          localStorage.setItem(constants.SHORTCUTS_PAGE, JSON.stringify(res));
         }
       })
       .catch(() => {

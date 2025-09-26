@@ -7,6 +7,7 @@ const ACCESS_TOKEN = '_access_token';
 const SIGN_UP_INFO = '_sign_up_info';
 const CURRENT_WORKSPACE = '_current_workspace';
 const IS_SIDEBAR_OPEN = '_is_sidebar_open';
+const SHORTCUTS_PAGE = '_shortcuts_page';
 
 const constants = {
   API_SERVER,
@@ -17,6 +18,7 @@ const constants = {
   SIGN_UP_INFO,
   CURRENT_WORKSPACE,
   IS_SIDEBAR_OPEN,
+  SHORTCUTS_PAGE
 };
 
 export const DEFAULT_RESIZER_CONFIG = {
@@ -41,5 +43,3 @@ export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
 
 export default constants;
-
-export const SHORT_CUTS_PAGE = 'shortcuts_page';

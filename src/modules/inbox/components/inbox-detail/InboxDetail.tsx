@@ -10,7 +10,7 @@ import { getShortcutsList } from '@/modules/inbox/api/inbox.api';
 import type { Shortcut } from '@/modules/settings/models/chatbox.model';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import { DEFAULT_FULL_NAME, SHORT_CUTS_PAGE } from '@/core/settings/constants';
+import constants, { DEFAULT_FULL_NAME } from '@/core/settings/constants';
 import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
 import { InboxFooter } from './InboxFooter';
 import { handleIconClickLogic } from '../../helpers/inbox.logic';
@@ -192,7 +192,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
       if (activeTab === INBOX_TABS.SHORTCUTS) {
         setShortcutsPage(1);
 
-        const cached = localStorage.getItem(SHORT_CUTS_PAGE);
+        const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
         if (cached && !shortcutsKeyword) {
           try {
             const parsed = JSON.parse(cached);
@@ -211,7 +211,7 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
             setShortcutsHasMore(res.hasNextPage);
 
             if (!shortcutsKeyword) {
-              localStorage.setItem(SHORT_CUTS_PAGE, JSON.stringify(res));
+              localStorage.setItem(constants.SHORTCUTS_PAGE, JSON.stringify(res));
             }
           })
           .finally(() => setShortcutsLoading(false));
