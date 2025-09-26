@@ -18,6 +18,7 @@ import icReload from '@/assets/icons/auth/ic-reload.svg';
 import icInfo from '@/assets/icons/auth/ic-info-circle.svg';
 import icArrowRight from '@/assets/icons/common/ic-arrow-right.svg';
 import webLocalStorage from '@/shared/utils/webLocalStorage';
+import { generateCrispScript } from '@/core/settings/constants';
 
 function ConnectOnlyChat() {
   const { t } = useTranslation('auth');
@@ -26,7 +27,7 @@ function ConnectOnlyChat() {
   const { visible: inviteModal, toggle: handleOpenModalInvite } = useModal();
   const websiteID = webLocalStorage.get('WEBSITE_ID') || 'YOUR_WEBSITE_ID';
 
-  const scriptSnippet = `<script type="text/javascript">window.$crisp=[];window.ZC_WEBSITE_ID="${websiteID}";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>`;
+  const scriptSnippet = generateCrispScript(websiteID)
   function handleCopyCode() {
     navigator.clipboard
       .writeText(scriptSnippet)

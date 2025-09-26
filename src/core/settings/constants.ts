@@ -40,4 +40,19 @@ export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
 
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
 
+export const generateCrispScript = (websiteID: string) => `
+<script type="text/javascript">
+  window.$crisp = [];
+  window.ZC_WEBSITE_ID = "${websiteID}";
+  (function () {
+    d = document;
+    s = d.createElement("script");
+    s.src = "https://client.crisp.chat/l.js";
+    s.async = 1;
+    d.getElementsByTagName("head")[0].appendChild(s);
+  })();
+</script>`;
+
+
+
 export default constants;

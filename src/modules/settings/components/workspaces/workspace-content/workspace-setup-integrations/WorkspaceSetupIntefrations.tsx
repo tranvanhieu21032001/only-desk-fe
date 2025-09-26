@@ -13,8 +13,6 @@ import ToastMessage from '@/shared/components/common/ToastMessage';
 
 import themeColors from '@/shared/styles/themes/default/colors';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
-
-import { crispScript } from '@/modules/settings/constants/workspace.constant';
 import { workspaceIntegrations } from '@/modules/settings/helpers/data/workspace';
 
 import * as S from './WorkspaceSetupIntegrations.styles';
@@ -22,15 +20,20 @@ import * as S from './WorkspaceSetupIntegrations.styles';
 import icCopy from '@/assets/icons/workspace/ic-copy.svg';
 import icSeeAllIntegrations from '@/assets/icons/workspace/ic-see-all-integrations.svg';
 import icCopyCode from '@/assets/icons/setting/ic-copy-code.svg';
+import { generateCrispScript } from '@/core/settings/constants';
+import { useAppSelector } from '@/shared/hooks';
+import { RootState } from '@/core/store';
 
 function WorkspaceSetupIntegrations() {
   const { t } = useTranslation('settingWorkspace');
   const [isModalSetupChatbox, setIsModalSetupChatbox] = useState(false);
   const [techEmail, setTechEmail] = useState('');
   const [sending, setSending] = useState(false);
-
+  const { currentWorkspace } = useAppSelector((state: RootState) => state.auth);
+  
+  const websiteID = currentWorkspace?.websiteID || '';
   function handleCopyId() {
-    navigator.clipboard.writeText('f50a260a-6085-4e86-9bf8-359fc7b8de34');
+    navigator.clipboard.writeText(websiteID);
 
     toast(
       React.createElement(ToastMessage, {
@@ -41,7 +44,7 @@ function WorkspaceSetupIntegrations() {
   }
 
   function handleCopyScript() {
-    navigator.clipboard.writeText(crispScript);
+    navigator.clipboard.writeText(generateCrispScript(websiteID));
 
     toast(
       React.createElement(ToastMessage, {
@@ -101,7 +104,7 @@ function WorkspaceSetupIntegrations() {
                 <Input
                   isHeight="47px"
                   disabled
-                  placeholder="f50a260a-6085-4e86-9bf8-359fc7b8de34"
+                  value={websiteID}
                 />
                 <Button
                   type="primary"
@@ -185,7 +188,8 @@ function WorkspaceSetupIntegrations() {
           </>
         }
       >
-        <S.ChatBoxModal>
+        <div style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+          <S.ChatBoxModal>
           <S.CopyBox>
             <p>1. Copy the following code</p>
 
@@ -197,7 +201,7 @@ function WorkspaceSetupIntegrations() {
                   lineHeight: 1.5,
                 }}
               >
-                {crispScript}
+                {generateCrispScript(websiteID)}
               </pre>
               <img src={icCopyCode} alt="" onClick={handleCopyScript} />
             </S.CopyCodeBox>
@@ -249,6 +253,7 @@ function WorkspaceSetupIntegrations() {
             </S.TextBoxFlex>
           </S.SendEmailBox>
         </S.ChatBoxModal>
+        </div>
       </Modal>
 
       <S.LookingAccountInformation>
