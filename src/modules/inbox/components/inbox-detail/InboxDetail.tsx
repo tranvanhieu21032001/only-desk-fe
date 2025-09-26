@@ -10,7 +10,7 @@ import { getShortcutsList } from '@/modules/inbox/api/inbox.api';
 import type { Shortcut } from '@/modules/settings/models/chatbox.model';
 import { useAppDispatch, useAppSelector } from '@/shared/hooks';
 import { selectCurrentWorkspaceId } from '@/modules/auth/store/selectors';
-import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
+import { DEFAULT_FULL_NAME, SHORT_CUTS_PAGE } from '@/core/settings/constants';
 import { INBOX_TABS, MENU_WIDTH } from '../../constants/inbox.constants';
 import { InboxFooter } from './InboxFooter';
 import { handleIconClickLogic } from '../../helpers/inbox.logic';
@@ -47,7 +47,6 @@ import { MessageBaseItem } from './MessageBaseItem';
 import { Message } from '@/shared/chat-logic/interfaces/inbox';
 import { formatDate } from '@/shared/chat-logic/utils/time';
 import MessageInfoModal from './modal-info/MessageInfoModal';
-// import { getSenderName } from '@/shared/chat-logic/helpers/chat.helper';
 
 const InboxDetail: React.FC<InboxDetailProps> = memo(
   ({ isSidebarOpen, toggleSidebar }) => {
@@ -192,11 +191,28 @@ const InboxDetail: React.FC<InboxDetailProps> = memo(
     useEffect(() => {
       if (activeTab === INBOX_TABS.SHORTCUTS) {
         setShortcutsPage(1);
+
+        const cached = localStorage.getItem(SHORT_CUTS_PAGE);
+        if (cached && !shortcutsKeyword) {
+          try {
+            const parsed = JSON.parse(cached);
+            setShortcuts(parsed.data || []);
+            setShortcutsHasMore(parsed.hasNextPage ?? false);
+            return;
+          } catch (e) {
+            console.error('Failed to parse shortcuts cache:', e);
+          }
+        }
+
         setShortcutsLoading(true);
         getShortcutsList({ page: 1, limit: 10, keyword: shortcutsKeyword })
           .then((res) => {
             setShortcuts(res.data || []);
             setShortcutsHasMore(res.hasNextPage);
+
+            if (!shortcutsKeyword) {
+              localStorage.setItem(SHORT_CUTS_PAGE, JSON.stringify(res));
+            }
           })
           .finally(() => setShortcutsLoading(false));
       }

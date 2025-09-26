@@ -24,7 +24,7 @@ export const handleCreateShortcut = async ({
 };
 
 export const getShortcutsList = async ({
-  keyword = 'shortcut',
+  keyword = '',
   page = 1,
   limit = 10,
 }: {

@@ -41,3 +41,5 @@ export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
 
 export default constants;
+
+export const SHORT_CUTS_PAGE = 'shortcuts_page';
