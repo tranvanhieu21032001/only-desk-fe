@@ -86,9 +86,10 @@ function ArticleContent() {
   toggle: toggleModalAddCategory,
 } = useModal();
 
-
   useEffect(() => {
-    dispatch(fetchHelpdeskCategories());
+    if(!categories || categories.length === 0){
+      dispatch(fetchHelpdeskCategories());
+    }
   }, [dispatch]);
 
   // useEffect(() => {

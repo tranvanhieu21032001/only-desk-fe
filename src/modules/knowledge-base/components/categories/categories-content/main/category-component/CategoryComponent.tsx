@@ -20,9 +20,12 @@ const CategoryComponent = () => {
     dispatch(fetchHelpdeskCategories());
   }, [dispatch]);
 
-  useEffect(() => {
+useEffect(() => {
+  if (!categories || categories.length === 0) {
     loadCategories();
-  }, [loadCategories]);
+  }
+}, [categories, loadCategories]);
+
 
   if (loading) {
     return <div style={{ marginTop: 12 }}><Skeleton active paragraph={{ rows: 6 }} /></div>;

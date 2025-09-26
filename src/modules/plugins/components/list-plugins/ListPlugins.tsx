@@ -25,13 +25,18 @@ function Plugins() {
 
   const [typePlugins, _setTypePlugins] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (typeParam === 'installed-plugins') {
+useEffect(() => {
+  if (typeParam === 'installed-plugins') {
+    if (!installedPlugins || installedPlugins.length === 0) {
       dispatch(fetchInstalledPlugins());
-    } else {
+    }
+  } else {
+    if (!allPlugins || allPlugins.length === 0) {
       dispatch(fetchPlugins());
     }
-  }, [dispatch, typeParam]);
+  }
+}, [dispatch, typeParam, installedPlugins, allPlugins]);
+
 
   const pluginsToShow = useMemo(() => {
     const isInstalledPage = typeParam === 'installed-plugins';
