@@ -18,13 +18,20 @@ export interface ActionFilterArticleOptionsInterface {
 
 export interface AllArticleInterface {
   key: string;
+  id?: string;
   title: string;
-  status: 'online' | 'draft' | 'hidden' | 'visible';
-  statistic: string;
-  created: string;
-  lastUpdate: string;
+  content?: string;
+  status?: string;
+  statistic?: string;
+  created?: string;
+  lastUpdate?: string;
+  defaultLanguage?: string;
   category: string;
+  categoryId?: string;
+  sectionId?: string;
   isCategoryRow?: boolean;
+  url?: string;
+  translations?: Record<string, { title: string; content: string }>;
 }
 
 export interface AllCategoriesInterface {

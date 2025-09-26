@@ -25,22 +25,8 @@ import Modal from '@/shared/components/common/Modal';
 import Button from '@/shared/components/common/Button';
 import { ReactSVG } from 'react-svg';
 import fontWeight from '@/shared/styles/themes/default/fontWeight';
+import { AllArticleInterface } from '@/modules/knowledge-base/models/article.model';
 
-export interface AllArticleInterface {
-  key: string;
-  id?: string;
-  title: string;
-  content:string;
-  status: string;
-  statistic: string;
-  created: string;
-  lastUpdate: string;
-  defaultLanguage?: string;
-  category: string;
-  categoryId: string;
-  sectionId?: string;
-  isCategoryRow?: boolean;
-}
 
 const selectFlatArticlesFromCategory = (
   categories: any[],
@@ -59,6 +45,7 @@ const selectFlatArticlesFromCategory = (
       category: category.name,
       categoryId: category.id,
       isCategoryRow: false,
+      url:article?.url
     }));
 
     const sectionArticles = (category.sections || []).flatMap((section: any) =>
@@ -76,6 +63,7 @@ const selectFlatArticlesFromCategory = (
         categoryId: category.id,
         sectionId: section.id,
         isCategoryRow: false,
+        url:article?.url
       })),
     );
 
@@ -136,6 +124,7 @@ const AllArticle = () => {
       statistic: '',
       created: '',
       lastUpdate: '',
+      url:''
     });
     flatData.push(...articles);
   });
@@ -146,7 +135,13 @@ const AllArticle = () => {
         key: 'view',
         icon: <Image src={icMonitor} width={20} height={20} preview={false} />,
         label: <Typography padding="0 0 0 2px">{t('article-menu.actions.view')}</Typography>,
-        onClick: () => console.log('View', record),
+        onClick: () => {
+          console.log("record", record);
+          if (record?.url) {
+            
+            window.location.href = record.url;
+          }
+        },
       },
       {
         key: 'edit',
