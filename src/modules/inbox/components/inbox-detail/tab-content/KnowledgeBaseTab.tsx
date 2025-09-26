@@ -28,8 +28,10 @@ const KnowledgeBaseTab: React.FC<KnowledgeBaseTabProps> = ({
   const [isFiltering, setIsFiltering] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchHelpdeskCategories());
-  }, [dispatch]);
+    if(!categories || categories.length ===0){
+      dispatch(fetchHelpdeskCategories());
+    }
+  }, [dispatch, categories]);
 
   useEffect(() => {
     if (knowledgeKeyword && knowledgeKeyword.trim().length > 0) {
