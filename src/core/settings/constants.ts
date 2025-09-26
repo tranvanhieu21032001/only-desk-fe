@@ -39,7 +39,6 @@ export const EVENTBUS_SOCKET_DISCONNECT = 'socket-disconnect';
 export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
 
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
-export const workspaceMenuType = 'type';
 
 export const generateCrispScript = (websiteID: string) => `
 <script type="text/javascript">
