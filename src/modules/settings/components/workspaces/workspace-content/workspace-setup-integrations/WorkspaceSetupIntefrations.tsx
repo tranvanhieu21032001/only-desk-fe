@@ -20,20 +20,18 @@ import * as S from './WorkspaceSetupIntegrations.styles';
 import icCopy from '@/assets/icons/workspace/ic-copy.svg';
 import icSeeAllIntegrations from '@/assets/icons/workspace/ic-see-all-integrations.svg';
 import icCopyCode from '@/assets/icons/setting/ic-copy-code.svg';
-import webLocalStorage from '@/shared/utils/webLocalStorage';
-import { WorkspaceInterface } from '@/modules/auth/models/user';
-import { constants } from '@/core/settings';
 import { generateCrispScript } from '@/core/settings/constants';
+import { useAppSelector } from '@/shared/hooks';
+import { RootState } from '@/core/store';
 
 function WorkspaceSetupIntegrations() {
   const { t } = useTranslation('settingWorkspace');
   const [isModalSetupChatbox, setIsModalSetupChatbox] = useState(false);
   const [techEmail, setTechEmail] = useState('');
   const [sending, setSending] = useState(false);
-  const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
-    constants.CURRENT_WORKSPACE,
-  );
-  const websiteID = currentWorkspaceFromStorage?.websiteID
+  const { currentWorkspace } = useAppSelector((state: RootState) => state.auth);
+  
+  const websiteID = currentWorkspace?.websiteID || '';
   function handleCopyId() {
     navigator.clipboard.writeText(websiteID);
 
