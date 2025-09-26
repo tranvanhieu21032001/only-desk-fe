@@ -20,15 +20,14 @@ import iconBar from '@/assets/icons/setting/ic-bar.svg';
 
 import type { Shortcut, ShortcutsList } from '@/modules/settings/models/chatbox.model';
 import { KEY_PAGE } from '@/shared/constant/common';
+import { constants } from '@/core/settings';
 
 const MessageShortcuts: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
-  const [shortcuts, setShortcuts] = useState<Shortcut[]>([]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editingShortcut, setEditingShortcut] = useState<Shortcut | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deletingShortcut, setDeletingShortcut] = useState<Shortcut | null>(null);
-  const [totalDocs, setTotalDocs] = useState(0);
   const [searchParams] = useSearchParams();
   const { currentObjHistory } = useAppSelector((state) => state.historyRoute);
   const page =
@@ -38,11 +37,47 @@ const MessageShortcuts: React.FC = () => {
     Number(searchParams.get(KEY_PAGE)) ||
     1;
 
-  const fetchShortcuts = (page = 1) => {
+  const [shortcuts, setShortcuts] = useState<Shortcut[]>(() => {
+    if (page === 1) {
+      const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
+      if (cached) {
+        const parsed = JSON.parse(cached) as ShortcutsList;
+        return parsed.data || [];
+      }
+    }
+    return [];
+  });
+
+  const [totalDocs, setTotalDocs] = useState(() => {
+    if (page === 1) {
+      const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
+      if (cached) {
+        const parsed = JSON.parse(cached) as ShortcutsList;
+        return parsed.total || 0;
+      }
+    }
+    return 0;
+  });
+
+  const fetchShortcuts = (page = 1, useCache = true) => {
+    if (page === 1 && useCache) {
+      const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
+      if (cached) {
+        const parsed = JSON.parse(cached) as ShortcutsList;
+        setShortcuts(parsed.data || []);
+        setTotalDocs(parsed.total || 0);
+        return;
+      }
+    }
+
     getShortcutsList({ page, limit: 10 })
       .then((res: ShortcutsList) => {
         setShortcuts(res.data || []);
         setTotalDocs(res.total || 0);
+
+        if (page === 1) {
+          localStorage.setItem(constants.SHORTCUTS_PAGE, JSON.stringify(res));
+        }
       })
       .catch(() => {
         setShortcuts([]);
@@ -64,7 +99,7 @@ const MessageShortcuts: React.FC = () => {
       await handleDeleteShortcut(deletingShortcut.id);
       setDeleteModalOpen(false);
       setDeletingShortcut(null);
-      fetchShortcuts(page);
+      fetchShortcuts(page, false);
     }
   };
 
@@ -169,7 +204,7 @@ const MessageShortcuts: React.FC = () => {
           onCancel={() => setOpenModal(false)}
           onSubmit={() => {
             setOpenModal(false);
-            fetchShortcuts(page);
+            fetchShortcuts(page, false);
           }}
         />
         
@@ -182,7 +217,7 @@ const MessageShortcuts: React.FC = () => {
           onSubmit={() => {
             setOpenEditModal(false);
             setEditingShortcut(null);
-            fetchShortcuts(page);
+            fetchShortcuts(page, false);
           }}
           shortcutData={editingShortcut}
         />
