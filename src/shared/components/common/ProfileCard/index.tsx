@@ -14,6 +14,7 @@ import {
   offUserStatus,
 } from '@/shared/chat-logic/services/socket';
 import { DEFAULT_FULL_NAME } from '@/core/settings/constants';
+import { ProfileCache } from '@/shared/utils/profile-cache';
 
 export enum ProfileType {
   CONTACT = 'CONTACT',
@@ -73,6 +74,14 @@ const ProfileCard = ({
   useEffect(() => {
     if (!isDataMissing) return;
 
+    // 1) Try cache first
+    const cached = ProfileCache.get(profileInfo.type, profileInfo.id);
+    if (cached) {
+      setFetchedData(cached);
+      return; // Use cached; skip fetching
+    }
+
+    // 2) Fetch from API then cache for 15 minutes
     const fetchData = async () => {
       try {
         setIsLoading(true);
@@ -88,12 +97,14 @@ const ProfileCard = ({
               countryCode?: string;
             };
           };
-          setFetchedData({
+          const normalized = {
             name: data?.name,
             email: data?.email,
             avatar: data?.avatar,
             countryCode: data?.context?.countryCode,
-          });
+          };
+          setFetchedData(normalized);
+          ProfileCache.set(profileInfo.type, profileInfo.id, normalized);
         } else if (profileInfo.type == ProfileType.USER) {
           const res = await dispatch(
             fetchUserProfileCard({ id: profileInfo.id }),
@@ -104,11 +115,13 @@ const ProfileCard = ({
             email?: string;
             avatar?: string;
           };
-          setFetchedData({
+          const normalized = {
             name: `${data?.firstName ?? ''} ${data?.lastName ?? ''}`.trim(),
             email: data?.email,
             avatar: data?.avatar,
-          });
+          };
+          setFetchedData(normalized);
+          ProfileCache.set(profileInfo.type, profileInfo.id, normalized);
         }
       } catch (error) {
         console.error('Failed to fetch profile:', error);

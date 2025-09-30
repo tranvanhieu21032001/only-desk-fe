@@ -10,6 +10,7 @@ const IS_SIDEBAR_OPEN = '_is_sidebar_open';
 const ALL_PLUGIN_DATA = '_all_plugin_data';
 const INSTALLED_PLUGIN_DATA = '_installed_plugin_data';
 const KNOWLEGE_BASE_DATA = '_knowledge_base_data'
+const SHORTCUTS_PAGE = '_shortcuts_page';
 
 const constants = {
   API_SERVER,
@@ -22,7 +23,8 @@ const constants = {
   IS_SIDEBAR_OPEN,
   ALL_PLUGIN_DATA,
   INSTALLED_PLUGIN_DATA,
-  KNOWLEGE_BASE_DATA
+  KNOWLEGE_BASE_DATA,
+  SHORTCUTS_PAGE
 };
 
 export const DEFAULT_RESIZER_CONFIG = {
@@ -43,7 +45,23 @@ export const DEFAULT_EMAIL = 'default@gmail.com';
 export const EVENTBUS_SOCKET_CONNECT = 'socket-connect';
 export const EVENTBUS_SOCKET_DISCONNECT = 'socket-disconnect';
 export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
+export const EVENTBUS_AUTH_LOGOUT = 'auth-logout';
 
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
+
+export const generateCrispScript = (websiteID: string) => `
+<script type="text/javascript">
+  window.$crisp = [];
+  window.ZC_WEBSITE_ID = "${websiteID}";
+  (function () {
+    d = document;
+    s = d.createElement("script");
+    s.src = "https://client.crisp.chat/l.js";
+    s.async = 1;
+    d.getElementsByTagName("head")[0].appendChild(s);
+  })();
+</script>`;
+
+
 
 export default constants;

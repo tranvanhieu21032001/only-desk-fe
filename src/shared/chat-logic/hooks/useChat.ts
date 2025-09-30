@@ -20,6 +20,9 @@ import { useTypingHandler } from './useTypingHandler';
 import { useNotification } from './useNotification';
 import { eventBus } from '../services/event-bus';
 import { User } from '@/shared/interfaces/user.interface';
+import { useAppDispatch } from '@/shared/hooks';
+import { ProfileCache } from '@/shared/utils/profile-cache';
+import { fetchUserProfileCard } from '@/modules/contacts/store/features/contacts';
 
 /*
 Features:
@@ -62,6 +65,7 @@ export function useChat({
   messageContainerRef,
   onEndSendMessage,
 }: UseChatProps): UseChatReturn {
+  const dispatch = useAppDispatch();
   const stableConversationId = useRef<string | null>(null);
   if (stableConversationId.current !== conversationId) {
     stableConversationId.current = conversationId;
@@ -180,6 +184,39 @@ export function useChat({
       }
     });
   };
+
+  // Prefetch user profiles for messages to warm ProfileCache
+  useEffect(() => {
+    const idsToFetch = new Set<string>();
+    for (const m of messages) {
+      const id = m.user?.id;
+      if (!id) continue;
+      if (!ProfileCache.has('USER', id)) {
+        idsToFetch.add(id);
+      }
+    }
+    if (idsToFetch.size === 0) return;
+
+    idsToFetch.forEach(async (id) => {
+      try {
+        const res: any = await dispatch(fetchUserProfileCard({ id }));
+        const data = res.payload as {
+          firstName?: string;
+          lastName?: string;
+          email?: string;
+          avatar?: string;
+        };
+        const normalized = {
+          name: `${data?.firstName ?? ''} ${data?.lastName ?? ''}`.trim(),
+          email: data?.email,
+          avatar: data?.avatar,
+        };
+        ProfileCache.set('USER', id, normalized);
+      } catch (e) {
+        // ignore individual prefetch failures
+      }
+    });
+  }, [messages, dispatch]);
 
   useEffect(() => {
     const handleIncomingMessage = (rawData: any) => {
