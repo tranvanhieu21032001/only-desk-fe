@@ -48,7 +48,8 @@ export function useConversationList({
     conversationListQuery,
     queryVariables,
     {
-      fetchPolicy: 'store-and-network',
+      // Avoid refetching when variables unchanged (e.g., URL changed but filter/keyword same)
+      fetchPolicy: 'store-or-network',
     },
   );
 

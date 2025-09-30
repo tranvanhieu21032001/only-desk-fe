@@ -29,6 +29,7 @@ const ConversationList: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation('inbox');
   const conversationListWrapperRef = useRef<HTMLDivElement>(null);
+
   const [isScrolling, setIsScrolling] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -99,55 +100,32 @@ const ConversationList: React.FC<Props> = ({
     };
   }, []);
 
+  // Restore scroll position when activeConversationId changes (URL changes)
+  useEffect(() => {
+    const el = conversationListWrapperRef.current;
+    if (!el) return;
+    const SCROLL_KEY = 'inbox-convlist-scroll';
+    const saved = sessionStorage.getItem(SCROLL_KEY);
+    if (saved) {
+      // Restore in next frame to ensure layout is applied
+      requestAnimationFrame(() => {
+        el.scrollTop = parseInt(saved, 10) || 0;
+      });
+    }
+  }, [activeConversationId]);
+
   const handleConversationClick = (conversationId: string) => {
-    // const conversation = conversations.find(
-    //   (edge) => edge.node.id === conversationId,
-    // )?.node;
-    // if (conversation) {
-    //   const conversationData: Conversation = {
-    //     id: conversation.id,
-    //     rawId: conversation.rawId || '',
-    //     contact: {
-    //       id: conversation.contact?.id || '',
-    //       rawId: conversation.contact?.rawId || '',
-    //       createdAt: conversation.createdAt || '',
-    //       updatedAt: conversation.updatedAt || '',
-    //       guestId: '',
-    //       name: conversation.contact?.name || 'No Name',
-    //       email: conversation.contact?.email || '',
-    //       notification: true,
-    //       segments: [],
-    //       isOnline: conversation.contact?.isOnline || false,
-    //       lastActivityAt: conversation.lastActivityAt || '',
-    //       workspaceId: workspaceId || '',
-    //       avatar: conversation.contact?.avatar || '',
-    //       countryCode: conversation?.contact?.context?.countryCode || '',
-    //     },
-    //     assignedTo: conversation.assignedTo?.id || null,
-    //     participants: [],
-    //     lastActivityAt: conversation.lastActivityAt || '',
-    //     latestMessage: {
-    //       id: conversation.id,
-    //       content: conversation.latestMessage?.content || '',
-    //       sender: 'agent',
-    //       createdAt: conversation.lastActivityAt || '',
-    //       updatedAt: conversation.lastActivityAt || '',
-    //       type: 'text',
-    //       status: 'sent',
-    //       user: null,
-    //     },
-    //   };
-    //   dispatch(setSelectedConversation(conversationData));
-    //   if (onSelectConversation) {
-    //     onSelectConversation(conversation);
-    //   }
-    // }
-    // navigate(`?conversationId=${conversationId}`);
+    // Persist current scroll before navigation to prevent jump-to-top
+    const el = conversationListWrapperRef.current;
+    const SCROLL_KEY = 'inbox-convlist-scroll';
+    if (el) sessionStorage.setItem(SCROLL_KEY, String(el.scrollTop));
+
     const params = new URLSearchParams(searchParams);
     params.set('conversationId', conversationId);
-    navigate({ search: params.toString() });
+    navigate({ search: params.toString() }, {
+      preventScrollReset: true,
+    } as any);
   };
-
 
   return (
     <S.ConversationListWrapper
