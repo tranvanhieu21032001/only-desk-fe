@@ -121,6 +121,7 @@ import ProfileCard, { ProfileType } from '../../common/ProfileCard';
 import { EVENTBUS_AUTH_LOGOUT } from '@/core/settings/constants';
 import usePrefetchData from '@/shared/hooks/usePrefetchData';
 import { categories } from '@/modules/plugins/helpers/data/allPlugins';
+import { usePrefetchShortcuts } from '@/shared/hooks/usePrefetchShortcuts';
 
 interface Props {
   children: React.ReactNode;
@@ -134,6 +135,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { prefetchKnowledgeBase, prefetchPlugin } = usePrefetchData();
+  const { prefetchShortcuts} = usePrefetchShortcuts()
 
   const { userInfo, workspaces, currentWorkspace } = useAppSelector(
     (state) => state.auth,
@@ -840,6 +842,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
           <S.ChildrenMenuWrap
             onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.CHATBOX)}
             $isActive={routePath === MAIN_ROUTES?.CHATBOX}
+            onMouseEnter={prefetchShortcuts}
           >
             <S.ChildrenMenuLabel>
               <Image src={icAllChats} preview={false} width={24} height={24} />

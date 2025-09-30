@@ -4,6 +4,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '@/shared/hooks';
 
 import { getShortcutsList, handleDeleteShortcut } from '@/modules/settings/api/chatbox';
+import { usePrefetchShortcuts } from '@/shared/hooks/usePrefetchShortcuts';
+import { ShortcutsCache } from '@/shared/utils/shortcuts-cache';
 
 import Button from '@/shared/components/common/Button';
 import AddShortcutModal from './AddShortcutModal';
@@ -20,7 +22,6 @@ import iconBar from '@/assets/icons/setting/ic-bar.svg';
 
 import type { Shortcut, ShortcutsList } from '@/modules/settings/models/chatbox.model';
 import { KEY_PAGE } from '@/shared/constant/common';
-import { constants } from '@/core/settings';
 
 const MessageShortcuts: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -37,35 +38,23 @@ const MessageShortcuts: React.FC = () => {
     Number(searchParams.get(KEY_PAGE)) ||
     1;
 
-  const [shortcuts, setShortcuts] = useState<Shortcut[]>(() => {
-    if (page === 1) {
-      const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
-      if (cached) {
-        const parsed = JSON.parse(cached) as ShortcutsList;
-        return parsed.data || [];
-      }
-    }
-    return [];
-  });
+  const { prefetchShortcuts } = usePrefetchShortcuts();
 
+  const [shortcuts, setShortcuts] = useState<Shortcut[]>(() => {
+    const cached = ShortcutsCache.get();
+    return cached || [];
+  });
   const [totalDocs, setTotalDocs] = useState(() => {
-    if (page === 1) {
-      const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
-      if (cached) {
-        const parsed = JSON.parse(cached) as ShortcutsList;
-        return parsed.total || 0;
-      }
-    }
-    return 0;
+    const cached = ShortcutsCache.get();
+    return cached ? cached.length : 0;
   });
 
   const fetchShortcuts = (page = 1, useCache = true) => {
     if (page === 1 && useCache) {
-      const cached = localStorage.getItem(constants.SHORTCUTS_PAGE);
-      if (cached) {
-        const parsed = JSON.parse(cached) as ShortcutsList;
-        setShortcuts(parsed.data || []);
-        setTotalDocs(parsed.total || 0);
+      const cached = ShortcutsCache.get();
+      if (cached && cached.length > 0) {
+        setShortcuts(cached);
+        setTotalDocs(cached.length);
         return;
       }
     }
@@ -76,7 +65,7 @@ const MessageShortcuts: React.FC = () => {
         setTotalDocs(res.total || 0);
 
         if (page === 1) {
-          localStorage.setItem(constants.SHORTCUTS_PAGE, JSON.stringify(res));
+          ShortcutsCache.set(res.data);
         }
       })
       .catch(() => {
@@ -86,8 +75,17 @@ const MessageShortcuts: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchShortcuts(page);
-  }, [page]);
+    const loadShortcuts = async () => {
+      if (page === 1) {
+        const data = await prefetchShortcuts();
+        setShortcuts(data);
+        setTotalDocs(data.length);
+      } else {
+        fetchShortcuts(page, true);
+      }
+    };
+    loadShortcuts();
+  }, [page, prefetchShortcuts]);
 
   const handleDelete = (record: Shortcut) => {
     setDeletingShortcut(record);
