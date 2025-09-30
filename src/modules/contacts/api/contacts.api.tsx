@@ -5,6 +5,7 @@ import {
 } from '../store/features/contacts';
 import { omit } from 'lodash';
 import { omitKeys } from '../helpers/contact.data';
+import { ProfileCache } from '@/shared/utils/profile-cache';
 
 const prefixContact: string = '';
 
@@ -55,6 +56,8 @@ const handleEditProfile = async (
   })
     .then(() => {
       dispatch(actionUpdateContactDetails(updatePayload));
+      // Invalidate profile cache for this contact (id should match ProfileCard id usage if possible)
+      ProfileCache.delete('CONTACT', id);
     })
     .finally(() => dispatch(actionUpdateIsLoading(false)));
 };

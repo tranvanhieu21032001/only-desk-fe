@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getAdminUsers, updateAdminUser } from '../api/admin';
 import avatarDefault from '@/assets/images/avatar-default.png';
 import { User } from '@/shared/interfaces/user.interface';
+import { ProfileCache } from '@/shared/utils/profile-cache';
 
 interface Pagination {
   current: number;
@@ -125,6 +126,8 @@ const adminUsersSlice = createSlice({
               ? { ...u, status: action.payload.status }
               : u,
           );
+          // Invalidate cached profile for this user
+          ProfileCache.delete('USER', action.payload.userId);
         },
       );
   },
