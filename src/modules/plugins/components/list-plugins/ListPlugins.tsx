@@ -26,14 +26,22 @@ function Plugins() {
 
   const hasFetched = useRef(false);
 
-  useEffect(() => {
-    if (typeParam === 'installed-plugins') {
+useEffect(() => {
+  const isInstalledPage = typeParam === 'installed-plugins';
+
+  if (isInstalledPage) {
+    if (!installedPlugins.length) {
       dispatch(fetchInstalledPlugins());
-    } else {
+    }
+  } else {
+    if (!allPlugins.length) {
       dispatch(fetchPlugins());
     }
-    hasFetched.current = true;
-  }, [dispatch, typeParam]);
+  }
+
+  hasFetched.current = true;
+}, [dispatch, typeParam, allPlugins.length, installedPlugins.length]);
+
 
   const pluginsToShow = useMemo(() => {
     const isInstalledPage = typeParam === 'installed-plugins';

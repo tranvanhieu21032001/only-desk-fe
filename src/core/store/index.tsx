@@ -21,6 +21,8 @@ import pluginsReducer, {initialState as pluginsInitialState} from '@/modules/plu
 import adminWorkspacesReducer from '@/modules/admin/store/adminWorkspacesSlice';
 import adminUserReducer from '@/modules/admin/store/adminUsersSlice';
 import { User } from '@/shared/interfaces/user.interface';
+import { PluginCache } from '@/shared/utils/plugin-cache';
+import { HelpdeskCache } from '@/shared/utils/helpdesk-cache';
 export const loadState = () => {
   const currentWorkspaceFromStorage: WorkspaceInterface = webLocalStorage.get(
     constants.CURRENT_WORKSPACE,
@@ -32,9 +34,9 @@ export const loadState = () => {
   const isSidebarOpenFromStorage: boolean =
     webStorageClient.get(constants.IS_SIDEBAR_OPEN) || false;
 
-  const pluginsData = webLocalStorage.get(constants.ALL_PLUGIN_DATA) || [];
-  const installedPluginsData = webLocalStorage.get(constants.INSTALLED_PLUGIN_DATA) || [];
-  const helpdeskCategories = webLocalStorage.get(constants.KNOWLEGE_BASE_DATA) || [];
+  const pluginsData = PluginCache.all.get() || [];
+  const installedPluginsData = PluginCache.installed.get() || [];;
+  const helpdeskCategories = HelpdeskCache.get() || [];
 
   return {
     auth: {

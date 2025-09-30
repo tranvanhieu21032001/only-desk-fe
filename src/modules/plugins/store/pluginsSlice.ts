@@ -8,8 +8,7 @@ import {
   PluginDetail,
 } from '../api/plugin.api';
 import { PAGE_SIZE } from '@/shared/constant/common';
-import webLocalStorage from '@/shared/utils/webLocalStorage';
-import { constants } from '@/core/settings';
+import { PluginCache } from '@/shared/utils/plugin-cache';
 
 export interface PluginItem {
   id?: string;
@@ -72,6 +71,8 @@ export const installPluginThunk = createAsyncThunk(
   'plugins/install',
   async (pluginKey: string) => {
     await installPlugin(pluginKey);
+    PluginCache.all.clear();
+    PluginCache.installed.clear();
     return pluginKey;
   },
 );
@@ -80,6 +81,8 @@ export const uninstallPluginThunk = createAsyncThunk(
   'plugins/uninstall',
   async (pluginKey: string) => {
     await uninstallPlugin(pluginKey);
+    PluginCache.all.clear();
+    PluginCache.installed.clear();
     return pluginKey;
   },
 );
@@ -90,6 +93,11 @@ export const fetchPluginDetail = createAsyncThunk<
   { rejectValue: string }
 >('plugins/fetchDetail', async (id, { rejectWithValue }) => {
   try {
+    const cached = PluginCache.all.get();
+    if (cached) {
+      const found = cached.find((p) => p.id === id || p.key === id);
+      if (found) return found as PluginDetail;
+    }
     const detail = await getPluginDetail(id);
     if (!detail) {
       return rejectWithValue('No plugin detail found');
@@ -145,7 +153,7 @@ const pluginsSlice = createSlice({
         (state, action: PayloadAction<PluginItem[]>) => {
           state.data = action.payload;
           state.loading = false;
-          webLocalStorage.set(constants.ALL_PLUGIN_DATA, state.data);
+          PluginCache.all.set(state.data);
         },
       )
       .addCase(fetchPlugins.rejected, (state, action) => {
@@ -163,7 +171,7 @@ const pluginsSlice = createSlice({
         (state, action: PayloadAction<PluginItem[]>) => {
           state.installedPlugins = action.payload;
           state.loading = false;
-          webLocalStorage.set(constants.INSTALLED_PLUGIN_DATA, state.installedPlugins);
+          PluginCache.installed.set(state.installedPlugins);
         },
       )
       .addCase(fetchInstalledPlugins.rejected, (state, action) => {
@@ -186,8 +194,8 @@ const pluginsSlice = createSlice({
             state.detail.isInstalled = true;
           }
 
-          webLocalStorage.set(constants.ALL_PLUGIN_DATA, state.data);
-          webLocalStorage.set(constants.INSTALLED_PLUGIN_DATA, state.installedPlugins);
+          PluginCache.all.set(state.data);
+          PluginCache.installed.set(state.installedPlugins);
         },
       )
 
@@ -206,8 +214,8 @@ const pluginsSlice = createSlice({
             state.detail.isInstalled = false;
           }
 
-          webLocalStorage.set(constants.ALL_PLUGIN_DATA, state.data);
-          webLocalStorage.set(constants.INSTALLED_PLUGIN_DATA, state.installedPlugins);
+          PluginCache.all.set(state.data);
+          PluginCache.installed.set(state.installedPlugins);
         },
       )
 
