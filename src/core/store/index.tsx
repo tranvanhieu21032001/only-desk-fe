@@ -12,12 +12,12 @@ import inboxReducer, {
   initialState as inboxInitialState,
 } from '@/modules/inbox/store/features/inbox';
 import messageRudecer from '@/modules/inbox/store/features/message'
-import helpdeskCategorySlice from '@/modules/knowledge-base/store/helpdeskCategorySlice';
+import helpdeskCategorySlice, {initialState as helpdeskInitialState} from '@/modules/knowledge-base/store/helpdeskCategorySlice';
 import helpdeskArticlesReducer from '@/modules/knowledge-base/store/helpdeskArticleSlice';
 import operatorsReducer from '@/modules/settings/store/features/operators';
 import knowledgeBaseSettingsReducer from '@/modules/settings/store/features/knowledgebase';
 import helpdeskSettingReducer from '@/modules/knowledge-base/store/helpdeskSettingsSlice';
-import pluginsReducer from '@/modules/plugins/store/pluginsSlice';
+import pluginsReducer, {initialState as pluginsInitialState} from '@/modules/plugins/store/pluginsSlice';
 import adminWorkspacesReducer from '@/modules/admin/store/adminWorkspacesSlice';
 import adminUserReducer from '@/modules/admin/store/adminUsersSlice';
 import { User } from '@/shared/interfaces/user.interface';
@@ -32,6 +32,10 @@ export const loadState = () => {
   const isSidebarOpenFromStorage: boolean =
     webStorageClient.get(constants.IS_SIDEBAR_OPEN) || false;
 
+  const pluginsData = webLocalStorage.get(constants.ALL_PLUGIN_DATA) || [];
+  const installedPluginsData = webLocalStorage.get(constants.INSTALLED_PLUGIN_DATA) || [];
+  const helpdeskCategories = webLocalStorage.get(constants.KNOWLEGE_BASE_DATA) || [];
+
   return {
     auth: {
       isAuth: isAuthFromStorage,
@@ -42,6 +46,15 @@ export const loadState = () => {
       ...inboxInitialState,
       isSidebarOpen: isSidebarOpenFromStorage,
     },
+     plugins: {
+      ...pluginsInitialState,
+      data: pluginsData,
+      installedPlugins: installedPluginsData,
+    },
+    helpdeskCategory: {
+    ...helpdeskInitialState,
+    categories: helpdeskCategories,
+  },
   };
 };
 

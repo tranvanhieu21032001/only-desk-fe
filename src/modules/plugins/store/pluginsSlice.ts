@@ -8,6 +8,8 @@ import {
   PluginDetail,
 } from '../api/plugin.api';
 import { PAGE_SIZE } from '@/shared/constant/common';
+import webLocalStorage from '@/shared/utils/webLocalStorage';
+import { constants } from '@/core/settings';
 
 export interface PluginItem {
   id?: string;
@@ -36,7 +38,7 @@ interface PluginsState {
   hasNextPage: boolean;
 }
 
-const initialState: PluginsState = {
+export const initialState: PluginsState = {
   data: [],
   installedPlugins: [],
   loading: false,
@@ -143,6 +145,7 @@ const pluginsSlice = createSlice({
         (state, action: PayloadAction<PluginItem[]>) => {
           state.data = action.payload;
           state.loading = false;
+          webLocalStorage.set(constants.ALL_PLUGIN_DATA, state.data);
         },
       )
       .addCase(fetchPlugins.rejected, (state, action) => {
@@ -160,6 +163,7 @@ const pluginsSlice = createSlice({
         (state, action: PayloadAction<PluginItem[]>) => {
           state.installedPlugins = action.payload;
           state.loading = false;
+          webLocalStorage.set(constants.INSTALLED_PLUGIN_DATA, state.installedPlugins);
         },
       )
       .addCase(fetchInstalledPlugins.rejected, (state, action) => {
@@ -181,6 +185,9 @@ const pluginsSlice = createSlice({
           if (state.detail && state.detail.key === action.payload) {
             state.detail.isInstalled = true;
           }
+
+          webLocalStorage.set(constants.ALL_PLUGIN_DATA, state.data);
+          webLocalStorage.set(constants.INSTALLED_PLUGIN_DATA, state.installedPlugins);
         },
       )
 
@@ -198,6 +205,9 @@ const pluginsSlice = createSlice({
           if (state.detail && state.detail.key === action.payload) {
             state.detail.isInstalled = false;
           }
+
+          webLocalStorage.set(constants.ALL_PLUGIN_DATA, state.data);
+          webLocalStorage.set(constants.INSTALLED_PLUGIN_DATA, state.installedPlugins);
         },
       )
 
@@ -222,6 +232,7 @@ const pluginsSlice = createSlice({
           'Failed to fetch plugin detail';
       })
 
+      // Fetch search plugins
       .addCase(fetchSearchPlugins.pending, (state) => {
         state.searchLoading = true;
         state.searchError = null;

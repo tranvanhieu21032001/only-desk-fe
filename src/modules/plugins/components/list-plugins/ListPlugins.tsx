@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,33 +10,30 @@ import empty from '@/assets/images/contact/img-contact-empty.png';
 import { Image, Skeleton } from 'antd';
 import Typography from '@/shared/components/common/Typography';
 import themeColors from '@/shared/styles/themes/default/colors';
-import { AppDispatch } from '@/core/store';
+import { AppDispatch, RootState } from '@/core/store';
 
 function Plugins() {
   const { t } = useTranslation('plugins');
   const dispatch = useDispatch<AppDispatch>();
 
   const { data: allPlugins, installedPlugins, loading: isLoading } = useSelector(
-    (state: any) => state.plugins
+    (state: RootState) => state.plugins
   );
 
   const [searchParams] = useSearchParams();
   const typeParam = searchParams.get('type');
-
   const [typePlugins, _setTypePlugins] = useState<string[]>([]);
 
-useEffect(() => {
-  if (typeParam === 'installed-plugins') {
-    if (!installedPlugins || installedPlugins.length === 0) {
+  const hasFetched = useRef(false);
+
+  useEffect(() => {
+    if (typeParam === 'installed-plugins') {
       dispatch(fetchInstalledPlugins());
-    }
-  } else {
-    if (!allPlugins || allPlugins.length === 0) {
+    } else {
       dispatch(fetchPlugins());
     }
-  }
-}, [dispatch, typeParam, installedPlugins, allPlugins]);
-
+    hasFetched.current = true;
+  }, [dispatch, typeParam]);
 
   const pluginsToShow = useMemo(() => {
     const isInstalledPage = typeParam === 'installed-plugins';
@@ -49,6 +46,15 @@ useEffect(() => {
     return baseList;
   }, [typeParam, installedPlugins, allPlugins, typePlugins]);
 
+  let renderState: 'loading' | 'empty' | 'data';
+  if (!pluginsToShow.length && isLoading && !hasFetched.current) {
+    renderState = 'loading';
+  } else if (!pluginsToShow.length && !isLoading && hasFetched.current) {
+    renderState = 'empty';
+  } else {
+    renderState = 'data';
+  }
+
   const handleSearchPlugins = () => {};
 
   return (
@@ -59,8 +65,7 @@ useEffect(() => {
         onChange={handleSearchPlugins} 
         allowClear
       />
-
-      {/* <S.PluginsTypesContainer>
+  {/* <S.PluginsTypesContainer>
         {isLoading
           ? Array(5)
               .fill(0)
@@ -76,8 +81,7 @@ useEffect(() => {
               </S.PluginType>
             ))}
       </S.PluginsTypesContainer> */}
-
-      {isLoading ? (
+      {renderState === 'loading' && (
         <S.Plugins>
           {Array(4)
             .fill(0)
@@ -89,17 +93,21 @@ useEffect(() => {
               />
             ))}
         </S.Plugins>
-      ) : pluginsToShow.length === 0 ? (
+      )}
+
+      {renderState === 'empty' && (
         <S.EmptyWrap>
           <Image src={empty} preview={false} />
           <Typography variant="h3" margin="8px 0 0 0" color={themeColors?.primary}>
             No plugins found
           </Typography>
         </S.EmptyWrap>
-      ) : (
+      )}
+
+      {renderState === 'data' && (
         <S.Plugins>
           {pluginsToShow.map((card: any) => (
-            <CardPlugin key={card.id || card.key} card={card} isLoading={isLoading} />
+            <CardPlugin key={card.id || card.key} card={card} isLoading={false} />
           ))}
         </S.Plugins>
       )}

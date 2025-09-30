@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getAllHelpdeskCategories } from '@/modules/knowledge-base/api/knowledgebase.api';
 import { HelpdeskCategory } from '@/modules/knowledge-base/interface';
+import webLocalStorage from '@/shared/utils/webLocalStorage';
+import { constants } from '@/core/settings';
 
 interface HelpdeskCategoryState {
   categories: HelpdeskCategory[];
@@ -8,7 +10,7 @@ interface HelpdeskCategoryState {
   error: string | null;
 }
 
-const initialState: HelpdeskCategoryState = {
+export const initialState: HelpdeskCategoryState = {
   categories: [],
   loading: false,
   error: null,
@@ -18,7 +20,10 @@ export const fetchHelpdeskCategories = createAsyncThunk(
   'helpdesk/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
+      console.log("loading.....");
+      
       const response = await getAllHelpdeskCategories();
+      webLocalStorage.set(constants.KNOWLEGE_BASE_DATA, response);
       return response;
     } catch (error: any) {
       return rejectWithValue(error.message || 'Error fetching categories');
@@ -34,6 +39,7 @@ const helpdeskCategorySlice = createSlice({
       state.categories = [];
       state.loading = false;
       state.error = null;
+      webLocalStorage.set(constants.KNOWLEGE_BASE_DATA, []);
     },
     removeArticle(state, action) {
       const rawId = action.payload;
@@ -48,6 +54,7 @@ const helpdeskCategorySlice = createSlice({
           );
         });
       });
+      webLocalStorage.set(constants.KNOWLEGE_BASE_DATA, state.categories);
     },
     updateArticle(state, action) {
       const updated = action.payload;
@@ -66,6 +73,7 @@ const helpdeskCategorySlice = createSlice({
           );
         });
       });
+      webLocalStorage.set(constants.KNOWLEGE_BASE_DATA, state.categories);
     },
   },
   extraReducers: (builder) => {
