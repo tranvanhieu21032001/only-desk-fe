@@ -119,6 +119,9 @@ import webStorageClient from '@/shared/utils/webStorageClient';
 import { updateRelayEnvironment } from '@/relay/RelayEnvironment';
 import ProfileCard, { ProfileType } from '../../common/ProfileCard';
 import { EVENTBUS_AUTH_LOGOUT } from '@/core/settings/constants';
+import usePrefetchData from '@/shared/hooks/usePrefetchData';
+import { categories } from '@/modules/plugins/helpers/data/allPlugins';
+import { usePrefetchShortcuts } from '@/shared/hooks/usePrefetchShortcuts';
 
 interface Props {
   children: React.ReactNode;
@@ -131,6 +134,8 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
   const { t } = useTranslation('layout');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { prefetchKnowledgeBase, prefetchPlugin } = usePrefetchData();
+  const { prefetchShortcuts} = usePrefetchShortcuts()
 
   const { userInfo, workspaces, currentWorkspace } = useAppSelector(
     (state) => state.auth,
@@ -154,7 +159,10 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
     () => window?.location?.pathname,
     [window?.location?.pathname],
   );
-
+   const typeParam = useMemo(() => {
+    const { pathname, search } = window.location;
+    return pathname + search;
+  }, [window.location.pathname, window.location.search]);
   // const prevRoutePath = useRef<string>('');
 
   const WORKSPACE_ID = useAppSelector(selectCurrentWorkspaceId);
@@ -453,6 +461,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
                 handleClickChildrenMenu(MAIN_ROUTES?.KNOWLEDGE_BASE_ARTICLE)
               }
               $isActive={routePath === MAIN_ROUTES?.KNOWLEDGE_BASE_ARTICLE}
+              onMouseEnter={prefetchKnowledgeBase}
             >
               <S.ChildrenMenuLabel>
                 <Image
@@ -473,6 +482,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
 
             <S.ChildrenMenuWrap
               onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.CATEGORIES)}
+              onMouseEnter={prefetchKnowledgeBase}
               $isActive={routePath === MAIN_ROUTES?.CATEGORIES}
             >
               <S.ChildrenMenuLabel>
@@ -516,7 +526,8 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
           <S.PopoverLabelWrapNoBorder>
             <S.ChildrenMenuWrap
               onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.ALL_PLUGINS)}
-              $isActive={routePath === MAIN_ROUTES?.ALL_PLUGINS}
+              onMouseEnter={()=>prefetchPlugin(categories[0].key)}
+              $isActive={routePath === MAIN_ROUTES?.ALL_PLUGINS && typeParam !== MAIN_ROUTES?.INSTALLED_PLUGINS}
             >
               <S.ChildrenMenuLabel>
                 <Image
@@ -533,7 +544,8 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
               onClick={() =>
                 handleClickChildrenMenu(MAIN_ROUTES?.INSTALLED_PLUGINS)
               }
-              $isActive={routePath === MAIN_ROUTES?.INSTALLED_PLUGINS}
+              onMouseEnter={()=>prefetchPlugin(categories[1].key)}
+              $isActive={typeParam === MAIN_ROUTES?.INSTALLED_PLUGINS}
             >
               <S.ChildrenMenuLabel>
                 <Image
@@ -830,6 +842,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
           <S.ChildrenMenuWrap
             onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.CHATBOX)}
             $isActive={routePath === MAIN_ROUTES?.CHATBOX}
+            onMouseEnter={prefetchShortcuts}
           >
             <S.ChildrenMenuLabel>
               <Image src={icAllChats} preview={false} width={24} height={24} />
