@@ -24,8 +24,7 @@ const KnowledgeBaseTab: React.FC<KnowledgeBaseTabProps> = ({
     (state: RootState) => state.helpdeskCategory
   );
 
-    
-  const [isFiltering, setIsFiltering] = useState(false);
+  const [_isFiltering, setIsFiltering] = useState(false);
 
   useEffect(() => {
     dispatch(fetchHelpdeskCategories());
@@ -57,21 +56,24 @@ const KnowledgeBaseTab: React.FC<KnowledgeBaseTabProps> = ({
       )
     : allArticles;
 
+  const isLoading = categoriesLoading && categories.length === 0;
+  const hasData = filteredArticles.length > 0;
+
   return (
     <S.TabPanel data-tab-panel="true">
       <S.TabTitle>{t('inboxDetail.knowledgeBase')}</S.TabTitle>
 
-      {(categoriesLoading || isFiltering) && (
+      {isLoading && (
         <S.NoShortcutsFound>
           <LoadingOutlined spin style={{ fontSize: 16, color: '#666' }} />
         </S.NoShortcutsFound>
       )}
 
-      {!categoriesLoading &&
-        !isFiltering &&
+      {!isLoading &&
+        hasData &&
         filteredArticles.map((article) => (
           <S.ShortcutItem
-            key={article.id}
+            key={article.id || article.rawId}
             onClick={() => {
               const textToInsert = `<${article?.url} | ${article.title}>`;
               setInputValue(textToInsert);
@@ -83,11 +85,9 @@ const KnowledgeBaseTab: React.FC<KnowledgeBaseTabProps> = ({
           </S.ShortcutItem>
         ))}
 
-      {!categoriesLoading &&
-        !isFiltering &&
-        filteredArticles.length === 0 && (
-          <S.NoShortcutsFound>No articles found</S.NoShortcutsFound>
-        )}
+      {!isLoading && !hasData && (
+        <S.NoShortcutsFound>No articles found</S.NoShortcutsFound>
+      )}
     </S.TabPanel>
   );
 };

@@ -119,7 +119,6 @@ import webStorageClient from '@/shared/utils/webStorageClient';
 import { updateRelayEnvironment } from '@/relay/RelayEnvironment';
 import ProfileCard, { ProfileType } from '../../common/ProfileCard';
 import { EVENTBUS_AUTH_LOGOUT } from '@/core/settings/constants';
-import { AUTH_ROUTES } from '@/core/routes/constants';
 
 interface Props {
   children: React.ReactNode;

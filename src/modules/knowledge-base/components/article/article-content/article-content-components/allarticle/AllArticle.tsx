@@ -136,9 +136,7 @@ const AllArticle = () => {
         icon: <Image src={icMonitor} width={20} height={20} preview={false} />,
         label: <Typography padding="0 0 0 2px">{t('article-menu.actions.view')}</Typography>,
         onClick: () => {
-          console.log("record", record);
-          if (record?.url) {
-            
+          if (record?.url) { 
             window.location.href = record.url;
           }
         },

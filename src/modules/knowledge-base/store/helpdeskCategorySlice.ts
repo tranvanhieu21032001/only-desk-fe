@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getAllHelpdeskCategories } from '@/modules/knowledge-base/api/knowledgebase.api';
 import { HelpdeskCategory } from '@/modules/knowledge-base/interface';
+import { HelpdeskCache } from '@/shared/utils/helpdesk-cache';
 
 interface HelpdeskCategoryState {
   categories: HelpdeskCategory[];
@@ -8,7 +9,7 @@ interface HelpdeskCategoryState {
   error: string | null;
 }
 
-const initialState: HelpdeskCategoryState = {
+export const initialState: HelpdeskCategoryState = {
   categories: [],
   loading: false,
   error: null,
@@ -18,8 +19,16 @@ export const fetchHelpdeskCategories = createAsyncThunk(
   'helpdesk/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
+      const cached = HelpdeskCache.get();
+      if (cached) {
+        return [...cached];
+      }
       const response = await getAllHelpdeskCategories();
-      return response;
+      const mutableResponse: HelpdeskCategory[] = JSON.parse(JSON.stringify(response));
+
+      HelpdeskCache.set(mutableResponse);
+      return mutableResponse;
+
     } catch (error: any) {
       return rejectWithValue(error.message || 'Error fetching categories');
     }
@@ -34,6 +43,7 @@ const helpdeskCategorySlice = createSlice({
       state.categories = [];
       state.loading = false;
       state.error = null;
+      HelpdeskCache.delete();
     },
     removeArticle(state, action) {
       const rawId = action.payload;
@@ -48,6 +58,7 @@ const helpdeskCategorySlice = createSlice({
           );
         });
       });
+      HelpdeskCache.set(state.categories);
     },
     updateArticle(state, action) {
       const updated = action.payload;
@@ -66,6 +77,7 @@ const helpdeskCategorySlice = createSlice({
           );
         });
       });
+      HelpdeskCache.set(state.categories);
     },
   },
   extraReducers: (builder) => {
@@ -76,7 +88,7 @@ const helpdeskCategorySlice = createSlice({
       })
       .addCase(fetchHelpdeskCategories.fulfilled, (state, action) => {
         state.loading = false;
-        state.categories = action.payload as unknown as HelpdeskCategory[];
+        state.categories = action.payload as HelpdeskCategory[];
       })
       .addCase(fetchHelpdeskCategories.rejected, (state, action) => {
         state.loading = false;

@@ -45,8 +45,8 @@ axiosInstance.interceptors.response.use(
     return response?.data;
   },
   (error) => {
-    const { config, response } = error;
-    const originalRequest = config;
+    const { response } = error;
+    // const originalRequest = config;
 
     //TODO
     // Handle 401 Unauthorized error and token refresh
