@@ -8,6 +8,7 @@ import { categories } from '../../helpers/data/allPlugins';
 import Typography from '@/shared/components/common/Typography';
 import * as S from './Categories.styles';
 import { useEffect } from 'react';
+import usePrefetchData from '@/shared/hooks/usePrefetchData';
 
 function Categories() {
   const { t } = useTranslation('plugins');
@@ -15,6 +16,7 @@ function Categories() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentType = searchParams.get('type');
   const defaultType = categories[0]?.key || '';
+  const { prefetchPlugin } = usePrefetchData();
 
   // Set default type param if none present
   useEffect(() => {
@@ -44,6 +46,9 @@ function Categories() {
               key={category.key}
               $isActive={isActive}
               onClick={() => handleCategoryClick(category.key)}
+               onMouseEnter={() =>
+                prefetchPlugin(category.key)
+              }
             >
               <Typography>{t(`all-plugins.${category.label}`)}</Typography>
               {/* <S.Count>
