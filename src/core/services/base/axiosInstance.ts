@@ -1,6 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 // import webStorageClient from "@/shared/utils/webStorageClient";
-import { constants } from "@/core/settings";
+import { constants } from '@/core/settings';
+import { eventBus } from '@/core/event-bus';
+import { EVENTBUS_AUTH_LOGOUT } from '@/core/settings/constants';
 
 /**
  * Create an axios instance with default configuration
@@ -11,7 +13,7 @@ import { constants } from "@/core/settings";
 const axiosInstance = axios.create({
   baseURL: constants.API_SERVER,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
   timeout: 600000,
 });
@@ -28,7 +30,7 @@ axiosInstance.interceptors.request.use(
   },
   function (error) {
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -48,43 +50,12 @@ axiosInstance.interceptors.response.use(
 
     //TODO
     // Handle 401 Unauthorized error and token refresh
-    if (response?.status === 401 && !originalRequest?._retry) {
-      // originalRequest._retry = true;
-      // const tokenRefresh = webStorageClient.get(constants.REFRESH_TOKEN);
-
-      // if (tokenRefresh) {
-      //   // Attempt to refresh the access token
-      //   return axiosInstance
-      //     .post("/core/auth/refresh-token", { refreshToken: tokenRefresh })
-      //     .then((response: any) => {
-      //       // Update authorization headers with new token
-      //       axiosInstance.defaults.headers.common[
-      //         "Authorization"
-      //       ] = `Bearer ${response?.data?.accessToken}`;
-      //       originalRequest.headers[
-      //         "Authorization"
-      //       ] = `Bearer ${response?.data?.accessToken}`;
-
-      //       // Store new tokens
-      //       webStorageClient.setToken(response?.data?.accessToken);
-      //       webStorageClient.set(
-      //         constants.REFRESH_TOKEN,
-      //         response?.data?.refreshToken
-      //       );
-
-      //       // Retry the original request with new token
-      //       return axiosInstance(originalRequest);
-      //     })
-      //     .catch(() => {
-      //       // Clear all stored tokens on refresh failure
-      //       webStorageClient.removeAll();
-      //     });
-      // }
-
-      return Promise.reject(error);
+    if (response?.status === 401) {
+      // Emit global logout event on 401
+      eventBus.emit(EVENTBUS_AUTH_LOGOUT);
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;

@@ -118,6 +118,8 @@ import { FeatureKey } from '@/modules/permissions/enums/features.enum';
 import webStorageClient from '@/shared/utils/webStorageClient';
 import { updateRelayEnvironment } from '@/relay/RelayEnvironment';
 import ProfileCard, { ProfileType } from '../../common/ProfileCard';
+import { EVENTBUS_AUTH_LOGOUT } from '@/core/settings/constants';
+import { AUTH_ROUTES } from '@/core/routes/constants';
 
 interface Props {
   children: React.ReactNode;
@@ -190,11 +192,19 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
     const handleConnect = () => setShowDisconnectBanner(false);
     eventBus.on(EVENTBUS_SOCKET_DISCONNECT, handleDisconnect);
     eventBus.on(EVENTBUS_SOCKET_CONNECT, handleConnect);
+
+    const handleAuthLogout = () => {
+      disconnectSocket();
+      dispatch(actionLogout());
+    };
+    eventBus.on(EVENTBUS_AUTH_LOGOUT, handleAuthLogout);
+
     return () => {
       eventBus.off(EVENTBUS_SOCKET_DISCONNECT, handleDisconnect);
       eventBus.off(EVENTBUS_SOCKET_CONNECT, handleConnect);
+      eventBus.off(EVENTBUS_AUTH_LOGOUT, handleAuthLogout);
     };
-  }, []);
+  }, [dispatch, navigate]);
 
   const menus = [
     {

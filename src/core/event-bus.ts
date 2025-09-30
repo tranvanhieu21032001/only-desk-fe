@@ -3,6 +3,7 @@ import mitt from 'mitt';
 import {
   EVENTBUS_SOCKET_DISCONNECT,
   EVENTBUS_SOCKET_CONNECT,
+  EVENTBUS_AUTH_LOGOUT,
 } from '@/core/settings/constants';
 import {
   EVENTBUS_INBOX_MESSAGE,
@@ -16,6 +17,7 @@ export type AppEvents = {
   [EVENTBUS_INBOX_MESSAGE]: any;
   [EVENTBUS_SOCKET_DISCONNECT]: void;
   [EVENTBUS_SOCKET_CONNECT]: void;
+  [EVENTBUS_AUTH_LOGOUT]: void;
   [EVENTBUS_USER_TYPING]: any;
 
   [EVENTBUS_USER_STATUS]: {

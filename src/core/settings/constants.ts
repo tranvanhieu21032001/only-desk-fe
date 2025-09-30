@@ -39,6 +39,7 @@ export const DEFAULT_EMAIL = 'default@gmail.com';
 export const EVENTBUS_SOCKET_CONNECT = 'socket-connect';
 export const EVENTBUS_SOCKET_DISCONNECT = 'socket-disconnect';
 export const EVENTBUS_WORKSPACE_CHANGED = 'workspace-changed';
+export const EVENTBUS_AUTH_LOGOUT = 'auth-logout';
 
 export const SOCKET_API_URL = import.meta.env.VITE_SOCKET_API_URL;
 
