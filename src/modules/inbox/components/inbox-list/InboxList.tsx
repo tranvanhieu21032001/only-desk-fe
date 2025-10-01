@@ -12,6 +12,12 @@ import * as S from './InboxList.styles';
 import InboxItem from './InboxItem';
 
 import { useConversations } from '@/shared/conversations-logic/hooks/useConversations';
+import {
+  progressivePrefetchConversations,
+  prefetchMessagesForConversation,
+  hasPrefetched,
+} from '@/shared/chat-logic/services/prefetch';
+import type { Conversation } from '@/shared/interfaces/conversation.interface';
 import { ConversationFilterEnum } from '@/shared/helper/enums/common';
 
 type Props = {
@@ -47,30 +53,12 @@ const ConversationList: React.FC<Props> = ({
     keyword,
   });
 
-  // const workspaceId = useSelector(selectCurrentWorkspaceId);
-  // const dispatch = useAppDispatch();
-
-  // useEffect(() => {
-  //   if (onSelectConversation && activeConversationId) {
-  //     const conversation = data.conversations.edges.find(
-  //       (edge) => edge.node.id === activeConversationId,
-  //     )?.node;
-  //     if (conversation) {
-  //       onSelectConversation(conversation);
-  //     }
-  //   }
-  // }, [activeConversationId, onSelectConversation, data.conversations.edges]);
-
-  // useEffect(() => {
-  //   const handleWorkspaceChange = () => {
-  //     refreshConversations(isAssignedToMe);
-  //   };
-
-  //   eventBus.on(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
-  //   return () => {
-  //     eventBus.off(EVENTBUS_WORKSPACE_CHANGED as any, handleWorkspaceChange);
-  //   };
-  // }, [workspaceId, dispatch]);
+  // Progressive prefetch messages in batches of 5 (top 5, then next 5, ...)
+  // Do not abort on dependency change; Set(prefetched) prevents duplicates and allows continuous prefetch
+  useEffect(() => {
+    if (isFetchingInitial || conversations.length === 0) return;
+    progressivePrefetchConversations(conversations, 5, { delayMs: 50 });
+  }, [isFetchingInitial, conversations]);
 
   useEffect(() => {
     if (!activeConversationId && conversations.length > 0) {
@@ -114,14 +102,21 @@ const ConversationList: React.FC<Props> = ({
     }
   }, [activeConversationId]);
 
-  const handleConversationClick = (conversationId: string) => {
+  const handleConversationClick = async (conv: Conversation) => {
+    if (activeConversationId == conv.id) return;
+
+    console.log(
+      'handleConversationClick: ',
+      conv.rawId,
+      hasPrefetched(conv.rawId),
+    );
     // Persist current scroll before navigation to prevent jump-to-top
     const el = conversationListWrapperRef.current;
     const SCROLL_KEY = 'inbox-convlist-scroll';
     if (el) sessionStorage.setItem(SCROLL_KEY, String(el.scrollTop));
 
     const params = new URLSearchParams(searchParams);
-    params.set('conversationId', conversationId);
+    params.set('conversationId', conv.id);
     navigate({ search: params.toString() }, {
       preventScrollReset: true,
     } as any);
@@ -137,14 +132,22 @@ const ConversationList: React.FC<Props> = ({
       )}
       {conversations.map((conversation) => {
         return (
-          <InboxItem
+          <div
             key={conversation.id}
-            conversation={conversation}
-            onClickConversation={() => {
-              handleConversationClick(conversation.id);
+            onPointerEnter={() => {
+              if (conversation.rawId) {
+                prefetchMessagesForConversation(conversation.rawId);
+              }
             }}
-            activeConversationId={activeConversationId}
-          />
+          >
+            <InboxItem
+              conversation={conversation}
+              onClickConversation={() => {
+                handleConversationClick(conversation);
+              }}
+              activeConversationId={activeConversationId}
+            />
+          </div>
         );
       })}
       {isLoadingNext && (
