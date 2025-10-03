@@ -165,26 +165,15 @@ const slice = createSlice({
 
   extraReducers: (builder) => {
     // Get user info
-    builder.addCase(fetchGetUserInfo.pending, (state) => {
-      state.isLoading = true;
-    });
     builder.addCase(fetchGetUserInfo.fulfilled, (state, action: any) => {
-      state.isLoading = false;
       state.userInfo = action.payload;
       webStorageClient.set(constants.USER_INFO, {
         ...state.userInfo,
         ...action.payload,
       });
     });
-    builder.addCase(fetchGetUserInfo.rejected, (state) => {
-      state.isLoading = false;
-    });
     // Get workspace
-    builder.addCase(fetchWorkspace.pending, (state) => {
-      state.isLoading = true;
-    });
     builder.addCase(fetchWorkspace.fulfilled, (state, action: any) => {
-      state.isLoading = false;
       state.workspaces = action.payload;
 
       if (
@@ -205,9 +194,6 @@ const slice = createSlice({
           },
         );
       }
-    });
-    builder.addCase(fetchWorkspace.rejected, (state) => {
-      state.isLoading = false;
     });
   },
 });

@@ -122,6 +122,10 @@ import { EVENTBUS_AUTH_LOGOUT } from '@/core/settings/constants';
 import usePrefetchData from '@/shared/hooks/usePrefetchData';
 import { categories } from '@/modules/plugins/helpers/data/allPlugins';
 import { usePrefetchShortcuts } from '@/shared/hooks/usePrefetchShortcuts';
+import {
+  preloadAuthenticatedPages,
+  preloadAuthPages,
+} from '@/core/routes/routes';
 
 interface Props {
   children: React.ReactNode;
@@ -135,7 +139,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { prefetchKnowledgeBase, prefetchPlugin } = usePrefetchData();
-  const { prefetchShortcuts} = usePrefetchShortcuts()
+  const { prefetchShortcuts } = usePrefetchShortcuts();
 
   const { userInfo, workspaces, currentWorkspace } = useAppSelector(
     (state) => state.auth,
@@ -159,7 +163,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
     () => window?.location?.pathname,
     [window?.location?.pathname],
   );
-   const typeParam = useMemo(() => {
+  const typeParam = useMemo(() => {
     const { pathname, search } = window.location;
     return pathname + search;
   }, [window.location.pathname, window.location.search]);
@@ -183,6 +187,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
   useEffect(() => {
     dispatch(fetchGetUserInfo());
     dispatch(fetchWorkspace());
+    preloadAuthenticatedPages();
   }, [dispatch]);
 
   useEffect(() => {
@@ -203,6 +208,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
     const handleAuthLogout = () => {
       disconnectSocket();
       dispatch(actionLogout());
+      preloadAuthPages();
     };
     eventBus.on(EVENTBUS_AUTH_LOGOUT, handleAuthLogout);
 
@@ -526,8 +532,11 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
           <S.PopoverLabelWrapNoBorder>
             <S.ChildrenMenuWrap
               onClick={() => handleClickChildrenMenu(MAIN_ROUTES?.ALL_PLUGINS)}
-              onMouseEnter={()=>prefetchPlugin(categories[0].key)}
-              $isActive={routePath === MAIN_ROUTES?.ALL_PLUGINS && typeParam !== MAIN_ROUTES?.INSTALLED_PLUGINS}
+              onMouseEnter={() => prefetchPlugin(categories[0].key)}
+              $isActive={
+                routePath === MAIN_ROUTES?.ALL_PLUGINS &&
+                typeParam !== MAIN_ROUTES?.INSTALLED_PLUGINS
+              }
             >
               <S.ChildrenMenuLabel>
                 <Image
@@ -544,7 +553,7 @@ const MainLayout: React.FC<Props> = React.memo(({ children }) => {
               onClick={() =>
                 handleClickChildrenMenu(MAIN_ROUTES?.INSTALLED_PLUGINS)
               }
-              onMouseEnter={()=>prefetchPlugin(categories[1].key)}
+              onMouseEnter={() => prefetchPlugin(categories[1].key)}
               $isActive={typeParam === MAIN_ROUTES?.INSTALLED_PLUGINS}
             >
               <S.ChildrenMenuLabel>

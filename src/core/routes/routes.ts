@@ -6,31 +6,48 @@ import Forbidden from '@/modules/admin/Forbidden';
 import { AUTH_ROUTES, MAIN_ROUTES } from './constants';
 import { RouterElementInterface } from './model';
 
-const SignIn = React.lazy(() => import('@/modules/auth/pages/sign-in/SignIn'));
-const SignUp = React.lazy(() => import('@/modules/auth/pages/sign-up/SignUp'));
-const ForgotPassword = React.lazy(
+type LazyPreload<T extends React.ComponentType<any>> =
+  React.LazyExoticComponent<T> & {
+    preload: () => void;
+  };
+
+export function lazyWithPreload<T extends React.ComponentType<any>>(
+  factory: () => Promise<{ default: T }>,
+): LazyPreload<T> {
+  const Component = React.lazy(factory) as LazyPreload<T>;
+  Component.preload = factory; // reuse cùng một import
+  return Component;
+}
+
+const SignIn = lazyWithPreload(
+  () => import('@/modules/auth/pages/sign-in/SignIn'),
+);
+const SignUp = lazyWithPreload(
+  () => import('@/modules/auth/pages/sign-up/SignUp'),
+);
+const ForgotPassword = lazyWithPreload(
   () => import('@/modules/auth/pages/forgot-password/ForgotPassword'),
 );
 
-const Inbox = React.lazy(
-  () => import('@/modules/inbox/pages/inbox-page/InboxPage'),
-);
-const LandingPage = React.lazy(() => import('@/modules/landing'));
-const AllPLugins = React.lazy(
+import Inbox from '@/modules/inbox/pages/inbox-page/InboxPage';
+
+import LandingPage from '@/modules/landing';
+
+const AllPLugins = lazyWithPreload(
   () => import('@/modules/plugins/pages/plugins/Plugins'),
 );
 const SpamChat = React.lazy(
   () => import('@/modules/inbox/pages/spam-chat-page/SpamChatpage'),
 );
-const PageNotFound = React.lazy(
+const PageNotFound = lazyWithPreload(
   () => import('@/shared/components/common/PageNotFound'),
 );
 
 //Contacts
-const Contacts = React.lazy(
+const Contacts = lazyWithPreload(
   () => import('@/modules/contacts/pages/contacts/Contacts'),
 );
-const ContactDetails = React.lazy(
+const ContactDetails = lazyWithPreload(
   () => import('@/modules/contacts/pages/contact-details/ContactDetails'),
 );
 // const ContactEdit = React.lazy(
@@ -48,7 +65,7 @@ const Billing = React.lazy(
   () => import('@/modules/settings/pages/billing/Billing'),
 );
 
-const KnowledgeBase = React.lazy(
+const KnowledgeBase = lazyWithPreload(
   () => import('@/modules/settings/pages/knowledge-base/KnowledgeBase'),
 );
 
@@ -67,7 +84,7 @@ const CheckoutSuccess = React.lazy(
 );
 
 //Knowledge Base
-const Articles = React.lazy(
+const Articles = lazyWithPreload(
   () => import('@/modules/knowledge-base/pages/articles/Articles'),
 );
 
@@ -75,11 +92,11 @@ const Articles = React.lazy(
 //   () => import('@/modules/inbox/pages/chatbox-page/ChatboxPage'),
 // );
 
-const Chatbox = React.lazy(
+const Chatbox = lazyWithPreload(
   () => import('@/modules/settings/pages/chatbox/Chatbox'),
 );
 
-const Visitor = React.lazy(
+const Visitor = lazyWithPreload(
   () => import('@/modules/global/pages/visitor/Visitor'),
 );
 
@@ -105,7 +122,7 @@ const InvoicesAdmin = React.lazy(
   () => import('@/modules/admin/pages/invoices/InvoicesAdmin'),
 );
 
-const AcceptIvitation = React.lazy(
+const AcceptIvitation = lazyWithPreload(
   () => import('@/modules/auth/pages/accept-invitation/AcceptiIvitation'),
 );
 
@@ -479,4 +496,25 @@ const routes_main: RouterElementInterface[] = [
   },
 ];
 
-export { routes_auth, routes_admin, routes_main };
+const preloadAuthPages = () => {
+  SignIn.preload();
+  SignUp.preload();
+  ForgotPassword.preload();
+  AcceptIvitation.preload();
+};
+
+const preloadAuthenticatedPages = () => {
+  Contacts.preload();
+  ContactDetails.preload();
+  Visitor.preload();
+  Articles.preload();
+  AllPLugins.preload();
+};
+
+export {
+  routes_auth,
+  routes_admin,
+  routes_main,
+  preloadAuthPages,
+  preloadAuthenticatedPages,
+};
