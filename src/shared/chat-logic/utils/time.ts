@@ -13,7 +13,7 @@ export const formatTimeAgo = (dateString: string): string => {
   const weeks = Math.floor(days / 7);
   if (weeks < 4) return `${weeks}w`;
   const months = Math.floor(days / 30);
-  if (months < 12) return `${months}mo`;
+  if (months < 12) return `${months}m`;
   const years = Math.floor(days / 365);
   return `${years}y`;
 };
