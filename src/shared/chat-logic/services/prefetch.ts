@@ -1,19 +1,16 @@
 // LIMIT THE FILE CONTENT TO AT MOST 300 LINES. IF MORE CONTENT NEEDS TO BE ADDED USE THE str-replace-editor TOOL TO EDIT THE FILE AFTER IT HAS BEEN CREATED.
 
 import {
+  Disposable,
   createOperationDescriptor,
   fetchQuery,
-  getFragment,
   getRequest,
-  graphql,
 } from 'relay-runtime';
 import environment from '@/relay/RelayEnvironment';
 import { Conversation } from '@/shared/interfaces/conversation.interface';
 import { MESSAGE_LIMIT } from '@/modules/inbox/constants/inbox.constants';
-import { prefetch_ConversationMessagesQuery } from './__generated__/prefetch_ConversationMessagesQuery.graphql';
 import { conversationMessagesQuery } from '../relay/ConversationMessagesQuery';
 import { ConversationMessagesQuery } from '../relay/__generated__/ConversationMessagesQuery.graphql';
-import { messageListFragment } from '../relay/MessageFragment';
 
 // Track prefetched conversationIds to avoid duplicate network calls
 // Always store as string to avoid 8 vs "8" mismatches
@@ -21,6 +18,9 @@ const prefetched = new Set<string>();
 // Track in-flight requests so multiple triggers can coalesce and we don't mark
 // as prefetched until data actually lands in the Relay store.
 const inFlight = new Map<string, Promise<unknown>>();
+// Store retain handles to keep prefetched message queries in the Relay store
+// until we explicitly release them (or the tab is closed).
+const retentions = new Map<string, Disposable>();
 
 export function getPrefetchInFlight(conversationId: string | number) {
   const id = normalizeId(conversationId);
@@ -52,19 +52,31 @@ export async function prefetchMessagesForConversation(
     return existing;
   }
 
+  const variables = {
+    conversationId: id,
+    first: MESSAGE_LIMIT,
+    after: null,
+  };
+
+  // Retain the prefetched operation so Relay's GC does not immediately
+  // evict the data before the user opens the conversation.
+  const request = getRequest(conversationMessagesQuery);
+  const operation = createOperationDescriptor(request, variables);
+
+  if (!retentions.has(id)) {
+    const retainHandle = environment.retain(operation);
+    retentions.set(id, retainHandle);
+  }
+
   try {
-    const p = fetchQuery<ConversationMessagesQuery>(
+    const promise = fetchQuery<ConversationMessagesQuery>(
       environment as any,
       conversationMessagesQuery,
-      {
-        conversationId: id,
-        first: MESSAGE_LIMIT,
-        after: null,
-      },
-    );
-    inFlight.set(id, p.toPromise());
+      variables,
+    ).toPromise();
+    inFlight.set(id, promise);
 
-    await p.toPromise();
+    await promise;
 
     prefetched.add(id);
 
@@ -72,9 +84,31 @@ export async function prefetchMessagesForConversation(
     return true;
   } catch (error) {
     console.warn('[prefetch] error', id, error);
+    const retainHandle = retentions.get(id);
+    retainHandle?.dispose();
+    retentions.delete(id);
   } finally {
     inFlight.delete(id);
   }
+}
+
+export function releasePrefetchedConversation(
+  conversationId: string | number,
+) {
+  const id = normalizeId(conversationId);
+  if (!id) return;
+  const retainHandle = retentions.get(id);
+  if (retainHandle) {
+    retainHandle.dispose();
+    retentions.delete(id);
+  }
+  prefetched.delete(id);
+}
+
+export function releaseAllPrefetchedConversations() {
+  retentions.forEach((retainHandle) => retainHandle.dispose());
+  retentions.clear();
+  prefetched.clear();
 }
 
 // Progressive prefetch in batches (e.g., 5 by 5)

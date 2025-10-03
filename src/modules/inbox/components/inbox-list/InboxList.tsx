@@ -12,11 +12,7 @@ import * as S from './InboxList.styles';
 import InboxItem from './InboxItem';
 
 import { useConversations } from '@/shared/conversations-logic/hooks/useConversations';
-import {
-  progressivePrefetchConversations,
-  prefetchMessagesForConversation,
-  hasPrefetched,
-} from '@/shared/chat-logic/services/prefetch';
+import { prefetchMessagesForConversation } from '@/shared/chat-logic/services/prefetch';
 import type { Conversation } from '@/shared/interfaces/conversation.interface';
 import { ConversationFilterEnum } from '@/shared/helper/enums/common';
 
@@ -52,13 +48,6 @@ const ConversationList: React.FC<Props> = ({
     filter: filterEnum,
     keyword,
   });
-
-  // Progressive prefetch messages in batches of 5 (top 5, then next 5, ...)
-  // Do not abort on dependency change; Set(prefetched) prevents duplicates and allows continuous prefetch
-  useEffect(() => {
-    if (isFetchingInitial || conversations.length === 0) return;
-    progressivePrefetchConversations(conversations, 5, { delayMs: 50 });
-  }, [isFetchingInitial, conversations]);
 
   useEffect(() => {
     if (!activeConversationId && conversations.length > 0) {
@@ -105,11 +94,6 @@ const ConversationList: React.FC<Props> = ({
   const handleConversationClick = async (conv: Conversation) => {
     if (activeConversationId == conv.id) return;
 
-    console.log(
-      'handleConversationClick: ',
-      conv.rawId,
-      hasPrefetched(conv.rawId),
-    );
     // Persist current scroll before navigation to prevent jump-to-top
     const el = conversationListWrapperRef.current;
     const SCROLL_KEY = 'inbox-convlist-scroll';
