@@ -120,7 +120,14 @@ const ConversationList: React.FC<Props> = ({
             key={conversation.id}
             onPointerEnter={() => {
               if (conversation.rawId) {
-                prefetchMessagesForConversation(conversation.rawId);
+                prefetchMessagesForConversation(conversation.rawId, {
+                  contactId: conversation.contact?.id ?? null,
+                  participantIds: conversation.participants?.map((participant) =>
+                    typeof participant === 'string'
+                      ? participant
+                      : participant?.id,
+                  ) ?? null,
+                });
               }
             }}
           >
