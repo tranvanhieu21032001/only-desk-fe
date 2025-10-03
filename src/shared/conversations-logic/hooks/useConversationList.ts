@@ -8,6 +8,7 @@ import { ConversationFragment_query$key } from '../relay/__generated__/Conversat
 import { conversationListFragment } from '../relay/ConversationFragment';
 import { Conversation } from '@/shared/interfaces/conversation.interface';
 import { ConversationFilterEnum } from '@/shared/helper/enums/common';
+import { progressivePrefetchConversations } from '@/shared/chat-logic/services/prefetch';
 
 const CONVERSATIONS_LIMIT = 10;
 
@@ -66,6 +67,31 @@ export function useConversationList({
     if (data) setIsFetchingInitial(false);
   }, [data]);
 
+  const conversations = useMemo<Conversation[]>(() => {
+    if (!data?.conversations?.edges) {
+      return [];
+    }
+
+    return data.conversations.edges.map((edge: any) =>
+      parseGraphQLConversation(edge.node),
+    );
+  }, [data]);
+
+  useEffect(() => {
+    if (isFetchingInitial || conversations.length === 0) {
+      return;
+    }
+
+    const controller = new AbortController();
+
+    void progressivePrefetchConversations(conversations, 5, {
+      delayMs: 50,
+      signal: controller.signal,
+    });
+
+    return () => controller.abort();
+  }, [isFetchingInitial, conversations]);
+
   const loadMore = useCallback(
     (onComplete?: (error?: Error | null) => void) => {
       if (hasNext && !isLoadingNext) {
@@ -76,9 +102,7 @@ export function useConversationList({
   );
 
   return {
-    conversations: data.conversations.edges.map((edge: any) =>
-      parseGraphQLConversation(edge.node),
-    ),
+    conversations,
     isFetchingInitial,
     isLoadingNext,
     hasNext,
