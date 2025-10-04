@@ -45,21 +45,20 @@ export function useConversations({
 
   const handleUpdatedConversation = useCallback(
     async (rawData: any) => {
-      console.log('Updated conversation:', rawData);
       // Fetch updated conversation details
       const updatedConversation = await fetchConversationDetailForList(
         rawData.conversationId,
       );
-
       if (updatedConversation) {
         // Check if conversation exists in list, if not add it, if exists move to top
-        RelayStoreHelper.addOrMoveConversationToTop(
-          updatedConversation,
-          isAssignedToMe || false,
-        );
+        RelayStoreHelper.addOrMoveConversationToTop(updatedConversation, {
+          isAssignedToMe: isAssignedToMe ?? false,
+          filter,
+          keyword: keyword ?? null,
+        });
       }
     },
-    [isAssignedToMe],
+    [filter, isAssignedToMe, keyword],
   );
 
   useEffect(() => {

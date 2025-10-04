@@ -13,11 +13,13 @@ import { EVENTBUS_UPDATED_CONVERSATION } from '@/shared/chat-logic/constants/eve
 import { getFormattedTime } from '@/shared/chat-logic/utils/time';
 import { renderMessagePreview } from '@/shared/chat-logic/helpers/message-content.helper';
 import { Conversation } from '@/shared/interfaces/conversation.interface';
+import { ConversationConnectionFilters } from '@/shared/conversations-logic/helpers/relay-store.helper';
 
 type Props = {
   conversation: any;
   activeConversationId: string | null;
   onClickConversation: () => void;
+  connectionFilters: ConversationConnectionFilters;
 };
 
 // Helper function to get message preview based on message type
@@ -35,6 +37,7 @@ const InboxItem: React.FC<Props> = ({
   conversation,
   activeConversationId,
   onClickConversation,
+  connectionFilters,
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [activeMenu, setActiveMenu] = useState<boolean>(false);
@@ -119,6 +122,7 @@ const InboxItem: React.FC<Props> = ({
             onCloseMenu={() => setActiveMenu(false)}
             conversationId={conversation.id}
             openMenuButtonRef={menuRef as React.RefObject<HTMLDivElement>}
+            connectionFilters={connectionFilters}
           />
         )}
       </S.RightSection>

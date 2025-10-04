@@ -15,6 +15,7 @@ import { useConversations } from '@/shared/conversations-logic/hooks/useConversa
 import { prefetchMessagesForConversation } from '@/shared/chat-logic/services/prefetch';
 import type { Conversation } from '@/shared/interfaces/conversation.interface';
 import { ConversationFilterEnum } from '@/shared/helper/enums/common';
+import { ConversationConnectionFilters } from '@/shared/conversations-logic/helpers/relay-store.helper';
 
 type Props = {
   onSelectConversation?: (conversation: any) => void;
@@ -48,6 +49,12 @@ const ConversationList: React.FC<Props> = ({
     filter: filterEnum,
     keyword,
   });
+
+  const connectionFilters: ConversationConnectionFilters = {
+    isAssignedToMe: isAssignedToMe ?? false,
+    filter: filterEnum,
+    keyword: keyword || undefined,
+  };
 
   useEffect(() => {
     if (!activeConversationId && conversations.length > 0) {
@@ -137,6 +144,7 @@ const ConversationList: React.FC<Props> = ({
                 handleConversationClick(conversation);
               }}
               activeConversationId={activeConversationId}
+              connectionFilters={connectionFilters}
             />
           </div>
         );

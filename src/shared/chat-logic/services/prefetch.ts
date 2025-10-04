@@ -23,7 +23,7 @@ import { ContactProfileCardQuery } from '@/relay/__generated__/ContactProfileCar
 // Track prefetched conversationIds to avoid duplicate network calls (store string form)
 const prefetched = new Set<string>();
 // Track in-flight requests so multiple triggers can coalesce and we only mark after success
-const inFlight = new Map<string, Promise<ConversationMessagesQuery$data | null>>();
+const inFlight = new Map<string, Promise<ConversationMessagesQuery$data | undefined>>();
 // Keep retain handles so Relay GC does not drop prefetched messages prematurely
 const retentions = new Map<string, Disposable>();
 
@@ -88,7 +88,7 @@ export async function prefetchMessagesForConversation(
 
     const result = await promise;
 
-    await prefetchProfilesFromMessages(result);
+    await prefetchProfilesFromMessages(result ?? null);
 
     prefetched.add(id);
 

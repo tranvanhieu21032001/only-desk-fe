@@ -1,21 +1,69 @@
 import { commitLocalUpdate } from 'react-relay';
 import { ConnectionHandler, RecordSourceSelectorProxy } from 'relay-runtime';
+import type { RecordProxy } from 'relay-runtime';
+
 import environment from '@/relay/RelayEnvironment';
 import { Conversation } from '@/shared/interfaces/conversation.interface';
+import { ConversationFilterEnum } from '@/shared/helper/enums/common';
 
-const addOrMoveConversationToTop = (
-  conversation: Conversation,
-  isAssignedToMe: boolean,
+export interface ConversationConnectionFilters {
+  isAssignedToMe: boolean;
+  filter?: ConversationFilterEnum;
+  keyword?: string | null;
+}
+
+interface ConversationConnectionContext {
+  store: RecordSourceSelectorProxy;
+  connection: RecordProxy;
+}
+
+const CONNECTION_KEY = 'ConversationFragment_conversations';
+
+const buildConnectionArguments = ({
+  isAssignedToMe,
+  filter,
+  keyword,
+}: ConversationConnectionFilters): Record<string, unknown> => {
+  const connectionArguments: Record<string, unknown> = {
+    assignedToMe: isAssignedToMe,
+  };
+
+  if (filter) {
+    connectionArguments.filter = filter;
+  }
+
+  if (keyword) {
+    connectionArguments.keyword = keyword;
+  }
+
+  return connectionArguments;
+};
+
+const updateConversationConnection = (
+  filters: ConversationConnectionFilters,
+  updater: (context: ConversationConnectionContext) => void,
 ) => {
   commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
     const root = store.getRoot();
+    const connectionArguments = buildConnectionArguments(filters);
+
     const connection = ConnectionHandler.getConnection(
       root,
-      'ConversationFragment_conversations',
-      { assignedToMe: isAssignedToMe },
+      CONNECTION_KEY,
+      connectionArguments,
     );
+
     if (!connection) return;
 
+    updater({ store, connection });
+  });
+};
+
+const addOrMoveConversationToTop = (
+  conversation: Conversation,
+  filters: ConversationConnectionFilters,
+) => {
+  updateConversationConnection(filters, ({ store, connection }) => {
     const conversationId = conversation.id;
     const edges = connection.getLinkedRecords('edges');
 
@@ -102,6 +150,34 @@ const addOrMoveConversationToTop = (
   });
 };
 
+const removeConversationFromConnection = (
+  conversationId: string,
+  filters: ConversationConnectionFilters,
+): string | null => {
+  let nextConversationId: string | null = null;
+
+  updateConversationConnection(filters, ({ store, connection }) => {
+    ConnectionHandler.deleteNode(connection, conversationId);
+    store.delete(conversationId);
+
+    const edges = connection.getLinkedRecords('edges') || [];
+    const nextEdge = edges.find((edge) => {
+      const node = edge?.getLinkedRecord('node');
+      return node?.getDataID() !== conversationId;
+    });
+
+    nextConversationId =
+      (nextEdge?.getLinkedRecord('node')?.getDataID() as
+        | string
+        | undefined
+        | null) ?? null;
+  });
+
+  return nextConversationId;
+};
+
 export const RelayStoreHelper = {
   addOrMoveConversationToTop,
+  removeConversationFromConnection,
+  updateConversationConnection,
 };

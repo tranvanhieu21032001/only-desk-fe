@@ -7,10 +7,7 @@ import unreadIcon from '@/assets/icons/common/ic-unread.svg';
 import deleteIcon from '@/assets/icons/common/ic-delete-red.svg';
 import { decodeGlobalId } from '@/shared/utils/decode';
 import { deleteConversation } from '../../api/inbox.api';
-import { commitLocalUpdate, ConnectionHandler } from 'react-relay';
-import environment from '@/relay/RelayEnvironment';
-import { RecordSourceSelectorProxy } from 'relay-runtime';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   updateConversationUnreadCount,
   updateSelectedConversation,
@@ -21,6 +18,10 @@ import { useTranslation } from 'react-i18next';
 import { handleUpdateConversation } from '../../api/conversations.api';
 import { useAppSelector } from '@/shared/hooks';
 import { openConversation } from '@/shared/chat-logic/services/socket';
+import {
+  ConversationConnectionFilters,
+  RelayStoreHelper,
+} from '@/shared/conversations-logic/helpers/relay-store.helper';
 
 type Props = {
   unreadCount?: number;
@@ -29,6 +30,7 @@ type Props = {
   onToggleResolved?: (newResolved: boolean) => void;
   onCloseMenu: () => void;
   openMenuButtonRef: React.RefObject<HTMLDivElement>;
+  connectionFilters: ConversationConnectionFilters;
 };
 
 const InboxListMenu: React.FC<Props> = ({
@@ -38,10 +40,10 @@ const InboxListMenu: React.FC<Props> = ({
   onToggleResolved,
   onCloseMenu,
   openMenuButtonRef,
+  connectionFilters,
 }) => {
   const menuDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
   const { t } = useTranslation('inbox');
   const workspaceId = useSelector(selectCurrentWorkspaceId);
@@ -114,35 +116,16 @@ const InboxListMenu: React.FC<Props> = ({
       const realId = decodeGlobalId(conversationId);
       await deleteConversation(realId);
 
-      const isAssignedToMe = location.pathname === '/assigned-to-me';
-      commitLocalUpdate(environment, (store: RecordSourceSelectorProxy) => {
-        const root = store.getRoot();
-        const connection = ConnectionHandler.getConnection(
-          root,
-          'ConversationListFragment_conversations',
-          { assignedToMe: isAssignedToMe },
-        );
+      const nextId = RelayStoreHelper.removeConversationFromConnection(
+        conversationId,
+        connectionFilters,
+      );
 
-        if (!connection) return;
-
-        ConnectionHandler.deleteNode(connection, conversationId);
-        store.delete(conversationId);
-
-        const edges = connection.getLinkedRecords('edges') || [];
-        const nextEdge = edges.find(
-          (edge) =>
-            edge?.getLinkedRecord('node')?.getValue('id') !== conversationId,
-        );
-        const nextId = nextEdge?.getLinkedRecord('node')?.getValue('id') as
-          | string
-          | undefined;
-
-        navigate(
-          nextId
-            ? `/inbox?conversationId=${encodeURIComponent(nextId)}`
-            : '/inbox',
-        );
-      });
+      navigate(
+        nextId
+          ? `/inbox?conversationId=${encodeURIComponent(nextId)}`
+          : '/inbox',
+      );
     } catch (err) {
       console.error('Failed to delete conversation:', err);
     }
